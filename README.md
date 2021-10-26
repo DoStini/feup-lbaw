@@ -1,6 +1,6 @@
 # Lbaw2116
 
-# Clothes Store (Still Undefined)
+# Clothes Store
 
 # Members:
 
