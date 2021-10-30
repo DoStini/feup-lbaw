@@ -1,6 +1,6 @@
 # Lbaw2116
 
-# Clothes Store
+# reFurniture
 
 # Members:
 
