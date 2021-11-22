@@ -102,17 +102,17 @@ END;
 $$;
 
 CREATE TABLE "photo" (
-	id  integer,
+	id  SERIAL,
 	url varchar(100) NOT NULL,
 	CONSTRAINT "id_pk" PRIMARY KEY (id)
 );
 
 CREATE TABLE "user" (
-	id					integer,
+	id					SERIAL,
 	name 				varchar(100) NOT NULL,
 	email 				varchar(255) UNIQUE NOT NULL,
 	password 			varchar(255) NOT NULL,
-	newsletter_subcribe boolean,
+	newsletter_subcribed boolean DEFAULT TRUE,
 	photo_id			integer NOT NULL DEFAULT 1,
 	CONSTRAINT "user_pk" PRIMARY KEY (id),
 	CONSTRAINT "valid_email_ck" CHECK (email ~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
@@ -137,7 +137,7 @@ CREATE TABLE "authenticated_shopper" (
 );
 
 CREATE TABLE "category" (
-	id				integer,
+	id				SERIAL,
 	name			varchar(100) NOT NULL,
 	parent_category integer DEFAULT NULL,
 	CONSTRAINT "category_pk" PRIMARY KEY (id),
@@ -145,7 +145,7 @@ CREATE TABLE "category" (
 );
 
 CREATE TABLE "address" (
-	id				integer,
+	id				SERIAL,
 	street			varchar(255) NOT NULL,
 	postalcode		varchar(8) NOT NULL,
 	door			varchar(10) NOT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE "authenticated_shopper_address" (
 );
 
 CREATE TABLE "product" (
-	id			integer,
+	id			SERIAL,
 	name		varchar(100) NOT NULL,
 	attributes	varchar(255),
 	stock		integer NOT NULL,
@@ -190,7 +190,7 @@ CREATE TABLE "product_photo" (
 );
 
 CREATE TABLE "coupon" (
-	id					integer,
+	id					SERIAL,
 	code				varchar(20) NOT NULL,
 	percentage			float NOT NULL,
 	minimum_cart_value	float NOT NULL,
@@ -200,7 +200,7 @@ CREATE TABLE "coupon" (
 );
 
 CREATE TABLE "order" (
-	id							integer,
+	id							SERIAL,
 	authenticated_shopper_id	integer NOT NULL,
 	total						float,
 	subtotal					float,
@@ -256,7 +256,7 @@ CREATE TABLE "shipment" (
 );
 
 CREATE TABLE "review" (
-	id			integer,
+	id			SERIAL,
 	timestamp	date NOT NULL DEFAULT NOW(),
 	stars		integer NOT NULL,
 	text		varchar(255),
@@ -306,7 +306,7 @@ CREATE TABLE "product_on_user_wishlist" (
 );
 
 CREATE TABLE "proposed_product" (
-	id					integer,
+	id					SERIAL,
 	name				varchar(50) NOT NULL,
 	price				float NOT NULL,
 	amount				integer NOT NULL,
@@ -327,8 +327,9 @@ CREATE TABLE "proposed_product_category" (
 );
 
 CREATE TABLE "notification" (
-	id		integer,
-	shopper	integer NOT NULL, 
+	id		SERIAL,
+	shopper	integer NOT NULL,
+	timestamp	date NOT NULL DEFAULT NOW(),
 	CONSTRAINT "notification_pk" PRIMARY KEY (id),
 	CONSTRAINT "n_shopper_fk" FOREIGN KEY (shopper) REFERENCES "authenticated_shopper"
 	
@@ -339,6 +340,7 @@ CREATE TABLE "review_management_notification" (
 	review_id			integer NOT NULL,
 	notification_type	review_management_notif NOT NULL,
 	CONSTRAINT "review_management_notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification",
 	CONSTRAINT "rmn_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
 );
 
@@ -347,13 +349,15 @@ CREATE TABLE "review_vote_notification" (
 	review_id			integer NOT NULL,
 	notification_type	review_vote_type NOT NULL,
 	CONSTRAINT "review_vote_notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification",
 	CONSTRAINT "rvn_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
 );
 
 CREATE TABLE "account_management_notification" (
 	id					integer,
 	notification_type	account_management_notif NOT NULL,
-	CONSTRAINT "account_management_notification_pk" PRIMARY KEY (id)
+	CONSTRAINT "account_management_notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification"
 );
 
 CREATE TABLE "order_update_notification" (
@@ -361,5 +365,6 @@ CREATE TABLE "order_update_notification" (
 	order_id			integer NOT NULL,
 	notification_type	order_state NOT NULL,
 	CONSTRAINT "order_update_notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification",
 	CONSTRAINT "oun_order_fk" FOREIGN KEY (order_id) REFERENCES "order"
 );
