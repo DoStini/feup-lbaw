@@ -286,3 +286,80 @@ CREATE TABLE "review_vote" (
 	CONSTRAINT "rv_voter_fk" FOREIGN KEY (voter_id) REFERENCES "authenticated_shopper",
 	CONSTRAINT "rv_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
 );
+
+CREATE TABLE "product_on_user_cart" (
+	user_id 	integer,
+	product_id	integer,
+	amount		integer NOT NULL,
+	CONSTRAINT "product_on_user_cart_pk" PRIMARY KEY (user_id, product_id),
+	CONSTRAINT "pouc_user_fk" FOREIGN KEY (user_id) REFERENCES "user",
+	CONSTRAINT "pouc_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
+	CONSTRAINT "pouc_amount_ck" CHECK (amount > 0)
+);
+
+CREATE TABLE "product_on_user_wishlist" (
+	user_id 	integer,
+	product_id	integer,
+	CONSTRAINT "product_on_user_wishlist_pk" PRIMARY KEY (user_id, product_id),
+	CONSTRAINT "pouw_user_fk" FOREIGN KEY (user_id) REFERENCES "user",
+	CONSTRAINT "pouw_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+);
+
+CREATE TABLE "proposed_product" (
+	id					integer,
+	name				varchar(50) NOT NULL,
+	price				float NOT NULL,
+	amount				integer NOT NULL,
+	description			varchar(255) NOT NULL,
+	product_cur_state	product_state NOT NULL,
+	approval_cur_state	approval_state NOT NULL,
+	CONSTRAINT "proposed_product_pk" PRIMARY KEY (id),
+	CONSTRAINT "price_ck" CHECK (price >= 0),
+	CONSTRAINT "amount_ck" CHECK (amount > 0)
+);
+
+CREATE TABLE "proposed_product_category" (
+	product_id	integer,
+	category_id	integer,
+	CONSTRAINT "proposed_product_category_pk" PRIMARY KEY (product_id, category_id),
+	CONSTRAINT "ppc_product_fk" FOREIGN KEY (product_id) REFERENCES "proposed_product",
+	CONSTRAINT "ppc_category_fk" FOREIGN KEY (category_id) REFERENCES "category"
+);
+
+CREATE TABLE "notification" (
+	id		integer,
+	shopper	integer NOT NULL, 
+	CONSTRAINT "notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "n_shopper_fk" FOREIGN KEY (shopper) REFERENCES "authenticated_shopper"
+	
+);
+
+CREATE TABLE "review_management_notification" (
+	id					integer,
+	review_id			integer NOT NULL,
+	notification_type	review_management_notif NOT NULL,
+	CONSTRAINT "review_management_notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "rmn_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
+);
+
+CREATE TABLE "review_vote_notification" (
+	id					integer,
+	review_id			integer NOT NULL,
+	notification_type	review_vote_type NOT NULL,
+	CONSTRAINT "review_vote_notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "rvn_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
+);
+
+CREATE TABLE "account_management_notification" (
+	id					integer,
+	notification_type	account_management_notif NOT NULL,
+	CONSTRAINT "account_management_notification_pk" PRIMARY KEY (id)
+);
+
+CREATE TABLE "order_update_notification" (
+	id					integer,
+	order_id			integer NOT NULL,
+	notification_type	order_state NOT NULL,
+	CONSTRAINT "order_update_notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "oun_order_fk" FOREIGN KEY (order_id) REFERENCES "order"
+);
