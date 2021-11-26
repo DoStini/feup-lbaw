@@ -27,6 +27,7 @@ DROP TABLE IF EXISTS "review_vote" CASCADE;
 DROP TABLE IF EXISTS "review_photo" CASCADE;
 DROP TABLE IF EXISTS "review" CASCADE;
 DROP TABLE IF EXISTS "shipment" CASCADE;
+DROP TABLE IF EXISTS "payment" CASCADE;
 DROP TABLE IF EXISTS "bank_payment" CASCADE;
 DROP TABLE IF EXISTS "paypal_payment" CASCADE;
 DROP TABLE IF EXISTS "order_product_amount" CASCADE;
@@ -42,6 +43,9 @@ DROP TABLE IF EXISTS "authenticated_shopper" CASCADE;
 DROP TABLE IF EXISTS "admin" CASCADE;
 DROP TABLE IF EXISTS "user" CASCADE;
 DROP TABLE IF EXISTS "photo" CASCADE;
+DROP TABLE IF EXISTS "district" CASCADE;
+DROP TABLE IF EXISTS "county" CASCADE;
+DROP TABLE IF EXISTS "zip_code" CASCADE;
 
 DROP FUNCTION IF EXISTS "is_number";
 CREATE FUNCTION "is_number" (str varchar(255))
@@ -108,26 +112,21 @@ CREATE TABLE "photo" (
 );
 
 CREATE TABLE "user" (
-	id					SERIAL,
-	name 				varchar(100) NOT NULL,
-	email 				varchar(255) UNIQUE NOT NULL,
-	password 			varchar(255) NOT NULL,
-	newsletter_subcribed boolean DEFAULT TRUE,
-	photo_id			integer NOT NULL DEFAULT 1,
+	id					    SERIAL,
+	name 				    varchar(100) NOT NULL,
+	email 				    varchar(255) UNIQUE NOT NULL,
+	password 			    varchar(255) NOT NULL,
+	newsletter_subcribed    boolean DEFAULT TRUE,
+	photo_id			    integer NOT NULL DEFAULT 1,
+    is_admin                boolean DEFAULT FALSE,
 	CONSTRAINT "user_pk" PRIMARY KEY (id),
 	CONSTRAINT "valid_email_ck" CHECK (email ~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
 	CONSTRAINT "photo_id_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
 );
 
-CREATE TABLE "admin" (
-	id	integer,
-	CONSTRAINT "admin_pk" PRIMARY KEY (id),
-	CONSTRAINT "admin_fk" FOREIGN KEY (id) REFERENCES "user"
-);
-
 CREATE TABLE "authenticated_shopper" (
 	id				integer,
-	about_me 		varchar(255),
+	about_me 		varchar,
 	phone_number	varchar(9),
 	nif				varchar(9),
 	CONSTRAINT "authenticated_shopper_pk" PRIMARY KEY (id),
@@ -144,20 +143,47 @@ CREATE TABLE "category" (
 	CONSTRAINT "c_parent_category_fk" FOREIGN KEY (parent_category) REFERENCES "category"
 );
 
+CREATE TABLE district (
+    id SERIAL,
+    name VARCHAR(64) UNIQUE NOT NULL,
+    CONSTRAINT district_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE county (
+    id SERIAL,
+    name VARCHAR(64) NOT NULL,
+    district_id INTEGER NOT NULL,
+    CONSTRAINT county_pk PRIMARY KEY (id),
+    CONSTRAINT county_district_fk FOREIGN KEY (district_id) REFERENCES district
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT,
+    CONSTRAINT county_name_unique UNIQUE (name, district_id)
+);
+
+CREATE TABLE zip_code (
+    id SERIAL,
+    zip_code VARCHAR(16) UNIQUE NOT NULL,
+    county_id INTEGER NOT NULL,
+    CONSTRAINT zip_code_pk PRIMARY KEY (id),
+    CONSTRAINT zip_code_county_fk FOREIGN KEY (county_id) REFERENCES county
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
+);
+
 CREATE TABLE "address" (
 	id				SERIAL,
 	street			varchar(255) NOT NULL,
-	postalcode		varchar(8) NOT NULL,
+	zip_code		integer,
 	door			varchar(10) NOT NULL,
-	CONSTRAINT "address_pk" PRIMARY KEY (id)
-	/* add string "nnnn-nnn" check for postalcode */
+	CONSTRAINT "address_pk" PRIMARY KEY (id),
+	CONSTRAINT "zip_code_fk" FOREIGN KEY (zip_code) REFERENCES zip_code
 );
 
 CREATE TABLE "authenticated_shopper_address" (
-	user_id		integer,
+	shopper_id	integer,
 	address_id	integer,
-	CONSTRAINT "authenticated_shopper_address_pk" PRIMARY KEY (user_id, address_id),
-	CONSTRAINT "asa_user_fk" FOREIGN KEY (user_id) REFERENCES "user",
+	CONSTRAINT "authenticated_shopper_address_pk" PRIMARY KEY (shopper_id, address_id),
+	CONSTRAINT "asa_user_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
 	CONSTRAINT "asa_address_fk" FOREIGN KEY (address_id) REFERENCES "address"
 );
 
@@ -194,6 +220,7 @@ CREATE TABLE "coupon" (
 	code				varchar(20) NOT NULL,
 	percentage			float NOT NULL,
 	minimum_cart_value	float NOT NULL,
+    is_active              boolean DEFAULT TRUE,
 	CONSTRAINT "coupon_pk" PRIMARY KEY (id),
 	CONSTRAINT "coupon_percentage_ck" CHECK (percentage > 0 AND percentage <= 1),
 	CONSTRAINT "coupon_minimum_cart_value_ck" CHECK (minimum_cart_value > 0)
@@ -202,13 +229,15 @@ CREATE TABLE "coupon" (
 CREATE TABLE "order" (
 	id							SERIAL,
 	authenticated_shopper_id	integer NOT NULL,
+    shipment_address            integer,
 	total						float,
 	subtotal					float,
 	status						order_state NOT NULL DEFAULT 'created',
 	applied_coupon_id			integer,
 	CONSTRAINT "order_pk" PRIMARY KEY (id),
 	CONSTRAINT "o_a_shopper_fk" FOREIGN KEY (authenticated_shopper_id) REFERENCES "authenticated_shopper",
-	CONSTRAINT "total_ck" CHECK (total >= 0),
+	CONSTRAINT "shipment_address_fk" FOREIGN KEY (shipment_address) REFERENCES "address",
+    CONSTRAINT "total_ck" CHECK (total >= 0),
 	CONSTRAINT "subtotal_ck" CHECK (subtotal >= 0 AND subtotal >= total),
 	CONSTRAINT "o_applied_coupon_fk" FOREIGN KEY (applied_coupon_id) REFERENCES "coupon"
 );
@@ -225,34 +254,21 @@ CREATE TABLE "order_product_amount" (
 	CONSTRAINT "unit_price_ck" CHECK (unit_price >= 0)
 );
 
-CREATE TABLE "paypal_payment" (
+CREATE TABLE "payment" (
 	order_id				integer,
-	paypal_transaction_id	integer UNIQUE NOT NULL,
 	value					float NOT NULL,
-	CONSTRAINT "paypal_payment_pk" PRIMARY KEY (order_id),
-	CONSTRAINT "paypalp_order_fk" FOREIGN KEY (order_id) REFERENCES "order",
+	paypal_transaction_id	integer UNIQUE,
+    entity                  integer,
+    reference               integer UNIQUE,
+    CONSTRAINT "payment_pk" PRIMARY KEY (order_id),
+	CONSTRAINT "payment_ck" CHECK(
+            (value <= 0.001 AND paypal_transaction_id IS NULL AND entity IS NULL AND reference IS NULL)
+                OR (
+                    NOT ((entity IS NULL) != (reference IS NULL))
+                    AND (paypal_transaction_id IS NULL) != (entity IS NULL AND reference IS NULL)
+                )
+        ),
 	CONSTRAINT "value_ck" CHECK (value >= 0)
-);
-
-CREATE TABLE "bank_payment" (
-	order_id				integer,
-	reference				integer NOT NULL,
-	entity					integer NOT NULL,
-	value					float NOT NULL,
-	CONSTRAINT "bank_payment_pk" PRIMARY KEY (order_id),
-	CONSTRAINT "bp_order_fk" FOREIGN KEY (order_id) REFERENCES "order",
-	CONSTRAINT "value_ck" CHECK (value >= 0)
-	/* fazer checks para referencia e entidade */
-);
-
-CREATE TABLE "shipment" (
-	order_id				integer,
-	address_id				integer NOT NULL,
-	cost					float NOT NULL,
-	CONSTRAINT "shipment_pk" PRIMARY KEY (order_id),
-	CONSTRAINT "s_order_fk" FOREIGN KEY (order_id) REFERENCES "order",
-	CONSTRAINT "s_address_fk" FOREIGN KEY (address_id) REFERENCES "address",
-	CONSTRAINT "cost_ck" CHECK (cost >= 0)
 );
 
 CREATE TABLE "review" (
