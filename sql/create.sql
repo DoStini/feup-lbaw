@@ -6,6 +6,7 @@ DROP TYPE IF EXISTS review_vote_type CASCADE;
 DROP TYPE IF EXISTS review_management_notif CASCADE;
 DROP TYPE IF EXISTS account_management_notif CASCADE;
 DROP TYPE IF EXISTS order_state CASCADE;
+DROP TYPE IF EXISTS notification_type CASCADE;
 
 CREATE TYPE product_state AS ENUM ('new', 'slightly_damaged', 'damaged', 'raw_material');
 CREATE TYPE approval_state AS ENUM ('pending', 'approved', 'rejected');
@@ -13,6 +14,8 @@ CREATE TYPE review_vote_type AS ENUM ('upvote', 'downvote');
 CREATE TYPE review_management_notif AS ENUM ('edited', 'removed');
 CREATE TYPE account_management_notif AS ENUM ('edited', 'blocked');
 CREATE TYPE order_state AS ENUM ('created', 'paid', 'processing', 'shipped');
+CREATE TYPE notification_type AS ENUM ('review_vote', 'review_management','account', 'order', 'proposed_product');
+
 
 DROP TABLE IF EXISTS "order_update_notification" CASCADE;
 DROP TABLE IF EXISTS "account_management_notification" CASCADE;
@@ -345,44 +348,47 @@ CREATE TABLE "proposed_product_category" (
 );
 
 CREATE TABLE "notification" (
-	id		SERIAL,
-	shopper	integer NOT NULL,
-	timestamp	date NOT NULL DEFAULT NOW(),
+	id                  		SERIAL,
+	shopper                 	integer NOT NULL,
+	timestamp	                date NOT NULL DEFAULT NOW(),
+    type                        notification_type NOT NULL,
+	review_id			        integer,
+	order_id			        integer,
+	proposed_product_id			integer,
+    review_vote_notif_type      review_vote_type,
+    review_mng_notif_type       review_management_notif,
+    account_mng_notif_type      account_management_notif,
+    order_notif_type            order_state,
+    proposed_product_notif      approval_state,
+
+    CONSTRAINT "timestamp_ck" CHECK(timestamp <= NOW()),
+
+    CONSTRAINT "review_vote_notif_type_ck" CHECK((type = 'review_vote') = (review_vote_notif_type IS NOT NULL)),
+    CONSTRAINT "review_mng_notif_type_ck" CHECK((type = 'review_management') = (review_mng_notif_type IS NOT NULL)),
+    CONSTRAINT "account_mng_notif_type_ck" CHECK((type = 'account') = (account_mng_notif_type IS NOT NULL)),
+    CONSTRAINT "order_notif_type_ck" CHECK((type = 'order') = (order_notif_type IS NOT NULL)),
+    CONSTRAINT "proposed_product_notif_ck" CHECK((type = 'proposed_product') = (proposed_product_notif IS NOT NULL)),
+
+    CONSTRAINT "review_id_ck" CHECK(((type = 'review_management' OR type = 'review_management') AND review_id IS NOT NULL)
+                                OR ((type != 'review_management' AND type != 'review_management') AND review_id IS NULL)),
+
+    CONSTRAINT "order_id_ck" CHECK(((type = 'order') AND order_id IS NOT NULL)
+                                OR ((type != 'order') AND order_id IS NULL)),
+
+    CONSTRAINT "proposed_product_id" CHECK(((type = 'proposed_product') AND proposed_product_id IS NOT NULL)
+                                OR ((type != 'proposed_product') AND proposed_product_id IS NULL)),
+
+
+    CONSTRAINT "exclusive_notif_ck" CHECK (num_nonnulls(
+        review_vote_notif_type,
+        review_mng_notif_type,
+        account_mng_notif_type,
+        order_notif_type,
+        proposed_product_notif) = 1),
+
 	CONSTRAINT "notification_pk" PRIMARY KEY (id),
-	CONSTRAINT "n_shopper_fk" FOREIGN KEY (shopper) REFERENCES "authenticated_shopper"
-	
-);
-
-CREATE TABLE "review_management_notification" (
-	id					integer,
-	review_id			integer NOT NULL,
-	notification_type	review_management_notif NOT NULL,
-	CONSTRAINT "review_management_notification_pk" PRIMARY KEY (id),
-	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification",
-	CONSTRAINT "rmn_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
-);
-
-CREATE TABLE "review_vote_notification" (
-	id					integer,
-	review_id			integer NOT NULL,
-	notification_type	review_vote_type NOT NULL,
-	CONSTRAINT "review_vote_notification_pk" PRIMARY KEY (id),
-	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification",
-	CONSTRAINT "rvn_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
-);
-
-CREATE TABLE "account_management_notification" (
-	id					integer,
-	notification_type	account_management_notif NOT NULL,
-	CONSTRAINT "account_management_notification_pk" PRIMARY KEY (id),
-	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification"
-);
-
-CREATE TABLE "order_update_notification" (
-	id					integer,
-	order_id			integer NOT NULL,
-	notification_type	order_state NOT NULL,
-	CONSTRAINT "order_update_notification_pk" PRIMARY KEY (id),
-	CONSTRAINT "review_management_notification_fk" FOREIGN KEY (id) REFERENCES "notification",
-	CONSTRAINT "oun_order_fk" FOREIGN KEY (order_id) REFERENCES "order"
+	CONSTRAINT "n_shopper_fk" FOREIGN KEY (shopper) REFERENCES "authenticated_shopper",
+	CONSTRAINT "oun_order_fk" FOREIGN KEY (order_id) REFERENCES "order",
+	CONSTRAINT "oun_review_fk" FOREIGN KEY (review_id) REFERENCES "review",
+	CONSTRAINT "oun_proposed_prod_fk" FOREIGN KEY (proposed_product_id) REFERENCES "proposed_product"
 );
