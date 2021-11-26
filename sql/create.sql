@@ -257,7 +257,7 @@ CREATE TABLE "order_product_amount" (
 CREATE TABLE "payment" (
 	order_id				integer,
 	value					float NOT NULL,
-	paypal_transaction_id	integer UNIQUE,
+	paypal_transaction_id	varchar(19) UNIQUE,
     entity                  integer,
     reference               integer UNIQUE,
     CONSTRAINT "payment_pk" PRIMARY KEY (order_id),
@@ -265,11 +265,12 @@ CREATE TABLE "payment" (
 	CONSTRAINT "payment_ck" CHECK(
             NOT (value <= 0.001 AND paypal_transaction_id IS NULL AND entity IS NULL AND reference IS NULL)
             AND (
-                NOT ((entity IS NULL) != (reference IS NULL))
+                ((entity IS NULL) = (reference IS NULL))
                 AND (paypal_transaction_id IS NULL) != (entity IS NULL AND reference IS NULL)
             )
         ),
-	CONSTRAINT "value_ck" CHECK (value >= 0)
+	CONSTRAINT "value_ck" CHECK (value >= 0),
+    CONSTRAINT "paypal_ck" CHECK (NULL OR (LENGTH("paypal_transaction_id") <= 19 AND LENGTH("paypal_transaction_id") >= 17))
 );
 
 CREATE TABLE "review" (
