@@ -261,12 +261,13 @@ CREATE TABLE "payment" (
     entity                  integer,
     reference               integer UNIQUE,
     CONSTRAINT "payment_pk" PRIMARY KEY (order_id),
+    CONSTRAINT "order_fk"   FOREIGN KEY (order_id) REFERENCES "order",
 	CONSTRAINT "payment_ck" CHECK(
-            (value <= 0.001 AND paypal_transaction_id IS NULL AND entity IS NULL AND reference IS NULL)
-                OR (
-                    NOT ((entity IS NULL) != (reference IS NULL))
-                    AND (paypal_transaction_id IS NULL) != (entity IS NULL AND reference IS NULL)
-                )
+            NOT (value <= 0.001 AND paypal_transaction_id IS NULL AND entity IS NULL AND reference IS NULL)
+            AND (
+                NOT ((entity IS NULL) != (reference IS NULL))
+                AND (paypal_transaction_id IS NULL) != (entity IS NULL AND reference IS NULL)
+            )
         ),
 	CONSTRAINT "value_ck" CHECK (value >= 0)
 );
