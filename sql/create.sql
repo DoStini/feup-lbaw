@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS "notification" CASCADE;
 DROP TABLE IF EXISTS "proposed_product_category" CASCADE;
 DROP TABLE IF EXISTS "proposed_product" CASCADE;
 DROP TABLE IF EXISTS "product_on_user_wishlist" CASCADE;
-DROP TABLE IF EXISTS "product_on_user_cart" CASCADE;
+DROP TABLE IF EXISTS "product_cart" CASCADE;
 DROP TABLE IF EXISTS "review_vote" CASCADE;
 DROP TABLE IF EXISTS "review_photo" CASCADE;
 DROP TABLE IF EXISTS "review" CASCADE;
@@ -280,8 +280,8 @@ CREATE TABLE "review" (
 	id			SERIAL,
 	timestamp	date NOT NULL DEFAULT NOW(),
 	stars		integer NOT NULL,
-	text		varchar(255),
-	score		integer NOT NULL DEFAULT 0,
+	text		varchar,
+	vote_score	integer NOT NULL DEFAULT 0,
 	product_id	integer NOT NULL,
 	creator_id	integer NOT NULL,
 	CONSTRAINT "review_pk" PRIMARY KEY (id),
@@ -308,12 +308,12 @@ CREATE TABLE "review_vote" (
 	CONSTRAINT "rv_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
 );
 
-CREATE TABLE "product_on_user_cart" (
+CREATE TABLE "product_cart" (
 	user_id 	integer,
 	product_id	integer,
 	amount		integer NOT NULL,
-	CONSTRAINT "product_on_user_cart_pk" PRIMARY KEY (user_id, product_id),
-	CONSTRAINT "pouc_user_fk" FOREIGN KEY (user_id) REFERENCES "user",
+	CONSTRAINT "product_cart_pk" PRIMARY KEY (user_id, product_id),
+	CONSTRAINT "pouc_user_fk" FOREIGN KEY (user_id) REFERENCES "authenticated_shopper",
 	CONSTRAINT "pouc_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
 	CONSTRAINT "pouc_amount_ck" CHECK (amount > 0)
 );
