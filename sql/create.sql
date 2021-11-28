@@ -16,39 +16,29 @@ CREATE TYPE account_management_notif AS ENUM ('edited', 'blocked');
 CREATE TYPE order_state AS ENUM ('created', 'paid', 'processing', 'shipped');
 CREATE TYPE notification_type AS ENUM ('review_vote', 'review_management','account', 'order', 'proposed_product');
 
-
-DROP TABLE IF EXISTS "order_update_notification" CASCADE;
-DROP TABLE IF EXISTS "account_management_notification" CASCADE;
-DROP TABLE IF EXISTS "review_vote_notification" CASCADE;
-DROP TABLE IF EXISTS "review_management_notification" CASCADE;
-DROP TABLE IF EXISTS "notification" CASCADE;
-DROP TABLE IF EXISTS "proposed_product_category" CASCADE;
-DROP TABLE IF EXISTS "proposed_product" CASCADE;
-DROP TABLE IF EXISTS "wishlist" CASCADE;
-DROP TABLE IF EXISTS "product_cart" CASCADE;
-DROP TABLE IF EXISTS "review_vote" CASCADE;
-DROP TABLE IF EXISTS "review_photo" CASCADE;
-DROP TABLE IF EXISTS "review" CASCADE;
-DROP TABLE IF EXISTS "shipment" CASCADE;
-DROP TABLE IF EXISTS "payment" CASCADE;
-DROP TABLE IF EXISTS "bank_payment" CASCADE;
-DROP TABLE IF EXISTS "paypal_payment" CASCADE;
-DROP TABLE IF EXISTS "order_product_amount" CASCADE;
-DROP TABLE IF EXISTS "order" CASCADE;
-DROP TABLE IF EXISTS "coupon" CASCADE;
-DROP TABLE IF EXISTS "product_photo" CASCADE;
-DROP TABLE IF EXISTS "product_category" CASCADE;
-DROP TABLE IF EXISTS "product" CASCADE;
-DROP TABLE IF EXISTS "authenticated_shopper_address" CASCADE;
-DROP TABLE IF EXISTS "address" CASCADE;
-DROP TABLE IF EXISTS "category" CASCADE;
-DROP TABLE IF EXISTS "authenticated_shopper" CASCADE;
-DROP TABLE IF EXISTS "admin" CASCADE;
-DROP TABLE IF EXISTS "user" CASCADE;
 DROP TABLE IF EXISTS "photo" CASCADE;
+DROP TABLE IF EXISTS "user" CASCADE;
+DROP TABLE IF EXISTS "authenticated_shopper" CASCADE;
+DROP TABLE IF EXISTS "category" CASCADE;
 DROP TABLE IF EXISTS "district" CASCADE;
 DROP TABLE IF EXISTS "county" CASCADE;
 DROP TABLE IF EXISTS "zip_code" CASCADE;
+DROP TABLE IF EXISTS "address" CASCADE;
+DROP TABLE IF EXISTS "authenticated_shopper_address" CASCADE;
+DROP TABLE IF EXISTS "product" CASCADE;
+DROP TABLE IF EXISTS "product_category" CASCADE;
+DROP TABLE IF EXISTS "product_photo" CASCADE;
+DROP TABLE IF EXISTS "coupon" CASCADE;
+DROP TABLE IF EXISTS "order" CASCADE;
+DROP TABLE IF EXISTS "order_product_amount" CASCADE;
+DROP TABLE IF EXISTS "payment" CASCADE;
+DROP TABLE IF EXISTS "review" CASCADE;
+DROP TABLE IF EXISTS "review_photo" CASCADE;
+DROP TABLE IF EXISTS "review_vote" CASCADE;
+DROP TABLE IF EXISTS "product_cart" CASCADE;
+DROP TABLE IF EXISTS "wishlist" CASCADE;
+DROP TABLE IF EXISTS "proposed_product" CASCADE;
+DROP TABLE IF EXISTS "notification" CASCADE;
 
 DROP FUNCTION IF EXISTS "is_number";
 CREATE FUNCTION "is_number" (str varchar(255))
@@ -123,8 +113,10 @@ CREATE TABLE "user" (
     is_admin                boolean DEFAULT FALSE,
     is_deleted              boolean NOT NULL DEFAULT FALSE, 
 	CONSTRAINT "user_pk" PRIMARY KEY (id),
-	CONSTRAINT "valid_email_ck" CHECK (email ~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
-	CONSTRAINT "photo_id_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
+		CONSTRAINT "photo_id_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
+		ON UPDATE CASCADE
+		ON DELETE SET DEFAULT,
+	CONSTRAINT "valid_email_ck" CHECK (email ~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
 CREATE TABLE "authenticated_shopper" (
@@ -134,7 +126,9 @@ CREATE TABLE "authenticated_shopper" (
 	nif				varchar(9),
 	newsletter_subcribed    boolean DEFAULT FALSE,
 	CONSTRAINT "authenticated_shopper_pk" PRIMARY KEY (id),
-	CONSTRAINT "authenticated_shopper_fk" FOREIGN KEY (id) REFERENCES "user",
+	CONSTRAINT "authenticated_shopper_fk" FOREIGN KEY (id) REFERENCES "user"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "valid_phone_number_ck" CHECK (is_number(phone_number) AND LENGTH(phone_number) = 9),
 	CONSTRAINT "valid_nif_ck" CHECK (check_nif(nif) != '')
 );
@@ -144,8 +138,10 @@ CREATE TABLE "category" (
 	name			varchar(100) NOT NULL,
 	parent_category integer DEFAULT NULL,
 	CONSTRAINT "category_pk" PRIMARY KEY (id),
-    CONSTRAINT "name_unique" UNIQUE (name),
-	CONSTRAINT "c_parent_category_fk" FOREIGN KEY (parent_category) REFERENCES "category"
+		CONSTRAINT "c_parent_category_fk" FOREIGN KEY (parent_category) REFERENCES "category"
+		ON UPDATE CASCADE 
+		ON DELETE SET NULL,
+    CONSTRAINT "name_unique" UNIQUE (name)
 );
 
 CREATE TABLE district (
@@ -160,8 +156,8 @@ CREATE TABLE county (
     district_id INTEGER NOT NULL,
     CONSTRAINT county_pk PRIMARY KEY (id),
     CONSTRAINT county_district_fk FOREIGN KEY (district_id) REFERENCES district
-        ON DELETE CASCADE
-        ON UPDATE RESTRICT,
+		ON UPDATE RESTRICT
+        ON DELETE RESTRICT,
     CONSTRAINT county_name_unique UNIQUE (name, district_id)
 );
 
@@ -171,25 +167,31 @@ CREATE TABLE zip_code (
     county_id INTEGER NOT NULL,
     CONSTRAINT zip_code_pk PRIMARY KEY (id),
     CONSTRAINT zip_code_county_fk FOREIGN KEY (county_id) REFERENCES county
-        ON DELETE CASCADE
-        ON UPDATE RESTRICT
+	    ON UPDATE RESTRICT
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE "address" (
 	id				SERIAL,
 	street			varchar(255) NOT NULL,
-	zip_code		integer,
+	zip_code		integer NOT NULL,
 	door			varchar(10) NOT NULL,
 	CONSTRAINT "address_pk" PRIMARY KEY (id),
 	CONSTRAINT "zip_code_fk" FOREIGN KEY (zip_code) REFERENCES zip_code
+		ON UPDATE RESTRICT
+		ON DELETE RESTRICT
 );
 
 CREATE TABLE "authenticated_shopper_address" (
 	shopper_id	integer,
 	address_id	integer,
 	CONSTRAINT "authenticated_shopper_address_pk" PRIMARY KEY (shopper_id, address_id),
-	CONSTRAINT "asa_user_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
+	CONSTRAINT "asa_user_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper"
+			ON UPDATE CASCADE
+			ON DELETE CASCADE,
 	CONSTRAINT "asa_address_fk" FOREIGN KEY (address_id) REFERENCES "address"
+			ON UPDATE CASCADE
+			ON DELETE CASCADE
 );
 
 CREATE TABLE "product" (
@@ -209,16 +211,24 @@ CREATE TABLE "product_category" (
 	product_id	integer,
 	category_id	integer,
 	CONSTRAINT "product_category_pk" PRIMARY KEY (product_id, category_id),
-	CONSTRAINT "pc_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
+	CONSTRAINT "pc_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "pc_category_fk" FOREIGN KEY (category_id) REFERENCES "category"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 CREATE TABLE "product_photo" (
 	product_id	integer,
 	photo_id	integer,
 	CONSTRAINT "product_photo_pk" PRIMARY KEY (product_id, photo_id),
-	CONSTRAINT "pp_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
+	CONSTRAINT "pp_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "pp_photo_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 CREATE TABLE "coupon" (
@@ -241,11 +251,17 @@ CREATE TABLE "order" (
 	status						order_state NOT NULL DEFAULT 'created',
 	coupon_id       			integer,
 	CONSTRAINT "order_pk" PRIMARY KEY (id),
-	CONSTRAINT "o_a_shopper_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
-	CONSTRAINT "shipment_address_fk" FOREIGN KEY (address_id) REFERENCES "address",
-    CONSTRAINT "total_ck" CHECK (total >= 0),
-	CONSTRAINT "subtotal_ck" CHECK (subtotal >= 0 AND subtotal >= total),
+	CONSTRAINT "o_a_shopper_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "shipment_address_fk" FOREIGN KEY (address_id) REFERENCES "address"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "o_applied_coupon_fk" FOREIGN KEY (coupon_id) REFERENCES "coupon"
+		ON UPDATE CASCADE
+		ON DELETE SET NULL,
+    CONSTRAINT "total_ck" CHECK (total >= 0),
+	CONSTRAINT "subtotal_ck" CHECK (subtotal >= 0 AND subtotal >= total)
 );
 
 CREATE TABLE "order_product_amount" (
@@ -254,8 +270,12 @@ CREATE TABLE "order_product_amount" (
 	amount			integer NOT NULL,
 	unit_price		float NOT NULL,
 	CONSTRAINT "order_product_amount_pk" PRIMARY KEY (order_id, product_id),
-	CONSTRAINT "opa_order_fk" FOREIGN KEY (order_id) REFERENCES "order",
-	CONSTRAINT "opa_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
+	CONSTRAINT "opa_order_fk" FOREIGN KEY (order_id) REFERENCES "order"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "opa_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "amount_ck" CHECK (amount > 0),
 	CONSTRAINT "unit_price_ck" CHECK (unit_price >= 0)
 );
@@ -267,7 +287,9 @@ CREATE TABLE "payment" (
     entity                  integer,
     reference               integer,
     CONSTRAINT "payment_pk" PRIMARY KEY (order_id),
-    CONSTRAINT "order_fk"   FOREIGN KEY (order_id) REFERENCES "order",
+    CONSTRAINT "order_fk"   FOREIGN KEY (order_id) REFERENCES "order"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "payment_ck" CHECK(
             NOT (value <= 0.001 AND paypal_transaction_id IS NULL AND entity IS NULL AND reference IS NULL)
             AND (
@@ -288,18 +310,26 @@ CREATE TABLE "review" (
 	creator_id	integer NOT NULL,
     score       integer NOT NULL DEFAULT 0,
 	CONSTRAINT "review_pk" PRIMARY KEY (id),
-	CONSTRAINT "timestamp_ck" CHECK (timestamp <= NOW()),
-	CONSTRAINT "stars_ck" CHECK (stars >= 0 AND stars <= 5),
-	CONSTRAINT "r_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
+		CONSTRAINT "r_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "r_creator_fk" FOREIGN KEY (creator_id) REFERENCES "authenticated_shopper"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "timestamp_ck" CHECK (timestamp <= NOW()),
+	CONSTRAINT "stars_ck" CHECK (stars >= 0 AND stars <= 5)
 );
 
 CREATE TABLE "review_photo" (
 	review_id	integer,
 	photo_id	integer,
 	CONSTRAINT "review_photo_pk" PRIMARY KEY (review_id, photo_id),
-	CONSTRAINT "rp_review_fk" FOREIGN KEY (review_id) REFERENCES "review",
+	CONSTRAINT "rp_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "rp_photo_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 CREATE TABLE "review_vote" (
@@ -307,8 +337,12 @@ CREATE TABLE "review_vote" (
 	review_id	integer,
 	vote		review_vote_type NOT NULL,
 	CONSTRAINT "review_vote_pk" PRIMARY KEY (voter_id, review_id),
-	CONSTRAINT "rv_voter_fk" FOREIGN KEY (voter_id) REFERENCES "authenticated_shopper",
+	CONSTRAINT "rv_voter_fk" FOREIGN KEY (voter_id) REFERENCES "authenticated_shopper"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "rv_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 CREATE TABLE "product_cart" (
@@ -316,17 +350,25 @@ CREATE TABLE "product_cart" (
 	product_id	integer,
 	amount		integer NOT NULL,
 	CONSTRAINT "product_cart_pk" PRIMARY KEY (shopper_id, product_id),
-	CONSTRAINT "pouc_user_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
-	CONSTRAINT "pouc_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
+	CONSTRAINT "pouc_user_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "pouc_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "pouc_amount_ck" CHECK (amount > 0)
 );
 
 CREATE TABLE "wishlist" (
 	shopper_id 	integer,
 	product_id	integer,
-	CONSTRAINT "product_on_user_wishlist_pk" PRIMARY KEY (shopper_id, product_id),
-	CONSTRAINT "pouw_user_fk" FOREIGN KEY (shopper_id) REFERENCES "user",
-	CONSTRAINT "pouw_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+	CONSTRAINT "wishlist_pk" PRIMARY KEY (shopper_id, product_id),
+	CONSTRAINT "w_user_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "w_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 CREATE TABLE "proposed_product" (
@@ -358,12 +400,30 @@ CREATE TABLE "notification" (
     order_notif_type            order_state,
     proposed_product_notif      approval_state,
 
+	CONSTRAINT "notification_pk" PRIMARY KEY (id),
+	CONSTRAINT "n_shopper_fk" FOREIGN KEY (shopper) REFERENCES "authenticated_shopper"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "oun_order_fk" FOREIGN KEY (order_id) REFERENCES "order"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "oun_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "oun_proposed_prod_fk" FOREIGN KEY (proposed_product_id) REFERENCES "proposed_product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+
     CONSTRAINT "timestamp_ck" CHECK(timestamp <= NOW()),
 
     CONSTRAINT "review_vote_notif_type_ck" CHECK((type = 'review_vote') = (review_vote_notif_type IS NOT NULL)),
+
     CONSTRAINT "review_mng_notif_type_ck" CHECK((type = 'review_management') = (review_mng_notif_type IS NOT NULL)),
+
     CONSTRAINT "account_mng_notif_type_ck" CHECK((type = 'account') = (account_mng_notif_type IS NOT NULL)),
+
     CONSTRAINT "order_notif_type_ck" CHECK((type = 'order') = (order_notif_type IS NOT NULL)),
+
     CONSTRAINT "proposed_product_notif_ck" CHECK((type = 'proposed_product') = (proposed_product_notif IS NOT NULL)),
 
     CONSTRAINT "review_id_ck" CHECK(((type = 'review_management' OR type = 'review_management') AND review_id IS NOT NULL)
@@ -375,17 +435,10 @@ CREATE TABLE "notification" (
     CONSTRAINT "proposed_product_id" CHECK(((type = 'proposed_product') AND proposed_product_id IS NOT NULL)
                                 OR ((type != 'proposed_product') AND proposed_product_id IS NULL)),
 
-
     CONSTRAINT "exclusive_notif_ck" CHECK (num_nonnulls(
         review_vote_notif_type,
         review_mng_notif_type,
         account_mng_notif_type,
         order_notif_type,
-        proposed_product_notif) = 1),
-
-	CONSTRAINT "notification_pk" PRIMARY KEY (id),
-	CONSTRAINT "n_shopper_fk" FOREIGN KEY (shopper) REFERENCES "authenticated_shopper",
-	CONSTRAINT "oun_order_fk" FOREIGN KEY (order_id) REFERENCES "order",
-	CONSTRAINT "oun_review_fk" FOREIGN KEY (review_id) REFERENCES "review",
-	CONSTRAINT "oun_proposed_prod_fk" FOREIGN KEY (proposed_product_id) REFERENCES "proposed_product"
+        proposed_product_notif) = 1)
 );
