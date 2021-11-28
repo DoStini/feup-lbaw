@@ -38,6 +38,7 @@ DROP TABLE IF EXISTS "review_vote" CASCADE;
 DROP TABLE IF EXISTS "product_cart" CASCADE;
 DROP TABLE IF EXISTS "wishlist" CASCADE;
 DROP TABLE IF EXISTS "proposed_product" CASCADE;
+DROP TABLE IF EXISTS "proposed_product_photo" CASCADE;
 DROP TABLE IF EXISTS "notification" CASCADE;
 
 DROP FUNCTION IF EXISTS "is_number";
@@ -373,6 +374,7 @@ CREATE TABLE "wishlist" (
 
 CREATE TABLE "proposed_product" (
 	id					SERIAL,
+    shopper_id          integer NOT NULL,
 	name				varchar(50) NOT NULL,
 	price				float NOT NULL,
 	amount				integer NOT NULL,
@@ -380,8 +382,17 @@ CREATE TABLE "proposed_product" (
 	product_state   	product_state NOT NULL,
 	approval_state  	approval_state NOT NULL,
 	CONSTRAINT "proposed_product_pk" PRIMARY KEY (id),
+	CONSTRAINT "proposed_product_shopper_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
 	CONSTRAINT "price_ck" CHECK (price >= 0),
 	CONSTRAINT "amount_ck" CHECK (amount > 0)
+);
+
+CREATE TABLE "proposed_product_photo" (
+    proposed_product_id integer,
+    photo_id            integer,
+    CONSTRAINT "proposed_product_photo_pk" PRIMARY KEY (proposed_product_id, photo_id),
+	CONSTRAINT "proposed_product_photo_fk" FOREIGN KEY (photo_id) REFERENCES "photo",
+	CONSTRAINT "proposed_product_product_fk" FOREIGN KEY (proposed_product_id) REFERENCES "proposed_product"	
 );
 
 CREATE TABLE "notification" (
