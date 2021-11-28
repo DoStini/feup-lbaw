@@ -342,14 +342,6 @@ CREATE TABLE "proposed_product" (
 	CONSTRAINT "amount_ck" CHECK (amount > 0)
 );
 
-CREATE TABLE "proposed_product_category" (
-	product_id	integer,
-	category_id	integer,
-	CONSTRAINT "proposed_product_category_pk" PRIMARY KEY (product_id, category_id),
-	CONSTRAINT "ppc_product_fk" FOREIGN KEY (product_id) REFERENCES "proposed_product",
-	CONSTRAINT "ppc_category_fk" FOREIGN KEY (category_id) REFERENCES "category"
-);
-
 CREATE TABLE "notification" (
 	id                  		SERIAL,
 	shopper                 	integer NOT NULL,
