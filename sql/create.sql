@@ -119,9 +119,9 @@ CREATE TABLE "user" (
 	name 				    varchar(100) NOT NULL,
 	email 				    varchar(255) UNIQUE NOT NULL,
 	password 			    varchar(255) NOT NULL,
-	newsletter_subcribed    boolean DEFAULT TRUE,
 	photo_id			    integer NOT NULL DEFAULT 1,
     is_admin                boolean DEFAULT FALSE,
+    is_deleted              boolean NOT NULL DEFAULT FALSE, 
 	CONSTRAINT "user_pk" PRIMARY KEY (id),
 	CONSTRAINT "valid_email_ck" CHECK (email ~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
 	CONSTRAINT "photo_id_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
@@ -132,6 +132,7 @@ CREATE TABLE "authenticated_shopper" (
 	about_me 		varchar,
 	phone_number	varchar(9),
 	nif				varchar(9),
+	newsletter_subcribed    boolean DEFAULT FALSE,
 	CONSTRAINT "authenticated_shopper_pk" PRIMARY KEY (id),
 	CONSTRAINT "authenticated_shopper_fk" FOREIGN KEY (id) REFERENCES "user",
 	CONSTRAINT "valid_phone_number_ck" CHECK (is_number(phone_number) AND LENGTH(phone_number) = 9),
@@ -143,6 +144,7 @@ CREATE TABLE "category" (
 	name			varchar(100) NOT NULL,
 	parent_category integer DEFAULT NULL,
 	CONSTRAINT "category_pk" PRIMARY KEY (id),
+    CONSTRAINT "name_unique" UNIQUE (name),
 	CONSTRAINT "c_parent_category_fk" FOREIGN KEY (parent_category) REFERENCES "category"
 );
 
@@ -197,6 +199,7 @@ CREATE TABLE "product" (
 	stock		integer NOT NULL,
 	description	varchar(255),
 	price		float NOT NULL,
+    avg_stars   float NOT NULL DEFAULT 0,
 	CONSTRAINT "product_pk" PRIMARY KEY (id),
 	CONSTRAINT "product_stock_ck" CHECK (stock >= 0),
 	CONSTRAINT "product_price_ck" CHECK (price >= 0)
@@ -231,18 +234,18 @@ CREATE TABLE "coupon" (
 
 CREATE TABLE "order" (
 	id							SERIAL,
-	authenticated_shopper_id	integer NOT NULL,
-    shipment_address            integer,
-	total						float,
-	subtotal					float,
+	shopper_id              	integer NOT NULL,
+    address_id                  integer NOT NULL,
+	total						float NOT NULL,
+	subtotal					float NOT NULL,
 	status						order_state NOT NULL DEFAULT 'created',
-	applied_coupon_id			integer,
+	coupon_id       			integer,
 	CONSTRAINT "order_pk" PRIMARY KEY (id),
-	CONSTRAINT "o_a_shopper_fk" FOREIGN KEY (authenticated_shopper_id) REFERENCES "authenticated_shopper",
-	CONSTRAINT "shipment_address_fk" FOREIGN KEY (shipment_address) REFERENCES "address",
+	CONSTRAINT "o_a_shopper_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
+	CONSTRAINT "shipment_address_fk" FOREIGN KEY (address_id) REFERENCES "address",
     CONSTRAINT "total_ck" CHECK (total >= 0),
 	CONSTRAINT "subtotal_ck" CHECK (subtotal >= 0 AND subtotal >= total),
-	CONSTRAINT "o_applied_coupon_fk" FOREIGN KEY (applied_coupon_id) REFERENCES "coupon"
+	CONSTRAINT "o_applied_coupon_fk" FOREIGN KEY (coupon_id) REFERENCES "coupon"
 );
 
 CREATE TABLE "order_product_amount" (
@@ -262,7 +265,7 @@ CREATE TABLE "payment" (
 	value					float NOT NULL,
 	paypal_transaction_id	varchar(19) UNIQUE,
     entity                  integer,
-    reference               integer UNIQUE,
+    reference               integer,
     CONSTRAINT "payment_pk" PRIMARY KEY (order_id),
     CONSTRAINT "order_fk"   FOREIGN KEY (order_id) REFERENCES "order",
 	CONSTRAINT "payment_ck" CHECK(
@@ -277,13 +280,13 @@ CREATE TABLE "payment" (
 );
 
 CREATE TABLE "review" (
-	id			SERIAL,
+	id 			SERIAL,
 	timestamp	date NOT NULL DEFAULT NOW(),
 	stars		integer NOT NULL,
 	text		varchar,
-	vote_score	integer NOT NULL DEFAULT 0,
 	product_id	integer NOT NULL,
 	creator_id	integer NOT NULL,
+    score       integer NOT NULL DEFAULT 0,
 	CONSTRAINT "review_pk" PRIMARY KEY (id),
 	CONSTRAINT "timestamp_ck" CHECK (timestamp <= NOW()),
 	CONSTRAINT "stars_ck" CHECK (stars >= 0 AND stars <= 5),
@@ -302,27 +305,27 @@ CREATE TABLE "review_photo" (
 CREATE TABLE "review_vote" (
 	voter_id	integer,
 	review_id	integer,
-	vote		review_vote_type,
+	vote		review_vote_type NOT NULL,
 	CONSTRAINT "review_vote_pk" PRIMARY KEY (voter_id, review_id),
 	CONSTRAINT "rv_voter_fk" FOREIGN KEY (voter_id) REFERENCES "authenticated_shopper",
 	CONSTRAINT "rv_review_fk" FOREIGN KEY (review_id) REFERENCES "review"
 );
 
 CREATE TABLE "product_cart" (
-	user_id 	integer,
+	shopper_id 	integer,
 	product_id	integer,
 	amount		integer NOT NULL,
-	CONSTRAINT "product_cart_pk" PRIMARY KEY (user_id, product_id),
-	CONSTRAINT "pouc_user_fk" FOREIGN KEY (user_id) REFERENCES "authenticated_shopper",
+	CONSTRAINT "product_cart_pk" PRIMARY KEY (shopper_id, product_id),
+	CONSTRAINT "pouc_user_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
 	CONSTRAINT "pouc_product_fk" FOREIGN KEY (product_id) REFERENCES "product",
 	CONSTRAINT "pouc_amount_ck" CHECK (amount > 0)
 );
 
-CREATE TABLE "product_on_user_wishlist" (
-	user_id 	integer,
+CREATE TABLE "wishlist" (
+	shopper_id 	integer,
 	product_id	integer,
-	CONSTRAINT "product_on_user_wishlist_pk" PRIMARY KEY (user_id, product_id),
-	CONSTRAINT "pouw_user_fk" FOREIGN KEY (user_id) REFERENCES "user",
+	CONSTRAINT "product_on_user_wishlist_pk" PRIMARY KEY (shopper_id, product_id),
+	CONSTRAINT "pouw_user_fk" FOREIGN KEY (shopper_id) REFERENCES "user",
 	CONSTRAINT "pouw_product_fk" FOREIGN KEY (product_id) REFERENCES "product"
 );
 
@@ -332,8 +335,8 @@ CREATE TABLE "proposed_product" (
 	price				float NOT NULL,
 	amount				integer NOT NULL,
 	description			varchar(255) NOT NULL,
-	product_cur_state	product_state NOT NULL,
-	approval_cur_state	approval_state NOT NULL,
+	product_state   	product_state NOT NULL,
+	approval_state  	approval_state NOT NULL,
 	CONSTRAINT "proposed_product_pk" PRIMARY KEY (id),
 	CONSTRAINT "price_ck" CHECK (price >= 0),
 	CONSTRAINT "amount_ck" CHECK (amount > 0)
