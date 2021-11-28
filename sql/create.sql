@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS "review_management_notification" CASCADE;
 DROP TABLE IF EXISTS "notification" CASCADE;
 DROP TABLE IF EXISTS "proposed_product_category" CASCADE;
 DROP TABLE IF EXISTS "proposed_product" CASCADE;
-DROP TABLE IF EXISTS "product_on_user_wishlist" CASCADE;
+DROP TABLE IF EXISTS "wishlist" CASCADE;
 DROP TABLE IF EXISTS "product_cart" CASCADE;
 DROP TABLE IF EXISTS "review_vote" CASCADE;
 DROP TABLE IF EXISTS "review_photo" CASCADE;
