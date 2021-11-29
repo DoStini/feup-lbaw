@@ -126,6 +126,7 @@ CREATE TABLE "authenticated_shopper" (
 	phone_number	varchar(9),
 	nif				varchar(9),
 	newsletter_subcribed    boolean DEFAULT FALSE,
+	is_blocked		boolean NOT NULL DEFAULT FALSE,
 	CONSTRAINT "authenticated_shopper_pk" PRIMARY KEY (id),
 	CONSTRAINT "authenticated_shopper_fk" FOREIGN KEY (id) REFERENCES "user"
 		ON UPDATE CASCADE
