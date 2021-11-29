@@ -400,7 +400,7 @@ CREATE TABLE "notification" (
 	shopper                 	integer NOT NULL,
 	timestamp	                date NOT NULL DEFAULT NOW(),
     type                        notification_type NOT NULL,
-    sent                        boolean NOT NULL DEFAULT FALSE,
+    read                        boolean NOT NULL DEFAULT FALSE,
     visited                     boolean NOT NULL DEFAULT FALSE,
 	review_id			        integer,
 	order_id			        integer,
