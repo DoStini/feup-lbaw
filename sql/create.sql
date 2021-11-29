@@ -206,7 +206,7 @@ CREATE TABLE "authenticated_shopper_address" (
 CREATE TABLE "product" (
 	id			SERIAL,
 	name		varchar(100) NOT NULL,
-	attributes	varchar(255),
+	attributes	json,
 	stock		integer NOT NULL,
 	description	varchar(255),
 	price		float NOT NULL,
@@ -470,6 +470,70 @@ CREATE TABLE "notification" (
         order_notif_type,
         proposed_product_notif) = 1)
 );
+
+
+
+-- INDEX 1
+CREATE INDEX shopper_cart ON "product_cart" USING hash (shopper_id);
+
+-- INDEX 2
+CREATE INDEX review_score ON "review" USING btree (score);
+
+-- INDEX 3
+CREATE INDEX products_of_category ON "product_category" USING btree (category_id); 
+CLUSTER "product_category" USING products_of_category;
+
+CREATE INDEX shopper_orders ON "order" USING hash (shopper_id);
+
+CREATE INDEX shopper_wishlist ON "wishlist" USING hash (shopper_id);
+
+
+--- FULL TEXT SEARCH INDEX
+
+ALTER TABLE product
+ADD COLUMN tsvectors TSVECTOR;
+
+CREATE OR REPLACE FUNCTION product_search_update() RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+            NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.name), 'A') ||
+            setweight(to_tsvector('english', NEW.description), 'B') ||
+            setweight(to_tsvector('english', (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'material'))), 'C') ||
+            setweight(to_tsvector('english', (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'color'))), 'D')
+            );
+    END IF;
+    IF TG_OP = 'UPDATE' THEN
+            IF (NEW.name <> OLD.name OR 
+                NEW.description <> OLD.description OR 
+                (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'material')) 
+                    <> (SELECT string_agg(value, ' ') FROM json_array_elements_text(OLD.attributes -> 'material')) OR
+                (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'color')) 
+                    <> (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'color'))) THEN
+            NEW.tsvectors = (
+                setweight(to_tsvector('english', NEW.name), 'A') ||
+                setweight(to_tsvector('english', NEW.description), 'B') ||
+                setweight(to_tsvector('english', (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'material'))), 'C') ||
+            setweight(to_tsvector('english', (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'color'))), 'D')
+            );
+            END IF;
+    END IF;
+    RETURN NEW;
+END $$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER product_search_update
+BEFORE INSERT OR UPDATE ON product
+FOR EACH ROW
+EXECUTE PROCEDURE product_search_update();
+
+
+CREATE INDEX product_search_idx ON product USING GIN (tsvectors);
+
+
+
+
+
 
 
 -- TRIGGERS AND FUNCTIONS
