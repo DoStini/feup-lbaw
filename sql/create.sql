@@ -41,6 +41,9 @@ DROP TABLE IF EXISTS "proposed_product" CASCADE;
 DROP TABLE IF EXISTS "proposed_product_photo" CASCADE;
 DROP TABLE IF EXISTS "notification" CASCADE;
 
+
+-- FUNCTION 1
+
 DROP FUNCTION IF EXISTS "is_number";
 CREATE FUNCTION "is_number" (str varchar(255))
 RETURNS boolean
@@ -57,6 +60,7 @@ RETURN result;
 
 END;
 $$;
+
 
 DROP FUNCTION IF EXISTS "check_nif";
 CREATE FUNCTION "check_nif" (nif_input varchar(9))
@@ -98,6 +102,9 @@ RETURN result;
 
 END;
 $$;
+
+
+
 
 CREATE TABLE "photo" (
 	id  SERIAL,
@@ -248,6 +255,7 @@ CREATE TABLE "order" (
 	id							SERIAL,
 	shopper_id              	integer NOT NULL,
     address_id                  integer NOT NULL,
+	timestamp	                timestamp NOT NULL DEFAULT NOW(),
 	total						float NOT NULL,
 	subtotal					float NOT NULL,
 	status						order_state NOT NULL DEFAULT 'created',
@@ -462,3 +470,390 @@ CREATE TABLE "notification" (
         order_notif_type,
         proposed_product_notif) = 1)
 );
+
+
+-- TRIGGERS AND FUNCTIONS
+
+-- TRIGGER 1
+
+CREATE OR REPLACE FUNCTION  admin_not_shopper_ck() RETURNS TRIGGER AS $admin_not_shopper_ck$
+	BEGIN
+		IF EXISTS (
+			SELECT *
+			FROM "user"
+			WHERE "user".id = NEW.id AND is_admin = True
+		) THEN
+			RAISE EXCEPTION 'An admin cannot be an authenticated shopper.';
+		END IF;
+		RETURN NEW;
+	END
+$admin_not_shopper_ck$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS admin_not_shopper_ck ON "authenticated_shopper";
+CREATE TRIGGER admin_not_shopper_ck
+BEFORE INSERT OR UPDATE ON "authenticated_shopper"
+FOR EACH ROW
+EXECUTE PROCEDURE admin_not_shopper_ck();
+
+
+-- TRIGGER 2
+
+CREATE OR REPLACE FUNCTION is_admin_not_updated() RETURNS TRIGGER AS $is_admin_not_updated$
+	BEGIN
+		IF NEW.is_admin <> OLD.is_admin THEN
+			RAISE EXCEPTION 'The "is_admin" parameter cannot be changed';
+		END IF;
+		RETURN NEW;
+	END
+$is_admin_not_updated$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER is_admin_not_updated
+BEFORE UPDATE ON "user"
+FOR EACH ROW
+EXECUTE PROCEDURE is_admin_not_updated();
+
+
+-- TRIGGER 3
+
+CREATE OR REPLACE FUNCTION  delete_user_info() RETURNS TRIGGER AS $delete_user_info$
+	BEGIN
+		UPDATE "user" 
+		SET name = 'deleted', password = 'deleted', photo_id = DEFAULT, is_deleted = True
+		WHERE OLD.id = "user".id;
+        
+		IF EXISTS (SELECT * FROM "authenticated_shopper" WHERE id = OLD.ID) THEN
+			UPDATE "authenticated_shopper"
+			SET "about_me" = 'deleted', "phone_number" = NULL, "nif" = NULL, "newsletter_subcribed" = DEFAULT
+			WHERE id = OLD.id;
+		END IF;
+		
+		RETURN NULL;
+	END
+$delete_user_info$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS delete_user_info ON "user";
+CREATE TRIGGER delete_user_info 
+BEFORE DELETE ON "user"
+FOR EACH ROW
+EXECUTE PROCEDURE delete_user_info();
+
+
+-- TRIGGER 4
+
+CREATE OR REPLACE FUNCTION  check_if_bought_to_review() RETURNS TRIGGER AS $check_if_bought_to_review$
+	BEGIN
+		IF NOT EXISTS ( SELECT *
+				   FROM "order"
+				   LEFT JOIN "order_product_amount" ON "order".id = "order_product_amount".order_id
+				   WHERE shopper_id = NEW.creator_id AND product_id = NEW.product_id
+		) THEN
+			RAISE EXCEPTION 'This user has not yet bought the reviewed product.';
+		END IF;
+		RETURN NEW;
+	END
+$check_if_bought_to_review$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS check_if_bought_to_review ON "review";
+CREATE TRIGGER check_if_bought_to_review 
+BEFORE INSERT OR UPDATE ON "review"
+FOR EACH ROW
+EXECUTE PROCEDURE check_if_bought_to_review();
+
+
+-- TRIGGER 5
+
+CREATE OR REPLACE FUNCTION  update_prod_avg_stars() RETURNS TRIGGER AS $update_prod_avg_stars$
+	BEGIN
+		UPDATE "product"
+		SET avg_stars = (SELECT CAST(SUM(stars) AS float)
+						 FROM "review"
+						 WHERE "review".product_id = "product".id) 
+						 / 
+						 (SELECT CAST(COUNT(id) AS float)
+						 FROM "review"
+						 WHERE "review".product_id = "product".id)
+		WHERE "product".id = NEW.product_id;
+		RETURN NULL;
+	END
+$update_prod_avg_stars$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS update_prod_avg_stars ON "review";
+CREATE TRIGGER update_prod_avg_stars 
+AFTER INSERT OR UPDATE OR DELETE ON "review"
+FOR EACH ROW
+EXECUTE PROCEDURE update_prod_avg_stars();
+
+
+-- TRIGGER 6
+
+CREATE OR REPLACE FUNCTION  review_vote_updater() RETURNS TRIGGER AS $review_vote_updater$
+	BEGIN
+		 IF (TG_OP = 'DELETE') THEN
+            UPDATE "review"
+			SET score = 
+				CASE OLD.vote
+					WHEN 'upvote' THEN score - 1
+					WHEN 'downvote' THEN score + 1
+				END
+			WHERE "review".id = OLD.review_id;
+		ELSIF (TG_OP = 'INSERT') THEN
+            UPDATE "review"
+			SET score = 
+				CASE NEW.vote
+					WHEN 'upvote' THEN score + 1
+					WHEN 'downvote' THEN score - 1
+				END
+			WHERE "review".id = NEW.review_id;
+        ELSIF (TG_OP = 'UPDATE') THEN
+			IF NEW.vote <> OLD.vote THEN
+				UPDATE "review"
+				SET score = 
+					CASE NEW.vote
+						WHEN 'upvote' THEN score + 2
+						WHEN 'downvote' THEN score - 2
+					END
+				WHERE "review".id = NEW.review_id;
+			END IF;
+        END IF;
+        RETURN NULL;
+	END
+$review_vote_updater$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS review_vote_updater ON "review_vote";
+CREATE TRIGGER review_vote_updater 
+AFTER INSERT OR DELETE OR UPDATE ON "review_vote"
+FOR EACH ROW
+EXECUTE PROCEDURE review_vote_updater();
+
+
+-- TRIGGER 7
+
+CREATE OR REPLACE FUNCTION  update_to_paid() RETURNS TRIGGER AS $update_to_paid$
+	BEGIN
+		UPDATE "order"
+		SET status = 'paid'
+		WHERE id = NEW.order_id;
+		RETURN NULL;
+	END
+$update_to_paid$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS update_to_paid ON "payment";
+CREATE TRIGGER update_to_paid 
+AFTER INSERT ON "payment"
+FOR EACH ROW
+EXECUTE PROCEDURE update_to_paid();
+
+
+-- TRIGGER 8
+
+CREATE OR REPLACE FUNCTION  order_status_notif() RETURNS TRIGGER AS $order_status_notif$
+	BEGIN
+		IF (TG_OP = 'INSERT' OR (NEW.status <> OLD.status)) THEN
+			INSERT INTO "notification" (shopper, type, order_id, order_notif_type)
+			VALUES (NEW.shopper_id, 'order', NEW.id, NEW.status);
+		END IF;
+		
+		RETURN NEW;
+	END
+$order_status_notif$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS order_status_notif ON "order";
+CREATE TRIGGER order_status_notif 
+AFTER INSERT OR UPDATE ON "order"
+FOR EACH ROW
+EXECUTE PROCEDURE order_status_notif();
+
+
+-- TRIGGER 9
+
+CREATE OR REPLACE FUNCTION is_max_depth(cat_id integer, i integer) RETURNS boolean AS $is_max_depth$
+		DECLARE
+			cur_parent integer;
+		BEGIN
+            IF cat_id IS NULL THEN
+				RETURN FALSE;
+			ELSIF i < 0 THEN
+				RETURN TRUE;
+			ELSE 
+				cur_parent := (SELECT parent_category
+							   FROM "category"
+							   WHERE "category".id = cat_id);
+				RETURN is_max_depth(cur_parent, i - 1);
+			END IF;
+        END
+$is_max_depth$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION  category_max_depth() RETURNS TRIGGER AS $category_max_depth$
+	DECLARE
+		max_depth CONSTANT INTEGER := 2;
+	BEGIN
+		IF (is_max_depth(NEW.parent_category, max_depth)) THEN
+			IF (TG_OP = 'INSERT') THEN
+				RAISE EXCEPTION 'The category depth has been exceeded.';
+			ELSIF (TG_OP = 'UPDATE') THEN
+				UPDATE "category" SET parent_category = OLD.parent_category WHERE id = NEW.id;
+				RAISE NOTICE 'The category depth has been exceeded.';
+			END IF;
+		END IF;
+		RETURN NEW;
+	END
+$category_max_depth$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS category_max_depth ON "category";
+CREATE TRIGGER category_max_depth 
+AFTER INSERT OR UPDATE ON "category"
+FOR EACH ROW
+EXECUTE PROCEDURE category_max_depth();
+
+
+-- TRIGGER 10
+
+CREATE OR REPLACE FUNCTION  vote_not_self() RETURNS TRIGGER AS $vote_not_self$
+	BEGIN
+		IF ((SELECT creator_id 
+			 FROM "review" 
+			 WHERE "review".id = NEW.review_id) = NEW.voter_id) THEN
+			 RAISE EXCEPTION 'A user cannot vote on its own review.';
+		END IF;
+		RETURN NEW;
+	END
+$vote_not_self$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS vote_not_self ON "review_vote";
+CREATE TRIGGER vote_not_self 
+BEFORE INSERT OR UPDATE ON "review_vote"
+FOR EACH ROW
+EXECUTE PROCEDURE vote_not_self();
+
+-- Trigger 11
+
+CREATE OR REPLACE FUNCTION  send_notif_chng_approv_state() RETURNS TRIGGER AS $send_notif_chng_approv_state$
+	BEGIN
+		IF (NEW.approval_state <> OLD.approval_state) THEN
+			CALL proposed_prod_approv_state_notif(NEW.shopper_id, NEW.id, NEW.approval_state);
+		END IF;
+		RETURN NULL;
+	END
+$send_notif_chng_approv_state$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS send_notif_chng_approv_state ON "proposed_product";
+CREATE TRIGGER send_notif_chng_approv_state 
+AFTER UPDATE ON "proposed_product"
+FOR EACH ROW
+EXECUTE PROCEDURE send_notif_chng_approv_state();
+
+
+
+-- PROCEDURE 1
+
+CREATE OR REPLACE PROCEDURE update_account_manage_notif(shopper_id integer, notif_type account_management_notif)  AS $$
+	BEGIN
+		INSERT INTO notification (shopper, type, account_mng_notif_type) VALUES (shopper_id, 'account', notif_type);
+	END;
+$$ LANGUAGE plpgsql;
+
+
+-- PROCEDURE 2
+
+CREATE OR REPLACE PROCEDURE review_manage_notif(shopper_id integer, review integer, notif_type review_management_notif) AS $$
+	BEGIN
+		INSERT INTO notification (shopper, review_id, type, review_mng_notif_type) VALUES (shopper_id, review, 'review_management', notif_type);
+	END;
+$$ LANGUAGE plpgsql;
+
+
+-- PROCEDURE 3
+
+CREATE OR REPLACE PROCEDURE proposed_prod_approv_state_notif(shopper_id integer, proposed_product integer, notif_type approval_state) AS $$
+	BEGIN
+		INSERT INTO notification (shopper, proposed_product_id, type, proposed_product_notif) VALUES (shopper_id, proposed_product, 'proposed_product', notif_type);
+	END;
+$$ LANGUAGE plpgsql;
+
+
+-- PROCEDURE 4
+
+CREATE OR REPLACE PROCEDURE create_order(shopper_id_param integer, address_id_param integer, coupon_id_param integer) AS $$
+	DECLARE
+		subtotal_calc float;
+		total_calc float;
+		c_percentage float;
+		products_not_in_stock INTEGER;
+	BEGIN
+		IF (SELECT is_active FROM coupon WHERE coupon.id = coupon_id_param) = FALSE THEN
+			RAISE EXCEPTION 'COUPON IS NOT ACTIVE';
+		END IF;
+	
+		products_not_in_stock := (SELECT count(*)
+		FROM (
+			SELECT (stock - amount) AS left_stock
+			FROM product_cart LEFT JOIN product ON (product_cart.product_id = product.id)
+			WHERE product_cart.shopper_id = shopper_id_param
+		) AS product_stock
+		WHERE left_stock < 0);
+		
+		IF (products_not_in_stock > 0) THEN
+			RAISE EXCEPTION 'ORDER HAS PRODUCTS WITHOUT STOCK';
+			RETURN;
+		END IF;
+		
+		DROP TABLE IF EXISTS product_stats;
+		CREATE TEMPORARY TABLE product_stats AS (
+			SELECT product.id AS id, (product.stock - product_cart_t.amount) AS stock, (product.price * product_cart_t.amount) AS price
+			FROM (SELECT * FROM product_cart WHERE (shopper_id = shopper_id_param)) AS product_cart_t
+			LEFT JOIN product ON (product_cart_t.product_id = product.id)
+		);
+		
+		subtotal_calc := (
+			SELECT SUM(price)
+			FROM product_stats
+		);
+		
+		IF subtotal_calc < (SELECT minimum_cart_value
+						   FROM coupon
+						   WHERE coupon.id = coupon_id_param) THEN
+			RAISE EXCEPTION 'The selected coupon is not valid for this order - the cart value is not minimum required.';
+		END IF;
+		
+		c_percentage := (
+			SELECT percentage
+			FROM coupon WHERE (id = coupon_id_param)
+		);
+		
+		IF c_percentage IS NULL THEN
+			total_calc := subtotal_calc;
+		ELSE
+			total_calc := subtotal_calc - (subtotal_calc * c_percentage);
+		END IF;
+		
+		INSERT INTO "order" ("shopper_id", "address_id", total, subtotal, coupon_id) VALUES (shopper_id_param, address_id_param, total_calc, subtotal_calc, coupon_id_param);
+		
+		UPDATE product
+		SET stock = product_stats.stock
+		FROM product_stats
+		WHERE (product.id = product_stats.id);
+	
+		INSERT INTO order_product_amount(order_id, product_id, amount, unit_price) (
+			SELECT currval('order_id_seq'), product_id, amount, price
+			FROM (SELECT * FROM product_cart WHERE (shopper_id = shopper_id_param)) AS product_cart_t
+			LEFT JOIN product ON (product_cart_t.product_id = product.id)
+		);
+		
+		DELETE FROM product_cart
+		WHERE (shopper_id = shopper_id_param);
+		
+		DROP TABLE product_stats;
+	END;
+$$ LANGUAGE plpgsql;
