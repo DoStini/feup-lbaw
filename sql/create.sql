@@ -305,7 +305,7 @@ CREATE TABLE "payment" (
 
 CREATE TABLE "review" (
 	id 			SERIAL,
-	timestamp	date NOT NULL DEFAULT NOW(),
+	timestamp	timestamp NOT NULL DEFAULT NOW(),
 	stars		integer NOT NULL,
 	text		varchar,
 	product_id	integer NOT NULL,
@@ -381,9 +381,11 @@ CREATE TABLE "proposed_product" (
 	amount				integer NOT NULL,
 	description			varchar(255) NOT NULL,
 	product_state   	product_state NOT NULL,
-	approval_state  	approval_state NOT NULL,
+	approval_state  	approval_state NOT NULL DEFAULT 'pending',
 	CONSTRAINT "proposed_product_pk" PRIMARY KEY (id),
-	CONSTRAINT "proposed_product_shopper_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper",
+	CONSTRAINT "proposed_product_shopper_fk" FOREIGN KEY (shopper_id) REFERENCES "authenticated_shopper"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 	CONSTRAINT "price_ck" CHECK (price >= 0),
 	CONSTRAINT "amount_ck" CHECK (amount > 0)
 );
@@ -392,14 +394,18 @@ CREATE TABLE "proposed_product_photo" (
     proposed_product_id integer,
     photo_id            integer,
     CONSTRAINT "proposed_product_photo_pk" PRIMARY KEY (proposed_product_id, photo_id),
-	CONSTRAINT "proposed_product_photo_fk" FOREIGN KEY (photo_id) REFERENCES "photo",
-	CONSTRAINT "proposed_product_product_fk" FOREIGN KEY (proposed_product_id) REFERENCES "proposed_product"	
+	CONSTRAINT "proposed_product_photo_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT "proposed_product_product_fk" FOREIGN KEY (proposed_product_id) REFERENCES "proposed_product"
+		ON UPDATE CASCADE
+		ON DELETE CASCADE	
 );
 
 CREATE TABLE "notification" (
 	id                  		SERIAL,
 	shopper                 	integer NOT NULL,
-	timestamp	                date NOT NULL DEFAULT NOW(),
+	timestamp	                timestamp NOT NULL DEFAULT NOW(),
     type                        notification_type NOT NULL,
     read                        boolean NOT NULL DEFAULT FALSE,
     visited                     boolean NOT NULL DEFAULT FALSE,
@@ -438,8 +444,10 @@ CREATE TABLE "notification" (
 
     CONSTRAINT "proposed_product_notif_ck" CHECK((type = 'proposed_product') = (proposed_product_notif IS NOT NULL)),
 
-    CONSTRAINT "review_id_ck" CHECK(((type = 'review_management' OR type = 'review_management') AND review_id IS NOT NULL)
-                                OR ((type != 'review_management' AND type != 'review_management') AND review_id IS NULL)),
+    CONSTRAINT "review_id_ck" CHECK((type = 'review_vote' AND review_id IS NOT NULL)
+								OR (type = 'review_management' AND review_mng_notif_type = 'removed' AND review_id IS NULL)
+								OR (type = 'review_management' AND review_mng_notif_type = 'edited' AND review_id IS NOT NULL)
+                                OR (type != 'review_management' AND type != 'review_vote' AND review_id IS NULL) ),
 
     CONSTRAINT "order_id_ck" CHECK(((type = 'order') AND order_id IS NOT NULL)
                                 OR ((type != 'order') AND order_id IS NULL)),
