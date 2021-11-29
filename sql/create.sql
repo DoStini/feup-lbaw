@@ -114,7 +114,7 @@ CREATE TABLE "user" (
     is_admin                boolean DEFAULT FALSE,
     is_deleted              boolean NOT NULL DEFAULT FALSE, 
 	CONSTRAINT "user_pk" PRIMARY KEY (id),
-		CONSTRAINT "photo_id_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
+	CONSTRAINT "photo_id_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
 		ON UPDATE CASCADE
 		ON DELETE SET DEFAULT,
 	CONSTRAINT "valid_email_ck" CHECK (email ~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
@@ -131,7 +131,7 @@ CREATE TABLE "authenticated_shopper" (
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
 	CONSTRAINT "valid_phone_number_ck" CHECK (is_number(phone_number) AND LENGTH(phone_number) = 9),
-	CONSTRAINT "valid_nif_ck" CHECK (check_nif(nif) != '')
+	CONSTRAINT "valid_nif_ck" CHECK (nif IS NULL OR check_nif(nif) != '')
 );
 
 CREATE TABLE "category" (
