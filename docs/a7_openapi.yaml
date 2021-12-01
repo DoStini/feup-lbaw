@@ -34,6 +34,12 @@ paths:
       description: 'Provide login and register form. Access: PUB'
       tags:
         - 'M01: Authentication'
+      parameters:
+        - in: query
+          name: redirect-uri
+          schema:
+            type: string
+          description: 'URI to return when login is successful.'
       responses:
         '200':
           description: 'Ok. Show log-in and register form [UI05](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui05-sign-in-sign-up)'
@@ -43,9 +49,10 @@ paths:
             Location:
               schema:
                 type: string
+                example: '/'
               examples:
                 302Success:
-                  description: 'Successful authentication. Redirect to Home Page (UI 01)'
+                  description: 'User already authenticated. Redirect to Home Page (UI 01) or to Redirect-URI query parameter'
                   value: '/'
   /login:
     post:
@@ -66,32 +73,36 @@ paths:
                   type: string
                 password:
                   type: string
+                redirect-uri:
+                  type: string
+                  description: 'URI to return when login is successful.'
               required:
                 - email
                 - password
  
       responses:
         '302':
-          description: 'Redirect after processing the login credentials.'
+          description: 'Redirect after processing correct login credentials.'
           headers:
             Location:
               schema:
                 type: string
+                example: '/'
               examples:
                 302Success:
-                  description: 'Successful authentication. Redirect to Home Page (UI 01)'
+                  description: 'Successful authentication. Redirect to Home Page (UI 01) or '
                   value: '/'
-                302Error:
-                  description: 'Failed authentication. Redirect to login and register form.'
-                  value: '/join'
- 
+        '401':
+          description: 'Wrong email or password, authentication incomplete.'
+
+
   /register:
     post:
       operationId: R103
-      summary: 'R105: Register Action'
+      summary: 'R103: Register Action'
       description: 'Processes the new user registration form submission. Access: PUB'
       tags:
-        - 'M01: Authentication and Individual Profile'
+        - 'M01: Authentication'
 
       requestBody:
         required: true
@@ -111,7 +122,6 @@ paths:
               required:
                 - email
                 - name
-                - surname
                 - password
 
       responses:
@@ -121,19 +131,47 @@ paths:
             Location:
               schema:
                 type: string
+                example: 
               examples:
                 302Success:
                   description: 'Successful authentication. Redirect to user personal data (UI12).'
-                  value: '/users/private{id}'
-                302Failure:
-                  description: 'Failed authentication. Redirect to login and register form.'
-                  value: '/join'
+                  value: '/users/private/{id}'
+        '422':
+          description: 'Email invalid or already exists.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                example:
+                    email: "nunodev@refurniture.pt"
 
-  /logout:
-
+  /recover:
+    get:
+      operationId: R104
+      summary: 'R104: Recover Account Form'
+      description: 'Provide recover account form. Access: PUB'
+      tags:
+        - 'M01: Authentication'
+      responses:
+        '200':
+          description: 'Ok. Show recover password form UI06'
+        '302':
+          description: 'Redirect to Home Page (UI 01) if user already logged in'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+              examples:
+                302Success:
+                  description: 'User already authenticated. Redirect to Home Page (UI 01)'
+                  value: '/'
     post:
-      operationId: R103
-      summary: 'R103: Logout Action'
+      operationId: R104
+      summary: 'R104: Logout Action'
       description: 'Logout the current authenticated used. Access: USR, ADM'
       tags:
         - 'M01: Authentication'
@@ -146,8 +184,9 @@ paths:
                 type: string
               examples:
                 302Success:
-                  description: 'Successful logout. Redirect to home page.'
+                  description: 'Successful logout. Redirect to home page (UI01).'
                   value: '/'
+
 
   /users/{id}:
     get:
