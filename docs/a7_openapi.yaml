@@ -47,16 +47,13 @@ paths:
         '200':
           description: 'Ok. Show log-in and register form [UI05](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui05-sign-in-sign-up)'
         '302':
-          description: 'Redirect to Home Page (UI 01) if user already logged in'
+          description: 'User already authenticated. Redirect to Home Page (UI 01) or to Redirect-URI query parameter'
           headers:
             Location:
               schema:
                 type: string
                 example: '/'
-              examples:
-                302Success:
-                  description: 'User already authenticated. Redirect to Home Page (UI 01) or to Redirect-URI query parameter'
-                  value: '/'
+    
   /login:
     post:
       operationId: R102
@@ -85,7 +82,7 @@ paths:
  
       responses:
         '302':
-          description: 'Redirect after processing correct login credentials.'
+          description: 'Redirect after processing login credentials.'
           headers:
             Location:
               schema:
@@ -167,6 +164,28 @@ paths:
         #             email: "nunodev@refurniture.pt"
 
 
+  /logout:
+    post:
+      operationId: R104
+      summary: 'R104: Logout'
+      description: 'Logs the user out of their account. Access: USR, ADM'
+      tags:
+        - 'M01: Authentication'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: "string"
+              example: "/"
+        description: "URI to return when logout is successful."
+      responses:
+        '302':
+          description: 'Redirect user after logout to Home Page or to Redirect-URI.'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
 
   #M02
 
@@ -557,6 +576,9 @@ paths:
       operationId: R402
       summary: 'R402: Add product to shopping cart API'
       description: 'Add product to Shopping Cart. Access: PUB'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
 
       requestBody:
         required: true
@@ -575,8 +597,36 @@ paths:
       responses:
         '200': 
           description: "Ok. Product was added to cart"
-        '406':
-          description: "Product does not exist, or there is no stock."
+        '422':
+          description: "Product does not exist, is already in cart, or there is no stock."
+
+  /api/cart/set-amount/:
+    post:
+      operationId: R403
+      summary: 'R403: Set product amount from cart  API'
+      description: "Set product amount of cart. If the amount given is equal to 0, then the product is removed from the cart.  Access: PUB"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                product-id:
+                  type: integer
+                amount:
+                  type: integer
+              required:
+                - product-id
+                - amount
+      responses:
+        '200': 
+          description: "Ok. Product amount was set in cart."
+        '422':
+          description: "Product does not exist in cart, amount negative or higher than available stock."
 
 
  #M07
