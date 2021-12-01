@@ -597,6 +597,7 @@ paths:
       responses:
         '200': 
           description: "Ok. Product was added to cart"
+<<<<<<< HEAD
         '422':
           description: "Product does not exist, is already in cart, or there is no stock."
 
@@ -627,6 +628,10 @@ paths:
           description: "Ok. Product amount was set in cart."
         '422':
           description: "Product does not exist in cart, amount negative or higher than available stock."
+=======
+        '406':
+          description: "Product does not exist, or there is no stock."
+>>>>>>> 29118d2 (Add small fix)
 
 
  #M07
