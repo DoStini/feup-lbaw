@@ -570,13 +570,14 @@ paths:
                 amount:
                   type: integer
               required:
-                - email
-                - password
+                - product-id
+                - amount
       responses:
         '200': 
           description: "Ok. Product was added to cart"
         '406':
-          description: "Product does not exist."
+          description: "Product does not exist, or there is no stock."
+
 
  #M07
 
