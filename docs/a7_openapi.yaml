@@ -27,6 +27,9 @@ tags:
 
 
 paths:
+
+  # M01
+
   /join:
     get:
       operationId: R101
@@ -90,12 +93,13 @@ paths:
                 example: '/'
               examples:
                 302Success:
-                  description: 'Successful authentication. Redirect to Home Page (UI 01) or '
+                  description: 'Successful authentication. Redirect to Home Page or to Redirect-URI'
                   value: '/'
-        '401':
-          description: 'Wrong email or password, authentication incomplete.'
-
-
+                302Error:
+                  description: 'Failed authentication. Redirect to Login and Register Page'
+                  value: '/join?redirect-uri=$redirect-uri'
+        # '401':
+        #   description: 'Wrong email or password, authentication incomplete.'
   /register:
     post:
       operationId: R103
@@ -119,6 +123,9 @@ paths:
                   type: string
                 password:
                   type: string
+                redirect-uri:
+                  type: string
+                  description: 'URI to return when login is successful.'
               required:
                 - email
                 - name
@@ -131,13 +138,14 @@ paths:
             Location:
               schema:
                 type: string
-                example: 
+                example: '/users/private/{id}'
               examples:
                 302Success:
-                  description: 'Successful authentication. Redirect to user personal data (UI12).'
+                  description: 'Successful authentication. Redirect to user personal data or to Redirect-URI'
                   value: '/users/private/{id}'
-        '422':
-          description: 'Email invalid or already exists.'
+                302Error:
+                  description: 'Email invalid or already exists. Redirect to login and register form.'
+                  value: '/join?redirect-uri=$redirect-uri'
           content:
             application/json:
               schema:
@@ -145,56 +153,30 @@ paths:
                 properties:
                   email:
                     type: string
-                example:
-                    email: "nunodev@refurniture.pt"
+             
+        # '422':
+        #   description: 'Email invalid or already exists.'
+        #   content:
+        #     application/json:
+        #       schema:
+        #         type: object
+        #         properties:
+        #           email:
+        #             type: string
+        #         example:
+        #             email: "nunodev@refurniture.pt"
 
-  /recover:
-    get:
-      operationId: R104
-      summary: 'R104: Recover Account Form'
-      description: 'Provide recover account form. Access: PUB'
-      tags:
-        - 'M01: Authentication'
-      responses:
-        '200':
-          description: 'Ok. Show recover password form UI06'
-        '302':
-          description: 'Redirect to Home Page (UI 01) if user already logged in'
-          headers:
-            Location:
-              schema:
-                type: string
-                example: '/'
-              examples:
-                302Success:
-                  description: 'User already authenticated. Redirect to Home Page (UI 01)'
-                  value: '/'
-    post:
-      operationId: R104
-      summary: 'R104: Logout Action'
-      description: 'Logout the current authenticated used. Access: USR, ADM'
-      tags:
-        - 'M01: Authentication'
-      responses:
-        '302':
-          description: 'Redirect after processing logout.'
-          headers:
-            Location:
-              schema:
-                type: string
-              examples:
-                302Success:
-                  description: 'Successful logout. Redirect to home page (UI01).'
-                  value: '/'
 
+
+  #M02
 
   /users/{id}:
-    get:
-      operationId: R106
-      summary: 'R106: View user profile'
-      description: 'Show the individual user profile. Access: USR'
+    get:  
+      operationId: R201
+      summary: 'R201: View user  profile'
+      description: 'Show user profile. Access: USR'
       tags:
-        - 'M01: Authentication and Individual Profile'
+        - 'M02: User Profiles'
 
       parameters:
         - in: path
@@ -205,17 +187,133 @@ paths:
 
       responses:
         '200':
-          description: 'Ok. Show view profile UI'
- 
+          description: 'Ok. Show Public Profile Page [UI15](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui15-profile-public-profile)'
+        '302':
+          description: 'User is owner, redirect to private page'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/users/private/{id}'
+        '401':
+          description: "Can't show resource because the requester isn't a user."
+        '404':
+          description: 'Not Found. Show Not Found Page'
 
-  /api/works:
-    get:
+  /users/private/{id}:
+    get:  
       operationId: R202
-      summary: 'R202: Search Works API'
-      description: 'Searches for works and returns the results as JSON. Access: PUB.'
+      summary: 'R202: View profile private data'
+      description: 'Show the individual user private data. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
 
-      tags: 
-        - 'M02: Works'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Personal Data Page [UI12](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui12-profile-personal-data)'
+        '302':
+          description: 'User is not the owner of the page. Redirect to public profile'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/users/{id}'
+        '404':
+          description: 'Not Found. Show Not Found Page'
+
+  /api/users/private/{id}/edit:
+    post:  
+      operationId: R203
+      summary: 'R203: Edit profile private data API'
+      description: 'Processes the edited fields submitted. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data: # Support files
+          # application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                surname:
+                  type: string
+                phone:
+                  type: string
+                birth:
+                  type: string
+                nif:
+                  type: number
+                address:
+                  type: string
+                postal-code:
+                  type: string
+                county:
+                  type: string
+                district:
+                  type: string
+                profile-picture:
+                  type: string ## TODO HOW TO DO THIS
+              required:
+                - email
+                - password
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok.'
+        '403':
+          description: 'Forbidden. Not the owner of this account.'
+
+  
+  #M03
+
+  /products/{id}:
+    get:  
+      operationId: R301
+      summary: 'R301: View product'
+      description: 'Show product page. Access: PUB'
+      tags:
+        - 'M03: Products'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Product Info Page [UI08](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui08-product-info)'
+        '404':
+          description: 'Not Found. Show Not Found Page'
+
+  /api/products/:
+    get:
+      operationId: R302
+      summary: 'R302: Search Products'
+      description: 'Return products information as JSON. Access: PUB'
+      tags:
+        - 'M03: Products'
 
       parameters:
         - in: query
@@ -225,33 +323,46 @@ paths:
             type: string
           required: false
         - in: query
-          name: item
-          description: Category of the works
+          name: price-min
+          description: Minimum price of products
+          schema:
+            type: number
+          required: false
+        - in: query
+          name: price-max
+          description: Maxmimum price of products
+          schema:
+            type: number
+          required: false
+        - in: query
+          name: stars-min
+          description: Minimum stars value
+          schema:
+            type: number
+          required: false
+        - in: query
+          name: stars-max
+          description: Maximum stars value
+          schema:
+            type: number
+          required: false
+        - in: query
+          name: colors
+          description: Colors of the product
           schema:
             type: string
           required: false
         - in: query
-          name: loaned
-          description: Boolean with the loaned flag value
+          name: materials
+          description: Materials of the product
           schema:
-            type: boolean
+            type: string
           required: false
-        - in: query
-          name: owner
-          description: Boolean with the owner flag value
-          schema:
-            type: boolean
-          required: false
-        - in: query
-          name: classification
-          description: Integer corresponding to the work classification
-          schema:
-            type: integer
-          required: false
+
 
       responses:
         '200':
-          description: Success
+          description: 'Success'
           content:
             application/json:
               schema:
@@ -261,26 +372,246 @@ paths:
                   properties:
                     id:
                       type: string
-                    title:
+                    name:
                       type: string
-                    obs:
+                    attributes:
+                      type: object
+                      properties:
+                        colors:
+                          type: array
+                          items: 
+                            type: string
+                        materials:
+                          type: array
+                          items:
+                            type: string
+                    stock:
+                      type: integer
+                    description:
                       type: string
-                    year:
+                    photos:
+                      type: array
+                      items:
+                        type: string
+                    price:
+                      type: number
+                    avg_stars:
+                      type: number
+                  example:
+                    - id: 1
+                      name: 'Funny Bed'
+                      attributes:
+                        colors:
+                          - 'blue'
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                      stock: 5
+                      description: 'A very beautiful piece of furniture'
+                      price:
+                        type: 325.99
+                      avg_stars: 2.5
+
+                    - id: 1
+                      name: 'Not a very good bed'
+                      attributes:
+                        colors:
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                          - 'wool'
+                      stock: 5
+                      description: 'A very cheap piece of furniture'
+                      price:
+                        type: 25.99
+                      avg_stars: 0.2
+
+  # /api/products/{id}/edit:
+  #   post:
+  #     operationId: R201
+  #     summary: 'R201: View product'
+  #     description: 'Show product page. Access: USR'
+  #     tags:
+  #       - 'M03: Products'
+
+  #     parameters:
+  #       - in: path
+  #         name: id
+  #         schema:
+  #           type: integer
+  #         required: true
+  #     responses:
+        
+
+      
+                  
+
+  /products/create:
+    get:
+      operationId: R303
+      summary: 'R303: View product creation page'
+      description: 'Show product creation page. Access: ADM'
+      tags:
+        - 'M03: Products'
+
+      responses:
+        '200':
+          description: 'Ok. Show New Product Page UI16'
+        '403':
+          description: 'Forbidden. Not an admin.'
+
+    post:
+      operationId: R304
+      summary: 'R304: Create product Action'
+      description: 'Processes the creation product form. Access: ADM'
+      tags:
+        - 'M03: Products'
+      requestBody:
+        required: true
+        content:
+          
+          multipart/form-data: # Support files
+          # application/x-www-form-urlencoded:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
                       type: string
-                    owner:
+                    attributes:
+                      type: object
+                      properties:
+                        colors:
+                          type: array
+                          items: 
+                            type: string
+                        materials:
+                          type: array
+                          items:
+                            type: string
+                    stock:
+                      type: integer
+                    description:
                       type: string
-                    type:
-                      type: string
-                example:
-                  - id: 1
-                    title: Rihanna - Unapologetic
-                    obs: Good pop music album.
-                    year: 2012
-                    owner: Joana Lima
-                    type: MP3
-                  - id: 15
-                    title: Mr. Bean
-                    obs: The best comedy movie.
-                    year: 1995
-                    owner: Manuel Teixeira
-                    type: DVD
+                    photos:
+                      type: array
+                      items:
+                        type: string ## FILE TYPE
+                    price:
+                      type: number
+                  required:
+                    - name
+                    - attributes
+                    - stock
+                    - description
+                    - photos
+                    - price
+                    
+                  example:
+                    name: 'Funny Bed'
+                    attributes:
+                      colors:
+                        - 'blue'
+                        - 'yellow'
+                      materials:
+                        - 'wood'
+                    stock: 5
+                    description: 'A very beautiful piece of furniture'
+                    price:
+                      type: 325.99
+
+      responses:
+        '201':
+          description: 'Product was created succesfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product-url:
+                    type: string
+                    example: '/products/{id}'
+                  product-name:
+                    type: string
+                    example: 'IKEA Chair'
+        '403':
+          description: "User doesn't have privileges"
+          
+ #M04
+
+  /cart:
+    get:
+      operationId: R401
+      summary: 'R401: View Shopping Cart'
+      description: 'Show Shopping Cart. Access: PUB'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: "Ok. Show Shopping Cart [UI09](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui09-shopping-cart)"
+        
+  /api/cart/add/:
+    post:
+      operationId: R402
+      summary: 'R402: Add product to shopping cart API'
+      description: 'Add product to Shopping Cart. Access: PUB'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                product-id:
+                  type: integer
+                amount:
+                  type: integer
+              required:
+                - email
+                - password
+      responses:
+        '200': 
+          description: "Ok. Product was added to cart"
+        '406':
+          description: "Product does not exist."
+
+ #M07
+
+  /about:
+    get:
+      operationId: R701
+      summary: 'R701: View About Page'
+      description: 'Show About Page. Access: PUB'
+      tags:
+        - 'M07: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show About Page.'
+
+  /contacts:
+    get:
+      operationId: R702
+      summary: 'R702: View Contacts Page'
+      description: 'Show Contacts Page. Access: PUB'
+      tags:
+        - 'M07: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show Contacts Page.'
+
+  /main-features:
+    get:
+      operationId: R703
+      summary: 'R703: View Main Features Page'
+      description: 'Show Main Features Page. Access: PUB'
+      tags:
+        - 'M07: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show Main Features Page.'
