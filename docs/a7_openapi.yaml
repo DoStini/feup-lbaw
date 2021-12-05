@@ -18,12 +18,7 @@ tags:
   - name: 'M02: User Profiles'
   - name: 'M03: Products'
   - name: 'M04: Orders and Shopping Cart'
-  - name: 'M05: Reviews'
-  - name: 'M06: Wishlist'
   - name: 'M07: Static Pages'
-  - name: 'M08: Notifications'
-  - name: 'M09: Coupons'
-  - name: 'M10: Newsletter'
 
 
 paths:
@@ -97,6 +92,7 @@ paths:
                   value: '/join?redirect-uri=$redirect-uri'
         # '401':
         #   description: 'Wrong email or password, authentication incomplete.'
+
   /register:
     post:
       operationId: R103
@@ -289,7 +285,6 @@ paths:
         '403':
           description: 'Forbidden. Not the owner of this account.'
 
-
   /users/manage:
     get:  
       operationId: R201
@@ -311,30 +306,19 @@ paths:
           description: 'Ok. Show Manage Users Page UI17'
 
 
-
   #M03
 
-  /products/{id}:
+  /products:
     get:  
       operationId: R301
-      summary: 'R301: View product'
-      description: 'Show product page. Access: PUB'
+      summary: 'R301: View search products page'
+      description: 'Show search products page. Access: PUB'
       tags:
         - 'M03: Products'
 
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-            minimum: 1
-          required: true
-
       responses:
         '200':
-          description: 'Ok. Show Product Info Page [UI08](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui08-product-info)'
-        '404':
-          description: 'Not Found. Show Not Found Page'
+          description: 'Ok. Show Search Products Page [UI07](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui07-search-products)'
 
   /api/products/:
     get:
@@ -350,6 +334,21 @@ paths:
           description: String to use for full-text search
           schema:
             type: string
+          required: false
+        - in: query
+          name: page
+          description: Page
+          schema:
+            type: integer
+            minimum: 0
+          required: false
+        - in: query
+          name: entries-per-page
+          description: Entries per page
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 50
           required: false
         - in: query
           name: price-min
@@ -383,13 +382,17 @@ paths:
           name: colors
           description: Colors of the product
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           required: false
         - in: query
           name: materials
           description: Materials of the product
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           required: false
         - in: query
           name: ord
@@ -414,7 +417,7 @@ paths:
                   type: object
                   properties:
                     id:
-                      type: string
+                      type: number
                     name:
                       type: string
                     attributes:
@@ -469,6 +472,28 @@ paths:
                       price:
                         type: 25.99
                       avg_stars: 0.2
+
+
+  /products/{id}:
+    get:  
+      operationId: R301
+      summary: 'R301: View product'
+      description: 'Show product page. Access: PUB'
+      tags:
+        - 'M03: Products'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Product Info Page [UI08](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui08-product-info)'
+  
 
   /api/products/{id}/edit:
     post:
