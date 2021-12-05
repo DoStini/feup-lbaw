@@ -151,19 +151,6 @@ paths:
                   email:
                     type: string
              
-        # '422':
-        #   description: 'Email invalid or already exists.'
-        #   content:
-        #     application/json:
-        #       schema:
-        #         type: object
-        #         properties:
-        #           email:
-        #             type: string
-        #         example:
-        #             email: "nunodev@refurniture.pt"
-
-
   /logout:
     post:
       operationId: R104
@@ -202,6 +189,7 @@ paths:
           name: id
           schema:
             type: integer
+            minimum: 1
           required: true
 
       responses:
@@ -232,6 +220,7 @@ paths:
           name: id
           schema:
             type: integer
+            minimum: 1
           required: true
 
       responses:
@@ -286,14 +275,12 @@ paths:
                   type: string
                 profile-picture:
                   type: string ## TODO HOW TO DO THIS
-              required:
-                - email
-                - password
       parameters:
         - in: path
           name: id
           schema:
             type: integer
+            minimum: 1
           required: true
 
       responses:
@@ -302,7 +289,29 @@ paths:
         '403':
           description: 'Forbidden. Not the owner of this account.'
 
-  
+
+  /users/manage:
+    get:  
+      operationId: R201
+      summary: 'R201: View manage users page'
+      description: 'Show manage users page. Access: ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Manage Users Page UI17'
+
+
+
   #M03
 
   /products/{id}:
@@ -318,6 +327,7 @@ paths:
           name: id
           schema:
             type: integer
+            minimum: 1
           required: true
 
       responses:
@@ -346,24 +356,28 @@ paths:
           description: Minimum price of products
           schema:
             type: number
+            minimum: 0
           required: false
         - in: query
           name: price-max
           description: Maxmimum price of products
           schema:
             type: number
+            minimum: 0
           required: false
         - in: query
           name: stars-min
           description: Minimum stars value
           schema:
             type: number
+            minimum: 0
           required: false
         - in: query
           name: stars-max
           description: Maximum stars value
           schema:
             type: number
+            minimum: 0
           required: false
         - in: query
           name: colors
@@ -377,6 +391,16 @@ paths:
           schema:
             type: string
           required: false
+        - in: query
+          name: ord
+          description: Ordering of results
+          schema:
+            type: string
+            enum:
+              - 'price-asc'
+              - 'price-desc'
+              - 'rate-asc'
+              - 'rate-desc'
 
 
       responses:
@@ -406,6 +430,7 @@ paths:
                             type: string
                     stock:
                       type: integer
+                      minimum: 1
                     description:
                       type: string
                     photos:
@@ -445,25 +470,120 @@ paths:
                         type: 25.99
                       avg_stars: 0.2
 
-  # /api/products/{id}/edit:
-  #   post:
-  #     operationId: R201
-  #     summary: 'R201: View product'
-  #     description: 'Show product page. Access: USR'
-  #     tags:
-  #       - 'M03: Products'
+  /api/products/{id}/edit:
+    post:
+      operationId: R201
+      summary: 'R201: Edit product API'
+      description: 'Show product page. Access: ADM'
+      tags:
+        - 'M03: Products'
 
-  #     parameters:
-  #       - in: path
-  #         name: id
-  #         schema:
-  #           type: integer
-  #         required: true
-  #     responses:
-        
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
 
-      
-                  
+      requestBody:
+        required: true
+        content:
+          
+          multipart/form-data: # Support files
+          # application/x-www-form-urlencoded:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  attributes:
+                    type: object
+                    properties:
+                      colors:
+                        type: array
+                        items: 
+                          type: string
+                      materials:
+                        type: array
+                        items:
+                          type: string
+                  stock:
+                    type: integer
+                    minimum: 0
+                  description:
+                    type: string
+                  photos:
+                    type: array
+                    items:
+                      type: string ## FILE TYPE
+                  price:
+                    type: number
+                required:
+                  - name
+                  - attributes
+                  - stock
+                  - description
+                  - photos
+                  - price
+
+                example:
+                  name: 'Funny Bed'
+                  attributes:
+                    colors:
+                      - 'blue'
+                      - 'yellow'
+                    materials:
+                      - 'wood'
+                  stock: 5
+                  description: 'A very beautiful piece of furniture'
+                  price:
+                    type: 325.99
+      responses:
+        '200':
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  attributes:
+                    type: object
+                    properties:
+                      colors:
+                        type: array
+                        items: 
+                          type: string
+                      materials:
+                        type: array
+                        items:
+                          type: string
+                  stock:
+                    type: integer
+                    minimum: 0
+                  description:
+                    type: string
+                  photos:
+                    type: array
+                    items:
+                      type: string ## FILE TYPE
+                  price:
+                    type: number
+
+                example:
+                  name: 'Funny Bed'
+                  attributes:
+                    colors:
+                      - 'blue'
+                      - 'yellow'
+                    materials:
+                      - 'wood'
+                  stock: 5
+                  description: 'A very beautiful piece of furniture'
+                  price:
+                    type: 325.99
 
   /products/create:
     get:
@@ -488,57 +608,54 @@ paths:
       requestBody:
         required: true
         content:
-          
           multipart/form-data: # Support files
-          # application/x-www-form-urlencoded:
-              schema:
-                type: array
-                items:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                attributes:
                   type: object
                   properties:
-                    name:
-                      type: string
-                    attributes:
-                      type: object
-                      properties:
-                        colors:
-                          type: array
-                          items: 
-                            type: string
-                        materials:
-                          type: array
-                          items:
-                            type: string
-                    stock:
-                      type: integer
-                    description:
-                      type: string
-                    photos:
+                    colors:
+                      type: array
+                      items: 
+                        type: string
+                    materials:
                       type: array
                       items:
-                        type: string ## FILE TYPE
-                    price:
-                      type: number
-                  required:
-                    - name
-                    - attributes
-                    - stock
-                    - description
-                    - photos
-                    - price
-                    
-                  example:
-                    name: 'Funny Bed'
-                    attributes:
-                      colors:
-                        - 'blue'
-                        - 'yellow'
-                      materials:
-                        - 'wood'
-                    stock: 5
-                    description: 'A very beautiful piece of furniture'
-                    price:
-                      type: 325.99
+                        type: string
+                stock:
+                  type: integer
+                  minimum: 0
+                description:
+                  type: string
+                photos:
+                  type: array
+                  items:
+                    type: string ## FILE TYPE
+                price:
+                  type: number
+              required:
+                - name
+                - attributes
+                - stock
+                - description
+                - photos
+                - price
+                
+              example:
+                name: 'Funny Bed'
+                attributes:
+                  colors:
+                    - 'blue'
+                    - 'yellow'
+                  materials:
+                    - 'wood'
+                stock: 5
+                description: 'A very beautiful piece of furniture'
+                price:
+                  type: 325.99
 
       responses:
         '201':
@@ -589,8 +706,10 @@ paths:
               properties:
                 product-id:
                   type: integer
+                  minimum: 1
                 amount:
                   type: integer
+                  minimum: 1
               required:
                 - product-id
                 - amount
@@ -617,8 +736,10 @@ paths:
               properties:
                 product-id:
                   type: integer
+                  minimum: 1
                 amount:
                   type: integer
+                  minimum: 0
               required:
                 - product-id
                 - amount
@@ -628,6 +749,70 @@ paths:
         '422':
           description: "Product does not exist in cart, amount negative or higher than available stock."
 
+  /user/orders:
+    get:
+      operationId: R401
+      summary: 'R401: View Profile Purchase History page'
+      description: 'Show Profile Purchase History page. Access: USR, ADM'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: 'Ok. Show Profile Purchase History UI13'
+        '403':
+          description: 'Forbidden. Not an admin.'
+
+  /admin/orders:
+    get:
+      operationId: R401
+      summary: 'R401: View manage orders page'
+      description: 'Show manage orders page . Access: ADM'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: 'Ok. Show Manage Orders UI18'
+        '403':
+          description: 'Forbidden. Not an admin.'
+
+  
+  /orders/{id}/status:
+    post:
+      operationId: R403
+      summary: 'R403: Update order status API'
+      description: "Update order status. Access: ADM"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                    - 'created'
+                    - 'paid'
+                    - 'processing'
+                    - 'shipped'
+      responses:
+        '200':
+          description: 'Ok. Order status was updated.'
+        '403':
+          description: 'Forbidden. Not an admin.'
 
  #M07
 
