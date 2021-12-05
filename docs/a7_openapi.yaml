@@ -18,7 +18,7 @@ tags:
   - name: 'M02: User Profiles'
   - name: 'M03: Products'
   - name: 'M04: Orders and Shopping Cart'
-  - name: 'M07: Static Pages'
+  - name: 'M05: Static Pages'
 
 
 paths:
@@ -90,8 +90,6 @@ paths:
                 302Error:
                   description: 'Failed authentication. Redirect to Login and Register Page'
                   value: '/join?redirect-uri=$redirect-uri'
-        # '401':
-        #   description: 'Wrong email or password, authentication incomplete.'
 
   /register:
     post:
@@ -122,6 +120,7 @@ paths:
               required:
                 - email
                 - name
+                - surname
                 - password
 
       responses:
@@ -169,6 +168,7 @@ paths:
               schema:
                 type: string
                 example: '/'
+
 
   #M02
 
@@ -287,8 +287,8 @@ paths:
 
   /users/manage:
     get:  
-      operationId: R201
-      summary: 'R201: View manage users page'
+      operationId: R204
+      summary: 'R204: View manage users page'
       description: 'Show manage users page. Access: ADM'
       tags:
         - 'M02: User Profiles'
@@ -320,10 +320,30 @@ paths:
         '200':
           description: 'Ok. Show Search Products Page [UI07](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui07-search-products)'
 
+  /products/{id}:
+    get:  
+      operationId: R302
+      summary: 'R302: View product'
+      description: 'Show product page. Access: PUB'
+      tags:
+        - 'M03: Products'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Product Info Page [UI08](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui08-product-info)'
+  
   /api/products/:
     get:
-      operationId: R302
-      summary: 'R302: Search Products'
+      operationId: R303
+      summary: 'R303: Search Products API'
       description: 'Return products information as JSON. Access: PUB'
       tags:
         - 'M03: Products'
@@ -445,7 +465,7 @@ paths:
                     avg_stars:
                       type: number
                   example:
-                    - id: 1
+                    - id: 2
                       name: 'Funny Bed'
                       attributes:
                         colors:
@@ -473,33 +493,100 @@ paths:
                         type: 25.99
                       avg_stars: 0.2
 
-
-  /products/{id}:
-    get:  
-      operationId: R301
-      summary: 'R301: View product'
-      description: 'Show product page. Access: PUB'
+  /products/create:
+    get:
+      operationId: R304
+      summary: 'R304: View product creation page'
+      description: 'Show product creation page. Access: ADM'
       tags:
         - 'M03: Products'
 
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-            minimum: 1
-          required: true
-
       responses:
         '200':
-          description: 'Ok. Show Product Info Page [UI08](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui08-product-info)'
-  
+          description: 'Ok. Show New Product Page UI16'
+        '403':
+          description: 'Forbidden. Not an admin.'
 
+    post:
+      operationId: R305
+      summary: 'R305: Create product Action'
+      description: 'Processes the creation product form. Access: ADM'
+      tags:
+        - 'M03: Products'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data: # Support files
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                attributes:
+                  type: object
+                  properties:
+                    colors:
+                      type: array
+                      items: 
+                        type: string
+                    materials:
+                      type: array
+                      items:
+                        type: string
+                stock:
+                  type: integer
+                  minimum: 0
+                description:
+                  type: string
+                photos:
+                  type: array
+                  items:
+                    type: string ## FILE TYPE
+                price:
+                  type: number
+              required:
+                - name
+                - attributes
+                - stock
+                - description
+                - photos
+                - price
+                
+              example:
+                name: 'Funny Bed'
+                attributes:
+                  colors:
+                    - 'blue'
+                    - 'yellow'
+                  materials:
+                    - 'wood'
+                stock: 5
+                description: 'A very beautiful piece of furniture'
+                price:
+                  type: 325.99
+
+      responses:
+        '201':
+          description: 'Product was created succesfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product-url:
+                    type: string
+                    example: '/products/{id}'
+                  product-name:
+                    type: string
+                    example: 'IKEA Chair'
+        '403':
+          description: "User doesn't have privileges"
+ 
   /api/products/{id}/edit:
     post:
-      operationId: R201
-      summary: 'R201: Edit product API'
-      description: 'Show product page. Access: ADM'
+      operationId: R306
+      summary: 'R306: Edit product API'
+      description: 'Processes edited fields. Access: ADM'
       tags:
         - 'M03: Products'
 
@@ -608,97 +695,9 @@ paths:
                   stock: 5
                   description: 'A very beautiful piece of furniture'
                   price:
-                    type: 325.99
-
-  /products/create:
-    get:
-      operationId: R303
-      summary: 'R303: View product creation page'
-      description: 'Show product creation page. Access: ADM'
-      tags:
-        - 'M03: Products'
-
-      responses:
-        '200':
-          description: 'Ok. Show New Product Page UI16'
-        '403':
-          description: 'Forbidden. Not an admin.'
-
-    post:
-      operationId: R304
-      summary: 'R304: Create product Action'
-      description: 'Processes the creation product form. Access: ADM'
-      tags:
-        - 'M03: Products'
-      requestBody:
-        required: true
-        content:
-          multipart/form-data: # Support files
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                attributes:
-                  type: object
-                  properties:
-                    colors:
-                      type: array
-                      items: 
-                        type: string
-                    materials:
-                      type: array
-                      items:
-                        type: string
-                stock:
-                  type: integer
-                  minimum: 0
-                description:
-                  type: string
-                photos:
-                  type: array
-                  items:
-                    type: string ## FILE TYPE
-                price:
-                  type: number
-              required:
-                - name
-                - attributes
-                - stock
-                - description
-                - photos
-                - price
-                
-              example:
-                name: 'Funny Bed'
-                attributes:
-                  colors:
-                    - 'blue'
-                    - 'yellow'
-                  materials:
-                    - 'wood'
-                stock: 5
-                description: 'A very beautiful piece of furniture'
-                price:
-                  type: 325.99
-
-      responses:
-        '201':
-          description: 'Product was created succesfully'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  product-url:
-                    type: string
-                    example: '/products/{id}'
-                  product-name:
-                    type: string
-                    example: 'IKEA Chair'
-        '403':
-          description: "User doesn't have privileges"
-          
+                    type: 325.99         
+ 
+ 
  #M04
 
   /cart:
@@ -776,8 +775,8 @@ paths:
 
   /user/orders:
     get:
-      operationId: R401
-      summary: 'R401: View Profile Purchase History page'
+      operationId: R404
+      summary: 'R404: View Profile Purchase History page'
       description: 'Show Profile Purchase History page. Access: USR, ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -790,8 +789,8 @@ paths:
 
   /admin/orders:
     get:
-      operationId: R401
-      summary: 'R401: View manage orders page'
+      operationId: R405
+      summary: 'R405: View manage orders page'
       description: 'Show manage orders page . Access: ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -805,8 +804,8 @@ paths:
   
   /orders/{id}/status:
     post:
-      operationId: R403
-      summary: 'R403: Update order status API'
+      operationId: R406
+      summary: 'R406: Update order status API'
       description: "Update order status. Access: ADM"
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -839,40 +838,40 @@ paths:
         '403':
           description: 'Forbidden. Not an admin.'
 
- #M07
+ #M05
 
   /about:
     get:
-      operationId: R701
-      summary: 'R701: View About Page'
+      operationId: R501
+      summary: 'R501: View About Page'
       description: 'Show About Page. Access: PUB'
       tags:
-        - 'M07: Static Pages'
+        - 'M05: Static Pages'
 
       responses:
         '200':
-          description: 'Ok. Show About Page.'
+          description: 'Ok. Show About Page UI02'
 
   /contacts:
     get:
-      operationId: R702
-      summary: 'R702: View Contacts Page'
+      operationId: R502
+      summary: 'R502: View Contacts Page'
       description: 'Show Contacts Page. Access: PUB'
       tags:
-        - 'M07: Static Pages'
+        - 'M05: Static Pages'
 
       responses:
         '200':
-          description: 'Ok. Show Contacts Page.'
+          description: 'Ok. Show Contacts Us Page UI03'
 
-  /main-features:
+  /features:
     get:
-      operationId: R703
-      summary: 'R703: View Main Features Page'
+      operationId: R503
+      summary: 'R503: View Main Features Page'
       description: 'Show Main Features Page. Access: PUB'
       tags:
-        - 'M07: Static Pages'
+        - 'M05: Static Pages'
 
       responses:
         '200':
-          description: 'Ok. Show Main Features Page.'
+          description: 'Ok. Show Main Features Page UI04'
