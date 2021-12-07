@@ -285,7 +285,7 @@ paths:
         '403':
           description: 'Forbidden. Not the owner of this account.'
 
-  /users/manage:
+  /admin/users:
     get:  
       operationId: R204
       summary: 'R204: View manage users page'
@@ -363,7 +363,7 @@ paths:
             minimum: 0
           required: false
         - in: query
-          name: entries-per-page
+          name: page-size
           description: Entries per page
           schema:
             type: integer
@@ -415,7 +415,7 @@ paths:
               type: string
           required: false
         - in: query
-          name: ord
+          name: order
           description: Ordering of results
           schema:
             type: string
@@ -493,7 +493,7 @@ paths:
                         type: 25.99
                       avg_stars: 0.2
 
-  /products/create:
+  /admin/products/create:
     get:
       operationId: R304
       summary: 'R304: View product creation page'
@@ -581,11 +581,25 @@ paths:
                     example: 'IKEA Chair'
         '403':
           description: "User doesn't have privileges"
- 
+
+  /admin/products/{id}/edit:
+    get:
+      operationId: R306
+      summary: 'R306: View product edit page'
+      description: 'Show product edit page. Access: ADM'
+      tags:
+        - 'M03: Products'
+
+      responses:
+        '200':
+          description: 'Ok. Show Edit Product Page UI16'
+        '403':
+          description: 'Forbidden. Not an admin.'
+
   /api/products/{id}/edit:
     post:
-      operationId: R306
-      summary: 'R306: Edit product API'
+      operationId: R307
+      summary: 'R307: Edit product API'
       description: 'Processes edited fields. Access: ADM'
       tags:
         - 'M03: Products'
@@ -700,7 +714,7 @@ paths:
  
  #M04
 
-  /cart:
+  /user/cart:
     get:
       operationId: R401
       summary: 'R401: View Shopping Cart'
@@ -711,7 +725,14 @@ paths:
       responses:
         '200':
           description: "Ok. Show Shopping Cart [UI09](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui09-shopping-cart)"
-        
+        '302':
+          description: 'User not logged in. Redirect to Home Page (UI 01).'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+
   /api/cart/add/:
     post:
       operationId: R402
@@ -773,11 +794,31 @@ paths:
         '422':
           description: "Product does not exist in cart, amount negative or higher than available stock."
 
-  /user/orders:
+  /user/checkout:
     get:
       operationId: R404
-      summary: 'R404: View Profile Purchase History page'
-      description: 'Show Profile Purchase History page. Access: USR, ADM'
+      summary: 'R401: View Checkout Page'
+      description: 'Show Checkout Page. Access: USR'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: "Ok. Show Checkout Page [UI10](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui10-checkout)"
+        '302':
+          description: 'User not logged in. Redirect to Home Page (UI 01).'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+
+
+  /user/orders:
+    get:
+      operationId: R405
+      summary: 'R405: View Profile Purchase History page'
+      description: 'Show Profile Purchase History page. Access: OWN'
       tags:
         - 'M04: Orders and Shopping Cart'
 
@@ -785,12 +826,25 @@ paths:
         '200':
           description: 'Ok. Show Profile Purchase History UI13'
         '403':
-          description: 'Forbidden. Not an admin.'
+          description: 'Forbidden. Not an admin nor the owner.'
+  /orders/{id}:
+    get:
+      operationId: R406
+      summary: 'R406: View Order page'
+      description: 'Show Order page. Access: OWN, ADM'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: 'Ok. Show Profile Purchase History UI13'
+        '403':
+          description: 'Forbidden. Not an admin nor the owner.'
 
   /admin/orders:
     get:
-      operationId: R405
-      summary: 'R405: View manage orders page'
+      operationId: R407
+      summary: 'R407: View manage orders page'
       description: 'Show manage orders page . Access: ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -802,10 +856,10 @@ paths:
           description: 'Forbidden. Not an admin.'
 
   
-  /orders/{id}/status:
+  /api/orders/{id}/status:
     post:
-      operationId: R406
-      summary: 'R406: Update order status API'
+      operationId: R407
+      summary: 'R407: Update order status API'
       description: "Update order status. Access: ADM"
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -840,9 +894,21 @@ paths:
 
  #M05
 
-  /about:
+  /:
     get:
       operationId: R501
+      summary: 'R501: View Home Page'
+      description: 'Show Home Page. Access: PUB'
+      tags:
+        - 'M05: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show Home Page UI01'
+
+  /about:
+    get:
+      operationId: R502
       summary: 'R501: View About Page'
       description: 'Show About Page. Access: PUB'
       tags:
@@ -854,7 +920,7 @@ paths:
 
   /contacts:
     get:
-      operationId: R502
+      operationId: R503
       summary: 'R502: View Contacts Page'
       description: 'Show Contacts Page. Access: PUB'
       tags:
@@ -866,7 +932,7 @@ paths:
 
   /features:
     get:
-      operationId: R503
+      operationId: R504
       summary: 'R503: View Main Features Page'
       description: 'Show Main Features Page. Access: PUB'
       tags:
@@ -875,3 +941,4 @@ paths:
       responses:
         '200':
           description: 'Ok. Show Main Features Page UI04'
+
