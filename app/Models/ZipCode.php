@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-class County {
+use Illuminate\Database\Eloquent\Model;
+
+class ZipCode extends Model {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
 
@@ -12,7 +14,7 @@ class County {
      * @var array
      */
     protected $fillable = [
-        'name'
+        'zip_code'
     ];
 
     /**
@@ -27,7 +29,7 @@ class County {
      * County associated with this zip code
      */
     public function county() {
-        return this->belongsTo('App\Models\County');
+        return this->belongsTo(County::class);
     }
 
     /**

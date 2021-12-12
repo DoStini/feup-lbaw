@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-class District {
+use Illuminate\Database\Eloquent\Model;
+
+class District extends Model {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
 

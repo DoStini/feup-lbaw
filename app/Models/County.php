@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-class County {
+use Illuminate\Database\Eloquent\Model;
+
+class County extends Model {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
 
@@ -23,7 +25,7 @@ class County {
     protected $hidden = [];
 
     public function district() {
-        return this->belongsTo('App\Models\District');
+        return this->belongsTo(District::class);
     }
 
     /**

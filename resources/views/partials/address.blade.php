@@ -1,6 +1,6 @@
 <hr>
 <h3>{{$address->street}}</h3>
 <h2>{{$address->door}}</h2>
-<p> {{$address->zipcode->zip_code}}</p>
-<p> {{$address->zipcode->county}}</p>
-<p> {{$address->zipcode->district}}</p>
+<p> {{$address->zip_code()->zip_code}}</p>
+<p> {{$address->zip_code()->county}}</p>
+<p> {{$address->zip_code()->district}}</p>

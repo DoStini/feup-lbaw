@@ -33,12 +33,12 @@ class Shopper extends Model {
      * The user this shopper belongs to.
      */
     public function user() {
-        return $this->hasOne('App\Models\User', 'id', 'id');
+        return $this->hasOne(User::class, 'id', 'id');
     }
 
     // Not working ?
-    public function adresses() {
-        return $this->belongsToMany('App\Models\Address', 'authenticated_shopper_address', 'shopper_id', 'address_id');
+    public function addresses() {
+        return $this->belongsToMany(Address::class, 'authenticated_shopper_address', 'shopper_id', 'address_id');
     }
 
     /**

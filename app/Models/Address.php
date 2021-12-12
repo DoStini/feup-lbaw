@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-class County {
+use Illuminate\Database\Eloquent\Model;
+
+class Address extends Model {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
 
@@ -24,7 +26,8 @@ class County {
     protected $hidden = [];
 
     public function zip_code() {
-        return this->hasOne('App\Models\ZipCode');
+        dd($this->hasOne(ZipCode::class, 'id', 'zip_code'));
+        return $this->hasOne(ZipCode::class, 'id', 'zip_code');
     }
 
     /**
