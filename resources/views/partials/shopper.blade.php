@@ -6,5 +6,8 @@
     <p>{{$shopper->user->email}}</p>
     <h3>About me</h3>
     <p> {{$shopper->about_me}}</p>
-    <p> {{$shopper->address[0]->street}} </p>
+    <h3>Addresses</h3>
+    @each('partials.address', $shopper->addresses, 'address')
+
+
 </article>

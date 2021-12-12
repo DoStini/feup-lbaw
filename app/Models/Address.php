@@ -32,5 +32,5 @@ class County {
      *
      * @var string
      */
-    protected $table = 'district';
+    protected $table = 'address';
 }
