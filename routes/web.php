@@ -17,6 +17,8 @@ Route::get('/', 'Auth\LoginController@home');
 Route::get('cards', 'CardController@list');
 Route::get('cards/{id}', 'CardController@show');
 
+Route::get('users/{id}', 'ShopperController@show');
+
 // API
 Route::put('api/cards', 'CardController@create');
 Route::delete('api/cards/{card_id}', 'CardController@delete');

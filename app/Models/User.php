@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     use Notifiable;
 
     // Don't add create and update timestamps in database.
@@ -30,10 +29,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+
     /**
-     * The cards this user owns.
+     * The table associated with the model.
+     *
+     * @var string
      */
-     public function cards() {
-      return $this->hasMany('App\Models\Card');
-    }
+    protected $table = 'user';
 }
