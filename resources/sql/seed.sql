@@ -1,3 +1,5 @@
+create schema if not exists lbaw21;
+
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS cards CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
