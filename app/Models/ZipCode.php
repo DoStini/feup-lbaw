@@ -29,14 +29,14 @@ class ZipCode extends Model {
      * County associated with this zip code
      */
     public function county() {
-        return this->belongsTo(County::class);
+        return $this->belongsTo(County::class);
     }
 
     /**
      * District associated with this zip code
      */
     public function district() {
-        return this->county()->district();
+        return $this->county->district();
     }
 
     /**
@@ -44,5 +44,5 @@ class ZipCode extends Model {
      *
      * @var string
      */
-    protected $table = 'district';
+    protected $table = 'zip_code';
 }

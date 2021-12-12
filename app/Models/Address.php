@@ -25,9 +25,8 @@ class Address extends Model {
      */
     protected $hidden = [];
 
-    public function zip_code() {
-        dd($this->hasOne(ZipCode::class, 'id', 'zip_code'));
-        return $this->hasOne(ZipCode::class, 'id', 'zip_code');
+    public function zip_code_id() {
+        return $this->belongsTo(ZipCode::class, 'zip_code', 'id');
     }
 
     /**

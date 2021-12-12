@@ -25,7 +25,7 @@ class County extends Model {
     protected $hidden = [];
 
     public function district() {
-        return this->belongsTo(District::class);
+        return $this->belongsTo(District::class);
     }
 
     /**
@@ -33,5 +33,5 @@ class County extends Model {
      *
      * @var string
      */
-    protected $table = 'district';
+    protected $table = 'county';
 }
