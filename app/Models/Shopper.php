@@ -30,15 +30,29 @@ class Shopper extends Model {
     protected $hidden = [];
 
     /**
-     * The user this shopper belongs to.
+     * The user account this shopper is associated to.
      */
     public function user() {
         return $this->hasOne(User::class, 'id', 'id');
     }
 
-    // Not working ?
+    /**
+     * The addresses this shopper contains.
+     */
     public function addresses() {
         return $this->belongsToMany(Address::class, 'authenticated_shopper_address', 'shopper_id', 'address_id');
+    }
+
+    /**
+     * The products and their amount the user has in its cart.
+     */
+    public function cart() {
+        return $this->belongsToMany(
+            Product::class,
+            'product_cart',
+            'shopper_id',
+            'product_id',
+        )->withPivot('amount')->as('amount');
     }
 
     /**

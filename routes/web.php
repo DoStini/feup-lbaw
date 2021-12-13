@@ -17,6 +17,8 @@ Route::get('/', 'Auth\LoginController@home');
 Route::get('cards', 'CardController@list');
 Route::get('cards/{id}', 'CardController@show');
 
+
+Route::get('users/cart', 'ShopperController@cart');
 Route::get('users/{id}', 'ShopperController@show');
 Route::get('products/{id}', 'ProductController@show');
 
