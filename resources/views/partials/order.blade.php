@@ -12,12 +12,12 @@
 
     @include('partials.address', ['address' => $order->address])
 
-    @if($order->coupon != null)
-    @include('partials.coupon', ['coupon' => $order->coupon])
-    @endif
+    @isset($order->coupon)
+        @include('partials.coupon', ['coupon' => $order->coupon])
+    @endisset
 
-    @if($order->payment != null)
-    @include('partials.payment', ['payment' => $order->payment])
-    @endif
+    @isset($order->payment)
+        @include('partials.payment', ['payment' => $order->payment])
+    @endisset
 
 </article>
