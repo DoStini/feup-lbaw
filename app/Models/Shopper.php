@@ -52,7 +52,15 @@ class Shopper extends Model {
             'product_cart',
             'shopper_id',
             'product_id',
-        )->withPivot('amount')->as('amount');
+        )->withPivot('amount')->as('details');
+    }
+
+    public function orders() {
+        return $this->hasMany(
+            Order::class,
+            'shopper_id',
+            'id',
+        );
     }
 
     /**

@@ -8,6 +8,6 @@
     <p> {{$shopper->about_me}}</p>
     <h3>Addresses</h3>
     @each('partials.address', $shopper->addresses, 'address')
-
-
+    <h3>Orders</h3>
+    @each('partials.order', $shopper->orders, 'order')
 </article>
