@@ -44,6 +44,14 @@ class Order extends Model {
         );
     }
 
+    public function coupon() {
+        return $this->belongsTo(
+            Coupon::class,
+            'coupon_id',
+            'id'
+        );
+    }
+
 
     /**
      * The table associated with the model.

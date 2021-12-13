@@ -12,5 +12,8 @@
 
     @include('partials.address', ['address' => $order->address])
 
+    @if($order->coupon != null)
+    @include('partials.coupon', ['coupon' => $order->coupon])
+    @endif
 
 </article>
