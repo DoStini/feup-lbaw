@@ -16,4 +16,8 @@
     @include('partials.coupon', ['coupon' => $order->coupon])
     @endif
 
+    @if($order->payment != null)
+    @include('partials.payment', ['payment' => $order->payment])
+    @endif
+
 </article>
