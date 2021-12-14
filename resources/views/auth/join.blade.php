@@ -20,17 +20,17 @@
 
                 <label for="email-login">Email</label>
                 <input id="email-login" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
-                @if ($errors->has('email'))
+                @if ($errors->login_form->has('email'))
                     <span class="error">
-                    {{ $errors->first('email') }}
+                    {{ $errors->login_form->first('email') }}
                     </span>
                 @endif
 
                 <label for="password-login">Password</label>
                 <input id="password-login" name="password" type="password" required>
-                @if ($errors->has('password'))
+                @if ($errors->login_form->has('password'))
                     <span class="error">
-                        {{ $errors->first('password') }}
+                        {{ $errors->login_form->first('password') }}
                     </span>
                 @endif
 
@@ -46,26 +46,38 @@
             </header>
             <form id="oauth-register">
                 @csrf
-
                 <button value="oauth-register" type="submit">Create account with Google</button>
             </form>
             <div>
                 or
             </div>
-            <form id="register-form">
+            <form id="register-form"  method="POST" action="{{ route('register') }}">
                 @csrf
 
                 <label for="name-register">Name</label>
                 <input id="name-register" name="name" type="text">
 
-                <label for="name-register">Surname</label>
-                <input id="name-register" name="name" type="text">
+                {{-- <label for="name-register">Surname</label>
+                <input id="name-register" name="surname" type="text"> --}}
 
                 <label for="email-register">Email</label>
-                <input id="email-register" name="email" type="text" onkeypress="return event.charCode != 32">
+                <input id="email-register" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
+                @error('email', 'register_form')
+                    <span class="error">
+                        {{$message}}
+                    </span>
+                @enderror
 
                 <label for="password-register">Password</label>
-                <input id="password-register" name="password" type="password">
+                <input id="password-register" name="password" type="password" required>
+                @error('password', 'register_form')
+                    <span class="error">
+                        {{$message}}
+                    </span>
+                @enderror
+
+                <label for="password-confirm">Confirm Password</label>
+                <input id="password-confirm" type="password" name="password_confirmation" required>
 
                 <button value="register">Register</button>
             </form>

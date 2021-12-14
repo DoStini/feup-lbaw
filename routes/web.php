@@ -13,11 +13,6 @@
 // Home
 Route::get('/', 'Auth\LoginController@home');
 
-// Cards
-Route::get('cards', 'CardController@list');
-Route::get('cards/{id}', 'CardController@show');
-
-
 Route::get('users/cart', 'ShopperController@cart');
 Route::get('users/{id}', 'ShopperController@show');
 Route::get('products/{id}', 'ProductController@show');
@@ -30,7 +25,9 @@ Route::post('api/item/{id}', 'ItemController@update');
 Route::delete('api/item/{id}', 'ItemController@delete');
 
 // Authentication
-Route::get('join', 'Auth\JoinController@show')->middleware('guest')->name('join');
-Route::post('login', 'Auth\LoginController@login')->name('login');
+Route::get('join', 'Auth\JoinController@show')->name('join');
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
-Route::post('register', 'Auth\RegisterController@register')->name('register');
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
