@@ -31,6 +31,6 @@ Route::delete('api/item/{id}', 'ItemController@delete');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->middleware('guest')->name('join');
-Route::post('login', 'Auth\LoginController@login');
+Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
-Route::post('register', 'Auth\RegisterController@register');
+Route::post('register', 'Auth\RegisterController@register')->name('register');
