@@ -9,7 +9,6 @@ use App\Models\Product;
 
 class ProductController extends Controller {
 
-    protected $defaultPageSize = 10;
 
     /**
      * Shows the product for a given id.
@@ -30,16 +29,16 @@ class ProductController extends Controller {
                     ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text]);
             })
             ->when($request->input('price-min'), function ($q) use ($request) {
-                return $q->where('price > ?', [$request->input('price-min')]);
+                return $q->where('price', '>', [$request->input('price-min')]);
             })
             ->when($request->input('price-max'), function ($q) use ($request) {
-                return $q->whereRaw('price < ?', [$request->input('price-max')]);
+                return $q->where('price', '<', [$request->input('price-max')]);
             })
             ->when($request->input('stars-min'), function ($q) use ($request) {
-                return $q->whereRaw('avg_stars > ?', [$request->input('stars-min')]);
+                return $q->where('avg_stars', '>', [$request->input('stars-min')]);
             })
             ->when($request->input('stars-max'), function ($q) use ($request) {
-                return $q->whereRaw('avg_stars < ?', [$request->input('stars-max')]);
+                return $q->where('avg_stars', '<', [$request->input('stars-max')]);
             });
 
         switch ($request->order) {
@@ -57,13 +56,17 @@ class ProductController extends Controller {
                 break;
         }
 
+        $pageSize = $request->input('page-size');
+        $page = $request->page;
+
         $count = $query->count();
-        $page = ($request->page - 1) ?? 0;
-        $pageSize = $request->input('page-size') ?? $this->defaultPageSize;
+
         $lastPage = ceil($count / $pageSize);
-        if ($page > $lastPage) {
+
+        if ($request->page > $lastPage) {
             $page = $lastPage - 1;
         }
+
         $query = $query->skip($page * $pageSize)->take($pageSize);
 
         return response()->json([
