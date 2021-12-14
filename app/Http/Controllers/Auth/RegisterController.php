@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Shopper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -29,7 +30,9 @@ class RegisterController extends Controller {
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    public function redirectTo() {
+        return '/users/';
+    }
 
     /**
      * Create a new controller instance.
@@ -57,6 +60,12 @@ class RegisterController extends Controller {
         if ($response = $this->registered($request, $user)) {
             return $response;
         }
+
+        $shopper = new Shopper;
+
+        $shopper->id = strval($user->id);
+
+        $shopper->save();
 
         return $request->wantsJson()
                     ? new JsonResponse([], 201)

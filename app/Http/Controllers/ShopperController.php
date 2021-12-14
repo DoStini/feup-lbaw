@@ -34,7 +34,7 @@ class ShopperController extends Controller {
 
     /**
      * Shows cart contents
-     * 
+     *
      * @return Response
      */
     public function cart() {
@@ -46,5 +46,9 @@ class ShopperController extends Controller {
         $cart = $shopper->cart;
 
         return view('pages.cart', ['cart' => $cart]);
+    }
+
+    public function getAuth() {
+        return redirect("/users/" . strval(Auth::id()));
     }
 }

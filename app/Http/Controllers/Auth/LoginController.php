@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Auth;
 
 
 class LoginController extends Controller {
@@ -24,12 +23,9 @@ class LoginController extends Controller {
 
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/';
+    public function redirectTo() {
+        return '/users/';
+    }
 
     /**
      * Create a new controller instance.

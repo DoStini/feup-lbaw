@@ -15,6 +15,7 @@ Route::get('/', 'Auth\LoginController@home');
 
 Route::get('users/cart', 'ShopperController@cart');
 Route::get('users/{id}', 'ShopperController@show');
+Route::get('users/', 'ShopperController@getAuth');
 Route::get('products/{id}', 'ProductController@show');
 
 // API
