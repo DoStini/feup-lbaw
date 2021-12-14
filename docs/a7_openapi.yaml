@@ -340,7 +340,7 @@ paths:
         '200':
           description: 'Ok. Show Product Info Page [UI08](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui08-product-info)'
   
-  /api/products/:
+  /api/products:
     get:
       operationId: R303
       summary: 'R303: Search Products API'
@@ -350,7 +350,7 @@ paths:
 
       parameters:
         - in: query
-          name: query
+          name: text
           description: String to use for full-text search
           schema:
             type: string
