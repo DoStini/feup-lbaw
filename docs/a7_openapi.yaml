@@ -6,10 +6,10 @@ info:
   description: 'Web Resources Specification (A7) for reFurniture'
 
 servers:
-  - url: http://lbaw.fe.up.pt/
-    description: Production server
-  - url: http://localhost:8000/
-    description: Local Server
+- url: http://lbaw.fe.up.pt/
+  description: Production server
+- url: http://localhost:8000/
+  description: Local Server
 
 externalDocs:
   description: Find more info here.
