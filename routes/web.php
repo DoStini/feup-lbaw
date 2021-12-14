@@ -30,8 +30,7 @@ Route::post('api/item/{id}', 'ItemController@update');
 Route::delete('api/item/{id}', 'ItemController@delete');
 
 // Authentication
-Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::get('join', 'Auth\JoinController@show')->middleware('guest')->name('join');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
