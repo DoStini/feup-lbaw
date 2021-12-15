@@ -18,3 +18,4 @@ Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
 ]);
+Route::middleware('auth:api')->middleware('is.not.admin')->get('/users/cart', 'CartController@get');
