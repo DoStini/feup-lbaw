@@ -53,8 +53,6 @@ class ShopperController extends Controller {
      *
      */
     public function edit(Request $request, int $id) {
-        dd("editing" . strval($id) . "with request ". $request->name);
-
-        return 0;
+        return response("editing" . strval($id) . "with request ". $request->name . "with user " . $request->user(), 200)->header('Content-Type', 'text\plain');
     }
 }
