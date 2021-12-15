@@ -2,6 +2,26 @@ html, body {
     min-height: 100vh;
     height: 100vh;
 }
+
+#auth {
+    font-family: serif;
+    color: #4C4242;
+}
+
+#auth .btn-primary {
+    background-color: #4C4242;
+    color: white;
+}
+
+.error {
+    color: #4E351C;
+    font-size: 1em;
+}
+
+#auth header {
+    font-family: 'DM Serif Display', serif;
+}
+
 main {
     min-height: 100%;
     height: 100%;
@@ -19,10 +39,20 @@ main {
 }
 
 #auth label {
-    color: #767676
+    color: #4C4242
+}
+
+.separator {
+    border-bottom: 1px solid #4C4242;
+    width: 35%;
 }
 
 .form-group {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.input-group {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }

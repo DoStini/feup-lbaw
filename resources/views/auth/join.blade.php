@@ -10,10 +10,12 @@
             <form id="oauth-login" class="align-self-stretch">
                 @csrf
 
-                <button class="btn btn-primary w-100" value="oauth-login" type="submit">Sign in with Google <span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
+                <button class="btn btn-primary w-100" value="oauth-login" type="submit">Sign in with Google <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
             </form>
-            <div>
-                or
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="separator"></div>
+                <div>or</div>
+                <div class="separator"></div>
             </div>
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
@@ -30,7 +32,13 @@
 
                 <div class="form-group">
                     <label for="password-login">Password</label>
-                    <input id="password-login" class="form-control" name="password" type="password" required>
+
+                    <div class="input-group">
+                        <input id="password-login" class="form-control" name="password" type="password" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                        </div>
+                    </div>
                     @if ($errors->login_form->has('password'))
                         <span class="error form-text">
                             {{ $errors->login_form->first('password') }}
@@ -42,7 +50,7 @@
                     <a href="/">Forgot your password?</a>
                 </div>
 
-                <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
+                <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
             </form>
 
         </section>
@@ -52,10 +60,12 @@
             </header>
             <form id="oauth-register" class="align-self-stretch">
                 @csrf
-                <button type="submit" value="oauth-register" class="btn btn-primary w-100" type="submit">Create account with Google <span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
+                <button type="submit" value="oauth-register" class="btn btn-primary w-100" type="submit">Create account with Google <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
             </form>
-            <div>
-                or
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="separator"></div>
+                <div>or</div>
+                <div class="separator"></div>
             </div>
             <form id="register-form"  method="POST" action="{{ route('register') }}">
                 @csrf
@@ -80,7 +90,13 @@
 
                 <div class="form-group">
                     <label for="password-register">Password</label>
-                    <input class="form-control" id="password-register" name="password" type="password" required>
+
+                    <div class="input-group">
+                        <input class="form-control" id="password-register" name="password" type="password" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                        </div>
+                    </div>
                     @error('password', 'register_form')
                         <span class="error form-text">
                             {{$message}}
@@ -90,10 +106,16 @@
 
                 <div class="form-group">
                     <label for="password-confirm">Confirm Password</label>
+
+                    <div class="input-group">
                     <input class="form-control" id="password-confirm" type="password" name="password_confirmation" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Register<span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
+                <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Register<span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
             </form>
         </section>
     </div>
