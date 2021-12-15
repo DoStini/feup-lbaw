@@ -14,3 +14,4 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', 'Auth\LoginController@getUser');
+Route::post('/users/private/{id}/edit', 'ShopperController@edit')->middleware('userOwner')->name("edit_user");

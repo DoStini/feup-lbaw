@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 
 use App\Models\Shopper;
@@ -34,7 +35,7 @@ class ShopperController extends Controller {
 
     /**
      * Shows cart contents
-     * 
+     *
      * @return Response
      */
     public function cart() {
@@ -46,5 +47,14 @@ class ShopperController extends Controller {
         $cart = $shopper->cart;
 
         return view('pages.cart', ['cart' => $cart]);
+    }
+
+    /**
+     *
+     */
+    public function edit(Request $request, int $id) {
+        dd("editing" . strval($id) . "with request ". $request->name);
+
+        return 0;
     }
 }
