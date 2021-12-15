@@ -31,7 +31,10 @@
       <header>
         <h1><a href="{{ url('/') }}">Thingy!</a></h1>
         @if (Auth::check())
-        <a class="button" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</span>
+        <form method="POST" class="w-25" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-primary form-control" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</button>
+        </form>
         @endif
       </header>
       <section id="content">
