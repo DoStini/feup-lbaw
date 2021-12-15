@@ -16,9 +16,9 @@
 
     <!-- Styles -->
     {{-- <link href="{{ asset('css/milligram.min.css') }}" rel="stylesheet"> --}}
-    <link href="{{ asset('css2/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
-    <link href="{{ asset('css2/login.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
 
     <script type="text/javascript">
         // Fix for Firefox autofocus CSS bug

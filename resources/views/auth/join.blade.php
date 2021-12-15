@@ -48,7 +48,13 @@
                     @endif
                 </div>
 
-                <div class="d-flex justify-content-end mt-3">
+                <div class="d-flex flex-lg-row flex-column justify-content-end mt-3">
+                    {{-- <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="defaultCheck2">
+                            Remember Me
+                        </label>
+                    </div> --}}
                     <a href="/">Forgot your password?</a>
                 </div>
 
