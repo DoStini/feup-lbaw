@@ -1,66 +1,58 @@
 @extends('layouts.app')
 
 @section('content')
-<section id="auth" class="auth in-body">
-    <div id="auth-form">
-        <section id="login">
+<section id="auth" class="auth container">
+    <div id="auth-form" class="row justify-content-md-evenly">
+        <section id="login" class="col-md-4 d-flex flex-column">
             <header>
                 <h2>Already have an account?<br>Sign in here</h2>
             </header>
-            <form id="oauth-login">
+            <form id="oauth-login" class="align-self-stretch">
                 @csrf
 
-                <button value="oauth-login" type="submit">Sign in with Google</button>
+                <button class="btn btn-primary w-100" value="oauth-login" type="submit">Sign in with Google <span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
             </form>
             <div>
                 or
             </div>
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">@</span>
-                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                  </div>
 
-                <div class="row">
-                    <div class="col-6">
-                        asdfads
-                    </div>
-                    <div class="col-6">
-                        ;===)
-                    </div>
-
+                <div class="form-group">
+                    <label for="email-login">Email</label>
+                    <input id="email-login" class="form-control" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
+                    @if ($errors->login_form->has('email'))
+                        <span class="error form-text">
+                        {{ $errors->login_form->first('email') }}
+                        </span>
+                    @endif
                 </div>
 
-                <label for="email-login">Email</label>
-                <input id="email-login" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
-                @if ($errors->login_form->has('email'))
-                    <span class="error">
-                    {{ $errors->login_form->first('email') }}
-                    </span>
-                @endif
+                <div class="form-group">
+                    <label for="password-login">Password</label>
+                    <input id="password-login" class="form-control" name="password" type="password" required>
+                    @if ($errors->login_form->has('password'))
+                        <span class="error form-text">
+                            {{ $errors->login_form->first('password') }}
+                        </span>
+                    @endif
+                </div>
 
-                <label for="password-login">Password</label>
-                <input id="password-login" name="password" type="password" required>
-                @if ($errors->login_form->has('password'))
-                    <span class="error">
-                        {{ $errors->login_form->first('password') }}
-                    </span>
-                @endif
+                <div class="d-flex justify-content-end mt-3">
+                    <a href="/">Forgot your password?</a>
+                </div>
 
-                <a href="/">Forgot your password?</a>
-                <button value="login" type="submit">Sign In</button>
+                <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
             </form>
 
         </section>
-
-        <section id="register">
+        <section id="register" class="col-md-4 d-flex flex-column">
             <header>
                 <h2>Create an account</h2>
             </header>
-            <form id="oauth-register">
+            <form id="oauth-register" class="align-self-stretch">
                 @csrf
-                <button value="oauth-register" type="submit">Create account with Google</button>
+                <button type="submit" value="oauth-register" class="btn btn-primary w-100" type="submit">Create account with Google <span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
             </form>
             <div>
                 or
@@ -68,32 +60,40 @@
             <form id="register-form"  method="POST" action="{{ route('register') }}">
                 @csrf
 
-                <label for="name-register">Name</label>
-                <input id="name-register" name="name" type="text">
+                <div class="form-group">
+                    <label for="name-register">Name</label>
+                    <input class="form-control" id="name-register" name="name" type="text">
+                </div>
 
                 {{-- <label for="name-register">Surname</label>
                 <input id="name-register" name="surname" type="text"> --}}
 
-                <label for="email-register">Email</label>
-                <input id="email-register" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
-                @error('email', 'register_form')
-                    <span class="error">
-                        {{$message}}
-                    </span>
-                @enderror
+                <div class="form-group">
+                    <label for="email-register">Email</label>
+                    <input class="form-control" id="email-register" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
+                    @error('email', 'register_form')
+                        <span class="error form-text">
+                            {{$message}}
+                        </span>
+                    @enderror
+                </div>
 
-                <label for="password-register">Password</label>
-                <input id="password-register" name="password" type="password" required>
-                @error('password', 'register_form')
-                    <span class="error">
-                        {{$message}}
-                    </span>
-                @enderror
+                <div class="form-group">
+                    <label for="password-register">Password</label>
+                    <input class="form-control" id="password-register" name="password" type="password" required>
+                    @error('password', 'register_form')
+                        <span class="error form-text">
+                            {{$message}}
+                        </span>
+                    @enderror
+                </div>
 
-                <label for="password-confirm">Confirm Password</label>
-                <input id="password-confirm" type="password" name="password_confirmation" required>
+                <div class="form-group">
+                    <label for="password-confirm">Confirm Password</label>
+                    <input class="form-control" id="password-confirm" type="password" name="password_confirmation" required>
+                </div>
 
-                <button value="register">Register</button>
+                <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Register<span class="m-2" ><img src="{{asset('img/Vector.svg')}}" alt=""></span></button>
             </form>
         </section>
     </div>
