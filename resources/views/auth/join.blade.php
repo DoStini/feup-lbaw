@@ -17,6 +17,20 @@
             </div>
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">@</span>
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                  </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        asdfads
+                    </div>
+                    <div class="col-6">
+                        ;===)
+                    </div>
+
+                </div>
 
                 <label for="email-login">Email</label>
                 <input id="email-login" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
