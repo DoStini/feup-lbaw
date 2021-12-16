@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Photo;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
-use App\Models\User;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Storage;
 
 class ShopperController extends Controller {
     /**
@@ -89,14 +85,20 @@ class ShopperController extends Controller {
             $user_attrs["password"] = $request->password;
         }
 
-        $shopper_attrs = [
+        $shopper_attrs = array_filter([ // choose which parameters to validate (filters empty)
+            'about_me' => $request->input("about-me"),
+            'nif' => $request->input("nif"),
+            'phone_number' => $request->input("phone-number"),
+        ]);
+
+        $this->validateData($user_attrs);
+        $this->validateData($shopper_attrs);
+
+        $shopper_attrs = [ // choose which parameters are updated (can be empty)
             'about_me' => $request->input("about-me"),
             'nif' => $request->input("nif"),
             'phone_number' => $request->input("phone-number"),
         ];
-
-        $this->validateData($user_attrs);
-        $this->validateData($shopper_attrs);
 
         if(!is_null($profile = $request->file("profile-picture"))) {
             $this->validateProfilePicture($profile);
@@ -137,6 +139,6 @@ class ShopperController extends Controller {
             }
         }
 
-        return response(1, 200);
+        return response("Profile Edited Successfully!", 200);
     }
 }
