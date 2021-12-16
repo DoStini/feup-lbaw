@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EnsureAuthenticatedOwner
+class EnsureAuthenticatedOwnerOrAdmin
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class EnsureAuthenticatedOwner
     public function handle(Request $request, Closure $next)
     {
         if(Auth::check()) {
-            if(strval(Auth::id()) !== $request->route('id')) {
+            if(!(strval(Auth::id()) === $request->route('id') || Auth::user()->is_admin)) {
                 return response("Forbidden Access", 403)->header('Content-Type', 'text\plain');
             }
         } else {

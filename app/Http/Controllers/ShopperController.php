@@ -54,6 +54,8 @@ class ShopperController extends Controller {
      *
      */
     public function edit(Request $request, int $id) {
+        if(is_null($shopper = Shopper::find($id))) return response('Shopper does not exist', 404);
+
         $user_attrs = array_filter(
         [
             'name' => $request->name,
