@@ -260,14 +260,16 @@ paths:
                   type: number
                 address:
                   type: string
+                profile-picture:
+                  type: file ## TODO HOW TO DO THIS
+                about_me:
+                  type:string
                 postal-code:
                   type: string
                 county:
                   type: string
                 district:
                   type: string
-                profile-picture:
-                  type: string ## TODO HOW TO DO THIS
       parameters:
         - in: path
           name: id
