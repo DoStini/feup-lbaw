@@ -34,25 +34,25 @@ class ProductController extends Controller {
             ->when($request->input('price-max'), function ($q) use ($request) {
                 return $q->where('price', '<', [$request->input('price-max')]);
             })
-            ->when($request->input('stars-min'), function ($q) use ($request) {
-                return $q->where('avg_stars', '>', [$request->input('stars-min')]);
+            ->when($request->input('rate-min'), function ($q) use ($request) {
+                return $q->where('avg_stars', '>', [$request->input('rate-min')]);
             })
-            ->when($request->input('stars-max'), function ($q) use ($request) {
-                return $q->where('avg_stars', '<', [$request->input('stars-max')]);
+            ->when($request->input('rate-max'), function ($q) use ($request) {
+                return $q->where('avg_stars', '<', [$request->input('rate-max')]);
             });
 
         switch ($request->order) {
             case 'price-asc':
-                $query = $query->orderByAsc('price');
+                $query = $query->orderBy('price');
                 break;
             case 'price-desc':
-                $query = $query->orderByAsc('price');
+                $query = $query->orderByDesc('price');
                 break;
             case 'rate-asc':
-                $query = $query->orderByAsc('avg_stars');
+                $query = $query->orderBy('avg_stars');
                 break;
             case 'rate-desc':
-                $query = $query->orderByAsc('avg_stars');
+                $query = $query->orderByDesc('avg_stars');
                 break;
         }
 

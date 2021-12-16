@@ -9,7 +9,7 @@ class Search {
 
     protected $defaultPageSize = 10;
 
-    public function sanitizeNumeric(Request $request, $field, $default) {
+    protected function sanitizeNumeric(Request $request, $field, $default) {
         if (!is_numeric($request[$field])) {
             $request[$field] = $default;
         }
@@ -20,7 +20,7 @@ class Search {
      * 
      *  @param  \Illuminate\Http\Request  $request
      */
-    public function sanitizePage(Request $request) {
+    private function sanitizePage(Request $request) {
         $this->sanitizeNumeric($request, 'page', 1);
         $request->page -= 1;
     }
@@ -30,11 +30,11 @@ class Search {
      * 
      *  @param  \Illuminate\Http\Request  $request
      */
-    public function sanitizePageSize(Request $request) {
+    private function sanitizePageSize(Request $request) {
         $this->sanitizeNumeric($request, 'page-size', $this->defaultPageSize);
     }
 
-    public function searchSanitize(Request $request) {
+    protected function searchSanitize(Request $request) {
         $this->sanitizePage($request);
         $this->sanitizePageSize($request);
     }
