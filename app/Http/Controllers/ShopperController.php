@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Hash;
 
 class ShopperController extends Controller {
     /**
@@ -54,7 +55,7 @@ class ShopperController extends Controller {
         return Validator::make($data, [
             'name' => 'string|max:100',
             'email' => 'string|email|max:255',
-            'password' => 'string|min:6',
+            'password' => 'string|min:6|confirmed',
             'phone_number' => 'digits:9|integer',
             'nif' => 'integer|digits:9',
             'about-me' => 'string'
@@ -75,6 +76,10 @@ class ShopperController extends Controller {
             return abort(404, 'Shopper does not exist');
         }
 
+        if(!Hash::check($request->input("cur-password"), Auth::user()->password)) {
+            return abort(403, "Wrong password");
+        }
+
         $user_attrs =
         [
             'name' => $request->name,
@@ -83,6 +88,7 @@ class ShopperController extends Controller {
 
         if(!is_null($request->password) && $request->password !== "") {
             $user_attrs["password"] = $request->password;
+            $user_attrs["password_confirmation"] = $request->password_confirmation;
         }
 
         $shopper_attrs = array_filter([ // choose which parameters to validate (filters empty)

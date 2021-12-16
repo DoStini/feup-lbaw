@@ -37,6 +37,9 @@ function send(event) {
     <label for="password"> Change Password</label>
     <input id="password" type="password" name="password" autocomplete="new-password">
 
+    <label for="password-confirm">Confirm Password</label>
+    <input id="password-confirm" type="password" name="password_confirmation">
+
     <label for="profile-picture"> Upload New Photo</label>
     <input id="profile-picture" type="file" name="profile-picture">
 
@@ -51,6 +54,8 @@ function send(event) {
     <label for="phone-number"> Phone</label>
     <input id="phone-number" type="text" name="phone-number" value="{{$shopper->phone_number}}">
 
+    <label for="cur-password">Current Password</label>
+    <input autocomplete="on" id="cur-password" type="password" name="cur-password">
 
     <button type="button" onclick="send(event);"></button>
 </form>
