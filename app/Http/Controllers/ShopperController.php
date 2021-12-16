@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 
 use App\Models\Shopper;
+use App\Models\User;
 
 class ShopperController extends Controller {
     /**
@@ -53,6 +54,19 @@ class ShopperController extends Controller {
      *
      */
     public function edit(Request $request, int $id) {
-        return response("editing" . strval($id) . "with request ". $request->name . "with user " . $request->user(), 200)->header('Content-Type', 'text\plain');
+        $user_attrs = array_filter(
+        [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        $user = User::find($id);
+
+        if(!empty($user_attrs)) {
+            $user = $user->update($user_attrs);
+        }
+
+        return response($user, 200);
     }
 }
