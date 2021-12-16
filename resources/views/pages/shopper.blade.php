@@ -8,15 +8,16 @@
 <script type="text/javascript">
 function send(event) {
     const formData = new FormData(document.getElementById('edit-form'));
-    let params = {};
-    for (var pair of formData.entries()) {
-        params[pair[0]] = pair[1];
-    }
 
     window.axios.post
     (
         "/api/users/private/{{$shopper->id}}/edit",
-        params
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
     )
     .then((response) => {console.log(response)})
     .catch((response) => {console.log(response)});
@@ -24,15 +25,20 @@ function send(event) {
     event.preventDefault();
 }
 </script>
-<form id="edit-form">
+<img src="{{asset($shopper->user->photo->url)}}">
+
+<form id="edit-form" autocomplete="off">
     <label for="name"> Name</label>
-    <input id="name" type="text" name="name" value="{{$shopper->name}}">
+    <input id="name" type="text" name="name" value="{{$shopper->user->name}}">
 
     <label for="email"> Email</label>
-    <input id="email" type="email" name="email" value="{{$shopper->email}}">
+    <input id="email" type="email" name="email" value="{{$shopper->user->email}}">
 
-    <label for="password"> Password</label>
-    <input id="password" type="password" name="password">
+    <label for="password"> Change Password</label>
+    <input id="password" type="password" name="password" autocomplete="new-password">
+
+    <label for="profile-picture"> Upload New Photo</label>
+    <input id="profile-picture" type="file" name="profile-picture">
 
     <button type="button" onclick="send(event);"></button>
 </form>

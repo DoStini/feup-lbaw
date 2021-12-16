@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Shopper;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class ShopperController extends Controller {
     /**
@@ -54,16 +56,34 @@ class ShopperController extends Controller {
      *
      */
     public function edit(Request $request, int $id) {
-        if(is_null($shopper = Shopper::find($id))) return response('Shopper does not exist', 404);
+        if(is_null($shopper = Shopper::find($id))) {
+            return response('Shopper does not exist', 404);
+        }
 
         $user_attrs = array_filter(
         [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
         ]);
 
-        $user = User::find($id);
+        if(!is_null($profile = $request->file("profile-picture"))) {
+            $path = $profile->storePubliclyAs(
+                "images/user",
+                "user" . $id . "-" . uniqid() . "." . $profile->extension(),
+                "public"
+            );
+
+            $public_path = "/storage/" . $path;
+            $photo = Photo::create(["url" => $public_path]);
+
+            $user_attrs["photo_id"] = $photo->id;
+        }
+
+        if($request->password != "") {
+            $user_attrs["password"] = bcrypt($request->password);
+        }
+
+        $user = $shopper->user;
 
         if(!empty($user_attrs)) {
             $user = $user->update($user_attrs);
