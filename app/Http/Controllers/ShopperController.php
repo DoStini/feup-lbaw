@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 
 class ShopperController extends Controller {
@@ -58,6 +59,9 @@ class ShopperController extends Controller {
             'name' => 'string|max:100',
             'email' => 'string|email|max:255',
             'password' => 'string|min:6',
+            'phone_number' => 'digits:9|integer',
+            'nif' => 'integer|digits:9',
+            'about-me' => 'string'
         ])->validate();
     }
 
@@ -72,17 +76,27 @@ class ShopperController extends Controller {
      */
     public function edit(Request $request, int $id) {
         if(is_null($shopper = Shopper::find($id))) {
-            return response('Shopper does not exist', 404);
+            return abort(404, 'Shopper does not exist');
         }
 
-        $user_attrs = array_filter(
+        $user_attrs =
         [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password,
-        ]);
+        ];
+
+        if(!is_null($request->password) && $request->password !== "") {
+            $user_attrs["password"] = $request->password;
+        }
+
+        $shopper_attrs = [
+            'about_me' => $request->input("about-me"),
+            'nif' => $request->input("nif"),
+            'phone_number' => $request->input("phone-number"),
+        ];
 
         $this->validateData($user_attrs);
+        $this->validateData($shopper_attrs);
 
         if(!is_null($profile = $request->file("profile-picture"))) {
             $this->validateProfilePicture($profile);
@@ -108,9 +122,21 @@ class ShopperController extends Controller {
         $user = $shopper->user;
 
         if(!empty($user_attrs)) {
-            $user = $user->update($user_attrs);
+            try {
+                $user->update($user_attrs);
+            } catch (QueryException $ex) {
+                return abort(406, "User vars");
+            }
         }
 
-        return response($user, 200);
+        if(!empty($shopper_attrs)) {
+            try {
+                $shopper->update($shopper_attrs);
+            } catch (QueryException $ex) {
+                return abort(406, "Shopper vars");
+            }
+        }
+
+        return response(1, 200);
     }
 }

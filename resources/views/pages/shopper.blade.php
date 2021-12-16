@@ -40,6 +40,18 @@ function send(event) {
     <label for="profile-picture"> Upload New Photo</label>
     <input id="profile-picture" type="file" name="profile-picture">
 
+    <label for="about-me"> About Me</label>
+    <textarea id="about-me" name="about-me" value="">
+        {{$shopper->about_me}}
+    </textarea>
+
+    <label for="nif"> NIF</label>
+    <input id="nif" type="text" name="nif" value="{{$shopper->nif}}">
+
+    <label for="phone-number"> Phone</label>
+    <input id="phone-number" type="text" name="phone-number" value="{{$shopper->phone_number}}">
+
+
     <button type="button" onclick="send(event);"></button>
 </form>
 
