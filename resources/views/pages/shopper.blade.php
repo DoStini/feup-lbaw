@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 function send() {
-    window.axios.post("/api/users/private/{{Auth::id()}}/edit", {name: document.getElementById("name").value}).then((response) => {console.log(response)}).catch((response) => {console.log(response)})
+    window.axios.post("/api/users/private/{{$shopper->id}}/edit", {name: document.getElementById("name").value}).then((response) => {console.log(response)}).catch((response) => {console.log(response)})
 }
 </script>
 
