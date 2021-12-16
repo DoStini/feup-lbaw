@@ -58,7 +58,7 @@ class ShopperController extends Controller {
             'password' => 'string|min:6|confirmed',
             'phone_number' => 'digits:9|integer',
             'nif' => 'integer|digits:9',
-            'about-me' => 'string'
+            'about_me' => 'string'
         ])->validate();
     }
 
