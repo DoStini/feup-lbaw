@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Photo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-
+use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -52,6 +53,20 @@ class ShopperController extends Controller {
         return view('pages.cart', ['cart' => $cart]);
     }
 
+    private function validateData($data) {
+        return Validator::make($data, [
+            'name' => 'string|max:100',
+            'email' => 'string|email|max:255',
+            'password' => 'string|min:6',
+        ])->validate();
+    }
+
+    private function validateProfilePicture($file) {
+        return Validator::make(['profile-picture' => $file], [
+            'profile-picture' => 'file|image'
+        ])->validate();
+    }
+
     /**
      *
      */
@@ -64,9 +79,14 @@ class ShopperController extends Controller {
         [
             'name' => $request->name,
             'email' => $request->email,
+            'password' => $request->password,
         ]);
 
+        $this->validateData($user_attrs);
+
         if(!is_null($profile = $request->file("profile-picture"))) {
+            $this->validateProfilePicture($profile);
+
             $path = $profile->storePubliclyAs(
                 "images/user",
                 "user" . $id . "-" . uniqid() . "." . $profile->extension(),
@@ -81,6 +101,8 @@ class ShopperController extends Controller {
 
         if($request->password != "") {
             $user_attrs["password"] = bcrypt($request->password);
+        } else {
+            unset($user_attrs["password"]);
         }
 
         $user = $shopper->user;
