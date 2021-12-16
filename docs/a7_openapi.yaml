@@ -252,7 +252,7 @@ paths:
                   type: string
                 name:
                   type: string
-                phone_number:
+                phone-number:
                   type: string
                 birth:
                   type: string
