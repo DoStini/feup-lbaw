@@ -260,10 +260,10 @@ paths:
                   type: number
                 address:
                   type: string
+                about-me:
+                  type: string
                 profile-picture:
                   type: file ## TODO HOW TO DO THIS
-                about_me:
-                  type:string
                 postal-code:
                   type: string
                 county:
