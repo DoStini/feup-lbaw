@@ -263,7 +263,7 @@ paths:
                 about-me:
                   type: string
                 profile-picture:
-                  type: file ## TODO HOW TO DO THIS
+                  type: string
                 postal-code:
                   type: string
                 county:
@@ -736,9 +736,9 @@ paths:
     get:
       operationId: R402
       summary: 'R402: Get cart api'
-      description: 'Return products in user's cart as JSON. Access: OWN'
+      description: "Return products in user's cart as JSON. Access: OWN"
       tags:
-        - 'M03: Products'
+        - 'M04: Orders and Shopping Cart'
 
       responses:
         '200':
@@ -785,36 +785,36 @@ paths:
                         amount:
                           type: number
 
-                  example:
-                    total: 351.98
-                    items: 
-                      - id: 2
-                        name: 'Funny Bed'
-                        attributes:
-                          colors:
-                            - 'blue'
-                            - 'yellow'
-                          materials:
-                            - 'wood'
-                        stock: 5
-                        description: 'A very beautiful piece of furniture'
-                        price: 325.99
-                        avg_stars: 2.5
-                        amount: 1
+                example:
+                  total: 351.98
+                  items: 
+                    - id: 2
+                      name: 'Funny Bed'
+                      attributes:
+                        colors:
+                          - 'blue'
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                      stock: 5
+                      description: 'A very beautiful piece of furniture'
+                      price: 325.99
+                      avg_stars: 2.5
+                      amount: 1
 
-                      - id: 4
-                        name: 'Not a very good bed'
-                        attributes:
-                          colors:
-                            - 'yellow'
-                          materials:
-                            - 'wood'
-                            - 'wool'
-                        stock: 5
-                        description: 'A very cheap piece of furniture'
-                        price: 25.99
-                        avg_stars: 0.2
-                        amount: 1
+                    - id: 4
+                      name: 'Not a very good bed'
+                      attributes:
+                        colors:
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                          - 'wool'
+                      stock: 5
+                      description: 'A very cheap piece of furniture'
+                      price: 25.99
+                      avg_stars: 0.2
+                      amount: 1
         '403':
           description: "User not logged in or is logged in as an admin"
         '422':
@@ -853,7 +853,7 @@ paths:
           description: "Product does not exist, is already in cart, or there is no stock."
 
   /api/users/cart/remove/:
-    del:
+    post:
       operationId: R404
       summary: 'R404: Set product amount from cart  API'
       description: "Remove a product from the cart. Access: OWN"
