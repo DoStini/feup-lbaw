@@ -42,7 +42,7 @@ class ApiError {
                 ['message' => $obj['message']],
                 $obj['code'],
             );
-        } catch (Exception $_) {
+        } catch (\Exception $_) {
             return ApiError::unexpected();
         }
     }
