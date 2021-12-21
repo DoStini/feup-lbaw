@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 
-class IsNotAdmin {
+class IsShopper {
     /**
      * Handle an incoming request.
      *
@@ -19,7 +19,7 @@ class IsNotAdmin {
     public function handle(Request $request, Closure $next) {
         $user = Auth::user();
         if ($user->is_admin) {
-            return ApiError::cantBeAdmin();
+            return ApiError::mustBeShopper();
         }
 
         return $next($request);

@@ -11,8 +11,8 @@ class ApiError {
      *
      * @return void
      */
-    public static function cantBeAdmin() {
-        $err = Config::get('constants.authentication.cant_be_admin');
+    public static function mustBeShopper() {
+        $err = Config::get('constants.authentication.must_be_shopper');
         return ApiError::generateErrorMessage($err);
     }
 

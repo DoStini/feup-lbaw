@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller {
 
+    /**
+     * Calculates the value of a user's cart
+     * @param Collection
+     * @return Response
+     */
     private function cartPrice($cart) {
         return round($cart->reduce(
             fn ($prev, $item): float => $prev + $item->price * $item->details->amount,
@@ -22,9 +27,8 @@ class CartController extends Controller {
     }
 
     /**
-     * Shows the product for a given id.
+     * Gets the list of products, their corresponding amount and the cart value of a user
      *
-     * @param  int  $id
      * @return Response
      */
     public function get() {

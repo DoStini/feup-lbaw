@@ -7,12 +7,12 @@ return [
     ],
     'authentication' => [
         'auth' => [
-            'code' => 401,
+            'code' => 403,
             'message' => 'The user must be logged in'
         ],
-        'cant_be_admin' => [
-            'code' => 401,
-            'message' => 'The user can\'t be an admin'
+        'must_be_shopper' => [
+            'code' => 403,
+            'message' => 'The user is not a shopper'
         ],
     ]
 
