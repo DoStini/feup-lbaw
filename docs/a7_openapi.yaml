@@ -713,7 +713,7 @@ paths:
  
  #M04
 
-  /user/cart:
+  /users/cart:
     get:
       operationId: R401
       summary: 'R401: View Shopping Cart'
@@ -732,19 +732,106 @@ paths:
                 type: string
                 example: '/'
 
-  /api/cart/add/:
-    post:
+  /api/users/cart/:
+    get:
       operationId: R402
-      summary: 'R402: Add product to shopping cart API'
+      summary: 'R402: Get cart api'
+      description: 'Return products in user's cart as JSON. Access: OWN'
+      tags:
+        - 'M03: Products'
+
+      responses:
+        '200':
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                        attributes:
+                          type: object
+                          properties:
+                            color:
+                              type: array
+                              items: 
+                                type: string
+                            material:
+                              type: array
+                              items:
+                                type: string
+                        stock:
+                          type: integer
+                        description:
+                          type: string
+                        photos:
+                          type: array
+                          items:
+                            type: string
+                        price:
+                          type: number
+                        avg_stars:
+                          type: number
+                        amount:
+                          type: number
+
+                  example:
+                    total: 351.98
+                    items: 
+                      - id: 2
+                        name: 'Funny Bed'
+                        attributes:
+                          colors:
+                            - 'blue'
+                            - 'yellow'
+                          materials:
+                            - 'wood'
+                        stock: 5
+                        description: 'A very beautiful piece of furniture'
+                        price: 325.99
+                        avg_stars: 2.5
+                        amount: 1
+
+                      - id: 4
+                        name: 'Not a very good bed'
+                        attributes:
+                          colors:
+                            - 'yellow'
+                          materials:
+                            - 'wood'
+                            - 'wool'
+                        stock: 5
+                        description: 'A very cheap piece of furniture'
+                        price: 25.99
+                        avg_stars: 0.2
+                        amount: 1
+        '403':
+          description: "User not logged in or is logged in as an admin"
+        '422':
+          description: "Product does not exist, is already in cart, or there is no stock."
+
+  /api/users/cart/add/:
+    post:
+      operationId: R403
+      summary: 'R403: Add product to shopping cart API'
       description: 'Add product to Shopping Cart. Access: PUB'
       tags:
         - 'M04: Orders and Shopping Cart'
 
-
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -760,14 +847,45 @@ paths:
       responses:
         '200': 
           description: "Ok. Product was added to cart"
+        '403':
+          description: "User not logged in or is logged in as an admin"
         '422':
           description: "Product does not exist, is already in cart, or there is no stock."
 
-  /api/cart/set-amount/:
+  /api/users/cart/remove/:
+    del:
+      operationId: R404
+      summary: 'R404: Set product amount from cart  API'
+      description: "Remove a product from the cart. Access: OWN"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product-id:
+                  type: integer
+                  minimum: 1
+              required:
+                - product-id
+                - amount
+      responses:
+        '200': 
+          description: "Ok. Product was removed from cart"
+        '403':
+          description: "User not logged in or is logged in as an admin"
+        '422':
+          description: "Product does not exist, is already in cart, or there is no stock."
+
+  /api/users/cart/update/:
     post:
-      operationId: R403
-      summary: 'R403: Set product amount from cart  API'
-      description: "Set product amount of cart. If the amount given is equal to 0, then the product is removed from the cart.  Access: PUB"
+      operationId: R405
+      summary: 'R405: Set product amount from cart  API'
+      description: "Set product amount of cart. Access: OWN"
       tags:
         - 'M04: Orders and Shopping Cart'
 
@@ -783,20 +901,22 @@ paths:
                   minimum: 1
                 amount:
                   type: integer
-                  minimum: 0
+                  minimum: 1
               required:
                 - product-id
                 - amount
       responses:
         '200': 
-          description: "Ok. Product amount was set in cart."
+          description: "Ok. Product amount was modified to cart"
+        '403':
+          description: "User not logged in or is logged in as an admin"
         '422':
-          description: "Product does not exist in cart, amount negative or higher than available stock."
+          description: "Product does not exist, or there is no stock."
 
-  /user/checkout:
+  /users/checkout:
     get:
-      operationId: R404
-      summary: 'R401: View Checkout Page'
+      operationId: R406
+      summary: 'R406: View Checkout Page'
       description: 'Show Checkout Page. Access: USR'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -812,11 +932,10 @@ paths:
                 type: string
                 example: '/'
 
-
-  /user/orders:
+  /users/orders:
     get:
-      operationId: R405
-      summary: 'R405: View Profile Purchase History page'
+      operationId: R407
+      summary: 'R407: View Profile Purchase History page'
       description: 'Show Profile Purchase History page. Access: OWN'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -826,10 +945,11 @@ paths:
           description: 'Ok. Show Profile Purchase History UI13'
         '403':
           description: 'Forbidden. Not an admin nor the owner.'
+  
   /orders/{id}:
     get:
-      operationId: R406
-      summary: 'R406: View Order page'
+      operationId: R408
+      summary: 'R408: View Order page'
       description: 'Show Order page. Access: OWN, ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -842,8 +962,8 @@ paths:
 
   /admin/orders:
     get:
-      operationId: R407
-      summary: 'R407: View manage orders page'
+      operationId: R409
+      summary: 'R409: View manage orders page'
       description: 'Show manage orders page . Access: ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -854,11 +974,10 @@ paths:
         '403':
           description: 'Forbidden. Not an admin.'
 
-  
   /api/orders/{id}/status:
     post:
-      operationId: R407
-      summary: 'R407: Update order status API'
+      operationId: R410
+      summary: 'R410: Update order status API'
       description: "Update order status. Access: ADM"
       tags:
         - 'M04: Orders and Shopping Cart'
