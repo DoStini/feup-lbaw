@@ -5,10 +5,9 @@ namespace App\Http\Middleware;
 use App\Exceptions\ApiError;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 
-class IsNotAdmin {
+class LoginRequired {
     /**
      * Handle an incoming request.
      *
@@ -17,11 +16,9 @@ class IsNotAdmin {
      * @return mixed
      */
     public function handle(Request $request, Closure $next) {
-        $user = Auth::user();
-        if ($user->is_admin) {
-            return ApiError::cantBeAdmin();
+        if (!Auth::check()) {
+            return ApiError::auth();
         }
-
         return $next($request);
     }
 }
