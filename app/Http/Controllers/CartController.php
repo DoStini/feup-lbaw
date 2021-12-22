@@ -19,11 +19,11 @@ use Ramsey\Uuid\Type\Integer;
 class CartController extends Controller {
 
     /**
-     * Returns a validator to the add to cart function
+     * Returns a validator to the functions that only require a product id
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    private function validatorAdd($request) {
+    private function validatorProductId($request) {
         return Validator::make($request->all(), [
             'product_id' => 'required|integer|min:1',
         ]);
@@ -83,7 +83,7 @@ class CartController extends Controller {
      */
     public function add(Request $request) {
 
-        if (($v = $this->validatorAdd($request))->fails()) {
+        if (($v = $this->validatorProductId($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
 
@@ -109,6 +109,11 @@ class CartController extends Controller {
         return response()->json();
     }
 
+    /**
+     * Updates a product amount in the user's cart
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request) {
         if (($v = $this->validatorUpdate($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -132,6 +137,33 @@ class CartController extends Controller {
         }
 
         $shopper->cart()->updateExistingPivot($productId, ['amount' => $amount]);
+
+        return response()->json();
+    }
+
+    /**
+     * Deletes a product from the user's cart
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Request $request) {
+        if (($v = $this->validatorProductId($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $userId = Auth::user()->id;
+        $productId = $request->product_id;
+        $shopper = Shopper::find($userId);
+
+        if (!($product = $this->getProduct($productId))) {
+            return ApiError::productDoesNotExist();
+        }
+
+        if (!$this->productInCart($shopper, $product)) {
+            return ApiError::productNotInCart();
+        }
+
+        $shopper->cart()->detach($productId);
 
         return response()->json();
     }
