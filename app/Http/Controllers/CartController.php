@@ -14,22 +14,47 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Type\Integer;
 
 class CartController extends Controller {
 
     /**
      * Returns a validator to the add to cart function
      *
-     * @return Validator
+     * @return \Illuminate\Contracts\Validation\Validator
      */
     private function validatorAdd($request) {
         return Validator::make($request->all(), [
-            'product_id' => 'required|integer|min:5',
+            'product_id' => 'required|integer|min:1',
         ]);
     }
 
     /**
+     * Returns a validator to update cart function
+     *
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    private function validatorUpdate(Request $request) {
+        return Validator::make($request->all(), [
+            'product_id' => 'required|integer|min:1',
+            'amount' => 'required|integer|min:1'
+        ]);
+    }
+
+    /**
+     * Verifies if a product has enough stock
+     * 
+     * @param Collection
+     * @param Integer
+     * @return float
+     */
+    private function validStock($product, $amount) {
+        return $product->stock >= $amount;
+    }
+
+    /**
      * Calculates the value of a user's cart
+     * 
      * @param Collection
      * @return float
      */
@@ -40,10 +65,22 @@ class CartController extends Controller {
         ), 2);
     }
 
+    /**
+     * Verifies if a product is in the user's cart
+     * 
+     * @param Collection
+     * @param Integer
+     * @return float
+     */
     private function productInCart($shopper, $product) {
         return $shopper->cart->contains(($product));
     }
 
+    /**
+     * Adds a product to the user's cart
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function add(Request $request) {
 
         if (($v = $this->validatorAdd($request))->fails()) {
@@ -63,7 +100,38 @@ class CartController extends Controller {
             return ApiError::productAlreadyInCart();
         }
 
+        if (!$this->validStock($product, $amount)) {
+            return ApiError::notEnoughStock();
+        }
+
         $shopper->cart()->attach($productId, ['amount' => $amount]);
+
+        return response()->json();
+    }
+
+    public function update(Request $request) {
+        if (($v = $this->validatorUpdate($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $userId = Auth::user()->id;
+        $amount = $request->amount;
+        $productId = $request->product_id;
+        $shopper = Shopper::find($userId);
+
+        if (!($product = $this->getProduct($productId))) {
+            return ApiError::productDoesNotExist();
+        }
+
+        if (!$this->productInCart($shopper, $product)) {
+            return ApiError::productNotInCart();
+        }
+
+        if (!$this->validStock($product, $amount)) {
+            return ApiError::notEnoughStock();
+        }
+
+        $shopper->cart()->updateExistingPivot($productId, ['amount' => $amount]);
 
         return response()->json();
     }
@@ -102,8 +170,7 @@ class CartController extends Controller {
      * @param $productId
      * @return mixed
      */
-    public function getProduct($productId)
-    {
+    public function getProduct($productId) {
         return Product::find($productId);
     }
 }

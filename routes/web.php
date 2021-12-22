@@ -32,7 +32,8 @@ Route::group(
     ],
     function () {
         Route::get('/', 'CartController@get');
-        Route::get('/add', 'CartController@add');
+        Route::post('/add', 'CartController@add');
+        Route::post('/update', 'CartController@update');
     }
 );
 

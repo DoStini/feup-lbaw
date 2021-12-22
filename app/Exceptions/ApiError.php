@@ -43,6 +43,16 @@ class ApiError {
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    public static function notEnoughStock() {
+        $err = Config::get('constants.cart.stock');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error regarding admin logged in
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public static function mustBeShopper() {
         $err = Config::get('constants.authentication.must_be_shopper');
         return ApiError::generateErrorMessage($err);

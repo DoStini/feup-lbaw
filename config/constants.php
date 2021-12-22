@@ -31,6 +31,10 @@ return [
         'not_exists' => [
             'code' => 422,
             'message' => 'Product not in cart'
-        ]
+        ],
+        'stock' => [
+            'code' => 422,
+            'message' => 'Product doest not have enough stock'
+        ],
     ]
 ];
