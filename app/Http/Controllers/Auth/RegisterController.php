@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Shopper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\JsonResponse;
 
 class RegisterController extends Controller {
     /*
@@ -26,7 +30,9 @@ class RegisterController extends Controller {
      *
      * @var string
      */
-    protected $redirectTo = '/cards';
+    public function redirectTo() {
+        return '/users/';
+    }
 
     /**
      * Create a new controller instance.
@@ -35,6 +41,35 @@ class RegisterController extends Controller {
      */
     public function __construct() {
         $this->middleware('guest');
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validateWithBag('register_form');
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        if ($response = $this->registered($request, $user)) {
+            return $response;
+        }
+
+        $shopper = new Shopper;
+
+        $shopper->id = strval($user->id);
+
+        $shopper->save();
+
+        return $request->wantsJson()
+                    ? new JsonResponse([], 201)
+                    : redirect($this->redirectPath());
     }
 
     /**
@@ -50,6 +85,7 @@ class RegisterController extends Controller {
             'password' => 'required|string|min:6|confirmed',
         ]);
     }
+
 
     /**
      * Create a new user instance after a valid registration.

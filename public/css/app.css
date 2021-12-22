@@ -123,10 +123,6 @@ main > header span {
   main > header span {
     margin: 0;
   }
-  #content form {
-    margin: 0;
-    max-width: 25em;
-  }
   article.card {
     margin: 0;
     border-bottom: 1px solid rgba(96, 108, 118, 0.4);

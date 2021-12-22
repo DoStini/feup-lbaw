@@ -10,22 +10,31 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&display=swap" rel="stylesheet">
+
     <!-- Styles -->
-    <link href="{{ asset('css/milligram.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('css/milligram.min.css') }}" rel="stylesheet"> --}}
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+
     <script type="text/javascript">
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
     </script>
-    <script type="text/javascript" src={{ asset('js/app.js') }} defer>
-</script>
+    <script type="text/javascript" src={{ asset('js/app.js') }} defer></script>
   </head>
   <body>
     <main>
       <header>
-        <h1><a href="{{ url('/cards') }}">Thingy!</a></h1>
+        <h1><a href="{{ url('/') }}">Thingy!</a></h1>
         @if (Auth::check())
-        <a class="button" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</span>
+        <form method="POST" class="w-25" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-primary form-control" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</button>
+        </form>
         @endif
       </header>
       <section id="content">
