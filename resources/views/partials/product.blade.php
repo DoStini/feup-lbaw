@@ -51,7 +51,15 @@
             <h3> Desc </h3>
             <p>{{$product->description}}</p>-->
             
-            <div class="quantity-wishlist">
+            <div class="quantity-wishlist my-4 justify-content-around align-items-center d-flex">
+                <div>
+                    1
+                </div>
+                <div class="calculated-price">
+                    <h5>{{$product->price}}</h5>
+                </div>
+                <i class="bi bi-heart-fill add-to-wishlist"></i>
+                
             </div>
             
             <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
