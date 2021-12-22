@@ -7,9 +7,41 @@ use Illuminate\Support\Facades\Config;
 class ApiError {
 
     /**
+     * Returns a json response with an error regarding validators
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function validatorError($fieldErrors) {
+        $err = Config::get('constants.fields');
+        return ApiError::generateErrorMessage($err, [
+            'errors' => $fieldErrors,
+        ]);
+    }
+
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function productNotInCart() {
+        $err = Config::get('constants.cart.not_exists');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function productAlreadyInCart() {
+        $err = Config::get('constants.cart.already_exists');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
      * Returns a json response with an error regarding admin logged in
      *
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public static function mustBeShopper() {
         $err = Config::get('constants.authentication.must_be_shopper');
@@ -17,9 +49,19 @@ class ApiError {
     }
 
     /**
+     * Returns a json response with an error regarding admin logged in
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function productDoesNotExist() {
+        $err = Config::get('constants.not_exist_product');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
      * Returns a json response with an error regarding user not authenticated
      *
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public static function auth() {
         $err = Config::get('constants.authentication.auth');
@@ -34,12 +76,15 @@ class ApiError {
     /**
      * Returns a json response with an error
      *
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
-    public static function generateErrorMessage($obj) {
+    public static function generateErrorMessage($obj, $extra = null) {
         try {
             return response()->json(
-                ['message' => $obj['message']],
+                array_merge(
+                    ['message' => $obj['message']],
+                    $extra ?? [],
+                ),
                 $obj['code'],
             );
         } catch (\Exception $_) {
