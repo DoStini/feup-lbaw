@@ -1,0 +1,17 @@
+
+.dot {
+    height: 25px;
+    width: 25px;
+    background-color: var(--color);
+    border: 1px solid black;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot:hover {
+    border: 3px solid #BADA55;
+}
+
+.product-slide {
+    width: 60%;
+}
