@@ -29,13 +29,7 @@
   <body>
     <main>
       <header>
-        <h1><a href="{{ url('/') }}">Thingy!</a></h1>
-        @if (Auth::check())
-        <form method="POST" class="w-25" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-primary form-control" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</button>
-        </form>
-        @endif
+        @include('layouts.header')
       </header>
       <section id="content">
         @yield('content')
