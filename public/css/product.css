@@ -1,0 +1,4 @@
+.search-products-item {
+    transition: top 1s ease 0s, opacity 1s;
+    top: 0;
+}

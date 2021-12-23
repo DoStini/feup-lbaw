@@ -1,3 +1,9 @@
+function route(route, data) {
+    console.log(route)
+    history.pushState(data, document.title, "");
+    window.location.assign(`/${route}`);
+}
+
 function encodeForAjax(data) {
     if (data == null) return null;
     return Object.keys(data).map(function(k){
