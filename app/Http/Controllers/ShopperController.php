@@ -32,22 +32,6 @@ class ShopperController extends Controller {
         return view('pages.cards', ['cards' => $cards]);
     }
 
-    /**
-     * Shows cart contents
-     *
-     * @return Response
-     */
-    public function cart() {
-        if (!Auth::check()) return redirect('/login');
-        $user = Auth::user();
-        if ($user->is_admin) return redirect('/login');
-
-        $shopper = Shopper::find($user->id);
-        $cart = $shopper->cart;
-
-        return view('pages.cart', ['cart' => $cart]);
-    }
-
     public function getAuth() {
         return redirect("/users/" . strval(Auth::id()));
     }
