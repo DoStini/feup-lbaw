@@ -3,17 +3,28 @@
         <div class="product-images col-8 d-flex justify-content-center align-items-center">
             <div id="carouselExampleControls" class="carousel slide product-slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
+                    @php
+                        $insertedPhotos = 0;
+                    @endphp
                     @if ($product->photos)
                         @foreach ($product->photos as $photo)
-                            @if (Storage::url($photo->url) !== null)
+                            @if (File::exists(Storage::url($photo->url)))
                                 <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
                                     <img class="d-block w-100" src={{ Storage::url('images/product/default.jpg')}}>
                                 </div>
+                                @php
+                                    $insertedPhotos++;
+                                @endphp
                             @endif
                         @endforeach
                     @endif
+                    @if ($insertedPhotos < 1)
+                        <div class="carousel-item active">
+                            <img class="d-block w-100" src={{ Storage::url('images/product/default.jpg')}}>
+                        </div>
+                    @endif
                 </div>
-                @if ($product->photos->count() > 1)
+                @if ($insertedPhotos > 1)
                   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
@@ -53,20 +64,41 @@
             
             <div class="quantity-wishlist my-4 justify-content-around align-items-center d-flex">
                 <div>
-                    1
+                    <input id="quantity-to-add" type="number" min="1" max={{$product->stock}} value="1">
                 </div>
                 <div class="calculated-price">
-                    <h5>{{$product->price}}</h5>
+                    <h5 id="current-price">{{$product->price}}</h5>
                 </div>
+                <!--
                 <i class="bi bi-heart-fill add-to-wishlist"></i>
-                
+                -->
             </div>
             
             <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
                 <button class="btn btn-primary w-100 my-2">Add to Cart</button>
                 <button class="btn btn-success w-100 my-2">In Stock</button>
-                <button class="btn btn-info w-100 my-2">View More Details</button>
+                <div class="accordion w-100 my-2" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingTwo">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            View More Details
+                          </button>
+                        </h2>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">{{$product->description}}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    let quantityInputBox = document.getElementById('quantity-to-add');
+    let currentPriceContainer = document.getElementById('current-price');
+    console.log(quantityInputBox);
+    quantityInputBox.addEventListener('change', function() {
+        currentPriceContainer.innerText = ({{$product->price}} * quantityInputBox.value).toFixed(2);
+    })
+</script>
