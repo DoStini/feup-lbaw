@@ -19,7 +19,7 @@ Route::get('users/', 'ShopperController@getAuth');
 
 // Products
 Route::get('products/{id}', 'ProductController@show');
-Route::get('products', 'ProductController@list');
+Route::get('products', 'ProductController@search');
 
 // API
 Route::put('api/cards', 'CardController@create');
