@@ -20,6 +20,6 @@ class CartController extends Controller {
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
 
-        return view('pages.cart', ['cart' => $cart]);
+        return view('pages.cart', ['cart' => $cart, 'user' => $user]);
     }
 }
