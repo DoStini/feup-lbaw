@@ -63,20 +63,28 @@
             <p>{{$product->description}}</p>-->
             
             <div class="quantity-wishlist my-4 justify-content-around align-items-center d-flex">
-                <div>
-                    <input id="quantity-to-add" type="number" min="1" max={{$product->stock}} value="1">
-                </div>
-                <div class="calculated-price">
-                    <h5 id="current-price">{{$product->price}}</h5>
-                </div>
+                @if ($product->stock > 0)
+                    <div>
+                        <input id="quantity-to-add" type="number" min="1" max={{$product->stock}} value="1">
+                    </div>
+                    <div class="calculated-price">
+                        <h6 id="current-price">Subtotal: {{$product->price}} €</h6>
+                    </div>
+                @endif
+                
                 <!--
                 <i class="bi bi-heart-fill add-to-wishlist"></i>
                 -->
             </div>
             
             <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
-                <button class="btn btn-primary w-100 my-2">Add to Cart</button>
-                <button class="btn btn-success w-100 my-2">In Stock</button>
+                @if ($product->stock > 0)
+                    <button class="btn btn-primary w-100 my-2">Add to Cart</button>
+                    <button class="btn btn-success w-100 my-2">In Stock</button>
+                @else
+                    <button class="btn btn-danger w-100 my-2">Out of Stock</button>
+                @endif
+                
                 <div class="accordion w-100 my-2" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
@@ -99,6 +107,6 @@
     let currentPriceContainer = document.getElementById('current-price');
     console.log(quantityInputBox);
     quantityInputBox.addEventListener('change', function() {
-        currentPriceContainer.innerText = ({{$product->price}} * quantityInputBox.value).toFixed(2);
+        currentPriceContainer.innerText = `${({{$product->price}} * quantityInputBox.value).toFixed(2)} €`;
     })
 </script>
