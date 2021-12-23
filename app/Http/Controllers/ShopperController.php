@@ -146,5 +146,7 @@ class ShopperController extends Controller {
         }
 
         return response("Profile Edited Successfully!", 200);
+    public function getAuth() {
+        return redirect("/users/" . strval(Auth::id()));
     }
 }
