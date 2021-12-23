@@ -59,11 +59,12 @@
 
         <div class="col-md-4 d-flex justify-content-center justify-content-md-end align-items-center">
           <div class="d-flex">
-            <!-- Cart -->
-            <a class="text-reset me-5 mt-1" href="/users/cart">
-              <span><i class="fas fa-shopping-cart" style="color: #000000; font-size:1.5em;"></i></span>
-            </a>
             @if(Auth::check())
+                <!-- Cart -->
+                <a class="text-reset me-5 mt-1" href="/users/cart">
+                <span><i class="fas fa-shopping-cart" style="color: #000000; font-size:1.5em;"></i></span>
+                </a>
+
                 <!-- Notification -->
                 <div class="dropdown mt-1">
                 <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="dropdownMenuButton2"
@@ -90,14 +91,11 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li><a class="dropdown-item" href="#">My profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><form method="POST" class="w-100 col" action="{{ route('logout') }}">
-                        @csrf
-                        <a type="submit" class="dropdown-item w-100" href="{{ url('/logout') }}"> Logout</a>
-                    </form></li>
+                    <li><a class="dropdown-item" href="{{url('/logout')}}">Logout</a></li>
                 </ul>
                 </div>
             @else
-                <button class="btn btn-outline-primary">Sign-In</button>
+                <a class="btn btn-outline-primary" href={{url('/join')}}>Sign-In</a>
             @endif
           </div>
         </div>
