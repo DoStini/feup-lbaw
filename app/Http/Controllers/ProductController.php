@@ -15,4 +15,17 @@ class ProductController extends Controller {
         $product = Product::find($id);
         return view('pages.product', ['product' => $product]);
     }
+
+
+    /**
+     * Shows the search products page.
+     *
+     * @return Response
+     */
+    public function list() {
+
+        $products = Product::all()->take(25);
+
+        return view('pages.search.products', ['products' => $products]);
+    }
 }
