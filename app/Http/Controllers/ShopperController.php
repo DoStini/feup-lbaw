@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
@@ -53,12 +54,12 @@ class ShopperController extends Controller {
 
     private function validateData($data) {
         return Validator::make($data, [
-            'name' => 'string|max:100',
-            'email' => 'string|email|max:255|unique:users,email,'.Auth::id(),
-            'password' => 'string|min:6|max:255|confirmed',
-            'phone_number' => 'digits:9|integer',
-            'nif' => 'integer|digits:9',
-            'about_me' => 'string'
+            'name' => 'required|string|max:100',
+            'email' => 'required|string|email:rfc,dns|max:255|unique:users,email,'.Auth::id(),
+            'password' => 'nullable|string|min:6|max:255|confirmed',
+            'phone_number' => 'nullable|digits:9|integer',
+            'nif' => 'nullable|integer|digits:9',
+            'about_me' => 'nullable|string'
         ], [], [
             'password'  => 'New Password',
             'name'  => 'Name',
@@ -66,7 +67,7 @@ class ShopperController extends Controller {
             'phone_number'  => 'Phone Number',
             'nif'  => 'NIF',
             'about_me'  => 'About Me',
-        ]) ->validate();
+        ])->validate();
     }
 
     private function validateProfilePicture($file) {
@@ -98,27 +99,30 @@ class ShopperController extends Controller {
         [
             'name' => $request->name,
             'email' => $request->email,
+            'password' => $request->password,
+            'password_confirmation' => $request->password_confirmation,
         ];
 
-        if(!is_null($request->password) && $request->password !== "") {
-            $user_attrs["password"] = $request->password;
-            $user_attrs["password_confirmation"] = $request->password_confirmation;
+        $shopper_attrs = [
+            'about_me' => $request->input("about-me"),
+            'nif' => $request->input("nif"),
+            'phone_number' => $request->input("phone-number"),
+        ];
+
+        $data_validate = array_merge($user_attrs, $shopper_attrs);
+        $this->validateData($data_validate);
+
+        if(array_key_exists('nif', $shopper_attrs) && !is_null($shopper_attrs['nif'])) {
+            $nif_check = DB::select('SELECT check_nif(?)', [$shopper_attrs['nif']])[0]->check_nif;
+            if($nif_check === '') {
+                $response = [];
+                $response["errors"] = [
+                    "nif" => "NIF is not valid."
+                ];
+
+                return response()->json($response, 422);
+            }
         }
-
-        $shopper_attrs = array_filter([ // choose which parameters to validate (filters empty)
-            'about_me' => $request->input("about-me"),
-            'nif' => $request->input("nif"),
-            'phone_number' => $request->input("phone-number"),
-        ]);
-
-        $this->validateData($user_attrs);
-        $this->validateData($shopper_attrs);
-
-        $shopper_attrs = [ // choose which parameters are updated (can be empty)
-            'about_me' => $request->input("about-me"),
-            'nif' => $request->input("nif"),
-            'phone_number' => $request->input("phone-number"),
-        ];
 
         if(!is_null($profile = $request->file("profile-picture"))) {
             $this->validateProfilePicture($profile);

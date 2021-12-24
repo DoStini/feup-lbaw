@@ -73,15 +73,15 @@
 </script>
 <img src="{{asset($shopper->user->photo->url)}}">
 
-<form class="container d-flex flex-column" id="edit-form" autocomplete="off">
+<form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return send(event);">
     <label for="name"> Name</label>
-    <input id="name" type="text" name="name" value="{{$shopper->user->name}}">
+    <input required id="name" type="text" name="name" value="{{$shopper->user->name}}">
     <span class="error form-text" id="name-error">
 
     </span>
 
     <label for="email"> Email</label>
-    <input id="email" type="email" name="email" value="{{$shopper->user->email}}">
+    <input required id="email" type="email" name="email" value="{{$shopper->user->email}}">
     <span class="error form-text" id="email-error">
 
     </span>
@@ -122,12 +122,12 @@
     </span>
 
     <label for="cur-password">Current Password</label>
-    <input autocomplete="on" id="cur-password" type="password" name="cur-password">
+    <input autocomplete="on" required id="cur-password" type="password" name="cur-password">
     <span class="error form-text" id="cur-password-error">
 
     </span>
 
-    <button type="button" class="btn btn-primary" onclick="send(event);">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
 @endsection
