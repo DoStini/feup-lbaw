@@ -19,6 +19,15 @@ function ensureLimits(target) {
     }
 }
 
+function inputModified(target) {
+    if (target.getAttribute("old-value") !== target.value) {
+        target.setAttribute("old-value", target.value);
+        return true;
+    }
+
+    return false;
+}
+
 function serializeJQueryForm(query) {
     return query.reduce((obj, curr) => {
         if (curr.value) {
@@ -32,22 +41,27 @@ function serializeJQueryForm(query) {
 function setupSearchListeners() {
     const formTargets = $("#search-form input[type!='checkbox']").toArray();
 
-    formTargets.forEach((target) =>  target.addEventListener('keydown', (e) => {
-        if (e.key === "Enter") {
-            target.blur();
-        }
-    }));
+    formTargets.forEach((target) => {
+        target.setAttribute("old-value", target.value)
 
-    formTargets.forEach((target) =>  target.addEventListener('keydown', (e) => {
-        if (e.key === " ") {
-            sendSearchProductsRequest(handleSearchProducts);
-        }
-    }));
+        target.addEventListener('keydown', (e) => {
+            if (e.key === "Enter") {
+                target.blur();
+            }
+        });
 
-    formTargets.forEach((target) => target.addEventListener('blur', () => {
-        ensureLimits(target);
-        sendSearchProductsRequest(handleSearchProducts);
-    }));
+        target.addEventListener('keydown', (e) => {
+            if (e.key === " ") {
+                sendSearchProductsRequest(handleSearchProducts);
+            }
+        });
+
+        target.addEventListener('blur', () => {
+            ensureLimits(target);
+            if (inputModified(target))
+                sendSearchProductsRequest(handleSearchProducts);
+        })
+    });
 
     setupUniqueCheckboxes("search-form", (_e) => {
         sendSearchProductsRequest(handleSearchProducts);
