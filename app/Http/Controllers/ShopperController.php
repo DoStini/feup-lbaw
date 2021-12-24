@@ -54,17 +54,26 @@ class ShopperController extends Controller {
     private function validateData($data) {
         return Validator::make($data, [
             'name' => 'string|max:100',
-            'email' => 'string|email|max:255',
-            'password' => 'string|min:6|confirmed',
+            'email' => 'string|email|max:255|unique:users,email,'.Auth::id(),
+            'password' => 'string|min:6|max:255|confirmed',
             'phone_number' => 'digits:9|integer',
             'nif' => 'integer|digits:9',
             'about_me' => 'string'
-        ])->validate();
+        ], [], [
+            'password'  => 'New Password',
+            'name'  => 'Name',
+            'email'  => 'Email',
+            'phone_number'  => 'Phone Number',
+            'nif'  => 'NIF',
+            'about_me'  => 'About Me',
+        ]) ->validate();
     }
 
     private function validateProfilePicture($file) {
         return Validator::make(['profile-picture' => $file], [
             'profile-picture' => 'file|image'
+        ], [], [
+            'profile-picture'  => 'Profile Picture',
         ])->validate();
     }
 
@@ -77,7 +86,12 @@ class ShopperController extends Controller {
         }
 
         if(!Hash::check($request->input("cur-password"), Auth::user()->password)) {
-            return abort(403, "Wrong password");
+            $response = [];
+            $response["errors"] = [
+                "cur-password" => "Current Password does not match our records"
+            ];
+
+            return response()->json($response, 403);
         }
 
         $user_attrs =
@@ -146,6 +160,8 @@ class ShopperController extends Controller {
         }
 
         return response("Profile Edited Successfully!", 200);
+    }
+
     public function getAuth() {
         return redirect("/users/" . strval(Auth::id()));
     }
