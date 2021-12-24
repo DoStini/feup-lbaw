@@ -61,10 +61,10 @@ class ShopperController extends Controller {
             'nif' => 'nullable|integer|digits:9',
             'about_me' => 'nullable|string'
         ], [], [
-            'password'  => 'New Password',
-            'name'  => 'Name',
-            'email'  => 'Email',
-            'phone_number'  => 'Phone Number',
+            'password'  => 'new password',
+            'name'  => 'name',
+            'email'  => 'email',
+            'phone_number'  => 'phone number',
             'nif'  => 'NIF',
             'about_me'  => 'About Me',
         ])->validate();
@@ -74,7 +74,7 @@ class ShopperController extends Controller {
         return Validator::make(['profile-picture' => $file], [
             'profile-picture' => 'file|image'
         ], [], [
-            'profile-picture'  => 'Profile Picture',
+            'profile-picture'  => 'profile picture',
         ])->validate();
     }
 
