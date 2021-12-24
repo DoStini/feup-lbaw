@@ -80,16 +80,17 @@ class ProductController extends Controller {
 
             $count = $query->count();
 
-            $lastPage = ceil($count / $pageSize);
+            $lastPage = floor($count / $pageSize);
 
             if ($request->page > $lastPage) {
-                $page = $lastPage - 1;
+                $page = $lastPage;
             }
 
             $query = $query->skip($page * $pageSize)->take($pageSize);
 
             return response()->json([
                 "lastPage" => $lastPage,
+                "currentPage" => intval($page),
                 "docCount" => $count,
                 "query" => $query->get()
             ]);

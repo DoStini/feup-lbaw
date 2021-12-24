@@ -2,3 +2,14 @@
     transition: top 1s ease 0s, opacity 1s;
     top: 0;
 }
+
+.next-page-search {
+    font-size: 3em;
+    transition: top 1s ease 0s, opacity 1s, color 0.3s;
+    position: relative;
+    top: 0;
+}
+
+.next-page-search:hover {
+    color: #444444;
+}

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container sticky-top pt-5">
 
     <h2 id="results-text" class="mb-5">No results</h2>
 

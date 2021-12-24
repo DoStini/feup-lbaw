@@ -1,5 +1,7 @@
 const baseDelay = 100;
 
+let current = {};
+
 function ensureLimits(target) {
     if (target.getAttribute("type") !== "number") return; 
     let min = parseInt(target.getAttribute("min"));
@@ -38,17 +40,17 @@ function setupSearchListeners() {
 
     formTargets.forEach((target) =>  target.addEventListener('keydown', (e) => {
         if (e.key === " ") {
-            sendSearchProductsRequest();
+            sendSearchProductsRequest(handleSearchProducts);
         }
     }));
 
     formTargets.forEach((target) => target.addEventListener('blur', () => {
         ensureLimits(target);
-        sendSearchProductsRequest();
+        sendSearchProductsRequest(handleSearchProducts);
     }));
 
     setupUniqueCheckboxes("search-form", (_e) => {
-        sendSearchProductsRequest();
+        sendSearchProductsRequest(handleSearchProducts);
     });
 }
 
@@ -66,7 +68,7 @@ function setupAnimation(element, delay) {
     }, delay);
 }
 
-function createProduct(product, cacheQuery, delay) {
+function createProduct(product, delay) {
     const html = `
         <div class="card mb-5 search-products-item">
 
@@ -91,22 +93,78 @@ function createProduct(product, cacheQuery, delay) {
     element.id = `product-${product.id}`;
     element.innerHTML = html;
 
-    element.addEventListener('click', () => route(`products/${product.id}`, cacheQuery));
+    element.addEventListener('click', () => route(`products/${product.id}`, current));
 
-    setupAnimation(element.firstElementChild, delay);
+    if (delay !== 0)
+        setupAnimation(element.firstElementChild, delay);
 
     return element;
 }
 
-function insertProducts(data) {
+function handleNextPage() {
+
+}
+
+function insertNextPageButton(delay) {
+    $("#next-page-btn").remove();
+
+    if (current.currentPage >= current.lastPage) return;
+    
+    const button = document.createElement('div');
+    button.className = "d-flex justify-content-center align-items-center";
+    button.id = "next-page-btn";
+    
+    button.innerHTML = '<i class="bi bi-arrow-down-circle-fill btn next-page-search"></i>';
+    button.firstChild.addEventListener('click', () => {
+        sendSearchProductsRequest(handleSearchNewPageProducts, current.currentPage + 1);
+    });
+
+    $("#search-area").append(button);
+
+    if (delay !== 0)
+        setupAnimation(button.firstChild, delay);
+}
+
+function clearProducts() {
     const container = $("#products-area");
 
     container.empty();
+}
+
+function insertProducts(data, shouldAnimate) {
+    const factor = shouldAnimate ? 1 : 0;
+
+    const container = $("#products-area");
 
     $("#results-text").text(data.docCount ? `${data.docCount} Results` : "No results");
 
     data.query.forEach((target, idx) => 
-        container.append(createProduct(target, data, (idx + 1) * baseDelay)));
+        container.append(createProduct(target, factor * (idx + 1) * baseDelay)));
+
+    insertNextPageButton(factor * (data.query.length + 1) * baseDelay);
+}
+
+function setNewProducts(data) {
+    clearProducts();
+    insertProducts(data, true);
+}
+
+function handleSearchNewPageProducts() {
+    const response = JSON.parse(this.response);
+
+    if (this.status !== 200) return;
+
+    console.log(current, response);
+
+    const lastQuery = current.query;
+
+    current = {...response};
+    current.query = [
+        ...lastQuery,
+        ...current.query,
+    ];
+
+    insertProducts(response, true);
 }
 
 function handleSearchProducts() {
@@ -114,23 +172,35 @@ function handleSearchProducts() {
 
     if (this.status !== 200) return;
 
-    insertProducts(response);
+    current = response;
+
+    setNewProducts(response);
 }
 
 function restoreCache() {
-    if (history.state)
-        insertProducts(history.state);    
+    if (history.state) {
+        current = history.state;
+        insertProducts(history.state, false);    
+    }
 }
 
-function sendSearchProductsRequest() {
-    let query = serializeJQueryForm($("#search-form input[type!='checkbox']").serializeArray());
+function sendSearchProductsRequest(callback, page) {
+    let query = {
+        "page": page || 0,
+        ...serializeJQueryForm($("#search-form input[type!='checkbox']").serializeArray()),
+    } 
     const checkbox = Object.keys(serializeJQueryForm($("#search-form input[type='checkbox'][group='sort-input']").serializeArray()));
 
     if (checkbox.length) {
-        query = {...query, "order": checkbox.at(0)}
+        query = {
+            ...query, 
+            "order": checkbox.at(0),
+        }
     }
 
-    sendAjaxQueryRequest('get', `/api/products`, query, handleSearchProducts);
+    console.log(page, query)
+
+    sendAjaxQueryRequest('get', `/api/products`, query, callback);
 }
 
 setupSearchListeners();

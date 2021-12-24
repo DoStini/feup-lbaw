@@ -20,9 +20,9 @@
                 <div class="col-md-3 col-xs-12">
                     @include('partials.search.productfilters')
                 </div>
-                <div class="col-md-9 col-xs-12">
+                <div id="search-area" class="col-md-9 col-xs-12">
                     <div class="container w-100 pe-0">
-                        <div id="products-area" class="row justify-content-between">
+                        <div id="products-area" class="row justify-content-start">
                         </div>
                     </div>
                 </div>
