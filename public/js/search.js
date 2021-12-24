@@ -1,5 +1,22 @@
 const baseDelay = 100;
 
+function ensureLimits(target) {
+    if (target.getAttribute("type") !== "number") return; 
+    let min = parseInt(target.getAttribute("min"));
+    if (min === NaN) min = -Infinity;
+    const max = parseInt(target.getAttribute("max"));
+    if (min === NaN) min = +Infinity;
+
+    const val = parseInt(target.value);
+
+    if (val !== NaN) {
+        if (val < min)
+            target.value = min;
+        if (val > max)
+            target.value = max;
+    }
+}
+
 function serializeJQueryForm(query) {
     return query.reduce((obj, curr) => {
         if (curr.value) {
@@ -11,8 +28,7 @@ function serializeJQueryForm(query) {
 }
 
 function setupSearchListeners() {
-
-    const formTargets = $("#search-form input").toArray();
+    const formTargets = $("#search-form input[type!='checkbox']").toArray();
 
     formTargets.forEach((target) =>  target.addEventListener('keydown', (e) => {
         if (e.key === "Enter") {
@@ -27,8 +43,13 @@ function setupSearchListeners() {
     }));
 
     formTargets.forEach((target) => target.addEventListener('blur', () => {
+        ensureLimits(target);
         sendSearchProductsRequest();
     }));
+
+    setupUniqueCheckboxes("search-form", (_e) => {
+        sendSearchProductsRequest();
+    });
 }
 
 function capitalize(s){
@@ -102,7 +123,12 @@ function restoreCache() {
 }
 
 function sendSearchProductsRequest() {
-    const query = serializeJQueryForm($("#search-form").serializeArray());
+    let query = serializeJQueryForm($("#search-form input[type!='checkbox']").serializeArray());
+    const checkbox = Object.keys(serializeJQueryForm($("#search-form input[type='checkbox'][group='sort-input']").serializeArray()));
+
+    if (checkbox.length) {
+        query = {...query, "order": checkbox.at(0)}
+    }
 
     sendAjaxQueryRequest('get', `/api/products`, query, handleSearchProducts);
 }
