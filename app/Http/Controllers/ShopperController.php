@@ -55,7 +55,7 @@ class ShopperController extends Controller {
     private function validateData($data) {
         return Validator::make($data, [
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email:rfc,dns|max:255|unique:users,email,'.Auth::id(),
+            'email' => 'required|string|email:rfc,dns|max:255|unique:users,email,'.$data["id"],
             'password' => 'nullable|string|min:6|max:255|confirmed',
             'phone_number' => 'nullable|digits:9|integer',
             'nif' => 'nullable|integer|digits:9',
@@ -86,10 +86,10 @@ class ShopperController extends Controller {
             return abort(404, 'Shopper does not exist');
         }
 
-        if(!Hash::check($request->input("cur-password"), Auth::user()->password)) {
+        if(!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
             $response = [];
             $response["errors"] = [
-                "cur-password" => "Current Password does not match our records"
+                "cur-password" => "Current password does not match our records"
             ];
 
             return response()->json($response, 403);
@@ -100,7 +100,8 @@ class ShopperController extends Controller {
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'password_confirmation' => $request->password_confirmation,
+            'password_confirmation' => $request->input("password-confirmation"),
+            'id' => $id,
         ];
 
         $shopper_attrs = [

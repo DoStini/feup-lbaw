@@ -56,6 +56,9 @@
     function setErrors(errors) {
         console.log(errors);
         for(let key in errors) {
+            let element = document.getElementById(`${key}-error`);
+            if(element == null) continue;
+
             let text = "";
             let obj = errors[key];
             if(typeof obj === 'object' && obj !== null) {
@@ -66,7 +69,7 @@
                 text = obj;
             }
 
-            document.getElementById(`${key}-error`).innerHTML = text;
+            element.innerHTML = text;
         }
     }
 
@@ -93,7 +96,7 @@
     </span>
 
     <label for="password-confirm">Confirm Password</label>
-    <input id="password-confirm" type="password" name="password_confirmation">
+    <input id="password-confirm" type="password" name="password-confirmation">
 
     <label for="profile-picture"> Upload New Photo</label>
     <input id="profile-picture" type="file" name="profile-picture">

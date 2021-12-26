@@ -19,10 +19,20 @@ class EnsureAuthenticatedOwnerOrAdmin
     {
         if(Auth::check()) {
             if(!(strval(Auth::id()) === $request->route('id') || Auth::user()->is_admin)) {
-                return response("Forbidden Access", 403)->header('Content-Type', 'text\plain');
+                $response = [];
+                $response["errors"] = [
+                    "Authentication" => "User is not owner of account or is not an admin"
+                ];
+
+                return response()->json($response, 403);
             }
         } else {
-            return response("Not authenticated", 401)->header('Content-Type', 'text\plain');
+            $response = [];
+            $response["errors"] = [
+                "Authentication" => "User is not authenticated"
+            ];
+
+            return response()->json($response, 401);
         }
 
         return $next($request);
