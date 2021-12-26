@@ -60,6 +60,7 @@ class ShopperController extends Controller {
      */
     private function validateData($data) {
         return Validator::make($data, [
+            'id' => 'exists:authenticated_shopper,id',
             'name' => 'required|string|max:100',
             'email' => 'required|string|email:rfc,dns|max:255|unique:users,email,'.$data["id"],
             'password' => 'nullable|string|min:6|max:255|confirmed',
@@ -67,6 +68,7 @@ class ShopperController extends Controller {
             'nif' => 'nullable|integer|digits:9',
             'about_me' => 'nullable|string'
         ], [], [
+            'id' => 'ID',
             'password'  => 'new password',
             'name'  => 'name',
             'email'  => 'email',
@@ -99,10 +101,6 @@ class ShopperController extends Controller {
      * @return Response 200 if OK.
      */
     public function edit(Request $request, int $id) {
-        if(is_null($shopper = Shopper::find($id))) {
-            return abort(404, 'Shopper does not exist');
-        }
-
         if(!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
             $response = [];
             $response["errors"] = [
@@ -129,6 +127,8 @@ class ShopperController extends Controller {
 
         $data_validate = array_merge($user_attrs, $shopper_attrs);
         $this->validateData($data_validate);
+
+        $shopper = Shopper::find($id);
 
         if(array_key_exists('nif', $shopper_attrs) && !is_null($shopper_attrs['nif'])) {
             $nif_check = DB::select('SELECT check_nif(?)', [$shopper_attrs['nif']])[0]->check_nif;

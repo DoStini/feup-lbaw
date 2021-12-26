@@ -37,6 +37,7 @@
                         'nif' : 'NIF',
                         'about_me' : 'About Me',
                         'profile-picture' : 'Profile Picture',
+                        'id' : 'ID',
                     });
 
                     setErrors( error.response.data["errors"]);
