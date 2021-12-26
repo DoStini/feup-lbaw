@@ -195,6 +195,8 @@ function restoreCache() {
     if (history.state) {
         current = history.state;
         insertProducts(history.state, false);    
+    } else {
+        sendSearchProductsRequest(handleSearchProducts);
     }
 }
 
