@@ -820,42 +820,10 @@ paths:
         '422':
           description: "Product does not exist, is already in cart, or there is no stock."
 
-  /api/users/cart/add/:
-    post:
-      operationId: R403
-      summary: 'R403: Add product to shopping cart API'
-      description: 'Add product to Shopping Cart. Access: PUB'
-      tags:
-        - 'M04: Orders and Shopping Cart'
-
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                product-id:
-                  type: integer
-                  minimum: 1
-                amount:
-                  type: integer
-                  minimum: 1
-              required:
-                - product-id
-                - amount
-      responses:
-        '200': 
-          description: "Ok. Product was added to cart"
-        '403':
-          description: "User not logged in or is logged in as an admin"
-        '422':
-          description: "Product does not exist, is already in cart, or there is no stock."
-
   /api/users/cart/remove/:
     post:
       operationId: R404
-      summary: 'R404: Set product amount from cart  API'
+      summary: 'R404: Remove a product from cart  API'
       description: "Remove a product from the cart. Access: OWN"
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -879,7 +847,7 @@ paths:
         '403':
           description: "User not logged in or is logged in as an admin"
         '422':
-          description: "Product does not exist, is already in cart, or there is no stock."
+          description: "Product does not exist or is not in cart."
 
   /api/users/cart/update/:
     post:
@@ -908,10 +876,12 @@ paths:
       responses:
         '200': 
           description: "Ok. Product amount was modified to cart"
+        '401':
+          description: "User not logged in"
         '403':
-          description: "User not logged in or is logged in as an admin"
+          description: "User is logged in as an admin"
         '422':
-          description: "Product does not exist, or there is no stock."
+          description: "Product does not exist, or there is not enough stock."
 
   /users/checkout:
     get:
