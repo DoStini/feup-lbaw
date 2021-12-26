@@ -1045,8 +1045,8 @@ paths:
 
   /api/users/cart/remove/:
     post:
-      operationId: R404
-      summary: 'R404: Remove a product from cart  API'
+      operationId: R403
+      summary: 'R403: Remove a product from cart  API'
       description: "Remove a product from the cart. Access: OWN"
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -1074,8 +1074,8 @@ paths:
 
   /api/users/cart/update/:
     post:
-      operationId: R405
-      summary: 'R405: Set product amount from cart  API'
+      operationId: R404
+      summary: 'R404: Set product amount from cart  API'
       description: "Set product amount of cart. Access: OWN"
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -1108,8 +1108,8 @@ paths:
 
   /users/checkout:
     get:
-      operationId: R406
-      summary: 'R406: View Checkout Page'
+      operationId: R405
+      summary: 'R405: View Checkout Page'
       description: 'Show Checkout Page. Access: USR'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -1127,8 +1127,8 @@ paths:
 
   /users/orders:
     get:
-      operationId: R407
-      summary: 'R407: View Profile Purchase History page'
+      operationId: R406
+      summary: 'R406: View Profile Purchase History page'
       description: 'Show Profile Purchase History page. Access: OWN'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -1141,8 +1141,8 @@ paths:
   
   /orders/{id}:
     get:
-      operationId: R408
-      summary: 'R408: View Order page'
+      operationId: R407
+      summary: 'R407: View Order page'
       description: 'Show Order page. Access: OWN, ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -1155,8 +1155,8 @@ paths:
 
   /admin/orders:
     get:
-      operationId: R409
-      summary: 'R409: View manage orders page'
+      operationId: R408
+      summary: 'R408: View manage orders page'
       description: 'Show manage orders page . Access: ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -1169,8 +1169,8 @@ paths:
 
   /api/orders/{id}/status:
     post:
-      operationId: R410
-      summary: 'R410: Update order status API'
+      operationId: R409
+      summary: 'R409: Update order status API'
       description: "Update order status. Access: ADM"
       tags:
         - 'M04: Orders and Shopping Cart'
