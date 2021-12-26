@@ -1220,7 +1220,7 @@ paths:
   /about:
     get:
       operationId: R502
-      summary: 'R501: View About Page'
+      summary: 'R502: View About Page'
       description: 'Show About Page. Access: PUB'
       tags:
         - 'M05: Static Pages'
@@ -1232,7 +1232,7 @@ paths:
   /contacts:
     get:
       operationId: R503
-      summary: 'R502: View Contacts Page'
+      summary: 'R503: View Contacts Page'
       description: 'Show Contacts Page. Access: PUB'
       tags:
         - 'M05: Static Pages'
@@ -1244,7 +1244,7 @@ paths:
   /features:
     get:
       operationId: R504
-      summary: 'R503: View Main Features Page'
+      summary: 'R504: View Main Features Page'
       description: 'Show Main Features Page. Access: PUB'
       tags:
         - 'M05: Static Pages'
