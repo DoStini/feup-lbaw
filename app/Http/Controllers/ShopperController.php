@@ -52,6 +52,12 @@ class ShopperController extends Controller {
         return view('pages.cart', ['cart' => $cart]);
     }
 
+    /**
+     * Validates form data
+     *
+     * @param Array $data The data to be validated
+     * @return Array
+     */
     private function validateData($data) {
         return Validator::make($data, [
             'name' => 'required|string|max:100',
@@ -70,6 +76,12 @@ class ShopperController extends Controller {
         ])->validate();
     }
 
+    /**
+     * Validates profile picture, checking if it is a file and an image
+     *
+     * @param  \Illuminate\Http\UploadedFile $file The file being validated
+     * @return Array
+     */
     private function validateProfilePicture($file) {
         return Validator::make(['profile-picture' => $file], [
             'profile-picture' => 'file|image'
@@ -79,7 +91,12 @@ class ShopperController extends Controller {
     }
 
     /**
+     * Edits the shopper's data
      *
+     * @param Request $request The request
+     * @param int $id The shopper's id
+     *
+     * @return Response 200 if OK.
      */
     public function edit(Request $request, int $id) {
         if(is_null($shopper = Shopper::find($id))) {
@@ -158,7 +175,7 @@ class ShopperController extends Controller {
         } catch (QueryException $ex) {
             DB::rollBack();
 
-            return abort(406, "Error updating database");
+            return abort(406, "Unexpected Error");
         }
 
         return response("Profile Edited Successfully!", 200);

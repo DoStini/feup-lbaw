@@ -14,7 +14,7 @@
 
         window.axios.post
         (
-            "/api/users/private/{{$shopper->id}}/edit",
+            "/api/users/{{$shopper->id}}/private/edit",
             formData,
             {
                 headers: {
