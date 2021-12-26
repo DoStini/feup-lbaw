@@ -1,46 +1,5 @@
-<!--<div class="container">
-    <div class="row">
-        <a href="{{ url('/') }}"><img src="/img/refurniture.svg"></a>
-        @if (Auth::check())
-        <form method="POST" class="w-25 col" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-primary form-control" href="{{ url('/logout') }}"> Logout </a> <span>{{
-                    Auth::user()->name }}</button>
-        </form>
-        @endif
-    </div>
-</div>-->
-
-<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid d-flex justify-content-between">
-      <a class="navbar-brand" href="#">
-        <img src="/img/refurniture.svg" alt="" width="300" height=100">
-      </a>
-
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="What are you looking for?" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-
-      <div class="d-flex">
-          @if(Auth::check())
-            <i class="bi bi-bell"></i>
-            <i class="bi bi-person"></i>
-            
-            <button type="submit" class="btn btn-outline-primary form-control" href="{{ url('/logout') }}"> Logout </button>
-          @else
-            <button class="btn btn-outline-primary">Sign-In</button>
-          @endif
-      </div>
-
-    <div>
-        <i class="bi bi-cart"></i>
-    </div>
-
-    </div>
-  </nav>
--->
-  <!-- Jumbotron -->
+<!-- Navbar -->
+<nav>
   <div class="p-3 text-center text-white">
     <div class="container">
       <div class="row d-flex align-items-center">
@@ -74,9 +33,7 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
                     <li><a class="dropdown-item" href="#">Some news</a></li>
                     <li><a class="dropdown-item" href="#">Another news</a></li>
-                    <li>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    </li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
                 </ul>
                 </div>
 
@@ -91,7 +48,10 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li><a class="dropdown-item" href="#">My profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="{{url('/logout')}}">Logout</a></li>
+                    <li><form method="POST" class="col" action="{{ route('logout') }}">
+                      @csrf
+                      <button type="submit" class="dropdown-item form-control" href="{{ url('/logout') }}"> Logout </button>
+                  </form></li>
                 </ul>
                 </div>
             @else
@@ -102,10 +62,5 @@
       </div>
     </div>
   </div>
-  <!-- Jumbotron -->
 
   </nav>
-  <!-- Navbar -->
-
-  
-<!--Main Navigation-->
