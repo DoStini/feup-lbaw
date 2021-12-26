@@ -223,7 +223,7 @@ paths:
         '404':
           description: 'Not Found. Show Not Found Page'
 
-  /users/private/{id}:
+  /users/{id}/private:
     get:  
       operationId: R202
       summary: 'R202: View profile private data'
@@ -252,7 +252,7 @@ paths:
         '404':
           description: 'Not Found. Show Not Found Page'
 
-  /api/users/private/{id}/edit:
+  /api/users/{id}/private/edit:
     post:  
       operationId: R203
       summary: 'R203: Edit profile private data API'
@@ -322,11 +322,195 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'
 
+  /api/users/{id}/private/addresses/add:
+    post:
+      operationId: R204
+      summary: 'R204: Add address to user addresses'
+      description: ' Add address to user addresses. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                street:
+                  type: string
+                door:
+                  type: string
+                zip-code:
+                  type: string
+                cur-password:
+                  type: string
+              required:
+                - "street"
+                - "door"
+                - "zip-code"
+                - "cur-password"
+            
+      responses:
+        '200':
+          description: 'Address added succesfully.'
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'      
+
+  /api/users/{id}/private/addresses/edit:
+    post:
+      operationId: R205
+      summary: 'R205: Edit specific address of user addresses'
+      description: 'Edit specific address of user addresses. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                address-id:
+                  type: integer
+                street:
+                  type: string
+                door:
+                  type: string
+                zip-code:
+                  type: string
+                cur-password:
+                  type: string
+              required:
+                - "address-id"
+                - "cur-password"
+
+      responses:
+        '200':
+          description: 'Address edited succesfully.'
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'    
+      
+  /api/users/{id}/private/addresses/remove:
+    post:
+      operationId: R206
+      summary: 'R206: Remove specific address of user addresses'
+      description: 'Remove specific address of user addresses. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                address-id:
+                  type: integer
+                cur-password:
+                  type: string
+              required:
+                - "address-id"
+                - "cur-password"
+
+      responses:
+        '200':
+          description: 'Address removed succesfully.'
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'    
 
   /admin/users:
     get:  
-      operationId: R204
-      summary: 'R204: View manage users page'
+      operationId: R207
+      summary: 'R207: View manage users page'
       description: 'Show manage users page. Access: ADM'
       tags:
         - 'M02: User Profiles'
