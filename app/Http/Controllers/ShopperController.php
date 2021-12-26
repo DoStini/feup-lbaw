@@ -148,20 +148,17 @@ class ShopperController extends Controller {
 
         $user = $shopper->user;
 
-        if(!empty($user_attrs)) {
-            try {
-                $user->update($user_attrs);
-            } catch (QueryException $ex) {
-                return abort(406, "User vars");
-            }
-        }
+        try {
+            DB::beginTransaction();
 
-        if(!empty($shopper_attrs)) {
-            try {
-                $shopper->update($shopper_attrs);
-            } catch (QueryException $ex) {
-                return abort(406, "Shopper vars");
-            }
+            $user->update($user_attrs);
+            $shopper->update($shopper_attrs);
+
+            DB::commit();
+        } catch (QueryException $ex) {
+            DB::rollBack();
+
+            return abort(406, "Error updating database");
         }
 
         return response("Profile Edited Successfully!", 200);
