@@ -23,8 +23,8 @@
                         <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>
                     </form>
                 @else
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/" . strval($shopper->user->id))}}'""> About {{$shopper->user->name}} </button>
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/" . strval($shopper->user->id)) }}'""> {{$shopper->user->name}}'s Wishlist </button>
+                    <a class="my-2 btn btn-primary w-100" href={{ url("users/" . strval($shopper->user->id))}}> About {{$shopper->user->name}} </a>
+                    <a class="my-2 btn btn-primary w-100" href={{ url("users/" . strval($shopper->user->id))}}> {{$shopper->user->name}}'s Wishlist </a>
                 @endif
 
             </div>
