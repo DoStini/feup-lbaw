@@ -1,3 +1,6 @@
+// let errorModal = new bootstrap.Modal(document.getElementById('errorMessage'));
+$('#errorMessage').modal();
+
 function reportData(message, data, attributes) {
     document.getElementById("errorMessageTitle").innerText = message;
 

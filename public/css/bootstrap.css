@@ -11281,18 +11281,3 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
-.fade.in {
-  opacity: 1 !important;
-}
-
-.modal.in .modal-dialog {
-  transform: translate(0, 0) !important;
-}
-
-.modal-backdrop .fade .in {
-  opacity: 0.5 !important;
-}
-
-.modal-backdrop.fade {
-  opacity: 0.5 !important;
-}
