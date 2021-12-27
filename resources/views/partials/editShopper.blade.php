@@ -1,11 +1,3 @@
-@extends('layouts.app')
-
-@section('title', $shopper->user->name)
-
-@section('content')
-@include('partials.shopper', ['shopper' => $shopper])
-@endsection
-{{--
 @include('partials.errormodal')
 
 
@@ -76,8 +68,6 @@
     }
 
 </script>
-<img src="{{asset($shopper->user->photo->url)}}">
-
 <form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return send(event);">
     <label for="name"> Name</label>
     <input required id="name" type="text" name="name" value="{{$shopper->user->name}}">
@@ -134,6 +124,3 @@
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-
-@endsection
---}}
