@@ -25,19 +25,20 @@
                 </div>
             </div>
             <div class="my-3 mx-2">
-                <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/") }}'""> About Me </button>
-                @if (Auth::user()->id == $shopper->user->id)
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/") }}'""> Wishlist </button>
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/") }}'""> Purchase History </button>
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/") }}'""> Personal Data </button>
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/") }}'""> Furniture Offers </button>
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/") }}'""> Delete Account </button>
+                @if (!Auth::user()->is_admin && Auth::user()->id == $shopper->user->id)
+                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100"> About Me </a>
+                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Wishlist </a>
+                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a>
+                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Purchase History </a>
+                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Furniture Offers </a>
+                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Delete Account </a>
                     <form  method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="my-2 btn btn-primary form-control" href="{{ url('/logout') }}"> Logout </button>
+                        <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>
                     </form>
                 @else
-                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/") }}'""> {{$shopper->user->name}}'s Wishlist </button>
+                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/" . strval($shopper->user->id))}}'""> About {{$shopper->user->name}} </button>
+                    <button type="button" class="my-2 btn btn-primary w-100" onclick="window.location='{{ url("users/" . strval($shopper->user->id)) }}'""> {{$shopper->user->name}}'s Wishlist </button>
                 @endif
 
             </div>
