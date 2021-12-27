@@ -6,10 +6,12 @@
                     {{$insertedPhotos = 0;}}
                     @if ($product->photos)
                         @foreach ($product->photos as $photo)
-                            <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
-                                <img class="d-block w-100" src="/img/default.jpg">
-                            </div>
-                            {{$insertedPhotos++;}}
+                            @if (File::exists(Storage::url($photo->url)))
+                                <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
+                                    <img class="d-block w-100" src={{Storage::url($photo->url)}}>
+                                </div>
+                                {{$insertedPhotos++;}}
+                            @endif
                         @endforeach
                     @endif
                     @if ($insertedPhotos < 1)
@@ -104,12 +106,3 @@
         currentPriceContainer.innerText = `${({{$product->price}} * quantityInputBox.value).toFixed(2)} €`;
     })
 </script>
-
-{{-- 
-    @if (File::exists(Storage::url($photo->url)))
-                                <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
-                                    <img class="d-block w-100" src={{Storage::url($photo->url)}}>
-                                </div>
-                                {{$insertedPhotos++;}}
-                            @endif
-    --}}
