@@ -13,10 +13,20 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', 'Auth\LoginController@getUser');
-
 Route::post('/users/{id}/private/edit', 'ShopperController@edit')->middleware(['auth:sanctum', 'userOwnerAdmin'])->name("edit_user");
 Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
 ]);
+
+Route::group(
+    [
+        'prefix' => 'users/cart',
+        'middleware' => ['auth:sanctum', 'is.shopper']
+    ],
+    function () {
+        Route::get('/', 'CartController@get');
+        Route::post('/update', 'CartController@update');
+        Route::delete('/remove', 'CartController@delete');
+    }
+);
