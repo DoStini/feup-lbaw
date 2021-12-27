@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -18,6 +20,8 @@ class OrderController extends Controller
     }
 
     public function update(Request $request, int $id) {
-        return response($id, 200);
+        return response()->json(
+            ["updated-order" => Order::find($id)],
+        200);
     }
 }
