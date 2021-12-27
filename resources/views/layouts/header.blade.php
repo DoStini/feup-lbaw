@@ -41,8 +41,11 @@
                 <div class="dropdown">
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                     id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://mdbootstrap.com/img/new/avatars/1.jpg" class="rounded-circle" height="25" alt=""
-                    loading="lazy" />
+                    @if(File::exists(Storage::url($shopper->user->photo->url)))
+                      <img src={{Storage::url($shopper->user->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
+                    @else
+                      <img src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
+                    @endif
                     <h5 class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">

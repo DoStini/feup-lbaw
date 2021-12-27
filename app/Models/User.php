@@ -36,4 +36,15 @@ class User extends Authenticatable {
      * @var string
      */
     protected $table = 'users';
+
+    /**
+     * The picture this user is associated to.
+     */
+    public function photo() {
+        return $this->belongsTo(
+            Photo::class,
+            'photo_id',
+            'id',
+        );
+    }
 }
