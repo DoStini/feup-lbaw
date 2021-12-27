@@ -97,32 +97,32 @@
     <div class="mb-3">
         <label for="profile-picture"> Upload New Photo</label>
         <input id="profile-picture" class="form-control" type="file" name="profile-picture">
-        <span class="error form-text" id="profile-picture-error"></span>
+        <span class="error form-text text-danger" id="profile-picture-error"></span>
     </div>
     
     <div class="mb-3">
         <label for="about-me"> About Me</label>
         <textarea id="about-me" class="form-control" name="about-me" value="">{{$shopper->about_me}}</textarea>
-        <span class="error form-text" id="about_me-error"></span>
+        <span class="error form-text text-danger" id="about_me-error"></span>
     </div>
 
     <div class="row">
         <div class="form-group col-md-6">
             <label for="nif"> NIF</label>
             <input id="nif" type="text" class="form-control" name="nif" value="{{$shopper->nif}}">
-            <span class="error form-text" id="nif-error"></span>
+            <span class="error form-text text-danger" id="nif-error"></span>
         </div>
         <div class="form-group col-md-6">
             <label for="phone-number"> Phone</label>
             <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
-            <span class="error form-text" id="phone_number-error"></span>        
+            <span class="error form-text text-danger" id="phone_number-error"></span>        
         </div>
     </div>
 
     <div class="form-group my-4">
         <label for="cur-password"><b>Confirm your password before applying changes:</b></label>
         <input autocomplete="on" required id="cur-password" class="form-control" type="password" name="cur-password">
-        <span class="error form-text" id="cur-password-error"></span>
+        <span class="error form-text text-danger" id="cur-password-error"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
