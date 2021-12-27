@@ -1200,8 +1200,41 @@ paths:
       responses:
         '200':
           description: 'Ok. Order status was updated.'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Contains the updated order
+                properties:
+                  "updated-order":
+                    type: object
+              example:
+                {
+                  "updated-order": {
+                    "id": 1,
+                    "shopper_id": 6,
+                    "address_id": 6,
+                    "timestamp": "2021-12-27 11:27:04.028898",
+                    "total": "16774.9816",
+                    "subtotal": "64519.16",
+                    "status": "paid",
+                    "coupon_id": 2
+                  }
+                }
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
         '403':
           description: 'Forbidden. Not an admin.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
 
  #M05
 
