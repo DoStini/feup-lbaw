@@ -4,7 +4,7 @@
   <body>
     <main>
       <header>
-        @include('layouts.header')
+        @include('layouts.logoOnlyHeader')
       </header>
       <section id="content">
         @yield('content')
