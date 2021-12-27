@@ -22,6 +22,7 @@ Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage')
 
 //Administration
 Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
+Route::post('admin/products/create', 'ProductController@addProduct')->name('addProduct');
 
 // Products
 Route::get('products', 'ProductController@search')->name('getProductSearch');
