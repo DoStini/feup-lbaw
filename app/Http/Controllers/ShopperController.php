@@ -182,9 +182,6 @@ class ShopperController extends Controller {
     }
 
     public function getAuth() {
-        if (!Auth::check()) return redirect('/join');
-        $user = Auth::user();
-        //if (!$user->is_admin) return redirect("/users/" . strval(Auth::id()));
         return redirect("/users/" . strval(Auth::id()));
     }
 }
