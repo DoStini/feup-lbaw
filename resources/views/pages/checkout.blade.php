@@ -13,7 +13,7 @@
                     @foreach ($shopper->addresses as $address)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="address-heading{{$loop->index}}">
-                            <button class="accordion-button @if(!$loop->first) collapsed  @endif " type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button @if(!$loop->first) collapsed @else bg-success text-light selected-address  @endif " type="button" data-bs-toggle="collapse"
                                 data-bs-target="#address-panel-collapse{{$loop->index}}" @if($loop->first) aria-expanded="true" @else aria-expanded="false" @endif
                                 aria-controls="address-panel-collapse{{$loop->index}}" id="address-button{{$loop->index}}">
                                 {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
@@ -21,22 +21,20 @@
                         </h2>
                         <div id="address-panel-collapse{{$loop->index}}" data-bs-parent="#addresses-accordion" class="accordion-collapse collapse @if($loop->first) show @endif"
                             aria-labelledby="address-heading{{$loop->index}}">
-                            <div class="accordion-body">
-                                <div class="row container justify-content-between">
-                                    <div class="col-md-6">
-                                        {{$address->street}} {{$address->door}}<br>
-                                        {{$address->zip_code->zip_code}}<br>
-                                        {{$address->zip_code->county->name}}<br>
-                                        {{$address->zip_code->county->district->name}}<br>
-                                    </div>
-                                    <div class="col-md-4 d-flex justify-content-end align-items-end">
-                                        <div class="form-check">
-                                             <input class="form-check-input"{{-- onclick="styleChosenAddress({{$loop->index}})"--}} type="radio" name="address-radio" id="address-radio{{$loop->index}}" @if($loop->first) checked @endif>
-                                            <label class="form-check-label" for="address-radio">
-                                                Use this address
-                                            </label>
-                                          </div>
-                                    </div>
+                            <div class="accordion-body row container justify-content-between">
+                                <div class="col-md-6">
+                                    {{$address->street}} {{$address->door}}<br>
+                                    {{$address->zip_code->zip_code}}<br>
+                                    {{$address->zip_code->county->name}}<br>
+                                    {{$address->zip_code->county->district->name}}<br>
+                                </div>
+                                <div class="col-md-4 d-flex justify-content-end align-items-end">
+                                    <div class="form-check">
+                                        <input class="form-check-input" onclick="styleChosenAddress({{$loop->index}})" type="radio" name="address-radio" id="address-radio{{$loop->index}}" @if($loop->first) checked @endif>
+                                        <label class="form-check-label" for="address-radio">
+                                            Use this address
+                                        </label>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -52,10 +50,23 @@
 </div>
 
 <script defer>
+function clearAllChosenAddresses() {
+    let buttons = document.querySelectorAll("#addresses-accordion .accordion-button");
+
+    buttons.forEach((btn) => {
+        btn.classList.remove("bg-success");
+        btn.classList.remove("text-light");
+        btn.classList.remove("selected-address");
+    })
+}
+
 function styleChosenAddress(id) {
+    clearAllChosenAddresses();
+
     let addressBtn = document.getElementById(`address-button${id}`);
-    console.log(addressBtn);
-    addressBtn.style.backgroundColor = "#000000";
+    addressBtn.classList.add("bg-success");
+    addressBtn.classList.add("text-light");
+    addressBtn.classList.add("selected-address");
 }
 </script>
 
