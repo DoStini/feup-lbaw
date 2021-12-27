@@ -1,35 +1,31 @@
 <div class="product container m-0 w-100" data-id={{ $product->id }}>
     <div class="row vw-100">
         <div class="product-images col-8 d-flex justify-content-center align-items-center">
-            <div id="carouselExampleControls" class="carousel slide product-slide" data-bs-ride="carousel">
+            <div id="productCarousel" class="carousel slide product-slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    @php
-                        $insertedPhotos = 0;
-                    @endphp
+                    {{$insertedPhotos = 0;}}
                     @if ($product->photos)
                         @foreach ($product->photos as $photo)
                             @if (File::exists(Storage::url($photo->url)))
                                 <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
-                                    <img class="d-block w-100" src={{ Storage::url('images/product/default.jpg')}}>
+                                    <img class="d-block w-100" src={{Storage::url($photo->url)}}>
                                 </div>
-                                @php
-                                    $insertedPhotos++;
-                                @endphp
+                                {{$insertedPhotos++;}}
                             @endif
                         @endforeach
                     @endif
                     @if ($insertedPhotos < 1)
                         <div class="carousel-item active">
-                            <img class="d-block w-100" src={{ Storage::url('images/product/default.jpg')}}>
+                            <img class="d-block w-100" src="/img/default.jpg">
                         </div>
                     @endif
                 </div>
                 @if ($insertedPhotos > 1)
-                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                   </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                   </button>
@@ -85,14 +81,14 @@
                     <button class="btn btn-danger w-100 my-2">Out of Stock</button>
                 @endif
                 
-                <div class="accordion w-100 my-2" id="accordionExample">
+                <div class="accordion w-100 my-2" id="details-accordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#description-details" aria-expanded="false" aria-controls="description-details">
                             View More Details
                           </button>
                         </h2>
-                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                        <div id="description-details" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#details-accordion">
                           <div class="accordion-body">{{$product->description}}</div>
                         </div>
                     </div>
