@@ -23,5 +23,8 @@
         "sass": "^1.45.0",
         "sass-loader": "^12.4.0",
         "style-loader": "^3.3.1"
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.11.0"
     }
 }
