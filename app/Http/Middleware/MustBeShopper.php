@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 
-class IsShopper {
+class MustBeShopper {
     /**
      * Handle an incoming request.
      *

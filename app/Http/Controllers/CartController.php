@@ -23,9 +23,9 @@ class CartController extends Controller {
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    private function validatorProductId($request) {
+    private function validatorDelete($request) {
         return Validator::make($request->all(), [
-            'product_id' => 'required|integer|min:1',
+            'product_id' => 'required|integer|min:1|exists:product,id',
         ]);
     }
 
@@ -36,8 +36,10 @@ class CartController extends Controller {
      */
     private function validatorUpdate(Request $request) {
         return Validator::make($request->all(), [
-            'product_id' => 'required|integer|min:1',
+            'product_id' => 'required|integer|min:1|exists:product,id',
             'amount' => 'required|integer|min:1'
+        ], [], [
+            'product_id' => 'product id'
         ]);
     }
 
@@ -77,39 +79,6 @@ class CartController extends Controller {
     }
 
     /**
-     * Adds a product to the user's cart
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function add(Request $request) {
-
-        if (($v = $this->validatorProductId($request))->fails()) {
-            return ApiError::validatorError($v->errors());
-        }
-
-        $userId = Auth::user()->id;
-        $amount = $request->input("amount", 1);
-        $productId = $request->product_id;
-        $shopper = Shopper::find($userId);
-
-        if (!($product = $this->getProduct($productId))) {
-            return ApiError::productDoesNotExist();
-        }
-
-        if ($this->productInCart($shopper, $product)) {
-            return ApiError::productAlreadyInCart();
-        }
-
-        if (!$this->validStock($product, $amount)) {
-            return ApiError::notEnoughStock();
-        }
-
-        $shopper->cart()->attach($productId, ['amount' => $amount]);
-
-        return response()->json();
-    }
-
-    /**
      * Updates a product amount in the user's cart
      *
      * @return \Illuminate\Http\JsonResponse
@@ -122,21 +91,19 @@ class CartController extends Controller {
         $userId = Auth::user()->id;
         $amount = $request->amount;
         $productId = $request->product_id;
+        $product = Product::find($productId);
         $shopper = Shopper::find($userId);
-
-        if (!($product = $this->getProduct($productId))) {
-            return ApiError::productDoesNotExist();
-        }
-
-        if (!$this->productInCart($shopper, $product)) {
-            return ApiError::productNotInCart();
-        }
 
         if (!$this->validStock($product, $amount)) {
             return ApiError::notEnoughStock();
         }
 
-        $shopper->cart()->updateExistingPivot($productId, ['amount' => $amount]);
+
+        if ($this->productInCart($shopper, $product)) {
+            $shopper->cart()->updateExistingPivot($productId, ['amount' => $amount]);
+        } else {
+            $shopper->cart()->attach($productId, ['amount' => $amount]);
+        }
 
         return response()->json();
     }
@@ -147,17 +114,14 @@ class CartController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(Request $request) {
-        if (($v = $this->validatorProductId($request))->fails()) {
+        if (($v = $this->validatorDelete($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
 
         $userId = Auth::user()->id;
         $productId = $request->product_id;
+        $product = Product::find($productId);
         $shopper = Shopper::find($userId);
-
-        if (!($product = $this->getProduct($productId))) {
-            return ApiError::productDoesNotExist();
-        }
 
         if (!$this->productInCart($shopper, $product)) {
             return ApiError::productNotInCart();
@@ -180,17 +144,21 @@ class CartController extends Controller {
             $cart = $shopper->cart;
             $cartPrice = $this->cartPrice($cart);
 
-            $cartObj = json_decode($cart->toJson());
+            $cartJson = $cart->map(
+                function ($product) {
+                    $prodJson = json_decode($product->toJson());
+                    $prodJson->photos = $product->photos->map(fn ($photo) => $photo->url);
+                    $prodJson->attributes = json_decode($prodJson->attributes);
+                    $prodJson->amount = $prodJson->details->amount;
+                    unset($prodJson->details);
 
-            array_map(function ($prod) {
-                $prod->attributes = json_decode($prod->attributes);
-                $prod->amount = $prod->details->amount;
-                unset($prod->details);
-            }, $cartObj);
+                    return $prodJson;
+                },
+            );
 
             return response()->json([
-                'items' => $cartObj,
                 'total' => $cartPrice,
+                'items' => $cartJson,
             ]);
         } catch (Exception $err) {
             UnexpectedErrorLogger::log($err);

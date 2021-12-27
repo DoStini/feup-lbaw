@@ -39,7 +39,7 @@ class ApiError {
     }
 
     /**
-     * Returns a json response with an error regarding admin logged in
+     * Returns a json response with an error regarding unavailable products
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -59,7 +59,7 @@ class ApiError {
     }
 
     /**
-     * Returns a json response with an error regarding admin logged in
+     * Returns a json response with 
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -78,6 +78,11 @@ class ApiError {
         return ApiError::generateErrorMessage($err);
     }
 
+    /**
+     * Returns a json response with an unexpected error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public static function unexpected() {
         $err = Config::get('constants.unexpected');
         return ApiError::generateErrorMessage($err);
