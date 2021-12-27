@@ -6,7 +6,7 @@
 
 
 <section id="cart">
-    @if($cart->empty())
+    @if($cart->isEmpty())
         <div class="d-flex justify-content-center align-items-center flex-column"> 
             <h3>You have no items in your cart. Go get some...</h3>
             <form action="/products">
