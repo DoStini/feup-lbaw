@@ -54,7 +54,6 @@ class Kernel extends HttpKernel {
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
-        'api.auth' => \App\Http\Middleware\LoginRequired::class,
         'is.shopper' => \App\Http\Middleware\MustBeShopper::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

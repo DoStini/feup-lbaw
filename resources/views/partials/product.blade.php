@@ -124,7 +124,11 @@
         .catch((error) => {
             if(error.response) {
                 if(error.response.data) {
-                    launchErrorAlert("There was an error adding to the cart: " + error.response.data.message);
+                    let errors = "";
+                    for(var key in error.response.data.errors) {
+                        errors = errors.concat(error.response.data.errors[key]);
+                    }
+                    launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
                 }
             }
         });

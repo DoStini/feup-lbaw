@@ -34,7 +34,7 @@ return [
         ],
         'stock' => [
             'code' => 422,
-            'message' => 'Product doest not have enough stock'
+            'message' => 'Product does not have enough stock'
         ],
     ]
 ];
