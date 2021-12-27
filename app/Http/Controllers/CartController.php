@@ -171,7 +171,7 @@ class CartController extends Controller {
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
 
-        return view("pages.checkout", ["cart" => $cart]);
+        return view("pages.checkout", ["cart" => $cart, "shopper" => $shopper]);
     }
 
     /**
