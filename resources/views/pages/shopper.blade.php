@@ -3,9 +3,11 @@
 @section('title', $shopper->user->name)
 
 @section('content')
-
 @include('partials.shopper', ['shopper' => $shopper])
+@endsection
+{{--
 @include('partials.errormodal')
+
 
 <script type="text/javascript" defer>
     function send(event) {
@@ -134,3 +136,4 @@
 </form>
 
 @endsection
+--}}

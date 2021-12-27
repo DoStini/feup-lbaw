@@ -1,17 +1,3 @@
-<!--<article class="shopper" data-id="{{ $shopper->id }}">
-    <h1>{{$shopper->user->name}}</h1>
-    <h3> My funny number </h3>
-    <p>{{$shopper->phone_number}}</p>
-    <h3> My funny email </h3>
-    <p>{{$shopper->user->email}}</p>
-    <h3>About me</h3>
-    <p> {{$shopper->about_me}}</p>
-    <h3>Addresses</h3>
-    @each('partials.address', $shopper->addresses, 'address')
-    <h3>Orders</h3>
-    @each('partials.order', $shopper->orders, 'order')
-</article>-->
-
 <div class="container h-100 my-3">
     <div class="row">
         <div class="col-md-3 col-sm-12 container">
@@ -25,7 +11,7 @@
                 </div>
             </div>
             <div class="my-3 mx-2">
-                @if (!Auth::user()->is_admin && Auth::user()->id == $shopper->user->id)
+                @if (Auth::check() && Auth::user()->id == $shopper->user->id)
                     <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100"> About Me </a>
                     <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Wishlist </a>
                     <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a>
