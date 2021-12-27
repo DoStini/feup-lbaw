@@ -12,16 +12,7 @@
         let requestURL = "/api/orders/";
         requestURL = requestURL.concat(formData.get("order-id"), "/status");
 
-        window.axios.post
-        (
-            requestURL,
-            {'status' : formData.get('status')},
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
+        jsonBodyPost(requestURL,  {'status' : formData.get('status')})
         .then((response) => {
             reportData("Order Updated Successfully!");
             console.log(response);

@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Exceptions\ApiError;
+use Illuminate\Support\Facades\Config;
 
 class EnsureAdmin
 {
@@ -20,12 +22,14 @@ class EnsureAdmin
         if(Auth::user()->is_admin) {
             return $next($request);
         } else {
-            $response = [];
-            $response["errors"] = [
-                "Authentication" => "User is not an admin"
+            $extra = [
+                "errors" => [
+                    "Authentication" => "User is not an admin"
+                ]
             ];
+            $obj = Config::get("constants.authentication.auth");
 
-            return response()->json($response, 403);
+            return ApiError::generateErrorMessage($obj, $extra);
         }
     }
 }
