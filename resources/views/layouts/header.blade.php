@@ -19,10 +19,12 @@
         <div class="col-md-4 d-flex justify-content-center justify-content-md-end align-items-center">
           <div class="d-flex">
             @if(Auth::check())
+                @if(!Auth::user()->is_admin)
                 <!-- Cart -->
                 <a class="text-reset me-5 mt-1" href="/users/cart">
                 <span><i class="fas fa-shopping-cart" style="color: #000000; font-size:1.5em;"></i></span>
                 </a>
+                @endif
 
                 <!-- Notification -->
                 <div class="dropdown mt-1">
@@ -41,12 +43,17 @@
                 <div class="dropdown">
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                     id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://mdbootstrap.com/img/new/avatars/1.jpg" class="rounded-circle" height="25" alt=""
-                    loading="lazy" />
+                    @if(File::exists(Storage::url(Auth::user()->photo->url)))
+                      <img src={{Storage::url(Auth::user()->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
+                    @else
+                      <img src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
+                    @endif
                     <h5 class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">My profile</a></li>
+                    @if(!Auth::user()->is_admin)
+                      <li><a class="dropdown-item" href={{url("users/" . strval(Auth::user()->id))}}>My profile</a></li>
+                    @endif
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><form method="POST" class="col" action="{{ route('logout') }}">
                       @csrf
