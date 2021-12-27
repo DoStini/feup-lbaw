@@ -3,8 +3,8 @@
         <div class="col-md-3 col-sm-12 container">
             <div class="d-flex justify-content-center align-items-center">
                 <div class="w-50">
-                    @if (File::exists(Storage::url($shopper->user->photo->url)))
-                        <img src={{Storage::url($shopper->user->photo->url)}} class="img-fluid" alt="" loading="lazy" />
+                    @if (File::exists(public_path($shopper->user->photo->url)))
+                        <img src={{asset($shopper->user->photo->url)}} class="img-fluid" alt="" loading="lazy" />
                     @else
                         <img src="/img/user.png" class="img-fluid" alt="" loading="lazy" />
                     @endif

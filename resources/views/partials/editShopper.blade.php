@@ -68,59 +68,62 @@
     }
 
 </script>
+
 <form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return send(event);">
-    <label for="name"> Name</label>
-    <input required id="name" type="text" name="name" value="{{$shopper->user->name}}">
-    <span class="error form-text" id="name-error">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="name">Name</label>
+            <input required id="name" class="form-control" type="text" name="name" value="{{$shopper->user->name}}">
+            <span class="error form-text text-danger" id="name-error"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="email">Email</label>
+            <input required id="email" class="form-control" type="email" name="email" value="{{$shopper->user->email}}">
+            <span class="error form-text text-danger" id="email-error"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="password"> New Password</label>
+            <input id="password" class="form-control" type="password" name="password" autocomplete="new-password">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="password-confirm">Confirm New Password</label>
+            <input id="password-confirm" class="form-control" type="password" name="password-confirmation">
+        </div>
+        <span class="error form-text text-danger" id="password-error"></span>
+    </div>
 
-    </span>
+    <div class="mb-3">
+        <label for="profile-picture"> Upload New Photo</label>
+        <input id="profile-picture" class="form-control" type="file" name="profile-picture">
+        <span class="error form-text" id="profile-picture-error"></span>
+    </div>
+    
+    <div class="mb-3">
+        <label for="about-me"> About Me</label>
+        <textarea id="about-me" class="form-control" name="about-me" value="">{{$shopper->about_me}}</textarea>
+        <span class="error form-text" id="about_me-error"></span>
+    </div>
 
-    <label for="email"> Email</label>
-    <input required id="email" type="email" name="email" value="{{$shopper->user->email}}">
-    <span class="error form-text" id="email-error">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="nif"> NIF</label>
+            <input id="nif" type="text" class="form-control" name="nif" value="{{$shopper->nif}}">
+            <span class="error form-text" id="nif-error"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="phone-number"> Phone</label>
+            <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
+            <span class="error form-text" id="phone_number-error"></span>        
+        </div>
+    </div>
 
-    </span>
-
-    <label for="password"> Change Password</label>
-    <input id="password" type="password" name="password" autocomplete="new-password">
-    <span class="error form-text" id="password-error">
-
-    </span>
-
-    <label for="password-confirm">Confirm Password</label>
-    <input id="password-confirm" type="password" name="password-confirmation">
-
-    <label for="profile-picture"> Upload New Photo</label>
-    <input id="profile-picture" type="file" name="profile-picture">
-    <span class="error form-text" id="profile-picture-error">
-
-    </span>
-
-    <label for="about-me"> About Me</label>
-    <textarea id="about-me" name="about-me" value="">
-        {{$shopper->about_me}}
-    </textarea>
-    <span class="error form-text" id="about_me-error">
-
-    </span>
-
-    <label for="nif"> NIF</label>
-    <input id="nif" type="text" name="nif" value="{{$shopper->nif}}">
-    <span class="error form-text" id="nif-error">
-
-    </span>
-
-    <label for="phone-number"> Phone</label>
-    <input id="phone-number" type="text" name="phone-number" value="{{$shopper->phone_number}}">
-    <span class="error form-text" id="phone_number-error">
-
-    </span>
-
-    <label for="cur-password">Current Password</label>
-    <input autocomplete="on" required id="cur-password" type="password" name="cur-password">
-    <span class="error form-text" id="cur-password-error">
-
-    </span>
+    <div class="form-group my-4">
+        <label for="cur-password"><b>Confirm your password before applying changes:</b></label>
+        <input autocomplete="on" required id="cur-password" class="form-control" type="password" name="cur-password">
+        <span class="error form-text" id="cur-password-error"></span>
+    </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
