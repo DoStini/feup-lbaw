@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class EnsureAdmin
 {
     /**
-     * Handle an incoming request.
+     * Checks if authenticated user is an admin
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

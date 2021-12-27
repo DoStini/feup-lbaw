@@ -15,10 +15,10 @@
         window.axios.post
         (
             requestURL,
-            formData.get("status"),
+            {'status' : formData.get('status')},
             {
                 headers: {
-                    'Content-Type': 'json'
+                    'Content-Type': 'application/json'
                 }
             }
         )
@@ -27,7 +27,10 @@
             console.log(response);
         })
         .catch((error) => {
-            reportData("There was an error editing the status", error.response.data["errors"]);
+            reportData("There was an error editing the status", error.response.data["errors"], {
+                "id" : "ID",
+                "status" : "Status"
+            });
         });
 
         event.preventDefault();
