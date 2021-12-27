@@ -105,9 +105,7 @@
     </span>
 
     <label for="about-me"> About Me</label>
-    <textarea id="about-me" name="about-me" value="">
-        {{$shopper->about_me}}
-    </textarea>
+    <textarea id="about-me" name="about-me" value="">{{$shopper->about_me}}</textarea>
     <span class="error form-text" id="about_me-error">
 
     </span>
