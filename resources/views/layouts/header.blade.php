@@ -41,8 +41,8 @@
                 <div class="dropdown">
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                     id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    @if(File::exists(Storage::url($shopper->user->photo->url)))
-                      <img src={{Storage::url($shopper->user->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
+                    @if(File::exists(Storage::url(Auth::user()->photo->url)))
+                      <img src={{Storage::url(Auth::user()->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
                     @else
                       <img src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
