@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.logoOnlyApp')
 
 @section('content')
 <script type="text/javascript" src={{ asset('js/login.js') }}></script>
