@@ -15,7 +15,7 @@
                     <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100"> About Me </a>
                     <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Wishlist </a>
                     <a href={{url("users/" . strval(Auth::user()->id)) . "/private"}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a>
-                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Purchase History </a>
+                    <a href={{url("users/orders")}} class="my-2 btn btn-primary w-100">  Purchase History </a>
                     <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Furniture Offers </a>
                     <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Delete Account </a>
                     <form  method="POST" action="{{ route('logout') }}">

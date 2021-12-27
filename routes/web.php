@@ -14,10 +14,11 @@
 Route::get('/', 'Auth\LoginController@home');
 
 // Users
-Route::get('users/cart', 'ShopperController@cart');
-Route::get('users/{id}', 'ShopperController@show');
-Route::get('users/{id}/private', 'ShopperController@getEditPage');
 Route::get('users/', 'ShopperController@getAuth');
+Route::get('users/cart', 'ShopperController@getCart');
+Route::get('users/orders', 'ShopperController@getOrders');
+Route::get('users/{id}', 'ShopperController@showProfile');
+Route::get('users/{id}/private', 'ShopperController@getEditPage');
 
 
 // Products

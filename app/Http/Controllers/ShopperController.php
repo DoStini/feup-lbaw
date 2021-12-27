@@ -19,7 +19,7 @@ class ShopperController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function show($id) {
+    public function getProfile($id) {
         $shopper = Shopper::find($id);
         return view('pages.profile', ['shopper' => $shopper, 'page' => 'aboutShopper']);
     }
@@ -41,7 +41,7 @@ class ShopperController extends Controller {
      *
      * @return Response
      */
-    public function cart() {
+    public function getCart() {
         if (!Auth::check()) return redirect('/login');
         $user = Auth::user();
         if ($user->is_admin) return redirect('/login');
@@ -188,5 +188,15 @@ class ShopperController extends Controller {
     public function getEditPage($id) {
         $shopper = Shopper::find($id);
         return view('pages.profile', ['shopper' => $shopper, 'page' => 'editShopper']);
+    }
+
+    public function getOrders() {
+        if (!Auth::check()) return redirect('/login');
+        $user = Auth::user();
+        if ($user->is_admin) return redirect('/login');
+
+        $shopper = Shopper::find($user->id);
+
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'showShopperOrders']);
     }
 }
