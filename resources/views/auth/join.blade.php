@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.logoOnlyApp')
 
 @section('content')
 <script type="text/javascript" src={{ asset('js/login.js') }}></script>
@@ -60,8 +60,10 @@
 
                 <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
             </form>
-
         </section>
+
+        <div class="vertical-separator"></div>
+
         <section id="register" class="col-md-4 d-flex flex-column">
             <header>
                 <h2>Create an account</h2>

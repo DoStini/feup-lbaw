@@ -19,6 +19,7 @@ main {
 
 #auth .btn-primary {
     background-color: #4C4242;
+    border: none;
     color: white;
 }
 
@@ -54,13 +55,17 @@ main {
 }
 
 #auth .input-group {
-    margin-top: 0.5em;
     margin-bottom: 0.5em;
 }
 
 @media (min-width: 768px) {
     #auth header {
         height: 8em;
+    }
+
+    #auth .vertical-separator {
+        border-right: 1px solid #4C4242;
+        width: 2px;
     }
 }
 
