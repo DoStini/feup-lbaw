@@ -55,7 +55,6 @@
     }
 
     function setErrors(errors) {
-        console.log(errors);
         for(let key in errors) {
             let element = document.getElementById(`${key}-error`);
             if(element == null) continue;
