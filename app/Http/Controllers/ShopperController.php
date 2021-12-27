@@ -21,7 +21,7 @@ class ShopperController extends Controller {
      */
     public function show($id) {
         $shopper = Shopper::find($id);
-        return view('pages.shopper', ['shopper' => $shopper]);
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'aboutShopper']);
     }
 
     /**
@@ -183,5 +183,10 @@ class ShopperController extends Controller {
 
     public function getAuth() {
         return redirect("/users/" . strval(Auth::id()));
+    }
+
+    public function getEditPage($id) {
+        $shopper = Shopper::find($id);
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'editShopper']);
     }
 }
