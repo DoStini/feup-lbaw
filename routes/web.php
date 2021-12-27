@@ -13,6 +13,7 @@
 // Home
 Route::get('/', 'Auth\LoginController@home');
 
+// Users
 Route::get('users/cart', 'ShopperController@cart');
 Route::get('users/{id}', 'ShopperController@show');
 Route::get('users/', 'ShopperController@getAuth');
@@ -24,18 +25,6 @@ Route::delete('api/cards/{card_id}', 'CardController@delete');
 Route::put('api/cards/{card_id}/', 'ItemController@create');
 Route::post('api/item/{id}', 'ItemController@update');
 Route::delete('api/item/{id}', 'ItemController@delete');
-
-Route::group(
-    [
-        'prefix' => 'api/users/cart',
-        'middleware' => ['api.auth', 'is.shopper']
-    ],
-    function () {
-        Route::get('/', 'CartController@get');
-        Route::post('/update', 'CartController@update');
-        Route::delete('/remove', 'CartController@delete');
-    }
-);
 
 
 // Authentication
