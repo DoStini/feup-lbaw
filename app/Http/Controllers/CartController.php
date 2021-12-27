@@ -45,7 +45,7 @@ class CartController extends Controller {
 
     /**
      * Verifies if a product has enough stock
-     * 
+     *
      * @param Collection
      * @param Integer
      * @return float
@@ -56,7 +56,7 @@ class CartController extends Controller {
 
     /**
      * Calculates the value of a user's cart
-     * 
+     *
      * @param Collection
      * @return float
      */
@@ -69,7 +69,7 @@ class CartController extends Controller {
 
     /**
      * Verifies if a product is in the user's cart
-     * 
+     *
      * @param Collection
      * @param Integer
      * @return float
@@ -164,6 +164,14 @@ class CartController extends Controller {
             UnexpectedErrorLogger::log($err);
             return ApiError::unexpected();
         }
+    }
+
+    public function checkoutPage() {
+        $user = Auth::user();
+        $shopper = Shopper::find($user->id);
+        $cart = $shopper->cart;
+
+        return view("pages.checkout", ["cart" => $cart]);
     }
 
     /**

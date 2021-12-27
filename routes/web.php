@@ -14,10 +14,13 @@
 Route::get('/', 'Auth\LoginController@home');
 
 // Users
+Route::get('users/checkout', 'CartController@checkoutPage')->name('checkout-page')->middleware(['auth','is.shopper']);
 Route::get('users/cart', 'ShopperController@cart');
 Route::get('users/{id}', 'ShopperController@show');
 Route::get('users/', 'ShopperController@getAuth');
 Route::get('products/{id}', 'ProductController@show');
+
+// Cart
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');
