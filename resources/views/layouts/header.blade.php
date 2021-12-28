@@ -25,28 +25,12 @@
                     <i class="fas fa-shopping-cart" style="color: #000000; font-size:1.5em;"></i>
                 </a>
                 <ul id="cart-dropdown-menu" class="dropdown-menu dropdown-menu-end" aria-labelledby="cart-dropdown">
-                    <li>
-                        <div class="dropdown-item container" href="#">
-                            <div class="row align-items-center">
-                                <img class="col-3" src="http://localhost:8000/img/default.jpg">
-                                <div class="col-9">
-                                    <div class="row align-items-center justify-content-between">
-                                        <div class="col-10 dropdown-cart-name">Very nice product name yeeeeeeet</div>
-                                        <i class="cart-remove col-2 bi bi-x-lg"></i>
-                                    </div>
-                                    <div class="row dropdown-cart-amount justify-content-between">
-                                        <div class="col-2 px-0">
-                                            5x 10$
-                                        </div>
-                                        <div class="col-2 item-subtotal">
-                                            500$
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
+                    <div id="cart-dropdown-menu-content">
+                    </div>
+
+                    
                 </ul>
+                </div>
                 @endif
 
                 <!-- Notification -->
