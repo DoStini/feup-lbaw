@@ -18,7 +18,7 @@
       </div>
     </div>
     
-    <div class="fullScreenPhoto2"></div>
+    <div class="content"></div>
 
     
   </body>
