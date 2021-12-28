@@ -70,7 +70,7 @@
                                 <div class="container m-0 p-0">
                                     <div class="row">
                                         <div class="col-12">
-                                            <h5>Shipment Details</h5>
+                                            <h5><span class="badge bg-secondary">Shipment Details</span></h5>
                                             <p class="p-0 m-0">{{$order->address->street}}, nº{{$order->address->door}}</p>
                                             <p class="p-0 m-0">{{$order->address->zip_code->zip_code}}, {{$order->address->zip_code->county->name}}</p>
                                             <p class="p-0 m-0">{{$order->address->zip_code->county->district->name}}</p>
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                             <div class="col-8">
-                                <h5>Order Summary</h5>
+                                <h5><span class="badge bg-secondary">Order Summary</span></h5>
                                 <table class="table table-borderless">
                                     <tbody>
                                         <tr>
@@ -110,7 +110,7 @@
                         </div>
                         <div class="row">
                             <div class="col-4 container my-2">
-                                <h5>Payment</h5>
+                                <h5><span class="badge bg-secondary">Payment</span></h5>
                                 <table class="table table-borderless">
                                     <tbody>
                                         @if($order->payment->paypal_transaction_id)
@@ -132,7 +132,7 @@
                                 </table>
                             </div>
                             <div class="col-8">
-                                <h5>Bought Products</h5>
+                                <h5><span class="badge bg-secondary">Bought Products</span></h5>
                                 <table class="table table-borderless">
                                     <thead>
                                         <tr>
