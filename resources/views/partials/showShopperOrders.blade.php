@@ -35,7 +35,9 @@
                     <div class="row my-2 p-4">
                         <div class="col-5">
                             <h6>Total</h6>
-                            <h6>Payment Method</h6>
+                            @if($order->payment)
+                                <h6>Payment Method</h6>
+                            @endif
                             <h6>Current Status</h6>
                         </div>
                         {{-- If needed to indicate with color scheme the order status
@@ -51,7 +53,9 @@
                         --}}
                         <div class="col-4">
                             <h6>{{$order->total}} €</h6>
-                            <h6>{{$order->payment->paypal_transaction_id == null ? 'Bank Transfer' : 'PayPal'}}</h6>
+                            @if($order->payment)
+                                <h6>{{$order->payment->paypal_transaction_id == null ? 'Bank Transfer' : 'PayPal'}}</h6>
+                            @endif
                             <h6>{{strToUpper($order->status)}}</h6>
                         </div>
                         <div class="col-3">
@@ -111,25 +115,29 @@
                         <div class="row">
                             <div class="col-4 container my-2">
                                 <h5><span class="badge bg-secondary">Payment</span></h5>
-                                <table class="table table-borderless">
-                                    <tbody>
-                                        @if($order->payment->paypal_transaction_id)
-                                            <tr>
-                                            <th scope="row">PayPal Transaction ID</th>
-                                            <td>{{$order->payment->paypal_transaction_id}}</td>
-                                            </tr>
-                                        @else
-                                            <tr>
-                                                <th scope="row">Reference</th>
-                                                <td>{{$order->payment->reference}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Entity</th>
-                                                <td>{{$order->payment->entity}}</td>
-                                            </tr>
-                                        @endif
-                                    <tbody>
-                                </table>
+                                @if($order->payment)
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            @if($order->payment->paypal_transaction_id)
+                                                <tr>
+                                                <th scope="row">PayPal Transaction ID</th>
+                                                <td>{{$order->payment->paypal_transaction_id}}</td>
+                                                </tr>
+                                            @else
+                                                <tr>
+                                                    <th scope="row">Reference</th>
+                                                    <td>{{$order->payment->reference}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Entity</th>
+                                                    <td>{{$order->payment->entity}}</td>
+                                                </tr>
+                                            @endif
+                                        <tbody>
+                                    </table>
+                                @else
+                                    <p>The payment method is yet to be defined.</p>
+                                @endif
                             </div>
                             <div class="col-8">
                                 <h5><span class="badge bg-secondary">Bought Products</span></h5>
