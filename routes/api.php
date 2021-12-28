@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/users/{id}/private/edit', 'ShopperController@edit')->middleware(['auth:sanctum', 'userOwnerAdmin'])->name("edit_user");
+Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['auth:sanctum', 'userOwnerAdmin'])->name("edit_user");
 Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
