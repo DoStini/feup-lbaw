@@ -18,8 +18,36 @@
       </div>
     </div>
     
-    <div class="content"></div>
-
-    
+    <div class="content-container">
+        <div class="holder"> </div>
+        <div class="main-content">
+            <div>
+                <h1 class="content-title">For a more<br>sustainable future.</h1>
+            </div>
+            <div class="info">
+                <div class="navigation">
+                    <h1>Navigation</h1>
+                    <h4>Home</h4>
+                    <h4>Sell to Us</h4>
+                    <h4>About Us</h4>
+                    <h4>Contact Us</h4>
+                </div>
+                <div class="contacts">
+                    <h1>Contacts</h1>
+                    <h4>support@refurniture.pt</h4>
+                    <h4>+351 912345678</h4>
+                </div>
+            </div>
+            <div class="socials">
+                <i class="bi bi-facebook"></i>
+                <i class="bi bi-linkedin"></i>
+                <i class="bi bi-twitter"></i>
+            </div>
+        </div>
+    </div>
+    <footer class="footer-container">
+        <h6 class="footer-text">© 2021 reFurniture. All Rights Reserved. </h6>
+    </footer>
+ 
   </body>
 </html>
