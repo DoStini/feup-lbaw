@@ -218,9 +218,10 @@ class CartController extends Controller {
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        $cart_price = $this->cartPrice($cart);
 
         if($request->has("coupon-id")) {
+            $cart_price = $this->cartPrice($cart);
+
             $coupon = Coupon::find($request->input("coupon-id"));
             $result = $this->validateCoupon($coupon, $cart_price);
             if(!is_null($result)) {
@@ -232,6 +233,24 @@ class CartController extends Controller {
         if(!is_null($result)) {
             return $result;
         }
+
+        $addressID = $request->input("address-id");
+        $couponID = $request->input("coupon-id");
+
+        try {
+            DB::beginTransaction();
+            DB::unprepared("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
+
+            DB::statement("CALL create_order(?, ?, ?);", [$shopper->id, $addressID, $couponID]);
+            DB::select('SELECT * FROM "order" WHERE shopper_id = ?', [$shopper->id]);
+
+            DB::commit();
+        } catch(QueryException $ex) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
+        }
+
 
         return redirect("/orders/");
     }
