@@ -1,0 +1,35 @@
+#cart-dropdown-menu {
+    width: 30vw;
+    min-width: 200px;
+    max-height: 20vh;
+    overflow-y: auto;
+}
+
+#cart-dropdown-menu div.dropdown-cart-name {
+    font-size: 1em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-left: 0;
+}
+
+#cart-dropdown-menu .dropdown-item i.cart-remove {
+    padding-left: 0;
+    cursor: pointer;
+    font-size: 1.2em;
+    width: 1.2em;
+    margin-right: 0.2em;
+    transition: color 0.5s;
+}
+
+#cart-dropdown-menu .dropdown-item i.cart-remove:hover {
+    color: rgb(150, 150, 150);
+}
+
+#cart-dropdown-menu div.dropdown-cart-amount {
+    font-size: 0.8em;
+    margin-top: 0.3em;
+}
+
+#cart-dropdown-menu div.item-subtotal {
+    color: red;
+}

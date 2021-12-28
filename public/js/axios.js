@@ -9,3 +9,7 @@ function jsonBodyPost(path, data) {
         }
     );
 }
+
+function get(path) {
+    return window.axios.get(path);
+}

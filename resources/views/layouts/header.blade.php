@@ -17,22 +17,45 @@
         </div>
 
         <div class="col-md-4 d-flex justify-content-center justify-content-md-end align-items-center">
-          <div class="d-flex">
+          <div class="d-flex align-items-center">
             @if(Auth::check())
                 @if(!Auth::user()->is_admin)
                 <!-- Cart -->
-                <a class="text-reset me-5 mt-1" href="/users/cart">
-                <span><i class="fas fa-shopping-cart" style="color: #000000; font-size:1.5em;"></i></span>
+                <a id="cart-dropdown" class="me-5 text-reset hidden-arrow dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"" href="#">
+                    <i class="fas fa-shopping-cart" style="color: #000000; font-size:1.5em;"></i>
                 </a>
+                <ul id="cart-dropdown-menu" class="dropdown-menu dropdown-menu-end" aria-labelledby="cart-dropdown">
+                    <li>
+                        <div class="dropdown-item container" href="#">
+                            <div class="row align-items-center">
+                                <img class="col-3" src="http://localhost:8000/img/default.jpg">
+                                <div class="col-9">
+                                    <div class="row align-items-center justify-content-between">
+                                        <div class="col-10 dropdown-cart-name">Very nice product name yeeeeeeet</div>
+                                        <i class="cart-remove col-2 bi bi-x-lg"></i>
+                                    </div>
+                                    <div class="row dropdown-cart-amount justify-content-between">
+                                        <div class="col-2 px-0">
+                                            5x 10$
+                                        </div>
+                                        <div class="col-2 item-subtotal">
+                                            500$
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
                 @endif
 
                 <!-- Notification -->
                 <div class="dropdown mt-1">
-                <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="dropdownMenuButton2"
+                <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                <ul class="dropdown-menu" aria-labelledby="notification-dropdown">
                     <li><a class="dropdown-item" href="#">Some news</a></li>
                     <li><a class="dropdown-item" href="#">Another news</a></li>
                     <li><a class="dropdown-item" href="#">Something else here</a></li>
@@ -42,7 +65,7 @@
                 <!-- User -->
                 <div class="dropdown">
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
-                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
                       <img src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
                     @else
@@ -50,7 +73,7 @@
                     @endif
                     <h5 class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul class="dropdown-menu" aria-labelledby="user-drodown">
                     @if(!Auth::user()->is_admin)
                       <li><a class="dropdown-item" href={{url("users/" . strval(Auth::user()->id))}}>My profile</a></li>
                     @endif
@@ -70,4 +93,4 @@
     </div>
   </div>
 
-  </nav>
+</nav>
