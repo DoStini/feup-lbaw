@@ -11,9 +11,11 @@ use ErrorException;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Type\Integer;
@@ -187,6 +189,24 @@ class CartController extends Controller {
         ]);
     }
 
+    private function validateCoupon($coupon, $cart_price) {
+        if(!$coupon->is_active) {
+            return redirect()->back()->withErrors(['coupon-id' => 'The selected coupon is not active.'])->withInput();
+        }
+
+        if($coupon->minimum_cart_value > $cart_price) {
+            return redirect()->back()->withErrors(['coupon-id' => "The cart's total cost does not meet the selected coupon's minimum cart cost."])->withInput();
+        }
+    }
+
+    private function validateStock($cart) {
+        foreach ($cart as $product) {
+            if($product->details->amount > $product->stock) {
+                return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock."])->withInput();
+            }
+        }
+    }
+
     public function checkout(Request $request) {
         $user = Auth::user();
         $shopper = Shopper::find($user->id);
@@ -202,14 +222,15 @@ class CartController extends Controller {
 
         if($request->has("coupon-id")) {
             $coupon = Coupon::find($request->input("coupon-id"));
-
-            if(!$coupon->is_active) {
-                return redirect()->back()->withErrors(['coupon-id' => 'The selected coupon is not active.'])->withInput();
+            $result = $this->validateCoupon($coupon, $cart_price);
+            if(!is_null($result)) {
+                return $result;
             }
+        }
 
-            if($coupon->minimum_cart_value > $cart_price) {
-                return redirect()->back()->withErrors(['coupon-id' => "The cart's total cost does not meet the selected coupon's minimum cart cost."])->withInput();
-            }
+        $result = $this->validateStock($cart);
+        if(!is_null($result)) {
+            return $result;
         }
 
         return redirect("/orders/");
