@@ -1124,6 +1124,37 @@ paths:
               schema:
                 type: string
                 example: '/'
+    post:
+      operationId: R410
+      summary: 'R410: Checkout current cart action'
+      description: 'Checkout the current user cart. Access: USR'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties: 
+                shopper-id:
+                  type: integer
+                  description: ID of the shopper checking out.
+                address-id: 
+                  type: integer
+                  description: ID of the address to send the order.
+                coupon-id:
+                  type: integer
+                  description: ID of the coupon being applied.
+              required:
+                - shopper-id
+                - address-id
+
+      responses:
+        '302':
+          description: 'Cart checked out successfully, redirect to order route R407'
+        
 
   /users/orders:
     get:
