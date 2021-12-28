@@ -143,7 +143,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($order->products as $product)
-                                        <<tr>
+                                        <tr>
                                             <td><a class="badge rounded-pill bg-dark product-link" 
                                                 href={{url('products/' . strval($product->id))}} target="_blank">
                                                 {{$product->name}}</a></td>
