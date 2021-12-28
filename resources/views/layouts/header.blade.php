@@ -27,8 +27,6 @@
                 <ul id="cart-dropdown-menu" class="dropdown-menu dropdown-menu-end" aria-labelledby="cart-dropdown">
                     <div id="cart-dropdown-menu-content">
                     </div>
-
-                    
                 </ul>
                 </div>
                 @endif

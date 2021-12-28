@@ -3,7 +3,19 @@ let loading = false;
 
 const menu = $("#cart-dropdown-menu");
 const menuContent = $("#cart-dropdown-menu-content");
-console.log("menus", menu, menuContent)
+
+function noProducts() {
+    const elem = document.createElement("div");
+    elem.className = "container";
+
+    elem.innerHTML = `
+        <div class="row justify-content-center">
+            No products in the cart
+        </div>
+    `;
+
+    menuContent.append(elem);
+}
 
 function insertProduct(product) {
     // const productImg = product.photos[0];
@@ -34,44 +46,55 @@ function insertProduct(product) {
     menuContent.append(elem);
 }
 
+function fillMenu(products, total) {
+    if (products.length === 0) {
+        noProducts();
+        return;
+    }
+
+    products.forEach((product) => insertProduct(product));
+    const fixed = document.createElement("div");
+    fixed.innerHTML = `
+    <li><hr class="dropdown-divider"></li>
+    <li>
+        <div class="container" href="#">
+            <div class="row align-items-center">
+                <div class="col mx-3 my-2">
+                    <div class="row align-items-center justify-content-between mb-3">
+                        <div id="items-total" class="col">${products.length} item${products.length > 1 ? "s" : "item"}</div>
+                        <div id="price-total" class="col">${total}€</div>
+                    </div>
+                    <div class="row mb-2">
+                        <a class="btn btn-primary" href="/users/cart">Access your cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+    `;
+
+    menu.append(fixed);
+}
+
 function updateCart() {
     if (loading || inMenu) return;
 
     loading = true;
 
     const spinner = document.createElement("div");
-    spinner.innerHTML = `<div class="spinner-border" role="status"></div>`;
+    spinner.className = "container";
+    spinner.innerHTML = `
+        <div class="row justify-content-center">
+            <i class="spinner-border" role="status"></i>
+        </div>`;
     menuContent.html(spinner);
-    console.log("spinner", spinner, menu)
 
     get("/api/users/cart")
         .then((response) => {
-            console.log(response.data);
             loading = false;
             menuContent.html("");
             if (response.status === 200) {
-                response.data.items.forEach((product) => insertProduct(product));
-                const fixed = document.createElement("div");
-                fixed.innerHTML = `
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <div class="container" href="#">
-                        <div class="row align-items-center">
-                            <div class="col mx-3 my-2">
-                                <div class="row align-items-center justify-content-between mb-3">
-                                    <div id="items-total" class="col">${response.data.items.length} item${response.data.items.length > 1 ? "s" : "item"}</div>
-                                    <div id="price-total" class="col">${response.data.total}€</div>
-                                </div>
-                                <div class="row mb-2">
-                                    <a class="btn btn-primary" href="/users/cart">Access your cart</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                `;
-
-                menu.append(fixed);
+                fillMenu(response.data.items, response.data.total);
             }
         });
 }
@@ -88,24 +111,24 @@ function setupCart() {
         inMenu = true;
         button.dropdown("show");
     });
-    // button?.on("mouseleave", () => {
-    //     inMenu = false;
+    button?.on("mouseleave", () => {
+        inMenu = false;
         
-    //     // Wait for user to enter menu or exits.
-    //     setTimeout(() => {
-    //         if (!inMenu) {
-    //             button.dropdown("hide");
-    //         }
-    //     }, 50);
-    // });
+        // Wait for user to enter menu or exits.
+        setTimeout(() => {
+            if (!inMenu) {
+                button.dropdown("hide");
+            }
+        }, 50);
+    });
 
-    // menu?.on("mouseover", () => {
-    //     inMenu = true;
-    // });
-    // menu?.on("mouseleave", () => {
-    //     inMenu = false;
-    //     button.dropdown("hide");
-    // });
+    menu?.on("mouseover", () => {
+        inMenu = true;
+    });
+    menu?.on("mouseleave", () => {
+        inMenu = false;
+        button.dropdown("hide");
+    });
 }
 
 setupCart();
