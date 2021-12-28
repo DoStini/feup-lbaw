@@ -6,7 +6,11 @@
     }
 
     .video-container {
-        height: 100vh;
+        height: 150vh;
+    }
+
+    .video-mobile {
+        opacity: 0;
     }
 
     .video-parallax {
@@ -25,8 +29,8 @@
 
     .logo-container {
         position: fixed;
-        top: 13em;
-        left: 64em;
+        top: 30%;
+        left: 68%;
         transition: 0.1s opacity;
         display: flex;
         flex-direction: column;
@@ -85,6 +89,37 @@
         }
     }
 
-.remove {
-    opacity: 0;
-}
+    .remove {
+        opacity: 0;
+    }
+
+    @media (max-width: 1000px) {
+        .video-mobile {
+            opacity: 1;
+        }
+
+        .image-desktop {
+            opacity: 0;
+        }
+
+        .logo-container {
+            background-color: rgba(255, 255, 255, 0.788);
+            width: 100%;
+            height: 40%;
+            top: 10%;
+            left: 50%;
+            transform: translate(-50%, 0%);
+        }
+
+
+        .link-to-join {
+            display: inline-block;
+            font-size: 3em;
+            color: #4E351C;
+            transition: 1s color;
+        }  
+        
+        .link-to-join:hover {
+            color: #6e5742;
+        }
+    }
