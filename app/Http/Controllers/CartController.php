@@ -27,7 +27,7 @@ class CartController extends Controller {
     public function show() {
         if (!Auth::check()) return redirect('/join');
         $user = Auth::user();
-        
+
         //if($user->is_admin) return redirect('/orders');
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
@@ -77,7 +77,7 @@ class CartController extends Controller {
 
     /**
      * Verifies if a product has enough stock
-     * 
+     *
      * @param Collection
      * @param Integer
      * @return float
@@ -88,7 +88,7 @@ class CartController extends Controller {
 
     /**
      * Calculates the value of a user's cart
-     * 
+     *
      * @param Collection
      * @return float
      */
@@ -101,7 +101,7 @@ class CartController extends Controller {
 
     /**
      * Parses a cart collection into the desired model of response body
-     * 
+     *
      * @return array
      */
     private function cartToJson($cart) {
@@ -120,7 +120,7 @@ class CartController extends Controller {
 
     /**
      * Verifies if a product is in the user's cart
-     * 
+     *
      * @param Collection
      * @param Integer
      * @return float
