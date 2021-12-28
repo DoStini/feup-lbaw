@@ -134,6 +134,12 @@
         color: #4E351C;
     }
 
+    .navigation a,
+    .contacts a{
+        text-decoration: none;
+        color: #4E351C;
+    }
+
     .socials {
         display: flex;
         font-size: 3em;
@@ -142,9 +148,13 @@
         justify-content: center;
     }
 
-    .socials i {
+    .socials a {
         padding: 2%;
         color: #4E351C;
+    }
+
+    .socials a:hover{
+        color: #5c4a38;
     }
 
     .footer-container {

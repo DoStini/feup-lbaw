@@ -27,10 +27,10 @@
             <div class="info">
                 <div class="navigation">
                     <h1>Navigation</h1>
-                    <h4>Home</h4>
-                    <h4>Sell to Us</h4>
-                    <h4>About Us</h4>
-                    <h4>Contact Us</h4>
+                    <a href={{url('/')}}><h4>Home</h4></a>
+                    <a href={{url('/')}}><h4>Sell to Us</h4></a>
+                    <a href={{url('/')}}><h4>About Us</h4></a>
+                    <a href={{url('/')}}><h4>Contact Us</h4></a>
                 </div>
                 <div class="contacts">
                     <h1>Contacts</h1>
@@ -39,9 +39,9 @@
                 </div>
             </div>
             <div class="socials">
-                <i class="bi bi-facebook"></i>
-                <i class="bi bi-linkedin"></i>
-                <i class="bi bi-twitter"></i>
+                <a class="bi bi-facebook" href="https://www.facebook.com/pages/refurniture/" target="__blank"></a>
+                <a class="bi bi-linkedin" href="https://www.linkedin.com/company/refurniture/" target="__blank"></a>
+                <a class="bi bi-twitter" href="https://www.twitter.com/refurniture/" target="__blank"></a>
             </div>
         </div>
     </div>
