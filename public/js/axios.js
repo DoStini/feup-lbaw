@@ -9,3 +9,16 @@ function jsonBodyPost(path, data) {
         }
     );
 }
+
+function formDataPost(path, data) {
+    return window.axios.post
+    (
+        path,
+        data,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    )
+}

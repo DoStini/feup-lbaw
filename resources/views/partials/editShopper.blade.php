@@ -2,22 +2,36 @@
 
 
 <script type="text/javascript" defer>
+    function updatePhoto(file) {
+        const reader = new FileReader();
+        console.log("try")
+        reader.onload = function(){
+            $("#user-img").attr("src", reader.result);
+            $("#header-user-img").attr("src", reader.result);
+        }
+
+        reader.readAsDataURL(file);
+    }
+
+    function renderElements(formData) {
+        const file = formData.get("profile-picture");
+        const name = formData.get("name");
+
+        $("#header-user-name").text(name);
+
+        if(file.name) {
+            updatePhoto(file);
+        }
+    }
+
     function send(event) {
         const formData = new FormData(document.getElementById('edit-form'));
         clearErrors();
 
-        window.axios.post
-        (
-            "/api/users/{{$shopper->id}}/private/edit",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }
-        )
+        formDataPost("/api/users/{{$shopper->id}}/private/edit",formData)
         .then((response) => {
             reportData("Profile Updated Successfully!");
+            renderElements(formData);
         })
         .catch((error) => {
             if(error.response) {
