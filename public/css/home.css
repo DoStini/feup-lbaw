@@ -35,12 +35,13 @@
     .link-to-join {
         display: inline-block;
         font-size: 3em;
-        color: #F8E8D8;
+        color: #4E351C;
         transition: 1s color;
     }  
-    
-    .link-to-join:hover {
-        color: #ddd2c6;
+
+
+    .link-to-join:hover{
+        color: #5f4934;
     }
 
     .logo {

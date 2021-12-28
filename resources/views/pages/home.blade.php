@@ -13,6 +13,7 @@
         <img class="logo" src="/img/refurniture.svg" alt="" width="300" />
         <h1 class="title">We make new<br>beginnings <span id="keyword" class="keyword">easier.<span><span id="cursor"></span></h1>
         <div class="link-container">
+            
             <a class="bi bi-arrow-right-circle-fill link-to-join" href={{url('/join')}}></a>
         </div>
       </div>
