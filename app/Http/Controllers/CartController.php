@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exceptions\ApiError;
 use App\Exceptions\UnexpectedErrorLogger;
 use App\Models\Coupon;
+use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Shopper;
 use ErrorException;
@@ -242,7 +244,19 @@ class CartController extends Controller {
             DB::unprepared("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
             DB::statement("CALL create_order(?, ?, ?);", [$shopper->id, $addressID, $couponID]);
-            DB::select('SELECT * FROM "order" WHERE shopper_id = ?', [$shopper->id]);
+            $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
+            $order = Order::find($order_id);
+            $payment = new Payment;
+            $payment->order_id = $order_id;
+
+            if($request->input("payment-type") == 'bank') {
+                $payment->entity = "12345";
+                $payment->reference = rand(10,10000);
+            } else {
+                $payment->paypal_transaction_id = rand(10,10000);
+            }
+            $payment->value = $order->total;
+            $payment->save();
 
             DB::commit();
         } catch(QueryException $ex) {
