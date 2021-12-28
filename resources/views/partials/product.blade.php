@@ -6,7 +6,7 @@
                     {{$insertedPhotos = 0;}}
                     @if ($product->photos)
                     @foreach ($product->photos as $photo)
-                    @if (File::exists(Storage::url($photo->url)))
+                    @if (File::exists(public_path($photo->url)))
                     <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
                         <img class="d-block w-100" src={{Storage::url($photo->url)}}>
                     </div>

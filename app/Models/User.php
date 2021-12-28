@@ -43,4 +43,5 @@ class User extends Authenticatable {
      * @var string
      */
     protected $table = 'users';
+
 }
