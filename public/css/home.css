@@ -25,9 +25,25 @@
 
     .logo-container {
         position: fixed;
-        top: 35vh;
-        left: 140vh;
-        transition: 5s opacity;
+        top: 13em;
+        left: 64em;
+        transition: 0.1s opacity;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .link-to-join {
+        display: inline-block;
+        font-size: 3em;
+        color: #F8E8D8;
+        transition: 1s color;
+    }  
+    
+    .link-to-join:hover {
+        color: #ddd2c6;
     }
 
     .logo {
@@ -68,3 +84,7 @@
             background-color: #A96100; 
         }
     }
+
+.remove {
+    opacity: 0;
+}

@@ -1,70 +1,79 @@
 // List of sentences
-var _CONTENT = [ 
+var sentences = [ 
 	"easier.", 
 	"smarter.", 
 	"greener.", 
 ];
 
-// Current sentence being processed
-var _PART = 0;
-
-// Character number of the current sentence being processed 
-var _PART_INDEX = 0;
-
-// Holds the handle returned from setInterval
-var _INTERVAL_VAL;
+let currentSentence = 0;
+let currentSentenceIndex = 0;
+let interval;
 
 // Element that holds the text
-var _ELEMENT = document.querySelector("#keyword");
+let keywordContainer = document.querySelector("#keyword");
 
 // Cursor element 
-var _CURSOR = document.querySelector("#cursor");
+let cursor = document.querySelector("#cursor");
 
 // Implements typing effect
-function Type() { 
+function typeEffect() { 
 	// Get substring with 1 characater added
-	var text =  _CONTENT[_PART].substring(0, _PART_INDEX + 1);
-	_ELEMENT.innerHTML = text;
-	_PART_INDEX++;
+	var text =  sentences[currentSentence].substring(0, currentSentenceIndex + 1);
+	keywordContainer.innerHTML = text;
+	currentSentenceIndex++;
 
 	// If full sentence has been displayed then start to delete the sentence after some time
-	if(text === _CONTENT[_PART]) {
+	if(text === sentences[currentSentence]) {
 		// Hide the cursor
-		_CURSOR.style.display = 'none';
+		cursor.style.display = 'none';
 
-		clearInterval(_INTERVAL_VAL);
+		clearInterval(interval);
 		setTimeout(function() {
-			_INTERVAL_VAL = setInterval(Delete, 50);
+			interval = setInterval(deleteEffect, 50);
 		}, 2000);
 	}
 }
 
 // Implements deleting effect
-function Delete() {
+function deleteEffect() {
 	// Get substring with 1 characater deleted
-	var text =  _CONTENT[_PART].substring(0, _PART_INDEX - 1);
-	_ELEMENT.innerHTML = text;
-	_PART_INDEX--;
+	var text =  sentences[currentSentence].substring(0, currentSentenceIndex - 1);
+	keywordContainer.innerHTML = text;
+	currentSentenceIndex--;
 
 	// If sentence has been deleted then start to display the next sentence
 	if(text === '') {
-		clearInterval(_INTERVAL_VAL);
+		clearInterval(interval);
 
 		// If current sentence was last then display the first one, else move to the next
-		if(_PART == (_CONTENT.length - 1))
-			_PART = 0;
+		if(currentSentence == (sentences.length - 1))
+            currentSentence = 0;
 		else
-			_PART++;
+            currentSentence++;
 		
-		_PART_INDEX = 0;
+        currentSentenceIndex = 0;
 
 		// Start to display the next sentence after some time
 		setTimeout(function() {
-			_CURSOR.style.display = 'inline-block';
-			_INTERVAL_VAL = setInterval(Type, 100);
+			cursor.style.display = 'inline-block';
+			interval = setInterval(typeEffect, 100);
 		}, 200);
 	}
 }
 
 // Start the typing effect on load
-_INTERVAL_VAL = setInterval(Type, 100);
+interval = setInterval(typeEffect, 100);
+
+
+const logoContainer = document.getElementById('logo-container');
+
+window.addEventListener("scroll", () => {
+    var y = window.scrollY;
+    if (y >= 50){
+        logoContainer.classList.add('remove');
+        return;
+    }
+    else{
+        logoContainer.classList.remove('remove');
+    }
+});
