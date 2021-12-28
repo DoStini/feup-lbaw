@@ -1168,7 +1168,7 @@ paths:
         '200':
           description: 'Ok. Show Profile Purchase History UI13'
         '403':
-          description: 'Forbidden. Not an admin nor the owner.'
+          description: 'Forbidden. Not the owner.'
   
   /orders/{id}:
     get:
