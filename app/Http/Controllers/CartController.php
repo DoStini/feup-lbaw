@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ApiError;
 use App\Exceptions\UnexpectedErrorLogger;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Shopper;
 use ErrorException;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Type\Integer;
 
 class CartController extends Controller {
@@ -166,12 +168,51 @@ class CartController extends Controller {
         }
     }
 
+    /**
+     *
+     * @param Array $data
+     * @param Shopper $shopper
+     */
+    private function getCheckoutValidator($data, $addresses) {
+        return Validator::make($data, [
+            "address-id" => [
+                "required",
+                "min:1",
+                "exists:address,id",
+                "integer",
+                Rule::in($addresses)
+            ],
+            "coupon-id" => "nullable|exists:coupon,id|integer|min:1",
+            "payment-type" => "required|string|in:paypal,bank"
+        ]);
+    }
+
     public function checkout(Request $request) {
         $user = Auth::user();
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
 
-        return response()->json($request, 200);
+        $addressesID = array_map(fn($address): int => $address["id"], $shopper->addresses->toArray());
+
+        $validator = $this->getCheckoutValidator($request->all(), $addressesID);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        $cart_price = $this->cartPrice($cart);
+
+        if($request->has("coupon-id")) {
+            $coupon = Coupon::find($request->input("coupon-id"));
+
+            if(!$coupon->is_active) {
+                return redirect()->back()->withErrors(['coupon-id' => 'The selected coupon is not active.'])->withInput();
+            }
+
+            if($coupon->minimum_cart_value > $cart_price) {
+                return redirect()->back()->withErrors(['coupon-id' => "The cart's total cost does not meet the selected coupon's minimum cart cost."])->withInput();
+            }
+        }
+
+        return redirect("/orders/");
     }
 
     /**
