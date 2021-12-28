@@ -97,7 +97,7 @@
                                             </tr>
                                             <tr>
                                                 <th scope="row">Percentage Discount</th>
-                                                <td>{{$order->coupon->percentage}}</td>
+                                                <td>{{round($order->coupon->percentage * 100 )}}%</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Total Discount</th>
