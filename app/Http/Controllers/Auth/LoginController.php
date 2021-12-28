@@ -41,7 +41,7 @@ class LoginController extends Controller {
     }
 
     public function home() {
-        return redirect('/join');
+        return view('pages.home');
     }
 
      /**

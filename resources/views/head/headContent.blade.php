@@ -13,7 +13,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet"> 
     <link href="{{ asset('css/product.css') }}" rel="stylesheet">
+
+
 
     <!-- Styles -->
     {{--
