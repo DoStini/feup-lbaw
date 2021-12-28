@@ -14,6 +14,7 @@
 Route::get('/', 'Auth\LoginController@home');
 
 // Users
+Route::post('users/checkout', 'CartController@checkout')->name('checkout')->middleware(['auth', 'is.shopper']);
 Route::get('users/cart', 'ShopperController@cart');
 Route::get('users/{id}', 'ShopperController@show');
 Route::get('users/{id}/private', 'ShopperController@getEditPage');
