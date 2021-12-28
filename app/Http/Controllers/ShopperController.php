@@ -19,7 +19,7 @@ class ShopperController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function getProfile($id) {
+    public function showProfile($id) {
         $shopper = Shopper::find($id);
         return view('pages.profile', ['shopper' => $shopper, 'page' => 'aboutShopper']);
     }
