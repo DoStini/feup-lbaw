@@ -6,7 +6,7 @@
                     @if (File::exists(public_path($shopper->user->photo->url)))
                         <img id="user-img" src={{asset($shopper->user->photo->url)}} class="img-fluid" alt="" loading="lazy" />
                     @else
-                        <img src="/img/user.png" class="img-fluid" alt="" loading="lazy" />
+                        <img id="user-img" src="/img/user.png" class="img-fluid" alt="" loading="lazy" />
                     @endif
                 </div>
             </div>
