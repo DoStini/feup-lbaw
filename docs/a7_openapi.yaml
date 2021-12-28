@@ -1138,23 +1138,43 @@ paths:
             schema:
               type: object
               properties: 
-                shopper-id:
-                  type: integer
-                  description: ID of the shopper checking out.
                 address-id: 
                   type: integer
                   description: ID of the address to send the order.
                 coupon-id:
                   type: integer
                   description: ID of the coupon being applied.
+                payment-type:
+                  type: string
+                  description: Payment type used to pay for the order
               required:
-                - shopper-id
                 - address-id
+                - payment-type
 
       responses:
         '302':
-          description: 'Cart checked out successfully, redirect to order route R407'
-        
+          description: 'Checkout successful, redirect to order page R407 OR User not authenticated and redirect to JOIN page R101'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+        '422':
+          description: 'Coupon not active or does not exist or not applicable, address does not exist or does not belong to shopper, payment-type not valid, product does not have enough stock. Show checkout view'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '403':
+          description: 'User is not a shopper'
+        '406':
+          description: 'Unexpected Database Error from validation. Show checkout view'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
 
   /users/orders:
     get:
