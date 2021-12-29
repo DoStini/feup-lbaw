@@ -7,5 +7,5 @@
 @endif
 
 @section('content')
-@include('partials.profile', ['shopper' => $shopper ?? null, 'admin' => $admin ?? null, 'page' => $page])
+@include('partials.profile', ['shopper' => $shopper, 'admin' => $admin, 'page' => $page])
 @endsection
