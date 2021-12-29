@@ -58,10 +58,9 @@
             <h3> Desc </h3>
             <p>{{$product->description}}</p>-->
 
-        <div class="quantity-wishlist my-4 justify-content-around align-items-center d-flex">
+        <div class="quantity-wishlist my-4 justify-content-between align-items-center d-flex">
             @if ($product->stock > 0)
-            <div>
-                <input id="quantity-to-add" type="number" min="1" max={{$product->stock}} value="1">
+            <div id="quantity-container" class="w-25">
             </div>
             <div class="calculated-price">
                 <h6 id="current-price">Subtotal: {{$product->price}} €</h6>
@@ -104,34 +103,3 @@
 @include('partials.errormodal')
 @include('partials.alert')
 
-<script>
-    let quantityInputBox = document.getElementById('quantity-to-add');
-    let currentPriceContainer = document.getElementById('current-price');
-    console.log(quantityInputBox);
-    quantityInputBox.addEventListener('change', function() {
-        currentPriceContainer.innerText = `${({{$product->price}} * quantityInputBox.value).toFixed(2)} €`;
-    });
-
-    const addToCartButton = document.getElementById('add-to-cart-btn');
-    addToCartButton.addEventListener('click', async () => {
-        jsonBodyPost("/api/users/cart/update", {
-            "product_id": {{$product->id}},
-            "amount": quantityInputBox.value,
-        })
-        .then((response) => {
-            launchSuccessAlert("Added sucessfully to cart");
-        })
-        .catch((error) => {
-            if(error.response) {
-                if(error.response.data) {
-                    let errors = "";
-                    for(var key in error.response.data.errors) {
-                        errors = errors.concat(error.response.data.errors[key]);
-                    }
-                    launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
-                }
-            }
-        });
-    });
-
-</script>
