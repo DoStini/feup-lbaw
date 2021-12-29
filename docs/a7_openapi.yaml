@@ -1044,7 +1044,7 @@ paths:
           description: "Product does not exist, is already in cart, or there is no stock."
 
   /api/users/cart/remove/:
-    post:
+    delete:
       operationId: R403
       summary: 'R403: Remove a product from cart  API'
       description: "Remove a product from the cart. Access: OWN"
