@@ -2,22 +2,36 @@
 
 
 <script type="text/javascript" defer>
+    function updatePhoto(photo) {
+        const fallBack = "/img/user.jpg";
+
+        const userImg = $("#user-img");
+        const headerImg = $("#header-user-img");
+
+        if (userImg.attr("src") === photo) {
+            console.log("yup")
+            return;
+        }
+
+        userImg.on("error", () => userImg.attr("src", fallBack));
+        userImg.on("error", () => headerImg.attr("src", fallBack));
+        userImg.attr("src", photo);
+        headerImg.attr("src", photo);
+    }
+
+    function renderElements(user) {
+        $("#header-user-name").text(user.name);
+        updatePhoto(user.photo);
+    }
+
     function send(event) {
         const formData = new FormData(document.getElementById('edit-form'));
         clearErrors();
 
-        window.axios.post
-        (
-            "/api/users/{{Auth::user()->id}}/private/edit",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }
-        )
+        formDataPost("/api/users/{{$shopper->id}}/private/edit",formData)
         .then((response) => {
             reportData("Profile Updated Successfully!");
+            renderElements(response.data);
         })
         .catch((error) => {
             if(error.response) {

@@ -22,8 +22,8 @@ class UserController extends Controller {
      */
     public function showProfile($id) {
         $shopper = Shopper::find($id);
-        if(!$shopper){
-            if(Auth::user()->id == $id) return redirect("users/" . strval(Auth::user()->id) . "/private");
+        if (!$shopper) {
+            if (Auth::user()->id == $id) return redirect("users/" . strval(Auth::user()->id) . "/private");
             else return redirect("users/" . strval(Auth::user()->id));
         }
         return view('pages.profile', ['shopper' => $shopper, 'admin' => null, 'page' => 'aboutShopper']);
@@ -39,7 +39,7 @@ class UserController extends Controller {
         return Validator::make($data, [
             'id' => 'exists:users,id',
             'name' => 'required|string|max:100',
-            'email' => 'required|string|email:rfc,dns|max:255|unique:users,email,'.$data["id"],
+            'email' => 'required|string|email:rfc,dns|max:255|unique:users,email,' . $data["id"],
             'password' => 'nullable|string|min:6|max:255|confirmed'
         ], [], [
             'id' => 'ID',
@@ -49,7 +49,7 @@ class UserController extends Controller {
         ])->validate();
     }
 
-     /**
+    /**
      * Validates shopper form data
      *
      * @param Array $data The data to be validated
@@ -90,7 +90,7 @@ class UserController extends Controller {
      * @return Response 200 if OK.
      */
     public function edit(Request $request, int $id) {
-        if(!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
+        if (!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
             $response = [];
             $response["errors"] = [
                 "cur-password" => "Current password does not match our records"
@@ -100,17 +100,17 @@ class UserController extends Controller {
         }
 
         $user_attrs =
-        [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'password_confirmation' => $request->input("password-confirmation"),
-            'id' => $id,
-        ];
+            [
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => $request->password,
+                'password_confirmation' => $request->input("password-confirmation"),
+                'id' => $id,
+            ];
 
         $shopper_attrs = null;
 
-        if(!Auth::user()->is_admin)
+        if (!Auth::user()->is_admin)
             $shopper_attrs = [
                 'about_me' => $request->input("about-me"),
                 'nif' => $request->input("nif"),
@@ -118,15 +118,15 @@ class UserController extends Controller {
             ];
 
         $this->validateDataUser($user_attrs);
-        if($shopper_attrs) $this->validateDataShopper($shopper_attrs);
+        if ($shopper_attrs) $this->validateDataShopper($shopper_attrs);
 
         $shopper = Shopper::find($id);
 
-        if($shopper_attrs) {
+        if ($shopper_attrs) {
 
-            if(array_key_exists('nif', $shopper_attrs) && !is_null($shopper_attrs['nif'])) {
+            if (array_key_exists('nif', $shopper_attrs) && !is_null($shopper_attrs['nif'])) {
                 $nif_check = DB::select('SELECT check_nif(?)', [$shopper_attrs['nif']])[0]->check_nif;
-                if($nif_check === '') {
+                if ($nif_check === '') {
                     $response = [];
                     $response["errors"] = [
                         "nif" => "NIF is not valid."
@@ -137,7 +137,7 @@ class UserController extends Controller {
             }
         }
 
-        if(!is_null($profile = $request->file("profile-picture"))) {
+        if (!is_null($profile = $request->file("profile-picture"))) {
             $this->validateProfilePicture($profile);
 
             $path = $profile->storePubliclyAs(
@@ -152,7 +152,7 @@ class UserController extends Controller {
             $user_attrs["photo_id"] = $photo->id;
         }
 
-        if($request->password != "") {
+        if ($request->password != "") {
             $user_attrs["password"] = bcrypt($request->password);
         } else {
             unset($user_attrs["password"]);
@@ -164,7 +164,7 @@ class UserController extends Controller {
             DB::beginTransaction();
 
             $user->update($user_attrs);
-            if($shopper) 
+            if ($shopper)
                 $shopper->update($shopper_attrs);
 
             DB::commit();
@@ -174,7 +174,16 @@ class UserController extends Controller {
             return abort(406, "Unexpected Error");
         }
 
-        return response("Profile Edited Successfully!", 200);
+        $user = $user->fresh();
+
+        return response(
+            array_merge(
+                $user->fresh()->toArray(),
+                ['photo' => $user->photo->url],
+                $shopper->fresh()->toArray(),
+            ),
+            200
+        );
     }
 
     public function getAuth() {
@@ -184,7 +193,7 @@ class UserController extends Controller {
     public function getEditPage($id) {
         $admin = null;
         $shopper = Shopper::find($id);
-        if(!$shopper && Auth::user()->id == $id) $admin = User::find($id);
+        if (!$shopper && Auth::user()->id == $id) $admin = User::find($id);
         return view('pages.profile', ['shopper' => $shopper, 'admin' => $admin, 'page' => 'editUser']);
     }
 }

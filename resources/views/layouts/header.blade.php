@@ -42,11 +42,11 @@
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                     id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
-                      <img src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
                     @else
-                      <img src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
-                    <h5 class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
+                    <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li><a class="dropdown-item" href={{url("users/" . strval(Auth::user()->id))}}>My profile</a></li>
