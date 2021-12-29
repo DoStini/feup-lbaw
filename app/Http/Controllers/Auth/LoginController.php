@@ -40,10 +40,6 @@ class LoginController extends Controller {
         return $request->user();
     }
 
-    public function home() {
-        return redirect('/join');
-    }
-
      /**
      * Get the failed login response instance.
      *

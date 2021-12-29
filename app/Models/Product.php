@@ -22,6 +22,22 @@ class Product extends Model {
     ];
 
     /**
+     * The photos this product contains.
+     */
+    public function photos() {
+        return $this->belongsToMany(Photo::class, 'product_photo', 'product_id', 'photo_id');
+    }
+
+    /** 
+     * The attributes that should be hidden for arrays.
+     *
+     * @return array
+     */
+    protected $hidden = [
+        'tsvectors',
+    ];
+
+    /**
      * The table associated with the model.
      *
      * @var string

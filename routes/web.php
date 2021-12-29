@@ -11,22 +11,19 @@
 |
 */
 // Home
-Route::get('/', 'Auth\LoginController@home');
+Route::get('/', 'StaticPagesController@home')->name('home');
 
-Route::get('users/cart', 'ShopperController@cart');
-Route::get('users/{id}', 'ShopperController@show');
-Route::get('users/', 'ShopperController@getAuth');
+// Users
+Route::get('users/', 'UserController@getAuth')->name('getUsersPage');
+Route::get('users/cart', 'CartController@show')->name('getCart');
+Route::get('users/orders', 'ShopperController@getOrders')->name('getOrders');
+Route::get('users/{id}', 'UserController@showProfile')->name('getUser');
+Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
+
 
 // Products
-Route::get('products/{id}', 'ProductController@show');
 Route::get('products', 'ProductController@search');
-
-// API
-Route::put('api/cards', 'CardController@create');
-Route::delete('api/cards/{card_id}', 'CardController@delete');
-Route::put('api/cards/{card_id}/', 'ItemController@create');
-Route::post('api/item/{id}', 'ItemController@update');
-Route::delete('api/item/{id}', 'ItemController@delete');
+Route::get('products/{id}', 'ProductController@show')->name('getProduct');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');
