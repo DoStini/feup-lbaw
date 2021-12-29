@@ -215,6 +215,11 @@
             height: 75%;
         }
 
+        .content-container,
+        .footer-container{
+            display: none;
+        }
+
         .home {
             overflow-y: hidden;
         }
