@@ -32,7 +32,3 @@
 </form>
 
 @endsection
-
-@section('customJsFile')
-<script type="text/javascript" src={{ asset('js/search.js') }} defer></script>
-@endsection

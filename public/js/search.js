@@ -2,7 +2,7 @@ const baseDelay = 100;
 
 let current = {};
 
-function ensureLimits(target) {
+function ensureBounds(target) {
     if (target.getAttribute("type") !== "number") return; 
     let min = parseInt(target.getAttribute("min"));
     if (min === NaN) min = -Infinity;
@@ -57,7 +57,7 @@ function setupSearchListeners() {
         });
 
         target.addEventListener('blur', () => {
-            ensureLimits(target);
+            ensureBounds(target);
             if (inputModified(target))
                 sendSearchProductsRequest(handleSearchProducts);
         })

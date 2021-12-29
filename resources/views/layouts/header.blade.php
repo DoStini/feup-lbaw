@@ -4,7 +4,7 @@
     <div class="container">
       <div class="row d-flex align-items-center">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
-          <a href={{url('/')}} class="ms-md-2">
+          <a href={{route('getProductSearch')}} class="ms-md-2">
             <img src="/img/refurniture.svg" alt="" width="200" height=65" />
           </a>
         </div>
@@ -49,8 +49,10 @@
                     <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href={{url("users/" . strval(Auth::user()->id))}}>My profile</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    @if(!Auth::user()->is_admin)
+                    <li><a class="dropdown-item" href={{route('getUser', ['id' => Auth::user()->id])}}>My profile</a></li>
+                    @endif
+                    <li><a class="dropdown-item" href={{route('editPage', ['id' => Auth::user()->id])}}>Settings</a></li>
                     <li><form method="POST" class="col" action="{{ route('logout') }}">
                       @csrf
                       <button type="submit" class="dropdown-item form-control"> Logout </button>

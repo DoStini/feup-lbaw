@@ -22,7 +22,7 @@ Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage')
 
 
 // Products
-Route::get('products', 'ProductController@search');
+Route::get('products', 'ProductController@search')->name('getProductSearch');
 Route::get('products/{id}', 'ProductController@show')->name('getProduct');
 
 // Authentication

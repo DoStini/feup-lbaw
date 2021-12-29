@@ -28,7 +28,7 @@
         const formData = new FormData(document.getElementById('edit-form'));
         clearErrors();
 
-        formDataPost("/api/users/{{$shopper->id}}/private/edit",formData)
+        formDataPost("/api/users/{{$shopper ? $shopper->user->id : $admin->id}}/private/edit",formData)
         .then((response) => {
             reportData("Profile Updated Successfully!");
             renderElements(response.data);
