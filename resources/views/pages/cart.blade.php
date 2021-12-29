@@ -36,16 +36,16 @@
                     <div class="row">
                         <table id="vertical-1" style="border-spacing: 2em .5em; border-collapse: inherit;">
                             <tr>
-                                <th>Subtotal (Tax Excluded):</th>
-                                <td>124.99 €</td>
+                                <th>Subtotal (Tax Included):</th>
+                                <td>{{$cartTotal}} €</td>
                             </tr>
                             <tr>
                                 <th>Total Tax (IVA):</th>
-                                <td>26.25 €</td>
+                                <td>{{round($cartTotal * 0.23, 2)}} €</td>
                             </tr>
-                            <tr style="font-size: 1.3em;">
-                                <th>Total (Tax Included):</th>
-                                <td>151.24 €</td>
+                            <tr style="font-size: 1.2em;">
+                                <th>Total:</th>
+                                <td>{{$cartTotal}} €</td>
                             </tr>
                         </table>
                     </div>

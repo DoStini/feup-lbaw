@@ -31,8 +31,9 @@ class CartController extends Controller {
         //if($user->is_admin) return redirect('/orders');
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
+        $cartTotal = $this->cartPrice($cart);
 
-        return view('pages.cart', ['cart' => $cart, 'user' => $user]);
+        return view('pages.cart', ['cart' => $cart, 'cartTotal' => $cartTotal, 'user' => $user]);
     }
 
     /**
