@@ -3,7 +3,7 @@
     @include('head.headContent')
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
     <script type="text/javascript" src={{ asset('js/home.js') }} defer></script>
-  <body>        
+  <body class="home">        
     <div class="video-container">
       <video autoplay poster="" class="video-parallax video-mobile" loop muted>
         <source src="img/homepage.mp4" type="video/mp4">
