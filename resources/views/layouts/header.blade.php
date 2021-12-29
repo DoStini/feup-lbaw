@@ -4,7 +4,7 @@
     <div class="container">
       <div class="row d-flex align-items-center">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
-          <a href="#" class="ms-md-2">
+          <a href={{url('/')}} class="ms-md-2">
             <img src="/img/refurniture.svg" alt="" width="200" height=65" />
           </a>
         </div>
