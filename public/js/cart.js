@@ -189,7 +189,6 @@ function setupCart() {
     button?.on("click", (e) => {
         if (menu.hasClass("show"))
             renderCart();
-        // button.dropdown("show");
     });
 }
 

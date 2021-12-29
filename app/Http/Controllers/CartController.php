@@ -138,7 +138,7 @@ class CartController extends Controller {
             $shopper->cart()->attach($productId, ['amount' => $amount]);
         }
 
-        $cart = Shopper::find($userId)->cart;
+        $cart = $shopper->fresh()->cart;
         $cartPrice = $this->cartPrice($cart);
         $cartJson = $this->cartToJson($cart);
 
@@ -179,7 +179,7 @@ class CartController extends Controller {
             $shopper->cart()->attach($productId, ['amount' => $amount]);
         }
 
-        $cart = Shopper::find($userId)->cart;
+        $cart = $shopper->fresh()->cart;
         $cartPrice = $this->cartPrice($cart);
         $cartJson = $this->cartToJson($cart);
 
@@ -210,9 +210,7 @@ class CartController extends Controller {
 
         $shopper->cart()->detach($productId);
 
-        $cart = Shopper::find($userId)->cart;
-        // Gods of php why do i have to find the shopper again?
-        // If i dont, the old cart will be returned
+        $cart = $shopper->fresh()->cart;
         $cartPrice = $this->cartPrice($cart);
         $cartJson = $this->cartToJson($cart);
 
