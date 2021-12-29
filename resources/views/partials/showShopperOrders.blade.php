@@ -1,13 +1,3 @@
-{{--@foreach ($shopper->orders as $order)
-    <h3>{{$order}}</h3>
-    <p>{{ $order->payment }}</p>
-    <p>{{ $order->address }}</p>
-    <p>{{ $order->coupon }}</p>
-    @foreach ($order->products as  $product)
-        <p>{{$product}}</p>
-    @endforeach
-@endforeach--}}
-
 <style>
     .product-link{
         text-decoration: none !important;
@@ -21,7 +11,7 @@
 <div>
     @if($shopper->orders->isEmpty())
         <div class="d-flex justify-content-center align-items-center">
-            <h4>You haven't done any purchase yet.</h4>
+            <h4>You haven't made any purchases yet.</h4>
         </div>
     @else
         @foreach ($shopper->orders as $order)
@@ -45,17 +35,6 @@
                                 @endif
                                 <h6>Current Status</h6>
                             </div>
-                            {{-- If needed to indicate with color scheme the order status
-                            @php
-                                $color = null;
-                                if($order->status == 'created') $color = 'bg-primary';
-                                elseif($order->status == 'paid') $color = 'bg-info';
-                                elseif($order->status == 'processing') $color = 'bg-warning';
-                                elseif($order->status == 'shipped') $color = 'bg-success';
-                                else $color = 'bg-warning';
-                            @endphp
-                            
-                            --}}
                             <div class="col-4">
                                 <h6>{{$order->total}} €</h6>
                                 @if($order->payment)
