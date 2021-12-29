@@ -17,7 +17,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'photo_id'
     ];
 
     /**
@@ -29,6 +29,13 @@ class User extends Authenticatable {
         'password', 'remember_token',
     ];
 
+    public function photo() {
+        return $this->belongsTo(
+            Photo::class,
+            'photo_id',
+            'id',
+        );
+    }
 
     /**
      * The table associated with the model.
@@ -36,4 +43,5 @@ class User extends Authenticatable {
      * @var string
      */
     protected $table = 'users';
+
 }
