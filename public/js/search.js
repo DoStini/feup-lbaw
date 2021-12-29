@@ -7,7 +7,7 @@ function ensureLimits(target) {
     let min = parseInt(target.getAttribute("min"));
     if (min === NaN) min = -Infinity;
     const max = parseInt(target.getAttribute("max"));
-    if (min === NaN) min = +Infinity;
+    if (max === NaN) max = +Infinity;
 
     const val = parseInt(target.value);
 
