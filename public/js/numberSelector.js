@@ -19,7 +19,7 @@ function ensureNumber(val) {
     return "";
 }
 
-function createNumberSelector(id, value, onChange, min, max) {
+function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
     const elem = 
     $(`
         <div id="selector-${id}" class="input-group input-group-sm number-selector">
@@ -29,32 +29,58 @@ function createNumberSelector(id, value, onChange, min, max) {
         </div>
     `);
 
+    let prevUpdate = value;
+    let prevBlur = value;
+
     const update = (target, value) => {
         if (onChange) {
-            onChange(target, value);
+            onChange(target, value, prevUpdate);
         } else {
             target.value = value;
         }
     }
 
-    
-    elem.find(">:first-child").on("click", (e) => {
+
+    const lessButton = elem.find(">:first-child");
+    lessButton.on("click", (e) => {
         const input = document.getElementById(id);
         const newValue = ensureLimits(parseInt(input.value) - 1, min, max);
-        console.log("asd", newValue, input.value, input.value)
         update(input, newValue);
     });
-    elem.find(">:last-child").on("click", () => {
+    lessButton.on("mouseleave", () => lessButton.trigger("blur"))
+    // lessButton.on("blur", () => {
+    //     const input = document.getElementById(id);
+    //     const newValue = ensureLimits(parseInt(input.value), min, max);
+    //     onBlur && onBlur(input, newValue);
+    // });
+
+    const moreButton = elem.find(">:last-child");
+    moreButton.on("click", () => {
         const input = document.getElementById(id);
         const newValue = ensureLimits(parseInt(input.value) + 1, min, max);
+        console.log(newValue)
         update(input, newValue);
     });
-    elem.find(">input").on("keypress", (e) => {
+    moreButton.on("mouseleave", () => moreButton.trigger("blur"))
+
+    const input = elem.find(">input");
+
+    input.on("keypress", (e) => {
         e.preventDefault();
         const value = ensureNumber(e.key);
         if (!value) return;
         const newValue = ensureLimits(parseInt(e.target.value + value), min, max);
         update(e.target, newValue);
+    });
+    elem.on("mouseleave", () => {
+        elem.trigger("submit");
+        input.trigger("blur");
+    });
+    elem.on("submit", () => {
+        const input = document.getElementById(id);
+        const newValue = ensureLimits(parseInt(input.value), min, max);
+        onBlur && onBlur(input, newValue, prevBlur);
+        prevBlur = newValue;
     });
 
     return elem;

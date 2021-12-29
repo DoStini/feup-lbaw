@@ -63,25 +63,35 @@ function insertProduct(product, idx) {
             });
     });
 
-    const selector = createNumberSelector(idx, product.amount, (target, value) => {
-        jsonBodyPost("/api/users/cart/update", { product_id: product.id, amount: value})
-            .then(response => {
-                if (response.status === 200) {
-                    target.value = value;
-                }
-            })
-            .catch(error => {
-                if(error.response) {
-                    if(error.response.data) {
-                        let errors = "";
-                        for(var key in error.response.data.errors) {
-                            errors = errors.concat(error.response.data.errors[key]);
-                        }
-                        launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+    const selector = createNumberSelector({
+        id: `number-selector-${idx}`, 
+        min: 1,
+        value: product.amount,
+        max: product.stock, 
+        onBlur: (target, value, prevValue) => {
+            if (value === prevValue) {
+                target.value = value;
+                return;
+            }
+            jsonBodyPost("/api/users/cart/update", { product_id: product.id, amount: value})
+                .then(response => {
+                    if (response.status === 200) {
+                        target.value = value;
                     }
-                }
-            });
-    }, 1, product.stock);
+                })
+                .catch(error => {
+                    if(error.response) {
+                        if(error.response.data) {
+                            let errors = "";
+                            for(var key in error.response.data.errors) {
+                                errors = errors.concat(error.response.data.errors[key]);
+                            }
+                            launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                        }
+                    }
+                });
+        }
+    });
     $(`#cart-number-selector-${idx}`).append(selector);
 }
 
@@ -146,6 +156,11 @@ function renderCart() {
         });
 }
 
+function closeCart() {
+    const button = $("#cart-dropdown");
+    button.dropdown("hide");
+}
+
 function setupCart() {
     const button = $("#cart-dropdown");
 
@@ -164,7 +179,7 @@ function setupCart() {
         // Wait for user to enter menu or exits.
         setTimeout(() => {
             if (!inMenu) {
-                button.dropdown("hide");
+                closeCart();
             }
         }, 50);
     });
@@ -174,7 +189,7 @@ function setupCart() {
     });
     menu?.on("mouseleave", () => {
         inMenu = false;
-        button.dropdown("hide");
+        closeCart();
     });
 }
 
