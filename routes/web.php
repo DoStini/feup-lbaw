@@ -11,16 +11,16 @@
 |
 */
 // Home
-Route::get('/', 'Auth\LoginController@home');
+Route::get('/', 'Auth\LoginController@home')->name('home');
 
-Route::get('users/cart', 'CartController@show');
-Route::get('users/{id}', 'ShopperController@show');
-Route::get('users/{id}/private', 'ShopperController@getEditPage');
-Route::get('users/', 'ShopperController@getAuth');
+Route::get('users/cart', 'CartController@show')->name('getCart');
+Route::get('users/{id}', 'ShopperController@show')->name('getUser');
+Route::get('users/{id}/private', 'ShopperController@getEditPage')->name('editPage');
+Route::get('users/', 'ShopperController@getAuth')->name('getUsersPage');
 
 
 // Products
-Route::get('products/{id}', 'ProductController@show');
+Route::get('products/{id}', 'ProductController@show')->name('getProduct');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');

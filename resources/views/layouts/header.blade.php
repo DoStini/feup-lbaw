@@ -52,17 +52,17 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     @if(!Auth::user()->is_admin)
-                      <li><a class="dropdown-item" href={{url("users/" . strval(Auth::user()->id))}}>My profile</a></li>
+                      <li><a class="dropdown-item" href={{route('getUser', ['id' => strval(Auth::user()->id)])}}>My profile</a></li>
                     @endif
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><form method="POST" class="col" action="{{ route('logout') }}">
                       @csrf
-                      <button type="submit" class="dropdown-item form-control" href="{{ url('/logout') }}"> Logout </button>
+                      <button type="submit" class="dropdown-item form-control"> Logout </button>
                   </form></li>
                 </ul>
                 </div>
             @else
-                <a class="btn btn-outline-primary" href={{url('/join')}}>Sign-In</a>
+                <a class="btn btn-outline-primary" href={{route('join')}}>Sign-In</a>
             @endif
           </div>
         </div>
