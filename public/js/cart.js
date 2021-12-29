@@ -22,10 +22,6 @@ function handleDelete(data) {
     fillMenu(data.items, data.total);
 }
 
-function handleUpdate(productId, target, value) {
-
-}
-
 function insertProduct(product, idx) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
