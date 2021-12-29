@@ -114,7 +114,7 @@
 
     const addToCartButton = document.getElementById('add-to-cart-btn');
     addToCartButton.addEventListener('click', async () => {
-        jsonBodyPost("/api/users/cart/update", {
+        jsonBodyPost("/api/users/cart/add", {
             "product_id": {{$product->id}},
             "amount": quantityInputBox.value,
         })

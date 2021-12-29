@@ -67,8 +67,6 @@ function insertProduct(product, idx) {
             });
     });
 
-    const selectorId = `cart-update-${idx}`;
-
     const selector = createNumberSelector(idx, product.amount, (target, value) => {
         jsonBodyPost("/api/users/cart/update", { product_id: product.id, amount: value})
             .then(response => {
@@ -164,24 +162,24 @@ function setupCart() {
         inMenu = true;
         button.dropdown("show");
     });
-    // button?.on("mouseleave", () => {
-    //     inMenu = false;
+    button?.on("mouseleave", () => {
+        inMenu = false;
         
-    //     // Wait for user to enter menu or exits.
-    //     setTimeout(() => {
-    //         if (!inMenu) {
-    //             button.dropdown("hide");
-    //         }
-    //     }, 50);
-    // });
+        // Wait for user to enter menu or exits.
+        setTimeout(() => {
+            if (!inMenu) {
+                button.dropdown("hide");
+            }
+        }, 50);
+    });
 
-    // menu?.on("mouseover", () => {
-    //     inMenu = true;
-    // });
-    // menu?.on("mouseleave", () => {
-    //     inMenu = false;
-    //     button.dropdown("hide");
-    // });
+    menu?.on("mouseover", () => {
+        inMenu = true;
+    });
+    menu?.on("mouseleave", () => {
+        inMenu = false;
+        button.dropdown("hide");
+    });
 }
 
 setupCart();

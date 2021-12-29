@@ -26,6 +26,7 @@ Route::group(
     ],
     function () {
         Route::get('/', 'CartController@get');
+        Route::post('/add', 'CartController@add');
         Route::post('/update', 'CartController@update');
         Route::delete('/remove', 'CartController@delete');
     }
