@@ -14,9 +14,9 @@ class CartController extends Controller {
      */
     public function show() {
         if (!Auth::check()) return redirect('/join');
-        //$this->authorize('showCart');
         $user = Auth::user();
-
+        
+        //if($user->is_admin) return redirect('/orders');
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
 
