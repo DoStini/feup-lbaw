@@ -17,10 +17,16 @@ function noProducts() {
     menuContent.append(elem);
 }
 
-function insertProduct(product) {
+function handleDelete(data) {
+    clearElements();
+    fillMenu(data.items, data.total);
+}
+
+function insertProduct(product, idx) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
     const elem = document.createElement("div");
+    elem.id = `cart-product-${idx}`;
     elem.innerHTML = `
     <div class="container" href="#">
         <div class="row align-items-center mb-3">
@@ -28,7 +34,7 @@ function insertProduct(product) {
             <div class="col-9">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-10 dropdown-cart-name">${product.name}</div>
-                    <i class="cart-remove col-2 bi bi-x-lg"></i>
+                    <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
                 </div>
                 <div class="row dropdown-cart-amount justify-content-between">
                     <div class="col px-0">
@@ -44,6 +50,21 @@ function insertProduct(product) {
     `;
 
     menuContent.append(elem);
+
+    $(`#cart-remove-${idx}`).on('click', () => {
+        jsonBodyDelete("/api/users/cart/remove", { product_id: product.id })
+            .then(response => {
+                if (response.status === 200) {
+                    handleDelete(response.data);
+                }
+            });
+    });
+}
+
+function clearElements() {
+    menuContent.html("");
+    $("#cart-dropdown-menu .dropdown-divider").remove();
+    $("#cart-resume").remove();
 }
 
 function fillMenu(products, total) {
@@ -52,7 +73,7 @@ function fillMenu(products, total) {
         return;
     }
 
-    products.forEach((product) => insertProduct(product));
+    products.forEach(insertProduct);
     const fixed = document.createElement("div");
     fixed.innerHTML = `
     <li><hr class="dropdown-divider"></li>
@@ -61,7 +82,7 @@ function fillMenu(products, total) {
             <div class="row align-items-center">
                 <div class="col mx-3 my-2">
                     <div class="row align-items-center justify-content-between mb-3">
-                        <div id="items-total" class="col">${products.length} item${products.length > 1 ? "s" : "item"}</div>
+                        <div id="items-total" class="col">${products.length} item${products.length > 1 ? "s" : ""}</div>
                         <div id="price-total" class="col">${total}€</div>
                     </div>
                     <div class="row mb-2">
@@ -78,9 +99,8 @@ function fillMenu(products, total) {
 
 function updateCart() {
     if (loading || inMenu) return;
-    
-    $("#cart-dropdown-menu .dropdown-divider").remove();
-    $("#cart-resume").remove();
+
+    clearElements();
 
     loading = true;
 

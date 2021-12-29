@@ -68,6 +68,25 @@ class CartController extends Controller {
     }
 
     /**
+     * Parses a cart collection into the desired model of response body
+     * 
+     * @return array
+     */
+    private function cartToJson($cart) {
+        return $cart->map(
+            function ($product) {
+                $prodJson = json_decode($product->toJson());
+                $prodJson->photos = $product->photos->map(fn ($photo) => $photo->url);
+                $prodJson->attributes = json_decode($prodJson->attributes);
+                $prodJson->amount = $prodJson->details->amount;
+                unset($prodJson->details);
+
+                return $prodJson;
+            },
+        );
+    }
+
+    /**
      * Verifies if a product is in the user's cart
      * 
      * @param Collection
@@ -129,7 +148,16 @@ class CartController extends Controller {
 
         $shopper->cart()->detach($productId);
 
-        return response()->json();
+        $cart = Shopper::find($userId)->cart;
+        // Gods of php why do i have to find the shopper again?
+        // If i dont, the old cart will be returned
+        $cartPrice = $this->cartPrice($cart);
+        $cartJson = $this->cartToJson($cart);
+
+        return response()->json([
+            'total' => $cartPrice,
+            'items' => $cartJson,
+        ]);
     }
 
     /**
@@ -144,17 +172,7 @@ class CartController extends Controller {
             $cart = $shopper->cart;
             $cartPrice = $this->cartPrice($cart);
 
-            $cartJson = $cart->map(
-                function ($product) {
-                    $prodJson = json_decode($product->toJson());
-                    $prodJson->photos = $product->photos->map(fn ($photo) => $photo->url);
-                    $prodJson->attributes = json_decode($prodJson->attributes);
-                    $prodJson->amount = $prodJson->details->amount;
-                    unset($prodJson->details);
-
-                    return $prodJson;
-                },
-            );
+            $cartJson = $this->cartToJson($cart);
 
             return response()->json([
                 'total' => $cartPrice,
