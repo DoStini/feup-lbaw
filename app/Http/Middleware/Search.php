@@ -21,8 +21,7 @@ class Search {
      *  @param  \Illuminate\Http\Request  $request
      */
     private function sanitizePage(Request $request) {
-        $this->sanitizeNumeric($request, 'page', 1);
-        $request->page -= 1;
+        $this->sanitizeNumeric($request, 'page', 0);
     }
 
     /**

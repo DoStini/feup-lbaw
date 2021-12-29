@@ -24,7 +24,7 @@ class LoginController extends Controller {
     use AuthenticatesUsers;
 
     public function redirectTo() {
-        return '/users/';
+        return '/products';
     }
 
     /**

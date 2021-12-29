@@ -143,7 +143,7 @@
                                                 @foreach ($order->products as $product)
                                                 <tr>
                                                     <td><a class="badge rounded-pill bg-dark product-link" 
-                                                        href={{url('products/' . strval($product->id))}} target="_blank">
+                                                        href={{route('getProduct', ['id' => $product->id])}} target="_blank">
                                                         {{$product->name}}</a></td>
                                                     <td>{{$product->details->amount}}</td>
                                                     <td>{{$product->details->unit_price}} €</td>

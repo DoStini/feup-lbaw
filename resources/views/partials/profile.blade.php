@@ -17,8 +17,8 @@
             </div>
             <div class="my-3 mx-2">
                 @if($admin)
-                    <a href={{url("users/" . strval(Auth::user()->id) . "/private")}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a>
-                    <a href={{url("users/" . strval(Auth::user()->id))}} class="my-2 btn btn-primary w-100">  Delete Account </a>
+                    <a href={{route('editPage', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a>
+                    <a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Delete Account </a>
                     <form  method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>

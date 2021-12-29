@@ -14,7 +14,7 @@
         <h1 class="title">We make new<br>beginnings <span id="keyword" class="keyword">easier.<span><span id="cursor"></span></h1>
         <div class="link-container">
             
-            <a class="bi bi-arrow-right-circle-fill link-to-join" href={{url('/join')}}></a>
+            <a class="bi bi-arrow-right-circle-fill link-to-join" href={{route('getProductSearch')}}></a>
         </div>
       </div>
     </div>
@@ -28,10 +28,10 @@
             <div class="info">
                 <div class="navigation">
                     <h1>Navigation</h1>
-                    <a href={{url('/')}}><h4>Home</h4></a>
-                    <a href={{url('/')}}><h4>Sell to Us</h4></a>
-                    <a href={{url('/')}}><h4>About Us</h4></a>
-                    <a href={{url('/')}}><h4>Contact Us</h4></a>
+                    <a href={{route('home')}}><h4>Home</h4></a>
+                    <a href={{route('home')}}><h4>Sell to Us</h4></a>
+                    <a href={{route('home')}}><h4>About Us</h4></a>
+                    <a href={{route('home')}}><h4>Contact Us</h4></a>
                 </div>
                 <div class="contacts">
                     <h1>Contacts</h1>
