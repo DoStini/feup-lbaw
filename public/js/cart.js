@@ -18,13 +18,13 @@ function noProducts() {
 }
 
 function insertProduct(product) {
-    // const productImg = product.photos[0];
-    const productImg = "https://scontent.flis3-1.fna.fbcdn.net/v/t1.6435-9/52574079_2443701065700247_3215647864260657152_n.jpg?_nc_cat=106&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=BwmsmuJUYooAX8XqmBP&tn=Elj0521SoF3jNzT5&_nc_ht=scontent.flis3-1.fna&oh=00_AT_hPNZz3BgE0lwpVKLVUGJTfJKbX1f6awnIIfzIDO13lA&oe=61F1E5B5";
+    const productImg = product.photos[0];
+    const fallBack = "/img/default.jpg";
     const elem = document.createElement("div");
     elem.innerHTML = `
     <div class="container" href="#">
         <div class="row align-items-center mb-3">
-            <img class="col-3" src="${productImg}">
+            <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
             <div class="col-9">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-10 dropdown-cart-name">${product.name}</div>
@@ -56,7 +56,7 @@ function fillMenu(products, total) {
     const fixed = document.createElement("div");
     fixed.innerHTML = `
     <li><hr class="dropdown-divider"></li>
-    <li>
+    <li id="cart-resume">
         <div class="container" href="#">
             <div class="row align-items-center">
                 <div class="col mx-3 my-2">
@@ -78,6 +78,9 @@ function fillMenu(products, total) {
 
 function updateCart() {
     if (loading || inMenu) return;
+    
+    $("#cart-dropdown-menu .dropdown-divider").remove();
+    $("#cart-resume").remove();
 
     loading = true;
 
