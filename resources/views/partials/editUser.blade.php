@@ -8,7 +8,7 @@
 
         window.axios.post
         (
-            "/api/users/{{$shopper->id}}/private/edit",
+            "/api/users/{{Auth::user()->id}}/private/edit",
             formData,
             {
                 headers: {
@@ -73,12 +73,12 @@
     <div class="row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
-            <input required id="name" class="form-control" type="text" name="name" value="{{$shopper->user->name}}">
+            <input required id="name" class="form-control" type="text" name="name" value="{{Auth::user()->name}}">
             <span class="error form-text text-danger" id="name-error"></span>
         </div>
         <div class="form-group col-md-6">
             <label for="email">Email</label>
-            <input required id="email" class="form-control" type="email" name="email" value="{{$shopper->user->email}}">
+            <input required id="email" class="form-control" type="email" name="email" value="{{Auth::user()->email}}">
             <span class="error form-text text-danger" id="email-error"></span>
         </div>
     </div>
@@ -100,30 +100,32 @@
         <span class="error form-text text-danger" id="profile-picture-error"></span>
     </div>
     
-    <div class="mb-3">
-        <label for="about-me"> About Me</label>
-        <textarea id="about-me" class="form-control" name="about-me" value="">{{$shopper->about_me}}</textarea>
-        <span class="error form-text text-danger" id="about_me-error"></span>
-    </div>
+    @if($shopper)
+        <div class="mb-3">
+            <label for="about-me"> About Me</label>
+            <textarea id="about-me" class="form-control" name="about-me" value="">{{$shopper->about_me}}</textarea>
+            <span class="error form-text text-danger" id="about_me-error"></span>
+        </div>
 
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label for="nif"> NIF</label>
-            <input id="nif" type="text" class="form-control" name="nif" value="{{$shopper->nif}}">
-            <span class="error form-text text-danger" id="nif-error"></span>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="nif"> NIF</label>
+                <input id="nif" type="text" class="form-control" name="nif" value="{{$shopper->nif}}">
+                <span class="error form-text text-danger" id="nif-error"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="phone-number"> Phone</label>
+                <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
+                <span class="error form-text text-danger" id="phone_number-error"></span>        
+            </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="phone-number"> Phone</label>
-            <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
-            <span class="error form-text text-danger" id="phone_number-error"></span>        
-        </div>
-    </div>
+    @endif
 
     <div class="form-group my-4">
         <label for="cur-password"><b>Confirm your password before applying changes:</b></label>
         <input autocomplete="on" required id="cur-password" class="form-control" type="password" name="cur-password">
         <span class="error form-text text-danger" id="cur-password-error"></span>
     </div>
-
+    
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
