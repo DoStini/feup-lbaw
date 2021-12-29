@@ -25,7 +25,7 @@
     <link href="{{ asset('css/number.selector.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cart.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <script src="https://kit.fontawesome.com/1c937c97ed.js" crossorigin="anonymous" defer></script>
+    <script src="https://kit.fontawesome.com/1c937c97ed.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951

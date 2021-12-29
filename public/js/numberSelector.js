@@ -46,6 +46,8 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
         const input = document.getElementById(id);
         const newValue = ensureLimits(parseInt(input.value) - 1, min, max);
         update(input, newValue);
+        const event = new Event('change');
+        document.getElementById(id).dispatchEvent(event);
     });
     lessButton.on("mouseleave", () => lessButton.trigger("blur"))
     // lessButton.on("blur", () => {
@@ -60,6 +62,8 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
         const newValue = ensureLimits(parseInt(input.value) + 1, min, max);
         console.log(newValue)
         update(input, newValue);
+        const event = new Event('change');
+        document.getElementById(id).dispatchEvent(event);
     });
     moreButton.on("mouseleave", () => moreButton.trigger("blur"))
 
@@ -71,6 +75,8 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
         if (!value) return;
         const newValue = ensureLimits(parseInt(e.target.value + value), min, max);
         update(e.target, newValue);
+        const event = new Event('change');
+        document.getElementById(id).dispatchEvent(event);
     });
     elem.on("mouseleave", () => {
         elem.trigger("submit");
