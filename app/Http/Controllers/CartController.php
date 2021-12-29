@@ -152,7 +152,7 @@ class CartController extends Controller {
         }
 
         $userId = Auth::user()->id;
-        $amount = $request->amount;
+        $amount = $request->amount ?? 1;
         $productId = $request->product_id;
         $product = Product::find($productId);
         $shopper = Shopper::find($userId);
