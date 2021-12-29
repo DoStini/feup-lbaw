@@ -2,26 +2,26 @@
 
 
 <script type="text/javascript" defer>
-    function updatePhoto(file) {
-        const reader = new FileReader();
-        console.log("try")
-        reader.onload = function(){
-            $("#user-img").attr("src", reader.result);
-            $("#header-user-img").attr("src", reader.result);
+    function updatePhoto(photo) {
+        const fallBack = "/img/user.jpg";
+
+        const userImg = $("#user-img");
+        const headerImg = $("#header-user-img");
+
+        if (userImg.attr("src") === photo) {
+            console.log("yup")
+            return;
         }
 
-        reader.readAsDataURL(file);
+        userImg.on("error", () => userImg.attr("src", fallBack));
+        userImg.on("error", () => headerImg.attr("src", fallBack));
+        userImg.attr("src", photo);
+        headerImg.attr("src", photo);
     }
 
-    function renderElements(formData) {
-        const file = formData.get("profile-picture");
-        const name = formData.get("name");
-
-        $("#header-user-name").text(name);
-
-        if(file.name) {
-            updatePhoto(file);
-        }
+    function renderElements(user) {
+        $("#header-user-name").text(user.name);
+        updatePhoto(user.photo);
     }
 
     function send(event) {
@@ -31,7 +31,7 @@
         formDataPost("/api/users/{{$shopper->id}}/private/edit",formData)
         .then((response) => {
             reportData("Profile Updated Successfully!");
-            renderElements(formData);
+            renderElements(response.data);
         })
         .catch((error) => {
             if(error.response) {
@@ -87,12 +87,12 @@
     <div class="row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
-            <input required id="name" class="form-control" type="text" name="name" value="{{$shopper->user->name}}">
+            <input required id="name" class="form-control" type="text" name="name" value="{{Auth::user()->name}}">
             <span class="error form-text text-danger" id="name-error"></span>
         </div>
         <div class="form-group col-md-6">
             <label for="email">Email</label>
-            <input required id="email" class="form-control" type="email" name="email" value="{{$shopper->user->email}}">
+            <input required id="email" class="form-control" type="email" name="email" value="{{Auth::user()->email}}">
             <span class="error form-text text-danger" id="email-error"></span>
         </div>
     </div>
@@ -114,30 +114,32 @@
         <span class="error form-text text-danger" id="profile-picture-error"></span>
     </div>
     
-    <div class="mb-3">
-        <label for="about-me"> About Me</label>
-        <textarea id="about-me" class="form-control" name="about-me" value="">{{$shopper->about_me}}</textarea>
-        <span class="error form-text text-danger" id="about_me-error"></span>
-    </div>
+    @if($shopper)
+        <div class="mb-3">
+            <label for="about-me"> About Me</label>
+            <textarea id="about-me" class="form-control" name="about-me" value="">{{$shopper->about_me}}</textarea>
+            <span class="error form-text text-danger" id="about_me-error"></span>
+        </div>
 
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label for="nif"> NIF</label>
-            <input id="nif" type="text" class="form-control" name="nif" value="{{$shopper->nif}}">
-            <span class="error form-text text-danger" id="nif-error"></span>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="nif"> NIF</label>
+                <input id="nif" type="text" class="form-control" name="nif" value="{{$shopper->nif}}">
+                <span class="error form-text text-danger" id="nif-error"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="phone-number"> Phone</label>
+                <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
+                <span class="error form-text text-danger" id="phone_number-error"></span>        
+            </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="phone-number"> Phone</label>
-            <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
-            <span class="error form-text text-danger" id="phone_number-error"></span>        
-        </div>
-    </div>
+    @endif
 
     <div class="form-group my-4">
         <label for="cur-password"><b>Confirm your password before applying changes:</b></label>
         <input autocomplete="on" required id="cur-password" class="form-control" type="password" name="cur-password">
         <span class="error form-text text-danger" id="cur-password-error"></span>
     </div>
-
+    
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
