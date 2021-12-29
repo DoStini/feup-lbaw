@@ -22,6 +22,10 @@ function handleDelete(data) {
     fillMenu(data.items, data.total);
 }
 
+function handleUpdate(productId, target, value) {
+
+}
+
 function insertProduct(product, idx) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
@@ -44,6 +48,9 @@ function insertProduct(product, idx) {
                         ${(product.amount * product.price).toFixed(2)}€
                     </div>
                 </div>
+                <div class="row dropdown-cart-amount justify-content-center">
+                    <div id="cart-number-selector-${idx}" class="col-6"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -59,6 +66,29 @@ function insertProduct(product, idx) {
                 }
             });
     });
+
+    const selectorId = `cart-update-${idx}`;
+
+    const selector = createNumberSelector(idx, product.amount, (target, value) => {
+        jsonBodyPost("/api/users/cart/update", { product_id: product.id, amount: value})
+            .then(response => {
+                if (response.status === 200) {
+                    target.value = value;
+                }
+            })
+            .catch(error => {
+                if(error.response) {
+                    if(error.response.data) {
+                        let errors = "";
+                        for(var key in error.response.data.errors) {
+                            errors = errors.concat(error.response.data.errors[key]);
+                        }
+                        launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                    }
+                }
+            });
+    }, 1, product.stock);
+    $(`#cart-number-selector-${idx}`).append(selector);
 }
 
 function clearElements() {
@@ -97,7 +127,7 @@ function fillMenu(products, total) {
     menu.append(fixed);
 }
 
-function updateCart() {
+function renderCart() {
     if (loading || inMenu) return;
 
     clearElements();
@@ -130,28 +160,28 @@ function setupCart() {
     });
 
     button?.on("mouseover", () => {
-        updateCart();
+        renderCart();
         inMenu = true;
         button.dropdown("show");
     });
-    button?.on("mouseleave", () => {
-        inMenu = false;
+    // button?.on("mouseleave", () => {
+    //     inMenu = false;
         
-        // Wait for user to enter menu or exits.
-        setTimeout(() => {
-            if (!inMenu) {
-                button.dropdown("hide");
-            }
-        }, 50);
-    });
+    //     // Wait for user to enter menu or exits.
+    //     setTimeout(() => {
+    //         if (!inMenu) {
+    //             button.dropdown("hide");
+    //         }
+    //     }, 50);
+    // });
 
-    menu?.on("mouseover", () => {
-        inMenu = true;
-    });
-    menu?.on("mouseleave", () => {
-        inMenu = false;
-        button.dropdown("hide");
-    });
+    // menu?.on("mouseover", () => {
+    //     inMenu = true;
+    // });
+    // menu?.on("mouseleave", () => {
+    //     inMenu = false;
+    //     button.dropdown("hide");
+    // });
 }
 
 setupCart();
