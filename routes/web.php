@@ -11,18 +11,17 @@
 |
 */
 // Home
-Route::get('/', 'Auth\LoginController@home');
+Route::get('/', 'StaticPagesController@home')->name('home');
 
 // Users
-Route::get('users/', 'UserController@getAuth');
-Route::get('users/cart', 'ShopperController@getCart');
-Route::get('users/orders', 'ShopperController@getOrders');
-Route::get('users/{id}', 'UserController@showProfile');
-Route::get('users/{id}/private', 'UserController@getEditPage');
-
+Route::get('users/', 'UserController@getAuth')->name('getUsersPage');
+Route::get('users/cart', 'CartController@show')->name('getCart');
+Route::get('users/orders', 'ShopperController@getOrders')->name('getOrders');
+Route::get('users/{id}', 'UserController@showProfile')->name('getUser');
+Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
 
 // Products
-Route::get('products/{id}', 'ProductController@show');
+Route::get('products/{id}', 'ProductController@show')->name('getProduct');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');
