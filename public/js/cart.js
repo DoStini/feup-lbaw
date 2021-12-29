@@ -1,4 +1,3 @@
-let inMenu = false;
 let loading = false;
 
 const menu = $("#cart-dropdown-menu");
@@ -151,7 +150,7 @@ function fillMenu(products, total) {
 }
 
 function renderCart() {
-    if (loading || inMenu) return;
+    if (loading) return;
 
     clearElements();
 
@@ -187,28 +186,10 @@ function setupCart() {
         e.stopPropagation();
     });
 
-    button?.on("mouseover", () => {
-        renderCart();
-        inMenu = true;
-        button.dropdown("show");
-    });
-    button?.on("mouseleave", () => {
-        inMenu = false;
-        
-        // Wait for user to enter menu or exits.
-        setTimeout(() => {
-            if (!inMenu) {
-                closeCart();
-            }
-        }, 50);
-    });
-
-    menu?.on("mouseover", () => {
-        inMenu = true;
-    });
-    menu?.on("mouseleave", () => {
-        inMenu = false;
-        closeCart();
+    button?.on("click", (e) => {
+        if (menu.hasClass("show"))
+            renderCart();
+        // button.dropdown("show");
     });
 }
 
