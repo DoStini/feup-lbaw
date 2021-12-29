@@ -24,7 +24,7 @@ Route::get('users/', 'ShopperController@getAuth');
 Route::get('products/{id}', 'ProductController@show');
 
 // Orders
-Route::get('orders/{id}', 'OrderController@show');
+Route::get('orders/{id}', 'OrderController@show')->name('orders')->middleware('userOwnerAdmin');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');
