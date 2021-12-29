@@ -138,7 +138,14 @@ class CartController extends Controller {
             $shopper->cart()->attach($productId, ['amount' => $amount]);
         }
 
-        return response()->json();
+        $cart = Shopper::find($userId)->cart;
+        $cartPrice = $this->cartPrice($cart);
+        $cartJson = $this->cartToJson($cart);
+
+        return response()->json([
+            'total' => $cartPrice,
+            'items' => $cartJson,
+        ]);
     }
 
     /**
@@ -147,7 +154,7 @@ class CartController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function add(Request $request) {
-        if (($v = $this->validatorUpdate($request))->fails()) {
+        if (($v = $this->validatorAdd($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
 
@@ -172,7 +179,14 @@ class CartController extends Controller {
             $shopper->cart()->attach($productId, ['amount' => $amount]);
         }
 
-        return response()->json();
+        $cart = Shopper::find($userId)->cart;
+        $cartPrice = $this->cartPrice($cart);
+        $cartJson = $this->cartToJson($cart);
+
+        return response()->json([
+            'total' => $cartPrice,
+            'items' => $cartJson,
+        ]);
     }
 
     /**

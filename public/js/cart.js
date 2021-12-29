@@ -22,6 +22,22 @@ function handleDelete(data) {
     fillMenu(data.items, data.total);
 }
 
+function handleUpdate(product, idx, amount, total) {
+    product.amount = amount;
+
+    $(`#item-amount-${idx}`).text(formatAmount(product));
+    $(`#item-subtotal-${idx}`).text(formatProductSubtotal(product));
+    $("#price-total").text(`${total}€`);
+}
+
+function formatAmount(product) {
+    return `${product.amount}x${product.price}€`;
+}
+
+function formatProductSubtotal(product) {
+    return `${(product.amount * product.price).toFixed(2)}€`;
+}
+
 function insertProduct(product, idx) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
@@ -37,11 +53,11 @@ function insertProduct(product, idx) {
                     <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
                 </div>
                 <div class="row dropdown-cart-amount justify-content-between">
-                    <div class="col px-0">
-                        ${product.amount}x${product.price}€
+                    <div id="item-amount-${idx}" class="col px-0">
+                        ${formatAmount(product)}
                     </div>
-                    <div class="col item-subtotal">
-                        ${(product.amount * product.price).toFixed(2)}€
+                    <div id="item-subtotal-${idx}" class="col item-subtotal">
+                        ${formatProductSubtotal(product)}
                     </div>
                 </div>
                 <div class="row dropdown-cart-amount justify-content-center">
@@ -77,6 +93,7 @@ function insertProduct(product, idx) {
                 .then(response => {
                     if (response.status === 200) {
                         target.value = value;
+                        handleUpdate(product, idx, value, response.data.total);
                     }
                 })
                 .catch(error => {
@@ -108,6 +125,8 @@ function fillMenu(products, total) {
     }
 
     products.forEach(insertProduct);
+
+
     const fixed = document.createElement("div");
     fixed.innerHTML = `
     <li><hr class="dropdown-divider"></li>

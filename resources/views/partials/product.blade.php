@@ -58,7 +58,7 @@
             <h3> Desc </h3>
             <p>{{$product->description}}</p>-->
 
-        <div class="quantity-wishlist my-4 justify-content-around align-items-center d-flex">
+        <div class="quantity-wishlist my-4 justify-content-between align-items-center d-flex">
             @if ($product->stock > 0)
             <div id="quantity-container" class="w-25">
             </div>
