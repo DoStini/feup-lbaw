@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ApiError;
 use App\Exceptions\UnexpectedErrorLogger;
+use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Shopper;
 use ErrorException;
@@ -17,6 +18,23 @@ use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Type\Integer;
 
 class CartController extends Controller {
+
+    /**
+     * Shows cart contents
+     *
+     * @return Response
+     */
+    public function show() {
+        if (!Auth::check()) return redirect('/join');
+        $user = Auth::user();
+        
+        //if($user->is_admin) return redirect('/orders');
+        $shopper = Shopper::find($user->id);
+        $cart = $shopper->cart;
+        $cartTotal = $this->cartPrice($cart);
+
+        return view('pages.cart', ['cart' => $cart, 'cartTotal' => $cartTotal, 'user' => $user]);
+    }
 
     /**
      * Returns a validator to the functions that only require a product id

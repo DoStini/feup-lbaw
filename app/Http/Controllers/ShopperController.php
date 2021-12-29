@@ -25,18 +25,6 @@ class ShopperController extends Controller {
     }
 
     /**
-     * Shows all users.
-     *
-     * @return Response
-     */
-    public function list() {
-        if (!Auth::check()) return redirect('/login');
-        $this->authorize('list', Card::class);
-        $cards = Auth::user()->cards()->orderBy('id')->get();
-        return view('pages.cards', ['cards' => $cards]);
-    }
-
-    /**
      * Shows cart contents
      *
      * @return Response
