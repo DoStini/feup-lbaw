@@ -1187,28 +1187,24 @@ paths:
 
       responses:
         '302':
-          description: 'Checkout successful, redirect to order page R407 OR User not authenticated and redirect to JOIN page R101'
+          description: 'Checkout successful, redirect to order page R407 OR User not authenticated and redirect to JOIN page R101 OR Input error and redirect to R405 OR User is ADMIN'
           headers:
             Location:
               schema:
                 type: string
                 example: '/'
-        '422':
-          description: 'Coupon not active or does not exist or not applicable, address does not exist or does not belong to shopper, payment-type not valid, product does not have enough stock. Show checkout view'
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ValidationError'
+              examples:
+                302Success:
+                  description: 'Successful chekcout. Redirect to order page R407'
+                  value: '/orders/{id}'
+                302Auth:
+                  description: 'Failed authentication. Redirect to Login and Register Page'
+                  value: '/join'
+                302Validation:
+                  description: 'Coupon not active or does not exist or not applicable, address does not exist or does not belong to shopper, payment-type not valid, product does not have enough stock. Redirect to R405'
+                  value: '/users/checkout'
         '403':
           description: 'User is not a shopper'
-        '406':
-          description: 'Unexpected Database Error from validation. Show checkout view'
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ValidationError'
 
   /users/orders:
     get:
