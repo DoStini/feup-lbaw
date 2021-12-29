@@ -48,10 +48,8 @@
                     @endif
                     <h5 class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="user-drodown">
-                    @if(!Auth::user()->is_admin)
-                      <li><a class="dropdown-item" href={{route('getUser', ['id' => strval(Auth::user()->id)])}}>My profile</a></li>
-                    @endif
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href={{url("users/" . strval(Auth::user()->id))}}>My profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><form method="POST" class="col" action="{{ route('logout') }}">
                       @csrf

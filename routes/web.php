@@ -13,11 +13,12 @@
 // Home
 Route::get('/', 'StaticPagesController@home')->name('home');
 
+// Users
+Route::get('users/', 'UserController@getAuth')->name('getUsersPage');
 Route::get('users/cart', 'CartController@show')->name('getCart');
-Route::get('users/{id}', 'ShopperController@show')->name('getUser');
-Route::get('users/{id}/private', 'ShopperController@getEditPage')->name('editPage');
-Route::get('users/', 'ShopperController@getAuth')->name('getUsersPage');
-
+Route::get('users/orders', 'ShopperController@getOrders')->name('getOrders');
+Route::get('users/{id}', 'UserController@showProfile')->name('getUser');
+Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
 
 // Products
 Route::get('products/{id}', 'ProductController@show')->name('getProduct');
