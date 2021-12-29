@@ -9,6 +9,10 @@
     overflow-y: auto;
 }
 
+#cart-dropdown-menu-content img {
+    cursor: pointer;
+}
+
 #cart-dropdown-menu div.dropdown-cart-name {
     font-size: 1em;
     text-overflow: ellipsis;

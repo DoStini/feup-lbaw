@@ -35,6 +35,7 @@
     </script>
 
     <script type="text/javascript" src={{ asset('js/app.js') }} defer></script>
+    <script type="text/javascript" src={{ asset('js/ajax.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/axios.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/numberSelector.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/cart.js') }} defer></script>

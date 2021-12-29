@@ -40,32 +40,36 @@ function formatProductSubtotal(product) {
 function insertProduct(product, idx) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
-    const elem = document.createElement("div");
-    elem.id = `cart-product-${idx}`;
-    elem.innerHTML = `
-    <div class="container" href="#">
-        <div class="row align-items-center mb-3">
-            <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
-            <div class="col-9">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-10 dropdown-cart-name">${product.name}</div>
-                    <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
-                </div>
-                <div class="row dropdown-cart-amount justify-content-between">
-                    <div id="item-amount-${idx}" class="col px-0">
-                        ${formatAmount(product)}
+    const elem = $(
+        `
+            <div id=cart-product-${idx}>
+                <div class="container" href="#">
+                    <div class="row align-items-center mb-3">
+                        <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
+                        <div class="col-9">
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-10 dropdown-cart-name">${product.name}</div>
+                                <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
+                            </div>
+                            <div class="row dropdown-cart-amount justify-content-between">
+                                <div id="item-amount-${idx}" class="col px-0">
+                                    ${formatAmount(product)}
+                                </div>
+                                <div id="item-subtotal-${idx}" class="col item-subtotal">
+                                    ${formatProductSubtotal(product)}
+                                </div>
+                            </div>
+                            <div class="row dropdown-cart-amount justify-content-center">
+                                <div id="cart-number-selector-${idx}" class="col-6"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div id="item-subtotal-${idx}" class="col item-subtotal">
-                        ${formatProductSubtotal(product)}
-                    </div>
-                </div>
-                <div class="row dropdown-cart-amount justify-content-center">
-                    <div id="cart-number-selector-${idx}" class="col-6"></div>
                 </div>
             </div>
-        </div>
-    </div>
-    `;
+        `
+    );
+
+    elem.find('img').on('click', () => route(`products/${product.id}`));
 
     menuContent.append(elem);
 
