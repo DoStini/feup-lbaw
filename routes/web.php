@@ -11,7 +11,7 @@
 |
 */
 // Home
-Route::get('/', 'Auth\LoginController@home');
+Route::get('/', 'StaticPagesController@home');
 
 // Users
 Route::get('users/cart', 'ShopperController@cart');

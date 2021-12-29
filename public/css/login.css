@@ -14,13 +14,17 @@ main {
 
 #auth {
     font-family: serif;
-    color: #4C4242;
+    color: #4E351C;
 }
 
 #auth .btn-primary {
-    background-color: #4C4242;
+    background-color: #4E351C;
     border: none;
     color: white;
+}
+
+#auth .btn-primary:hover {
+    background-color: #6d553d;
 }
 
 #auth .error {
@@ -41,11 +45,11 @@ main {
 }
 
 #auth label {
-    color: #4C4242
+    color: #4E351C
 }
 
 #auth .separator {
-    border-bottom: 1px solid #4C4242;
+    border-bottom: 1px solid #4E351C;
     width: 35%;
 }
 
@@ -64,7 +68,7 @@ main {
     }
 
     #auth .vertical-separator {
-        border-right: 1px solid #4C4242;
+        border-right: 1px solid #4E351C;
         width: 2px;
     }
 }
