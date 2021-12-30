@@ -53,10 +53,10 @@
                 <h2 class="mb-4">Payment Method</h2>
                 <div class="payment-option container mb-4">
                     <div class="row justify-content-between">
-                        <div class="col-6 payment-image">
-                            <img style="" src="{{asset("img/paypal.png")}}">
+                        <div class="col-4 payment-image d-flex justify-content-start align-items-center">
+                            <i class="bi-paypal"></i>
                         </div>
-                        <div class="col-4 d-flex justify-content-start align-items-center">
+                        <div class="col-lg-4 col-6 d-flex justify-content-start align-items-center">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="payment-type"
                                     id="payment-radio-paypal" value="paypal" required>
@@ -69,10 +69,10 @@
                 </div>
                 <div class="payment-option container mb-4">
                     <div class="row justify-content-between">
-                        <div class="col-6 payment-image">
-                            {{-- <img style="" src="{{asset("img/paypal.png")}}"> --}}
+                        <div class="col-4 d-flex justify-content-start align-items-center payment-image">
+                            <i class="bi-bank"></i>
                         </div>
-                        <div class="col-4 d-flex justify-content-start align-items-center">
+                        <div class="col-lg-4 col-6 d-flex justify-content-start align-items-center">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="payment-type"
                                     id="payment-radio-bank" value="bank" required>
