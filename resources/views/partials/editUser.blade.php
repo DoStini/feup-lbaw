@@ -3,7 +3,7 @@
 
 <script type="text/javascript" defer>
     function updatePhoto(photo) {
-        const fallBack = "/img/user.jpg";
+        const fallBack = "/img/user.png";
 
         const userImg = $("#user-img");
         const headerImg = $("#header-user-img");
