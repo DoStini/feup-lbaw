@@ -23,7 +23,7 @@
             <th class="text-center">{{$updatableOrder->total}} €</th>
             <th class="text-center"><a class="badge rounded-pill badge-decoration-none badge-{{$updatableOrder->status}} ">{{strToUpper($updatableOrder->status)}}</a></th>
             <th>
-                <div class="d-flex justify-content-around">
+                <div class="d-flex justify-content-around" style="font-size: 1.2em;">
                     <a class="bi bi-forward-fill icon-click"></a>
                     <a class="bi bi-info-circle-fill icon-click"></a>
                 </div>
