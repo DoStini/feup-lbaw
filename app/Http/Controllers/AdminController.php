@@ -46,11 +46,13 @@ class AdminController extends Controller {
                                  ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
                                  ->orderBy('status')
                                  ->orderBy('timestamp', 'asc')
-                                 ->get();
+                                 ->get(['order.id','name','shopper_id','timestamp','total','status']); //need to add created_at and updated_at in sql
 
         $info->finishedOrders = Order::where('status', '=', 'shipped')
+                                ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
                                 ->orderBy('status')
-                                ->get();
+                                ->orderBy('timestamp', 'asc')
+                                ->get(['order.id','name','shopper_id','timestamp','total','status']); //need to add created_at and updated_at in sql
 
         return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'orderDashboard']);
     }
