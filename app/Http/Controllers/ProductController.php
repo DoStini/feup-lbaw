@@ -103,6 +103,10 @@ class ProductController extends Controller {
     }
 
     public function addProduct(Request $request) {
+        if ($request->hasFile('photos')) {
+            $photos = $request->file('photos');
+        }
+
         return response($request);
     }
 }
