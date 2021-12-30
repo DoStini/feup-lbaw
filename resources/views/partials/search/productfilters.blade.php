@@ -1,4 +1,4 @@
-<div class="container sticky-top pt-5">
+<div class="container sticky-md-top pt-5">
 
     <h2 id="results-text" class="mb-5">No results</h2>
 
@@ -67,4 +67,6 @@
             <label class="form-check-label" for="rate-desc">Highest Rating First</label>
         </div>
     </div>
+
+    <div class="mb-5"></div>
 </div>
