@@ -9,7 +9,6 @@
         const headerImg = $("#header-user-img");
 
         if (userImg.attr("src") === photo) {
-            console.log("yup")
             return;
         }
 

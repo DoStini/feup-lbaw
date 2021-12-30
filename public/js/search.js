@@ -168,8 +168,6 @@ function handleSearchNewPageProducts() {
 
     if (this.status !== 200) return;
 
-    console.log(current, response);
-
     const lastQuery = current.query;
 
     current = {...response};
@@ -213,8 +211,6 @@ function sendSearchProductsRequest(callback, page) {
             "order": checkbox.at(0),
         }
     }
-
-    console.log(page, query)
 
     sendAjaxQueryRequest('get', `/api/products`, query, callback);
 }
