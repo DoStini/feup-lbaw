@@ -49,3 +49,13 @@
 .badge-shipped:hover {
     color: rgb(2, 97, 26);
 }
+
+.icon-click {
+    color: black;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.icon-click:hover{
+    color: rgb(63, 63, 63);
+}

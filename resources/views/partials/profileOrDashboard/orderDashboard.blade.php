@@ -10,7 +10,7 @@
             <th class="text-center">Last Update</th>
             <th class="text-center">Total</th>
             <th class="text-center">Status</th>
-            <th class="text-center">Advance Status</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -22,7 +22,12 @@
             <th class="text-center">{{date("d M Y, H:i", strtotime($updatableOrder->timestamp))}}</th>
             <th class="text-center">{{$updatableOrder->total}} €</th>
             <th class="text-center"><a class="badge rounded-pill badge-decoration-none badge-{{$updatableOrder->status}} ">{{strToUpper($updatableOrder->status)}}</a></th>
-            <th class="text-center"><a class="badge rounded-pill badge-decoration-none badge-clickable ">Advance Status</a></th>
+            <th>
+                <div class="d-flex justify-content-around">
+                    <a class="bi bi-forward-fill icon-click"></a>
+                    <a class="bi bi-info-circle-fill icon-click"></a>
+                </div>
+            </th>
         </tr>
     @endforeach
     </tbody>
