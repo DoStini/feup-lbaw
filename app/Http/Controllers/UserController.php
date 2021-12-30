@@ -175,12 +175,13 @@ class UserController extends Controller {
         }
 
         $user = $user->fresh();
+        $shopperData = $shopper ? $shopper->fresh()->toArray() : [];
 
         return response(
             array_merge(
                 $user->fresh()->toArray(),
                 ['photo' => $user->photo->url],
-                $shopper->fresh()->toArray(),
+                $shopperData,
             ),
             200
         );

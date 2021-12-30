@@ -14,12 +14,14 @@
 Route::get('/', 'StaticPagesController@home')->name('home');
 
 // Users
-Route::get('users/', 'UserController@getAuth')->name('getUsersPage');
+Route::get('users', 'UserController@getAuth')->name('getUsersPage');
 Route::get('users/cart', 'CartController@show')->name('getCart');
 Route::get('users/orders', 'ShopperController@getOrders')->name('getOrders');
 Route::get('users/{id}', 'UserController@showProfile')->name('getUser');
 Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
 
+//Administration
+Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
 
 // Products
 Route::get('products', 'ProductController@search')->name('getProductSearch');
