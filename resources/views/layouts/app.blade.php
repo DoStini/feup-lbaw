@@ -10,5 +10,6 @@
         @yield('content')
       </section>
     </main>
-  </body>
+</body>
+
 </html>

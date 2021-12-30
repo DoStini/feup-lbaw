@@ -7,3 +7,9 @@ use App\Http\Controllers\OrderController;
 Route::get('/testPOST', function() {
     return view('dev.DEVTESTPOST');
 });
+
+Route::get('/testAPI', function() {
+    $statuses = OrderController::getPossibleStatus();
+
+    return view('dev.DEVTEST', ["statuses" => $statuses]);
+});

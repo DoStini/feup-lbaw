@@ -24,7 +24,7 @@ class LoginController extends Controller {
     use AuthenticatesUsers;
 
     public function redirectTo() {
-        return '/users/';
+        return '/products';
     }
 
     /**
@@ -38,10 +38,6 @@ class LoginController extends Controller {
 
     public function getUser() {
         return $request->user();
-    }
-
-    public function home() {
-        return redirect('/join');
     }
 
      /**
