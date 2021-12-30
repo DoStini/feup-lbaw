@@ -23,6 +23,17 @@ Route::get('/products', [
 
 Route::group(
     [
+        'prefix' => 'users/{id}/private',
+        'middleware' => ['auth.api', 'user.owner.admin'],
+    ],
+    function () {
+        Route::get('/address', 'AddressController@get');
+        Route::post('/address/add', 'AddressController@create');
+    }
+);
+
+Route::group(
+    [
         'prefix' => 'users/cart',
         'middleware' => ['auth.api', 'is.shopper']
     ],
