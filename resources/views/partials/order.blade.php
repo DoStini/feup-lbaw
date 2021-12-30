@@ -87,7 +87,7 @@
                 <p class="text-end">Coupon: {{$order->coupon->code}} ({{round($order->coupon->percentage * 100 )}}%)</p>
                 <p class="text-end">Discount: {{number_format($order->subtotal - $order->total, 2)}} €</p>
                 @endif
-                <p class="text-end">Total Amount: {{number_format($order->total, 2)}}€</p>
+                <p class="text-end">Total Amount: {{number_format($order->total, 2)}} €</p>
             </div>
         </div>
     </div>
