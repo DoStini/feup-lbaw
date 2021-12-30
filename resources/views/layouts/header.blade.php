@@ -42,15 +42,17 @@
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                     id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
-                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" width="25" alt="" loading="lazy" />
                     @else
                       <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
                     <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    @if(!Auth::user()->is_admin)
-                    <li><a class="dropdown-item" href={{route('getUser', ['id' => Auth::user()->id])}}>My profile</a></li>
+                    @if(Auth::user()->is_admin)
+                      <li><a class="dropdown-item" href={{route('getDashboard')}}>Dashboard</a></li>
+                    @else
+                      <li><a class="dropdown-item" href={{route('getUser', ['id' => Auth::user()->id])}}>My profile</a></li>
                     @endif
                     <li><a class="dropdown-item" href={{route('editPage', ['id' => Auth::user()->id])}}>Settings</a></li>
                     <li><form method="POST" class="col" action="{{ route('logout') }}">
