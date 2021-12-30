@@ -42,7 +42,7 @@
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
                     id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
-                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" width="25" alt="" loading="lazy" />
                     @else
                       <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
