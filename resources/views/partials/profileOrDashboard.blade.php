@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="col-md-9 col-sm-12 container">
-            @include('partials.' . $page, ['shopper' => $shopper ?? null, 'admin' => $admin ?? null])
+            @include('partials.' . $page, ['shopper' => $shopper ?? null, 'admin' => $admin ?? null, 'info' => $info ?? null])
         </div>
     </div>
 </div>
