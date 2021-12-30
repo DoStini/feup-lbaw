@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="row m-5">
-            <div class="col-3">
+            <div class="col-4">
                 <h5>From: reFurniture</h5>
                 <p>105, 2ET Rua Jaime Leão Pinto</p>
                 <p>4590-831, Paços de Ferreira</p>
@@ -22,7 +22,7 @@
                 <p>NIF: 262513301</p>
                 <p>Email: support@refurniture.com</p>
             </div>
-            <div class="col-3">
+            <div class="col-4">
                 <h5>To: {{$order->name}}</h5>
                 <p>{{$order->address->door}} {{$order->address->street}}</p>
                 <p>{{$order->address->zip_code->zip_code}}, {{$order->address->zip_code->county->name}}</p>
@@ -31,7 +31,7 @@
                 <p>NIF: {{$order->nif}}</p>
                 <p>Email: {{$order->email}}</p>
             </div>
-            <div class="col-6 d-flex justify-content-end">
+            <div class="col-4 d-flex justify-content-end">
                 <div>
                     <h5 class="text-end">Payment Details</h5>
                     <p class="text-end">Total Amount: {{round($order->total, 2)}}€</p>
