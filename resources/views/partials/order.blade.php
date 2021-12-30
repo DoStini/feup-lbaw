@@ -8,7 +8,7 @@
               </div>
             <div class="col-6">
                 <h3 class="text-end">Invoice - {{$order->id}}</h3>
-                <p class="text-end">Status!!!</p>
+                <p class="text-end"><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></p>
                 <h5 class="text-end">{{date("d M Y", strtotime($order->timestamp))}}</h5>
             </div>
         </div>
