@@ -86,7 +86,11 @@
             </section>
         </div>
         <div class="col-md-4 d-flex align-items-center justify-content-start flex-column">
-            <button type="submit" class="btn btn-primary">Checkout</button>
+            @include('partials.applyCoupon')
+            @include('partials.cartTotal', ["cartTotal" => $cartTotal])
+            <div class="my-4 w-50 d-flex align-items-center justify-content-center">
+                <button type="submit" class="w-100 btn btn-primary">Checkout</button>
+            </div>
         </div>
     </form>
 </div>
