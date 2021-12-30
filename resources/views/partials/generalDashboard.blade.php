@@ -24,7 +24,7 @@
           <div class="card h-100">
             <div class="card-body d-flex justify-content-center flex-column">
               <h3 class="card-title text-center m-4">Products</h3>
-              <h5 class="card-text text-center">{{$info->productNum}} Products in Store</h5>
+              <h5 class="card-text text-center">{{$info->productNum}} Products running out of stock</h5>
               <a href="#" class="btn btn-primary">Manage</a>
             </div>
           </div>

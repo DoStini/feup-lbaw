@@ -28,7 +28,7 @@ class AdminController extends Controller {
                                   ->where('is_deleted', false)->where('is_blocked', false)->count();
 
         $info->orderNum = Order::where('status', '<>', 'shipped')->count();
-        $info->productNum = Product::where('stock', '<>', 0)->count();
+        $info->productNum = Product::where('stock', '<', 2)->count();
         $info->proposedProductNum =0;
 
         return view('pages.adminDashboard', ['admin' => $user, 'info' => $info, 'page' => 'generalDashboard']);
