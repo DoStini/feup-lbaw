@@ -40,7 +40,7 @@
                                 @if($order->payment)
                                     <h6>{{$order->payment->paypal_transaction_id == null ? 'Bank Transfer' : 'PayPal'}}</h6>
                                 @endif
-                                <h6>{{strToUpper($order->status)}}</h6>
+                                <h6><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></h6>
                             </div>
                             <div class="col-3">
                                 <button class="btn btn-outline-secondary w-100 collapsed" type="button" data-bs-toggle="collapse" data-bs-target={{"#panelsStayOpen-collapse" . $loop->iteration}} aria-expanded="true" aria-controls={{"panelsStayOpen-collapse" . $loop->iteration}}>
