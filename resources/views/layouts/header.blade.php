@@ -10,8 +10,8 @@
         </div>
 
         <div class="col-md-4">
-          <form class="d-flex input-group w-auto my-auto mb-3 mb-md-0">
-            <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search" />
+          <form id="search-products-form" class="d-flex input-group w-auto my-auto mb-3 mb-md-0">
+            <input id="search-products-input" autocomplete="off" type="search" class="form-control rounded" placeholder="Search" />
             <span class="input-group-text border-0 d-none d-lg-flex"><i class="fas fa-search"></i></span>
           </form>
         </div>

@@ -1,4 +1,5 @@
 const baseDelay = 100;
+const searchInterval = 500;
 
 let current = {};
 
@@ -40,8 +41,14 @@ function serializeJQueryForm(query) {
 
 function setupSearchListeners() {
     const formTargets = $("#search-form input[type!='checkbox']").toArray();
+    if (window.location.pathname === "/products") {
+        formTargets.push(document.getElementById("search-products-input"));
+    }
 
     formTargets.forEach((target) => {
+        let timeout;
+        let isTyping;
+
         target.setAttribute("old-value", target.value)
 
         target.addEventListener('keydown', (e) => {
@@ -51,16 +58,30 @@ function setupSearchListeners() {
         });
 
         target.addEventListener('keydown', (e) => {
-            if (e.key === " ") {
-                sendSearchProductsRequest(handleSearchProducts);
-            }
+            isTyping = true;
+        });
+
+        target.addEventListener('focus', () => {
+            isTyping = true;
+            timeout = setInterval(() => {
+                if (!isTyping) {
+                    ensureBounds(target);
+                    if (inputModified(target)) {
+                        sendSearchProductsRequest(handleSearchProducts);
+                    }
+                }
+
+                isTyping = false;
+            }, searchInterval);
         });
 
         target.addEventListener('blur', () => {
+            clearInterval(timeout);
+
             ensureBounds(target);
             if (inputModified(target))
                 sendSearchProductsRequest(handleSearchProducts);
-        })
+        });
     });
 
     setupUniqueCheckboxes("search-form", (_e) => {
@@ -113,10 +134,6 @@ function createProduct(product, delay) {
         setupAnimation(element.firstElementChild, delay);
 
     return element;
-}
-
-function handleNextPage() {
-
 }
 
 function insertNextPageButton(delay) {
@@ -198,11 +215,45 @@ function restoreCache() {
     }
 }
 
+function getInputs() {
+    return {
+        ...serializeJQueryForm($("#search-form input[type!='checkbox']").serializeArray()),
+        text: $("#search-products-input").val(),
+    }
+}
+
+function removeUriParams() {
+    const url = document.location.href;
+    window.history.pushState(undefined, "", url.split("?")[0]);
+}
+
+function setupInputForm() {
+    if (window.location.pathname === "/products") {
+        const params = (new URL(document.location)).searchParams;
+        const text = params.get("text") ?? "";
+        $("#search-products-input").val(text);
+
+        removeUriParams();
+
+        document.getElementById("search-products-form").onsubmit = (e) => {
+            e.preventDefault();
+            sendSearchProductsRequest(handleSearchProducts);
+        };
+    } else {    
+        document.getElementById("search-products-form").onsubmit = (e) => {
+            e.preventDefault();
+            const text = document.getElementById("search-products-input").value;
+            window.location.assign(`/products${text ? `?text=${encodeURIComponent(text)}` : ""}`);    
+        };
+    }
+}
+
 function sendSearchProductsRequest(callback, page) {
     let query = {
         "page": page || 0,
-        ...serializeJQueryForm($("#search-form input[type!='checkbox']").serializeArray()),
-    } 
+        ...getInputs(),
+    }
+
     const checkbox = Object.keys(serializeJQueryForm($("#search-form input[type='checkbox'][group='sort-input']").serializeArray()));
 
     if (checkbox.length) {
@@ -215,5 +266,6 @@ function sendSearchProductsRequest(callback, page) {
     sendAjaxQueryRequest('get', `/api/products`, query, callback);
 }
 
+setupInputForm();
 setupSearchListeners();
 restoreCache();
