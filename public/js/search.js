@@ -104,7 +104,7 @@ function setupAnimation(element, delay) {
 }
 
 function createProduct(product, delay) {
-    const productImg = undefined// product.photos?[0];
+    const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
 
     const html = `
