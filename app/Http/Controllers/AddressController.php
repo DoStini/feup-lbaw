@@ -53,6 +53,12 @@ class AddressController extends Controller {
         ]);
     }
 
+    private function validateZipCode(Request $request) {
+        return Validator::make($request->all(), [
+            'code' => 'required|string|min:4',
+        ]);
+    }
+
     /**
      * Verifies if a given address belongs to the shopper
      * 
@@ -166,5 +172,29 @@ class AddressController extends Controller {
 
         $addresses = $this->retrieveAddresses($shopper->fresh());
         return response($addresses);
+    }
+
+    /**
+     * Retrieves possible postal codes for a given input
+     */
+    public function zipCode(Request $request) {
+        if (($v = $this->validateZipCode($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $query = ZipCode
+            ::where("zip_code", "LIKE", $request->code . "%")
+            ->take(15)
+            ->get();
+
+        $serialized = $query->map(function ($zip) {
+            $zipJson = [];
+            $zipJson['id'] = $zip->id;
+            $zipJson['county'] = $zip->county->name;
+            $zipJson['district'] = $zip->district->name;
+            return $zipJson;
+        });
+
+        return $serialized;
     }
 }

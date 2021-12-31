@@ -21,6 +21,8 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/address/zipcode', 'AddressController@zipCode');
+
 Route::group(
     [
         'prefix' => 'users/{id}/private',
