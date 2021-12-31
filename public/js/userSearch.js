@@ -1,3 +1,7 @@
+function clearForm(form) {
+    form.reset();
+}
+
 function createUser(user) {
     const html = `    
         <th class="text-center">${user.id}</th>
@@ -63,17 +67,25 @@ function setupSearchListeners() {
     form.addEventListener('submit', (e) => { 
         e.preventDefault();
         sendSearchUsersRequest(form, handleSearchUsers);
-        console.log('hehe');
-    })
+    });
+
+    window.onload = () => {
+        clearForm(form);
+        sendSearchUsersRequest(form, handleSearchUsers);
+    }
+    
 
 }
 
 function sendSearchUsersRequest(form, callback) {
+
     let query = {
         'name': form.name.value
     } 
 
     sendAjaxQueryRequest('get', '/api/users', query, callback);
+
+    clearForm(form);
 }
 
 setupSearchListeners();

@@ -210,7 +210,7 @@ class UserController extends Controller {
         try {
             $query = Shopper::leftJoin('users', 'authenticated_shopper.id', '=', 'users.id')
                 ->when($request->name, function ($q) use ($request) {
-                return $q->whereRaw('name LIKE ?', [$request->name . '%']);
+                return $q->whereRaw('UPPER(name) LIKE UPPER(?)', [$request->name . '%']);
                 });
                               
             return response()->json([
