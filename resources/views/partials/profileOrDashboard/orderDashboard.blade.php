@@ -24,8 +24,8 @@
             <th class="text-center"><a class="badge rounded-pill badge-decoration-none badge-{{$updatableOrder->status}} ">{{strToUpper($updatableOrder->status)}}</a></th>
             <th>
                 <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                    <a class="bi bi-forward-fill icon-click"></a>
-                    <a class="bi bi-info-circle-fill icon-click"></a>
+                    <a class="bi bi-forward-fill icon-click" href="" data-bs-toggle="tooltip" title="Advance Status"></a>
+                    <a class="bi bi-info-circle-fill icon-click" href={{route('orders', ['id' => $updatableOrder->id])}} data-bs-toggle="tooltip" title="Go to Order Page"></a>
                 </div>
             </th>
         </tr>
@@ -56,6 +56,7 @@
                         <th class="text-center">Last Update</th>
                         <th class="text-center">Total</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,6 +68,11 @@
                         <th class="text-center">{{date("d M Y, H:i", strtotime($finishedOrder->timestamp))}}</th>
                         <th class="text-center">{{$finishedOrder->total}} €</th>
                         <th class="text-center"><a class="badge rounded-pill badge-decoration-none badge-{{$finishedOrder->status}} ">{{strToUpper($finishedOrder->status)}}</a></th>
+                        <th>
+                            <div class="d-flex justify-content-around" style="font-size: 1.2em;">
+                                <a class="bi bi-info-circle-fill icon-click" href={{route('orders', ['id' => $finishedOrder->id])}} data-bs-toggle="tooltip" title="Go to Order Page"></a>
+                            </div>
+                        </th>
                     </tr>
                 @endforeach
                 </tbody>

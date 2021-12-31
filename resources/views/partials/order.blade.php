@@ -1,19 +1,19 @@
 <div class="d-flex justify-content-center">
     <div class="container w-75 bg-greyish">
         <div class="row m-5">
-            <div class="col-6 d-flex justify-content-center justify-content-md-start my-3">
+            <div class="col-md-6 d-flex justify-content-center justify-content-md-start my-3">
                 <a href={{route('getProductSearch')}} class="ms-md-2">
                   <img src="/img/refurniture.svg" alt="" width="200" height=65" />
                 </a>
               </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <h3 class="text-end">Invoice - {{$order->id}}</h3>
                 <p class="text-end"><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></p>
                 <h5 class="text-end">{{date("d M Y", strtotime($order->timestamp))}}</h5>
             </div>
         </div>
         <div class="row m-5">
-            <div class="col-4">
+            <div class="col-md-4">
                 <h5>From: reFurniture</h5>
                 <p>105, 2ET Rua Jaime Leão Pinto</p>
                 <p>4590-831, Paços de Ferreira</p>
@@ -22,7 +22,7 @@
                 <p>NIF: 262513301</p>
                 <p>Email: support@refurniture.com</p>
             </div>
-            <div class="col-4">
+            <div class="col-md-4">
                 <h5>To: {{$order->name}}</h5>
                 <p>{{$order->address->door}} {{$order->address->street}}</p>
                 <p>{{$order->address->zip_code->zip_code}}, {{$order->address->zip_code->county->name}}</p>
@@ -31,7 +31,7 @@
                 <p>NIF: {{$order->nif}}</p>
                 <p>Email: {{$order->email}}</p>
             </div>
-            <div class="col-4 d-flex justify-content-end">
+            <div class="col-md-4 d-flex justify-content-end">
                 <div>
                     <h5 class="text-end">Payment Details</h5>
                     <p class="text-end">Total Amount: {{round($order->total, 2)}}€</p>
@@ -44,6 +44,8 @@
                                 <p class="text-end">Reference: {{$order->payment->reference}}</p>
                                 <p class="text-end">Entity: {{$order->payment->entity}}</p>
                             @endif
+                    @else
+                        <p class="text-end">Payment not yet concluded.</p>
                     @endif
                 </div>
             </div>
@@ -77,10 +79,10 @@
             </div>
         </div>
         <div class="row m-5">
-            <div class="col-6">
+            <div class="col-md-6">
 
             </div>
-            <div class="col-6 d-flex justify-content-end flex-column">
+            <div class="col-md-6 d-flex justify-content-end flex-column">
                 <p class="text-end">Subtotal (Without Tax): {{number_format($order->subtotal * (1-0.23), 2)}} €</p>
                 <p class="text-end">Tax (23%): {{number_format($order->subtotal * 0.23, 2)}} €</p>
                 @if($order->coupon)
