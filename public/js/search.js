@@ -116,9 +116,11 @@ function createProduct(product, delay) {
                     <div class="container ps-0 pe-0">
                         <div class="row justify-content-between align-items-center">
                             <h4 class="col mb-0">${product.price} &euro;</h4>
-                            <button type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
-                                <i class="bi bi-cart-plus mx-auto"></i>
-                            </button>
+                            ${isShopper ?
+                                `<button type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+                                    <i class="bi bi-cart-plus mx-auto"></i>
+                                </button>`
+                                : ""}
                         </div>
                     </div>
                 </div>
@@ -246,8 +248,10 @@ function setupInputForm() {
             e.preventDefault();
             sendSearchProductsRequest(handleSearchProducts);
         };
-    } else {    
-        document.getElementById("search-products-form").onsubmit = (e) => {
+    } else {
+        const elem = document.getElementById("search-products-form");
+        if (!elem) return;
+        elem.onsubmit = (e) => {
             e.preventDefault();
             const text = document.getElementById("search-products-input").value;
             window.location.assign(`/products${text ? `?text=${encodeURIComponent(text)}` : ""}`);    
