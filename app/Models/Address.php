@@ -37,6 +37,7 @@ class Address extends Model {
         $address["county"]   = $this->zip_code->county->name;
         $address["district"] = $this->zip_code->district->name;
         $address["zip_code"] = $this->zip_code->zip_code;
+        $address["id"] = $this->id;
         return $address;
     }
 

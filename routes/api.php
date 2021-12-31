@@ -29,6 +29,7 @@ Route::group(
     function () {
         Route::get('/address', 'AddressController@get');
         Route::post('/address/add', 'AddressController@create');
+        Route::post('/address/edit', 'AddressController@edit');
     }
 );
 

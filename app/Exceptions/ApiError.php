@@ -69,6 +69,16 @@ class ApiError {
     }
 
     /**
+     * Returns a json response with 
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function addressNotInUser() {
+        $err = Config::get('constants.address.not_in_user');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
      * Returns a json response with an error regarding user not authenticated
      *
      * @return \Illuminate\Http\JsonResponse

@@ -35,18 +35,31 @@ class AddressController extends Controller {
     private function validateEdit(Request $request) {
         $request->merge(['id' => $request->route('id')]);
         return Validator::make($request->all(), [
-            'street' => 'required|string',
-            'door' => 'required|integer|min:1',
-            'zip_code_id' => 'required|min:1|exists:zip_code,id'
+            'id' => 'integer|min:1|exists:authenticated_shopper,id',
+            'address_id' => 'required|integer|min:1|exists:address,id',
+            'street' => 'string|min:5',
+            'door' => 'integer|min:1',
+            'zip_code_id' => 'min:1|exists:zip_code,id'
         ], [], [
             'zip_code_id' => 'zip code id'
         ]);
     }
 
     private function validateDelete() {
+        $request->merge(['id' => $request->route('id')]);
         return Validator::make($request->all(), [
-            'address-id' => 'required|integer|min:1|exists:address,id',
+            'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
+            'address_id' => 'required|integer|min:1|exists:address,id',
         ]);
+    }
+
+    /**
+     * Verifies if a given address belongs to the shopper
+     * 
+     * @return boolean
+     */
+    private function addressInShopper(Address $address, Shopper $shopper) {
+        return $shopper->addresses->contains($address);
     }
 
     /**
@@ -98,8 +111,25 @@ class AddressController extends Controller {
      * @param  \App\Models\Address  $address
      * @return \Illuminate\Http\Response
      */
-    public function edit(Address $address) {
-        //
+    public function edit(Request $request, $id) {
+        if (($v = $this->validateEdit($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $shopper = Shopper::find($id);
+        $address = Address::find($request->address_id);
+
+        if (!$this->addressInShopper($address, $shopper)) {
+            return ApiError::addressNotInUser();
+        }
+
+        $address->update([
+            "street" => $request->street ?? $address->street,
+            "door" => $request->door ?? $address->door,
+            "zip_code_id" => $request->zip_code_id ?? $address->zip_code_id,
+        ]);
+
+        return response($address->serialize());
     }
 
     /**
