@@ -322,10 +322,62 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'
 
-  /api/users/{id}/private/addresses/add:
-    post:
+  /api/users/{id}/private/address:
+    get:
       operationId: R204
-      summary: 'R204: Add address to user addresses'
+      summary: "R204: Retrieve user's addresses"
+      description: "Get user's addresses. Access: OWN, ADM"
+      tags:
+        - 'M02: User Profiles'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+            
+      responses:
+        '200':
+          description: 'Retrieve addresses succesfully.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    door:
+                      type: string
+                    county:
+                      type: string
+                    district:
+                      type: string
+                    zip_code:
+                      type: string
+                    id:
+                      type: integer
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'      
+
+  /api/address/{id}/private/address/add:
+    post:
+      operationId: R205
+      summary: 'R205: Add address to user addresses'
       description: ' Add address to user addresses. Access: OWN, ADM'
       tags:
         - 'M02: User Profiles'
@@ -340,7 +392,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -348,19 +400,36 @@ paths:
                   type: string
                 door:
                   type: string
-                zip-code:
+                zip_code_id:
                   type: string
-                cur-password:
+                password:
                   type: string
               required:
-                - "street"
-                - "door"
-                - "zip-code"
-                - "cur-password"
+                - street
+                - door
+                - zip_code_id
+                - password
             
       responses:
         '200':
           description: 'Address added succesfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  street:
+                    type: string
+                  door:
+                    type: string
+                  county:
+                    type: string
+                  district:
+                    type: string
+                  zip_code:
+                    type: string
+                  id:
+                    type: integer
         '403':
           description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
           content:
@@ -385,10 +454,10 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'      
 
-  /api/users/{id}/private/addresses/edit:
+  /api/users/{id}/private/address/edit:
     post:
-      operationId: R205
-      summary: 'R205: Edit specific address of user addresses'
+      operationId: R206
+      summary: 'R206: Edit specific address of user addresses'
       description: 'Edit specific address of user addresses. Access: OWN, ADM'
       tags:
         - 'M02: User Profiles'
@@ -404,27 +473,44 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
-                address-id:
+                address_id:
                   type: integer
                 street:
                   type: string
                 door:
                   type: string
-                zip-code:
+                zip_code_id:
                   type: string
-                cur-password:
+                password:
                   type: string
               required:
-                - "address-id"
-                - "cur-password"
+                - "address_id"
+                - "password"
 
       responses:
         '200':
           description: 'Address edited succesfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  street:
+                    type: string
+                  door:
+                    type: string
+                  county:
+                    type: string
+                  district:
+                    type: string
+                  zip_code:
+                    type: string
+                  id:
+                    type: integer
         '403':
           description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
           content:
@@ -449,10 +535,10 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'    
       
-  /api/users/{id}/private/addresses/remove:
-    post:
-      operationId: R206
-      summary: 'R206: Remove specific address of user addresses'
+  /api/users/{id}/private/address/remove:
+    delete:
+      operationId: R207
+      summary: 'R207: Remove specific address of user addresses'
       description: 'Remove specific address of user addresses. Access: OWN, ADM'
       tags:
         - 'M02: User Profiles'
@@ -472,17 +558,99 @@ paths:
             schema:
               type: object
               properties:
-                address-id:
+                address_id:
                   type: integer
-                cur-password:
+                password:
                   type: string
               required:
-                - "address-id"
-                - "cur-password"
+                - "address_id"
+                - "password"
 
       responses:
         '200':
           description: 'Address removed succesfully.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    door:
+                      type: string
+                    county:
+                      type: string
+                    district:
+                      type: string
+                    zip_code:
+                      type: string
+                    id:
+                      type: integer
+
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'    
+
+  /api/address/zipcode:
+    get:
+      operationId: R208
+      summary: 'R208: Get the list of possible matches of the zipcode requested'
+      description: "Search for a zipcode. Access: USR"
+      tags:
+        - 'M02: User Profiles'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+              required:
+                - "code"
+
+      responses:
+        '200':
+          description: 'Retrieved addresses successfully.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    county:
+                      type: string
+                    district:
+                      type: string
+                    zip_code:
+                      type: string
+                    id:
+                      type: integer
         '403':
           description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
           content:
@@ -509,8 +677,8 @@ paths:
 
   /admin/users:
     get:  
-      operationId: R207
-      summary: 'R207: View manage users page'
+      operationId: R209
+      summary: 'R209: View manage users page'
       description: 'Show manage users page. Access: ADM'
       tags:
         - 'M02: User Profiles'
