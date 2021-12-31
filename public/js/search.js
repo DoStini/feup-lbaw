@@ -29,21 +29,11 @@ function inputModified(target) {
     return false;
 }
 
-function serializeJQueryForm(query) {
-    return query.reduce((obj, curr) => {
-        if (curr.value) {
-            obj[curr.name] = curr.value;
-        }
-
-        return obj;
-    }, {})
-}
-
 function setupSearchListeners() {
-    const formTargets = $("#search-form input[type!='checkbox']").toArray();
-    if (window.location.pathname === "/products") {
-        formTargets.push(document.getElementById("search-products-input"));
-    }
+    const searchForm = document.getElementById("search-form");
+
+    const formTargets = [...document.querySelectorAll("#search-form input:not([type=checkbox])")];
+    formTargets.push(document.getElementById("search-products-input"));
 
     formTargets.forEach((target) => {
         let timeout;
@@ -88,12 +78,12 @@ function setupSearchListeners() {
         sendSearchProductsRequest(handleSearchProducts);
     });
 
-    document.getElementById("search-form").addEventListener("reset", (e) => {
-        document.getElementById("search-products-input").value = "";
-        document.querySelectorAll("#search-form input:not([type=checkbox])")
-            .forEach(elem => elem.value = "");
+    searchForm.addEventListener("reset", (e) => {
+        formTargets.forEach(elem => elem.value = "");
+
         document.querySelectorAll("#search-form input[type=checkbox]")
             .forEach(elem => elem.checked = false);
+
         sendSearchProductsRequest(handleSearchProducts);
         e.preventDefault();
     })
@@ -104,12 +94,12 @@ function capitalize(s){
 }
 
 function setupAnimation(element, delay) {
-    element.css("top", "-50px");
-    element.css("opacity", "0");
+    element.style.top =  "-50px";
+    element.style.opacity = "0"
 
     setTimeout(() => {
-        element.css("top", "");
-        element.css("opacity", "");
+        element.style.top =  "";
+        element.style.opacity = "";
     }, delay);
 }
 
@@ -118,77 +108,80 @@ function createProduct(product, delay) {
     const fallBack = "/img/default.jpg";
 
     const html = `
-        <div class="col-lg-4 col-md-6 col-xs-12" style="visibility: visible">
-            <div id="product-${product.id}" class="card mb-5 search-products-item">
-                <img class="card-img-top" src="${productImg}" onerror="this.src='${fallBack}'">
-                <div class="card-body">
-                    <h4 class="card-title">${capitalize(product.name)}</h4>
-                    <div class="container ps-0 pe-0">
-                        <div class="row justify-content-between align-items-center">
-                            <h4 class="col mb-0">${product.price} &euro;</h4>
-                            ${isShopper ?
-                                `<button type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
-                                    <i class="bi bi-cart-plus mx-auto"></i>
-                                </button>`
-                                : ""}
-                        </div>
+        <div id="product-${product.id}" class="card mb-5 search-products-item">
+            <img class="card-img-top" src="${productImg}" onerror="this.src='${fallBack}'">
+            <div class="card-body">
+                <h4 class="card-title">${capitalize(product.name)}</h4>
+                <div class="container ps-0 pe-0">
+                    <div class="row justify-content-between align-items-center">
+                        <h4 class="col mb-0">${product.price} &euro;</h4>
+                        ${isShopper ?
+                            `<button type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+                                <i class="bi bi-cart-plus mx-auto"></i>
+                            </button>`
+                            : ""}
                     </div>
                 </div>
             </div>
         </div>`;
 
-    const element = $(html);
+    const element = document.createElement("div");
+    element.id = `root-product-${product.id}`;
+    element.className = "col-lg-4 col-md-6 col-xs-12";
+    element.style = "visibility: visible";
+    element.innerHTML = html;
 
-    element.find("img").on('click', () => route(`products/${product.id}`, current));
-    
-    const cartButton = element.find("button");
-    cartButton.on("click", (e) => {
+    element.querySelector("img").addEventListener('click', () => route(`products/${product.id}`, current));
+
+    const cartButton = element.querySelector("button");
+    cartButton.addEventListener("click", (e) => {
         addToCartRequest(product.id);
-        cartButton.trigger("blur");
+        cartButton.dispatchEvent(new Event("blur"));
     })
-    
+
     if (delay !== 0)
-        setupAnimation(element.find(".card"), delay);
+        setupAnimation(element.querySelector(".card"), delay);
 
     return element;
 }
 
 function insertNextPageButton(delay) {
-    $("#next-page-btn").remove();
+    const nextButton = document.getElementById("next-page-btn");
+    if (nextButton)
+        nextButton.remove();
 
     if (current.currentPage >= current.lastPage) return;
-    
-    const button = $(`
-        <div id="next-page-btn" class="d-flex justify-content-center align-items-center">
-            <i class="bi bi-arrow-down-circle-fill btn next-page-search"></i>
-        </div>
-    `);
 
-    button.on('click', () => {
+    const button = document.createElement("div");
+    button.id = "next-page-btn";
+    button.className = "d-flex justify-content-center align-items-center";
+    button.innerHTML = `<i class="bi bi-arrow-down-circle-fill btn next-page-search"></i>`;
+
+    button.addEventListener('click', () => {
         sendSearchProductsRequest(handleSearchNewPageProducts, current.currentPage + 1);
     });
 
-    $("#search-area").append(button);
+    document.getElementById("search-area").appendChild(button);
 
     if (delay !== 0)
-        setupAnimation(button.find("i"), delay);
+        setupAnimation(button.querySelector("i"), delay);
 }
 
 function clearProducts() {
-    const container = $("#products-area");
+    const container = document.getElementById("products-area");
 
-    container.empty();
+    container.innerHTML = "";
 }
 
 function insertProducts(data, shouldAnimate) {
     const factor = shouldAnimate ? 1 : 0;
 
-    const container = $("#products-area");
+    const container = document.getElementById("products-area");
 
-    $("#results-text").text(data.docCount ? `${data.docCount} Results` : "No results");
+    document.getElementById("results-text").innerText = data.docCount ? `${data.docCount} Results` : "No results";
 
     data.query.forEach((target, idx) => 
-        container.append(createProduct(target, factor * (idx + 1) * baseDelay)));
+        container.appendChild(createProduct(target, factor * (idx + 1) * baseDelay)));
 
     insertNextPageButton(factor * (data.query.length + 1) * baseDelay);
 }
@@ -234,10 +227,21 @@ function restoreCache() {
 }
 
 function getInputs() {
+    const data = Object.fromEntries((new FormData(document.getElementById("search-form"))).entries());
+
+    const keys = Object.keys(data);
+
+    Object.values(data).forEach((val, idx) => {
+        if (val === "on") {
+            data.order = keys[idx];
+            delete data[keys[idx]];
+        }
+    });
+
     return {
-        ...serializeJQueryForm($("#search-form input[type!='checkbox']").serializeArray()),
-        text: $("#search-products-input").val(),
-    }
+        text: document.getElementById("search-products-input").value,
+        ...data,
+    };
 }
 
 function removeUriParams() {
@@ -249,7 +253,7 @@ function setupInputForm() {
     if (window.location.pathname === "/products") {
         const params = (new URL(document.location)).searchParams;
         const text = params.get("text") ?? "";
-        $("#search-products-input").val(text);
+        document.getElementById("search-products-input").value = text;
 
         removeUriParams();
 
@@ -274,18 +278,13 @@ function sendSearchProductsRequest(callback, page) {
         ...getInputs(),
     }
 
-    const checkbox = Object.keys(serializeJQueryForm($("#search-form input[type='checkbox'][group='sort-input']").serializeArray()));
-
-    if (checkbox.length) {
-        query = {
-            ...query, 
-            "order": checkbox.at(0),
-        }
-    }
-
     sendAjaxQueryRequest('get', `/api/products`, query, callback);
 }
 
+
 setupInputForm();
-setupSearchListeners();
-restoreCache();
+
+if (window.location.pathname === "/products") {
+    setupSearchListeners();
+    restoreCache();
+}
