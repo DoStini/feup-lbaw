@@ -5,6 +5,9 @@
 @section('content')
 
 @if($errors->any())
+{{-- @if($errors->has('products'))
+{{dd($errors->first('products'))}}
+@endif --}}
 @foreach($errors->getMessages() as $key => $message)
     <p>{{$key}} = @foreach ($message as $mess) {{$mess}}</p><br> @endforeach
 @endforeach

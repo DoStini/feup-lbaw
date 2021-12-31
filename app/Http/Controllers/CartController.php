@@ -302,11 +302,15 @@ class CartController extends Controller {
     }
 
     private function validateStock($cart) {
+        $products = [];
+
         foreach ($cart as $product) {
             if($product->details->amount > $product->stock) {
-                return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock."])->withInput();
+                array_push($products, $product);
             }
         }
+
+        if(!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
     }
 
     private function validateCheckoutData(Request $request) {
