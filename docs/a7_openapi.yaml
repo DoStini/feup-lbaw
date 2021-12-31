@@ -616,7 +616,7 @@ paths:
   /api/address/zipcode:
     get:
       operationId: R208
-      summary: 'R208: Get the list of possible matches of the zipcode requested'
+      summary: 'R208: Get the list of possible matches for the requested zipcode'
       description: "Search for a zipcode. Access: USR"
       tags:
         - 'M02: User Profiles'
