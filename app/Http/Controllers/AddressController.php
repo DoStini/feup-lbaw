@@ -116,10 +116,6 @@ class AddressController extends Controller {
             return ApiError::validatorError($v->errors());
         }
 
-        if (($err = UserController::validateUserPasswordOrAdmin(Auth::user(), $request->password))) {
-            return $err;
-        }
-
         $shopper = Shopper::find($id);
 
         $address = Address::create([
@@ -142,10 +138,6 @@ class AddressController extends Controller {
     public function edit(Request $request, $id) {
         if (($v = $this->validateEdit($request))->fails()) {
             return ApiError::validatorError($v->errors());
-        }
-
-        if (($err = UserController::validateUserPasswordOrAdmin(Auth::user(), $request->password))) {
-            return $err;
         }
 
         $shopper = Shopper::find($id);
@@ -174,10 +166,6 @@ class AddressController extends Controller {
     public function remove(Request $request, $id) {
         if (($v = $this->validateRemove($request))->fails()) {
             return ApiError::validatorError($v->errors());
-        }
-
-        if (($err = UserController::validateUserPasswordOrAdmin(Auth::user(), $request->password))) {
-            return $err;
         }
 
         $addressId = $request->address_id;
