@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller {
@@ -140,6 +141,8 @@ class ProductController extends Controller {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $savedPhotos = [];
+
         try {
             DB::beginTransaction();
 
@@ -158,6 +161,8 @@ class ProductController extends Controller {
                     "public"
                 );
 
+                array_push($savedPhotos, $path);
+
                 $public_path = "/storage/" . $path;
                 $photo = Photo::create(["url" => $public_path]);
 
@@ -168,6 +173,7 @@ class ProductController extends Controller {
         } catch(QueryException $ex) {
             DB::rollBack();
 
+            Storage::disk('public')->delete($savedPhotos);
             return redirect()->back()->withErrors(["product" => "Unexpected Error"])->withInput();
         }
 
