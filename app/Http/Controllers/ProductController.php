@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller {
 
@@ -102,9 +103,26 @@ class ProductController extends Controller {
         }
     }
 
+    private function getValidatorAddProduct(Request $request) {
+        return Validator::make($request->all(), [
+            "name" => "required|string|max:100",
+            "attributes" => "nullable|json",
+            "stock" => "required|integer|min:0",
+            "description" => "nullable|string|max:255",
+            "photos" => "required",
+            "price" => "required|numeric|min:0",
+        ]);
+    }
+
     public function addProduct(Request $request) {
+        $validator = $this->getValidatorAddProduct($request);
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         if ($request->hasFile('photos')) {
             $photos = $request->file('photos');
+
         }
 
         return response($request);
