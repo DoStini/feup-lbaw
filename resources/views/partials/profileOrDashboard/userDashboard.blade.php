@@ -1,7 +1,10 @@
 <div class="container">
     <div class="row d-flex align-items-center">
         <div class="col-md-12 d-flex justify-content-end">
-            <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
+            <a class="btn btn-primary mx-1" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
+                Create New Admin
+            </a>
+            <a class="btn btn-primary mx-1" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
                 Filters
             </a>
         </div>
