@@ -44,8 +44,12 @@ class ProductController extends Controller {
             $query = DB::table('product')
                 ->whereRaw('stock > 0')
                 ->when($request->text, function ($q) use ($request) {
-                    return $q->whereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text]);
+                    $words = explode(' ', $request->text);
+                    foreach($words as &$word)
+                        $word = $word . ':*';
+                    $val = implode(' & ', $words);
+                    return $q->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
                 })
                 ->when($request->input('price-min'), function ($q) use ($request) {
                     return $q->where('price', '>', [$request->input('price-min')]);
@@ -59,7 +63,6 @@ class ProductController extends Controller {
                 ->when($request->input('rate-max'), function ($q) use ($request) {
                     return $q->where('avg_stars', '<', [$request->input('rate-max')]);
                 });
-
             switch ($request->order) {
                 case 'price-asc':
                     $query = $query->orderBy('price');
@@ -94,7 +97,8 @@ class ProductController extends Controller {
                 "docCount" => $count,
                 "query" => $query->get()
             ]);
-        } catch (Exception) {
+        } catch (Exception $e) {
+            dd($e);
             return response()->json(
                 ['message' => 'Unexpected error'],
                 401
