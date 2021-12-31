@@ -30,6 +30,7 @@ Route::group(
         Route::get('/address', 'AddressController@get');
         Route::post('/address/add', 'AddressController@create');
         Route::post('/address/edit', 'AddressController@edit');
+        Route::post('/address/remove', 'AddressController@remove');
     }
 );
 

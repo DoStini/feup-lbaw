@@ -45,7 +45,7 @@ class AddressController extends Controller {
         ]);
     }
 
-    private function validateDelete() {
+    private function validateRemove(Request $request) {
         $request->merge(['id' => $request->route('id')]);
         return Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
@@ -63,6 +63,20 @@ class AddressController extends Controller {
     }
 
     /**
+     * Retrieves the addresses associated to a user
+     * 
+     * @return array
+     */
+    private function retrieveAddresses(Shopper $shopper) {
+        return $shopper->addresses->map(
+            function ($addr) {
+                $address = $addr->serialize();
+                return $address;
+            }
+        );
+    }
+
+    /**
      * Gets the addresses a user has registred
      *
      * @return \Illuminate\Http\Response
@@ -73,12 +87,7 @@ class AddressController extends Controller {
         }
 
         $shopper = Shopper::find($id);
-        $addresses = $shopper->addresses->map(
-            function ($addr) {
-                $address = $addr->serialize();
-                return $address;
-            }
-        );
+        $addresses = $this->retrieveAddresses($shopper);
         return response($addresses);
     }
 
@@ -133,23 +142,29 @@ class AddressController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show the form for editing the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Address  $address
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Address $address) {
-        //
-    }
+    public function remove(Request $request, $id) {
+        if (($v = $this->validateRemove($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Address  $address
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Address $address) {
-        //
+        $addressId = $request->address_id;
+        $shopper = Shopper::find($id);
+        $address = Address::find($addressId);
+
+        if (!$this->addressInShopper($address, $shopper)) {
+            return ApiError::addressNotInUser();
+        }
+
+        $shopper->addresses()->detach($addressId);
+
+        $address->delete();
+
+        $addresses = $this->retrieveAddresses($shopper->fresh());
+        return response($addresses);
     }
 }
