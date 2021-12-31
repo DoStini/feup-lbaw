@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['auth:sanctum', 'userOwnerAdmin'])->name("edit_user");
-Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth:sanctum', 'admin'])->name("edit_order");
+Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['auth.api', 'user.owner.admin'])->name("edit_user");
+Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.api', 'admin'])->name("edit_order");
 
 Route::get('/products', [
     'middleware' => 'searchProducts',
@@ -24,7 +24,7 @@ Route::get('/products', [
 Route::group(
     [
         'prefix' => 'users/cart',
-        'middleware' => ['auth:sanctum', 'is.shopper']
+        'middleware' => ['auth.api', 'is.shopper']
     ],
     function () {
         Route::get('/', 'CartController@get');
