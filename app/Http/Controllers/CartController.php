@@ -345,6 +345,24 @@ class CartController extends Controller {
         }
     }
 
+    private function addPayment(Request $request) {
+        $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
+        $order = Order::find($order_id);
+
+        $payment = new Payment;
+        $payment->order_id = $order_id;
+
+        if($request->input("payment-type") == 'bank') {
+            $payment->entity = "12345";
+            $payment->reference = rand(10,10000);
+        } else {
+            $payment->paypal_transaction_id = rand(10,10000);
+        }
+
+        $payment->value = $order->total;
+        $payment->save();
+    }
+
     public function checkout(Request $request) {
         $result = $this->validateCheckoutData($request);
         if(!is_null($result)) {
@@ -359,19 +377,8 @@ class CartController extends Controller {
             DB::unprepared("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
             DB::statement("CALL create_order(?, ?, ?);", [Auth::user()->id, $addressID, $couponID]);
-            $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
-            $order = Order::find($order_id);
-            $payment = new Payment;
-            $payment->order_id = $order_id;
 
-            if($request->input("payment-type") == 'bank') {
-                $payment->entity = "12345";
-                $payment->reference = rand(10,10000);
-            } else {
-                $payment->paypal_transaction_id = rand(10,10000);
-            }
-            $payment->value = $order->total;
-            $payment->save();
+            $this->addPayment($request);
 
             DB::commit();
         } catch(QueryException $ex) {
