@@ -86,12 +86,12 @@
     <div class="row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
-            <input required id="name" class="form-control" type="text" name="name" value="{{Auth::user()->name}}">
+            <input required id="name" class="form-control" type="text" name="name" value="{{$shopper ? $shopper->user->name : $admin->name}}">
             <span class="error form-text text-danger" id="name-error"></span>
         </div>
         <div class="form-group col-md-6">
             <label for="email">Email</label>
-            <input required id="email" class="form-control" type="email" name="email" value="{{Auth::user()->email}}">
+            <input required id="email" class="form-control" type="email" name="email" value="{{$shopper ? $shopper->user->email : $admin->email}}">
             <span class="error form-text text-danger" id="email-error"></span>
         </div>
     </div>

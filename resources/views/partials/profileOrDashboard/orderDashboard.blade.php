@@ -1,5 +1,3 @@
-
-
 <h4 class="text-center my-2">Unfinished Orders</h4>
 <table class="table my-4" style="font-size: 0.9em;">
     <thead class="table-dark">
@@ -19,7 +17,7 @@
             <th class="text-center">{{$updatableOrder->id}}</th>
             <th class="text-center">{{$updatableOrder->name}} ({{$updatableOrder->shopper_id}})</th>
             <th class="text-center">{{date("d M Y, H:i", strtotime($updatableOrder->timestamp))}}</th>
-            <th class="text-center">{{date("d M Y, H:i", strtotime($updatableOrder->timestamp))}}</th>
+            <th class="text-center">TBD</th>
             <th class="text-center">{{$updatableOrder->total}} €</th>
             <th class="text-center"><a class="badge rounded-pill badge-decoration-none badge-{{$updatableOrder->status}} ">{{strToUpper($updatableOrder->status)}}</a></th>
             <th>
