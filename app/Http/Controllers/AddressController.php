@@ -8,6 +8,7 @@ use App\Models\Shopper;
 use App\Models\ZipCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -107,6 +108,18 @@ class AddressController extends Controller {
             return ApiError::validatorError($v->errors());
         }
 
+        if (
+            !Auth::user()->is_admin &&
+            !Hash::check($request->input("password"), Auth::user()->password)
+        ) {
+            $response = [];
+            $response["errors"] = [
+                "password" => "Current password does not match our records"
+            ];
+
+            return response()->json($response, 403);
+        }
+
         $shopper = Shopper::find($id);
 
         $address = Address::create([
@@ -129,6 +142,18 @@ class AddressController extends Controller {
     public function edit(Request $request, $id) {
         if (($v = $this->validateEdit($request))->fails()) {
             return ApiError::validatorError($v->errors());
+        }
+
+        if (
+            !Auth::user()->is_admin &&
+            !Hash::check($request->input("password"), Auth::user()->password)
+        ) {
+            $response = [];
+            $response["errors"] = [
+                "password" => "Current password does not match our records"
+            ];
+
+            return response()->json($response, 403);
         }
 
         $shopper = Shopper::find($id);
@@ -156,6 +181,18 @@ class AddressController extends Controller {
     public function remove(Request $request, $id) {
         if (($v = $this->validateRemove($request))->fails()) {
             return ApiError::validatorError($v->errors());
+        }
+
+        if (
+            !Auth::user()->is_admin &&
+            !Hash::check($request->input("password"), Auth::user()->password)
+        ) {
+            $response = [];
+            $response["errors"] = [
+                "password" => "Current password does not match our records"
+            ];
+
+            return response()->json($response, 403);
         }
 
         $addressId = $request->address_id;
