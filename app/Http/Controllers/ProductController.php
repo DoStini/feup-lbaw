@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller {
@@ -118,7 +120,7 @@ class ProductController extends Controller {
         $messages = [];
 
         foreach ($photos as $key => $val) {
-            $messages[$key.'.image'] = $val->getClientOriginalName() . " must be an image";
+            $messages[$key.'.image'] = $val->getClientOriginalName() . " must be an image.";
         }
 
         return Validator::make($photos, [
@@ -138,6 +140,37 @@ class ProductController extends Controller {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        return response($request);
+        try {
+            DB::beginTransaction();
+
+            $product = Product::create([
+                "name" => $request->input('name'),
+                "attributes" => $request->input('attributes'),
+                "stock" => $request->input('stock'),
+                "description" => $request->input('description'),
+                "price" => $request->input('price'),
+            ]);
+
+            foreach($photos as $productPhoto) {
+                $path = $productPhoto->storePubliclyAs(
+                    "images/product",
+                    "product" . $product->id . "-" . uniqid() . "." . $productPhoto->extension(),
+                    "public"
+                );
+
+                $public_path = "/storage/" . $path;
+                $photo = Photo::create(["url" => $public_path]);
+
+                $product->photos()->attach($photo->id);
+            }
+
+            DB::commit();
+        } catch(QueryException $ex) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors(["product" => "Unexpected Error"])->withInput();
+        }
+
+        return redirect(route("getProduct", ["id" => $product->id]));
     }
 }

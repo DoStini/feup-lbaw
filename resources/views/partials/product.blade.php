@@ -8,7 +8,7 @@
                     @foreach ($product->photos as $photo)
                     @if (File::exists(public_path($photo->url)))
                     <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
-                        <img class="d-block w-100" src={{Storage::url($photo->url)}}>
+                        <img class="d-block w-100" src={{asset($photo->url)}}>
                     </div>
                     {{$insertedPhotos++;}}
                     @endif
