@@ -129,11 +129,10 @@ function createProduct(product, delay) {
 
     const element = $(html);
 
-    element.on('click', () => route(`products/${product.id}`, current));
+    element.find("img").on('click', () => route(`products/${product.id}`, current));
     
     const cartButton = element.find("button");
     cartButton.on("click", (e) => {
-        e.stopPropagation();
         addToCartRequest(product.id);
         cartButton.trigger("blur");
     })
