@@ -21,6 +21,11 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/users', [
+    'middleware' => 'searchUsers',
+    'uses' => 'UserController@list'
+]);
+
 Route::group(
     [
         'prefix' => 'users/cart',

@@ -13,6 +13,9 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
+use Exception;
+
+
 class UserController extends Controller {
     /**
      * Shows the user for a given id.
@@ -197,4 +200,28 @@ class UserController extends Controller {
         if (!$shopper && Auth::user()->id == $id) $admin = User::find($id);
         return view('pages.profile', ['shopper' => $shopper, 'admin' => $admin, 'page' => 'editUser']);
     }
-}
+
+/**
+     * Search users (excluding admins) according to filters in the query
+     *
+     * @return Response
+     */
+    public function list(Request $request) {
+        try {
+            $query = Shopper::leftJoin('users', 'authenticated_shopper.id', '=', 'users.id')
+                ->when($request->name, function ($q) use ($request) {
+                return $q->whereRaw('name LIKE ?', [$request->name . '%']);
+                });
+                              
+            return response()->json([
+                "query" => $query->get()
+            ]);
+        } catch (Exception) {
+            return response()->json(
+                ['message' => 'Unexpected error'],
+                401
+            );
+        }
+    }
+
+}   
