@@ -284,6 +284,10 @@ class CartController extends Controller {
             ],
             "coupon-id" => "nullable|exists:coupon,id|integer|min:1",
             "payment-type" => "required|string|in:paypal,bank"
+        ], [], [
+            "address-id" => "address",
+            "coupon-id" => "coupon",
+            "payment-type" => "payment type",
         ]);
     }
 
@@ -305,7 +309,7 @@ class CartController extends Controller {
         }
     }
 
-    public function checkout(Request $request) {
+    private function validateCheckoutData(Request $request) {
         $user = Auth::user();
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
@@ -335,6 +339,13 @@ class CartController extends Controller {
         if(!is_null($result)) {
             return $result;
         }
+    }
+
+    public function checkout(Request $request) {
+        $result = $this->validateCheckoutData($request);
+        if(!is_null($result)) {
+            return $result;
+        }
 
         $addressID = $request->input("address-id");
         $couponID = $request->input("coupon-id");
@@ -343,7 +354,7 @@ class CartController extends Controller {
             DB::beginTransaction();
             DB::unprepared("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
-            DB::statement("CALL create_order(?, ?, ?);", [$shopper->id, $addressID, $couponID]);
+            DB::statement("CALL create_order(?, ?, ?);", [Auth::user()->id, $addressID, $couponID]);
             $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
             $order = Order::find($order_id);
             $payment = new Payment;
