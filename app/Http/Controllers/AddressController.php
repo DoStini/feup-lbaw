@@ -15,26 +15,28 @@ use stdClass;
 class AddressController extends Controller {
 
     private function validateGet(Request $request) {
-        $request->merge(['id' => $request->route('id')]);
-        return Validator::make($request->all(), [
+        return Validator::make(['id' => $request->route('id')], [
             'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
         ]);
     }
 
     private function validateCreate(Request $request) {
         $request->merge(['id' => $request->route('id')]);
+        $request->merge(['address_id' => $request->route('address_id')]);
         return Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
-            'street' => 'required|string|min:5',
+            'street' => 'required|string|min:1',
             'door' => 'required|integer|min:1',
             'zip_code_id' => 'required|integer|min:1|exists:zip_code,id'
         ], [], [
-            'zip_code_id' => 'zip code id'
+            'id' => 'ID',
+            'zip_code_id' => 'zip code ID'
         ]);
     }
 
     private function validateEdit(Request $request) {
         $request->merge(['id' => $request->route('id')]);
+        $request->merge(['address_id' => $request->route('address_id')]);
         return Validator::make($request->all(), [
             'id' => 'integer|min:1|exists:authenticated_shopper,id',
             'address_id' => 'required|integer|min:1|exists:address,id',
@@ -42,21 +44,27 @@ class AddressController extends Controller {
             'door' => 'integer|min:1',
             'zip_code_id' => 'min:1|exists:zip_code,id'
         ], [], [
-            'zip_code_id' => 'zip code id'
+            'id' => 'id',
+            'zip_code_id' => 'zip code ID'
         ]);
     }
 
     private function validateRemove(Request $request) {
-        $request->merge(['id' => $request->route('id')]);
-        return Validator::make($request->all(), [
-            'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
-            'address_id' => 'required|integer|min:1|exists:address,id',
-        ]);
+        return Validator::make(
+            [
+                'id' => $request->route('id'),
+                'address_id' => $request->route('address_id')
+            ],
+            [
+                'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
+                'address_id' => 'required|integer|min:1|exists:address,id',
+            ]
+        );
     }
 
     private function validateZipCode(Request $request) {
         return Validator::make($request->all(), [
-            'code' => 'required|string|min:4',
+            'code' => 'required|string|min:3',
         ]);
     }
 
@@ -77,7 +85,7 @@ class AddressController extends Controller {
     private function retrieveAddresses(Shopper $shopper) {
         return $shopper->addresses->map(
             function ($addr) {
-                $address = $addr->serialize();
+                $address = $addr->aggregate();
                 return $address;
             }
         );
@@ -108,16 +116,8 @@ class AddressController extends Controller {
             return ApiError::validatorError($v->errors());
         }
 
-        if (
-            !Auth::user()->is_admin &&
-            !Hash::check($request->input("password"), Auth::user()->password)
-        ) {
-            $response = [];
-            $response["errors"] = [
-                "password" => "Current password does not match our records"
-            ];
-
-            return response()->json($response, 403);
+        if (($err = UserController::validateUserPasswordOrAdmin(Auth::user(), $request->password))) {
+            return $err;
         }
 
         $shopper = Shopper::find($id);
@@ -130,7 +130,7 @@ class AddressController extends Controller {
 
         $shopper->addresses()->attach($address->id);
 
-        return response($address->serialize());
+        return response($address->aggregate());
     }
 
     /**
@@ -144,16 +144,8 @@ class AddressController extends Controller {
             return ApiError::validatorError($v->errors());
         }
 
-        if (
-            !Auth::user()->is_admin &&
-            !Hash::check($request->input("password"), Auth::user()->password)
-        ) {
-            $response = [];
-            $response["errors"] = [
-                "password" => "Current password does not match our records"
-            ];
-
-            return response()->json($response, 403);
+        if (($err = UserController::validateUserPasswordOrAdmin(Auth::user(), $request->password))) {
+            return $err;
         }
 
         $shopper = Shopper::find($id);
@@ -163,13 +155,14 @@ class AddressController extends Controller {
             return ApiError::addressNotInUser();
         }
 
-        $address->update([
-            "street" => $request->street ?? $address->street,
-            "door" => $request->door ?? $address->door,
-            "zip_code_id" => $request->zip_code_id ?? $address->zip_code_id,
-        ]);
 
-        return response($address->serialize());
+        $address->update(array_filter([
+            "street" => $request->street,
+            "door" => $request->door,
+            "zip_code_id" => $request->zip_code_id,
+        ]));
+
+        return response($address->aggregate());
     }
 
     /**
@@ -183,16 +176,8 @@ class AddressController extends Controller {
             return ApiError::validatorError($v->errors());
         }
 
-        if (
-            !Auth::user()->is_admin &&
-            !Hash::check($request->input("password"), Auth::user()->password)
-        ) {
-            $response = [];
-            $response["errors"] = [
-                "password" => "Current password does not match our records"
-            ];
-
-            return response()->json($response, 403);
+        if (($err = UserController::validateUserPasswordOrAdmin(Auth::user(), $request->password))) {
+            return $err;
         }
 
         $addressId = $request->address_id;
@@ -224,7 +209,7 @@ class AddressController extends Controller {
             ->take(15)
             ->get();
 
-        $serialized = $query->map(function ($zip) {
+        $aggregate = $query->map(function ($zip) {
             $zipJson = [];
             $zipJson['id'] = $zip->id;
             $zipJson['county'] = $zip->county->name;
@@ -232,6 +217,6 @@ class AddressController extends Controller {
             return $zipJson;
         });
 
-        return $serialized;
+        return $aggregate;
     }
 }

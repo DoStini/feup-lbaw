@@ -28,9 +28,9 @@ class Address extends Model {
     protected $hidden = [];
 
     /**
-     * Serializes and returns every related attribute
+     * Aggregates the address and returns every related attribute
      */
-    public function serialize() {
+    public function aggregate() {
         $address = [];
         $address["street"]   = $this->street;
         $address["door"]     = $this->door;

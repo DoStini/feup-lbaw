@@ -25,14 +25,14 @@ Route::get('/address/zipcode', 'AddressController@zipCode');
 
 Route::group(
     [
-        'prefix' => 'users/{id}/private',
+        'prefix' => 'users/{id}/private/address',
         'middleware' => ['auth.api', 'user.owner.admin'],
     ],
     function () {
-        Route::get('/address', 'AddressController@get');
-        Route::post('/address/add', 'AddressController@create');
-        Route::post('/address/edit', 'AddressController@edit');
-        Route::post('/address/remove', 'AddressController@remove');
+        Route::get('/', 'AddressController@get');
+        Route::post('/add', 'AddressController@create');
+        Route::post('/{address_id}/edit', 'AddressController@edit');
+        Route::delete('/{address_id}/remove', 'AddressController@remove');
     }
 );
 

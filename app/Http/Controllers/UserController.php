@@ -14,6 +14,24 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller {
+
+    /**
+     * Validates a user password or admin
+     */
+    public static function validateUserPasswordOrAdmin($user, $password) {
+        if (
+            !$user->is_admin &&
+            !Hash::check($password, $user->password)
+        ) {
+            $response = [];
+            $response["errors"] = [
+                "password" => "Current password does not match our records"
+            ];
+
+            return response()->json($response, 403);
+        }
+    }
+
     /**
      * Shows the user for a given id.
      *
