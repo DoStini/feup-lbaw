@@ -16,9 +16,9 @@
                 </div>
                 <div>
                     @if($admin)
-                        <h3>{{$admin->name}}</h3>
+                        <h3 class="text-center">{{$admin->name}}</h3>
                     @else
-                        <h3>{{$shopper->user->name}}</h3>
+                        <h3 class="text-center">{{$shopper->user->name}}</h3>
                     @endif
                 </div>
             </div>
