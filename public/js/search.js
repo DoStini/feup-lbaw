@@ -87,6 +87,16 @@ function setupSearchListeners() {
     setupUniqueCheckboxes("search-form", (_e) => {
         sendSearchProductsRequest(handleSearchProducts);
     });
+
+    document.getElementById("search-form").addEventListener("reset", (e) => {
+        document.getElementById("search-products-input").value = "";
+        document.querySelectorAll("#search-form input:not([type=checkbox])")
+            .forEach(elem => elem.value = "");
+        document.querySelectorAll("#search-form input[type=checkbox]")
+            .forEach(elem => elem.checked = false);
+        sendSearchProductsRequest(handleSearchProducts);
+        e.preventDefault();
+    })
 }
 
 function capitalize(s){

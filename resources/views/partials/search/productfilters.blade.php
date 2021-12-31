@@ -68,5 +68,13 @@
         </div>
     </div>
 
+    <div class="mb-3"></div>
+
+    <div class="row justify-content-center">
+        <button type="reset" class="btn btn-primary col-lg-8 col-md-12">
+            Reset Filters
+        </button>
+    </div>
+
     <div class="mb-5"></div>
 </div>
