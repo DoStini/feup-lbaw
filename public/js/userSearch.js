@@ -80,7 +80,8 @@ function setupSearchListeners() {
 function sendSearchUsersRequest(form, callback) {
 
     let query = {
-        'name': form.name.value
+        'name': form.name.value,
+        'blocked': form.blocked.checked
     } 
 
     sendAjaxQueryRequest('get', '/api/users', query, callback);

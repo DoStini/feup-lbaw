@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="row">
-        <table class="table my-4" style="font-size: 0.9em;">
+        <table class="table table-responsive my-4" style="font-size: 0.9em;">
             <thead class="table-dark">
                 <tr>
                     <th class="text-center">User ID</th>
@@ -47,17 +47,9 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck">
-                    <label class="form-check-label" for="gridCheck">
+                    <input class="form-check-input" type="checkbox" name="blocked" id="blockedCheck">
+                    <label class="form-check-label" for="blockedCheck">
                         Blocked
-                    </label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck">
-                    <label class="form-check-label" for="gridCheck">
-                        Admin
                     </label>
                     </div>
                 </div>

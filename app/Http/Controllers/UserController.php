@@ -208,9 +208,12 @@ class UserController extends Controller {
      */
     public function list(Request $request) {
         try {
-            $query = Shopper::leftJoin('users', 'authenticated_shopper.id', '=', 'users.id')
+            $query = User::join('authenticated_shopper', 'users.id', '=', 'authenticated_shopper.id')
                 ->when($request->name, function ($q) use ($request) {
                 return $q->whereRaw('UPPER(name) LIKE UPPER(?)', [$request->name . '%']);
+                })
+                ->when($request->blocked, function ($q) use ($request) {
+                    return $q->where('is_blocked', '=', [$request->blocked]);
                 });
                               
             return response()->json([
