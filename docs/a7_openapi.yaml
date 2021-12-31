@@ -374,7 +374,7 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'      
 
-  /api/address/{id}/private/address/add:
+  /api/address/{id}/private/address/{address_id}/add:
     post:
       operationId: R205
       summary: 'R205: Add address to user addresses'
@@ -384,6 +384,12 @@ paths:
       parameters:
         - in: path
           name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+        - in: path
+          name: address_id
           schema:
             type: integer
             minimum: 1
@@ -402,13 +408,10 @@ paths:
                   type: string
                 zip_code_id:
                   type: string
-                password:
-                  type: string
               required:
                 - street
                 - door
                 - zip_code_id
-                - password
             
       responses:
         '200':
@@ -454,7 +457,7 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'      
 
-  /api/users/{id}/private/address/edit:
+  /api/users/{id}/private/address/{address_id}/edit:
     post:
       operationId: R206
       summary: 'R206: Edit specific address of user addresses'
@@ -469,6 +472,12 @@ paths:
             type: integer
             minimum: 1
           required: true
+        - in: path
+          name: address_id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
 
       requestBody:
         required: true
@@ -477,19 +486,12 @@ paths:
             schema:
               type: object
               properties:
-                address_id:
-                  type: integer
                 street:
                   type: string
                 door:
                   type: string
                 zip_code_id:
                   type: string
-                password:
-                  type: string
-              required:
-                - "address_id"
-                - "password"
 
       responses:
         '200':
@@ -535,7 +537,7 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'    
       
-  /api/users/{id}/private/address/remove:
+  /api/users/{id}/private/address/{address_id}/remove:
     delete:
       operationId: R207
       summary: 'R207: Remove specific address of user addresses'
@@ -550,21 +552,12 @@ paths:
             type: integer
             minimum: 1
           required: true
-
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                address_id:
-                  type: integer
-                password:
-                  type: string
-              required:
-                - "address_id"
-                - "password"
+        - in: path
+          name: address_id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
 
       responses:
         '200':
