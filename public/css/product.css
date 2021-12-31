@@ -5,6 +5,11 @@
 
 .search-products-item img {
     cursor: pointer;
+    object-fit: cover;
+}
+
+.search-card-top {
+    height: 15em;
 }
 
 .next-page-search {

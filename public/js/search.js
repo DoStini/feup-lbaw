@@ -109,7 +109,7 @@ function createProduct(product, delay) {
 
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
-            <img class="card-img-top" src="${productImg}" onerror="this.src='${fallBack}'">
+            <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
             <div class="card-body">
                 <h4 class="card-title">${capitalize(product.name)}</h4>
                 <div class="container ps-0 pe-0">
