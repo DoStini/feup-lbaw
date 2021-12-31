@@ -72,7 +72,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach ($info->activeUsers as $blockedUser)
+                @foreach ($info->blockedUsers as $blockedUser)
                     <tr>    
                         <th class="text-center">{{$blockedUser->id}}</th>
                         <th class="text-center">TBD</th>
