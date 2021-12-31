@@ -114,15 +114,28 @@ class ProductController extends Controller {
         ]);
     }
 
+    private function getValidatorPhotos($photos) {
+        $messages = [];
+
+        foreach ($photos as $key => $val) {
+            $messages[$key.'.image'] = $val->getClientOriginalName() . " must be an image";
+        }
+
+        return Validator::make($photos, [
+            "*" => "file|image"
+        ], $messages);
+    }
+
     public function addProduct(Request $request) {
         $validator = $this->getValidatorAddProduct($request);
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        if ($request->hasFile('photos')) {
-            $photos = $request->file('photos');
-
+        $photos = $request->file('photos');
+        $validator = $this->getValidatorPhotos($photos);
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         return response($request);
