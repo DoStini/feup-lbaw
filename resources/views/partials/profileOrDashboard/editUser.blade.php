@@ -1,6 +1,7 @@
 @include('partials.errormodal')
 
 
+<script type="text/javascript">const userID = <?= Auth::user()->id ?>;</script>
 <script type="text/javascript" defer>
     function updatePhoto(photo) {
         const fallBack = "/img/user.png";
@@ -19,7 +20,8 @@
     }
 
     function renderElements(user) {
-        document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
+        if(user.id === userID) document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
+
         document.getElementById("name-profile").innerText = user.name;
         updatePhoto(user.photo);
     }
@@ -113,7 +115,7 @@
         <input id="profile-picture" class="form-control" type="file" name="profile-picture">
         <span class="error form-text text-danger" id="profile-picture-error"></span>
     </div>
-    
+
     @if($shopper)
         <div class="mb-3">
             <label for="about-me"> About Me</label>
@@ -130,7 +132,7 @@
             <div class="form-group col-md-6">
                 <label for="phone-number"> Phone</label>
                 <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
-                <span class="error form-text text-danger" id="phone_number-error"></span>        
+                <span class="error form-text text-danger" id="phone_number-error"></span>
             </div>
         </div>
     @endif
@@ -140,6 +142,6 @@
         <input autocomplete="on" required id="cur-password" class="form-control" type="password" name="cur-password">
         <span class="error form-text text-danger" id="cur-password-error"></span>
     </div>
-    
+
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
