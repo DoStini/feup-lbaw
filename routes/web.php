@@ -20,6 +20,7 @@ Route::middleware('auth')->get('users/orders', 'ShopperController@getOrders')->n
 Route::middleware('auth')->get('users/{id}', 'UserController@showProfile')->name('getUser');
 Route::middleware('auth')->get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
 Route::middleware('auth')->get('users/{id}/private/addresses', 'UserController@getAddresses')->name('addresses');
+Route::middleware('auth')->post('users/checkout', 'CartController@checkout')->name('checkout')->middleware(['auth', 'is.shopper']);
 
 //Administration
 Route::middleware('auth')->get('admin', 'AdminController@getDashboard')->name('getDashboard');

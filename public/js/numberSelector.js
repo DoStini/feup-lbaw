@@ -57,7 +57,6 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
     moreButton.addEventListener("click", () => {
         const input = document.getElementById(id);
         const newValue = ensureLimits(parseInt(input.value) + 1, min, max);
-        console.log(newValue)
         update(input, newValue);
         const event = new Event('change');
         document.getElementById(id).dispatchEvent(event);
