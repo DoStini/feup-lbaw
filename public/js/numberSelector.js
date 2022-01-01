@@ -20,14 +20,14 @@ function ensureNumber(val) {
 }
 
 function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
-    const elem = 
-    $(`
-        <div id="selector-${id}" class="input-group input-group-sm number-selector">
+    const elem = document.createElement("div");
+    elem.id = `selector-${id}`;
+    elem.className = "input-group input-group-sm number-selector";
+    elem.innerHTML = `
             <button class="btn btn-outline-secondary" type="button"><i class="bi bi-dash-lg"></i></button>
             <input id="${id}" type="text" class="form-control" value=${value || 0}>
             <button class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-lg"></i></button>
-        </div>
-    `);
+    `;
 
     let prevUpdate = value;
     let prevBlur = value;
@@ -41,34 +41,31 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
     }
 
 
-    const lessButton = elem.find(">:first-child");
-    lessButton.on("click", (e) => {
+    const lessButton = elem.firstElementChild;
+    lessButton.addEventListener("click", (e) => {
         const input = document.getElementById(id);
         const newValue = ensureLimits(parseInt(input.value) - 1, min, max);
         update(input, newValue);
         const event = new Event('change');
         document.getElementById(id).dispatchEvent(event);
     });
-    lessButton.on("mouseleave", () => lessButton.trigger("blur"))
-    // lessButton.on("blur", () => {
-    //     const input = document.getElementById(id);
-    //     const newValue = ensureLimits(parseInt(input.value), min, max);
-    //     onBlur && onBlur(input, newValue);
-    // });
+    lessButton.addEventListener("mouseleave", () => {
+        lessButton.dispatchEvent(new Event("blur"))
+    }) 
 
-    const moreButton = elem.find(">:last-child");
-    moreButton.on("click", () => {
+    const moreButton = elem.lastElementChild;
+    moreButton.addEventListener("click", () => {
         const input = document.getElementById(id);
         const newValue = ensureLimits(parseInt(input.value) + 1, min, max);
         update(input, newValue);
         const event = new Event('change');
         document.getElementById(id).dispatchEvent(event);
     });
-    moreButton.on("mouseleave", () => moreButton.trigger("blur"))
+    moreButton.addEventListener("mouseleave", () => moreButton.dispatchEvent(new Event("blur")))
 
-    const input = elem.find(">input");
+    const input = elem.querySelector("input");
 
-    input.on("keypress", (e) => {
+    input.addEventListener("keypress", (e) => {
         e.preventDefault();
         const value = ensureNumber(e.key);
         if (!value) return;
@@ -77,11 +74,11 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
         const event = new Event('change');
         document.getElementById(id).dispatchEvent(event);
     });
-    elem.on("mouseleave", () => {
-        elem.trigger("submit");
-        input.trigger("blur");
+    elem.addEventListener("mouseleave", () => {
+        elem.dispatchEvent(new Event("submit"));
+        input.dispatchEvent(new Event("blur"));
     });
-    elem.on("submit", () => {
+    elem.addEventListener("submit", () => {
         const input = document.getElementById(id);
         const newValue = ensureLimits(parseInt(input.value), min, max);
         onBlur && onBlur(input, newValue, prevBlur);

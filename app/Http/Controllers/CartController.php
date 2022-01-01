@@ -48,9 +48,15 @@ class CartController extends Controller {
      * @return \Illuminate\Contracts\Validation\Validator
      */
     private function validatorDelete($request) {
-        return Validator::make($request->all(), [
-            'product_id' => 'required|integer|min:1|exists:product,id',
-        ]);
+        return Validator::make(
+            [
+                'product_id' => $request->route('id'),
+            ],
+            [
+                'product_id' => 'required|integer|min:1|exists:product,id',
+            ],
+            ['product_id' => 'product id']
+        );
     }
 
     /**
@@ -221,7 +227,7 @@ class CartController extends Controller {
         }
 
         $userId = Auth::user()->id;
-        $productId = $request->product_id;
+        $productId = $request->route('id');
         $product = Product::find($productId);
         $shopper = Shopper::find($userId);
 

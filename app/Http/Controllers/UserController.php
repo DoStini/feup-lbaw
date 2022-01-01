@@ -217,9 +217,7 @@ class UserController extends Controller {
     }
 
     public function getAddresses($id) {
-        $admin = null;
         $shopper = Shopper::find($id);
-        if (!$shopper && Auth::user()->id == $id) $admin = User::find($id);
-        return view('pages.profile', ['shopper' => $shopper, 'admin' => $admin, 'page' => 'addresses']);
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'addresses']);
     }
 }

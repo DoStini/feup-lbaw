@@ -95,7 +95,7 @@ function insertProduct(product, idx) {
     menuContent.append(elem);
 
     $(`#cart-remove-${idx}`).on('click', () => {
-        jsonBodyDelete("/api/users/cart/remove", { product_id: product.id })
+        deleteRequest(`/api/users/cart/${product.id}/remove`)
             .then(response => {
                 if (response.status === 200) {
                     handleDelete(response.data);
