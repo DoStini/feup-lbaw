@@ -46,10 +46,10 @@
                     @else
                       <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
-                    <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000">
-                      {{strlen(Auth::user()->name) > 20 ? 
-                        substr(Auth::user()->name, 0, 17) . '...' :
-                        Auth::user()->name}}
+                    <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000;">
+                      {{strlen(explode(" ", Auth::user()->name)[0]) > 13 ? 
+                        substr(explode(" ", Auth::user()->name)[0], 0, 10) . '...' :
+                        explode(" ", Auth::user()->name)[0]}}
                     </h5>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">

@@ -19,7 +19,8 @@
     }
 
     function renderElements(user) {
-        $("#header-user-name").text(user.name);
+        document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
+        document.getElementById("name-profile").innerText = user.name;
         updatePhoto(user.photo);
     }
 

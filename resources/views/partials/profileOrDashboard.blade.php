@@ -14,11 +14,11 @@
                         <img id="user-img" src="/img/user.png" class="img-fluid" alt="" loading="lazy" />
                     @endif
                 </div>
-                <div>
+                <div class="w-100">
                     @if($admin)
-                        <h3 class="text-center">{{$admin->name}}</h3>
+                        <h3 id="name-profile" class="text-center" style="overflow-wrap: break-word;">{{$admin->name}}</h3>
                     @else
-                        <h3 class="text-center">{{$shopper->user->name}}</h3>
+                        <h3 id="name-profile" class="text-center style="overflow-wrap: break-word;">{{$shopper->user->name}}</h3>
                     @endif
                 </div>
             </div>
