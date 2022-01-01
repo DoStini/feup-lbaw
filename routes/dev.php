@@ -13,3 +13,7 @@ Route::get('/testAPI', function() {
 
     return view('dev.DEVTEST', ["statuses" => $statuses]);
 });
+
+Route::get('/testPOST', function() {
+    return view('dev.DEVTESTPOST');
+});

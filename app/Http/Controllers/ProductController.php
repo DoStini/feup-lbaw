@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
 use Exception;
-use stdClass;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller {
 
@@ -33,7 +36,7 @@ class ProductController extends Controller {
     }
 
     /**
-     * Serializes the query 
+     * Serializes the query
      */
     public function serializeQuery($query) {
         return array_map(function ($entry) {
@@ -113,5 +116,79 @@ class ProductController extends Controller {
                 401
             );
         }
+    }
+
+    private function getValidatorAddProduct(Request $request) {
+        return Validator::make($request->all(), [
+            "name" => "required|string|max:100",
+            "attributes" => "nullable|json",
+            "stock" => "required|integer|min:0",
+            "description" => "nullable|string|max:255",
+            "photos" => "required",
+            "price" => "required|numeric|min:0",
+        ]);
+    }
+
+    private function getValidatorPhotos($photos) {
+        $messages = [];
+
+        foreach ($photos as $key => $val) {
+            $messages[$key.'.image'] = $val->getClientOriginalName() . " must be an image.";
+        }
+
+        return Validator::make($photos, [
+            "*" => "file|image"
+        ], $messages);
+    }
+
+    public function addProduct(Request $request) {
+        $validator = $this->getValidatorAddProduct($request);
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $photos = $request->file('photos');
+        $validator = $this->getValidatorPhotos($photos);
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $savedPhotos = [];
+
+        try {
+            DB::beginTransaction();
+
+            $product = Product::create([
+                "name" => $request->input('name'),
+                "attributes" => $request->input('attributes'),
+                "stock" => $request->input('stock'),
+                "description" => $request->input('description'),
+                "price" => $request->input('price'),
+            ]);
+
+            foreach($photos as $productPhoto) {
+                $path = $productPhoto->storePubliclyAs(
+                    "images/product",
+                    "product" . $product->id . "-" . uniqid() . "." . $productPhoto->extension(),
+                    "public"
+                );
+
+                array_push($savedPhotos, $path);
+
+                $public_path = "/storage/" . $path;
+                $photo = Photo::create(["url" => $public_path]);
+
+                $product->photos()->attach($photo->id);
+            }
+
+            DB::commit();
+        } catch(QueryException $ex) {
+            DB::rollBack();
+
+            Storage::disk('public')->delete($savedPhotos);
+            return redirect()->back()->withErrors(["product" => "Unexpected Error"])->withInput();
+        }
+
+        return redirect(route("getProduct", ["id" => $product->id]));
     }
 }
