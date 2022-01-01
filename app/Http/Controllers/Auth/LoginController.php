@@ -28,7 +28,7 @@ class LoginController extends Controller {
     }
 
     protected function loggedOut(Request $request) {
-        return redirect()->back();
+        return redirect(route('getProductSearch'));
     }
 
     /**

@@ -1,5 +1,4 @@
 function route(route, data) {
-    console.log(route)
     history.pushState(data, document.title, "");
     window.location.assign(`/${route}`);
 }
