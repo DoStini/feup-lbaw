@@ -26,7 +26,12 @@
                     {{$address->zip_code->county->name}}<br>
                     {{$address->zip_code->county->district->name}}<br>
                 </div>
-                <i id="edit-address-{{$address->id}}" class="bi bi-pencil-square col-1 fs-4 px-0 btn edit-address-btn"></i>
+                <div class="col-6 container">
+                    <div class="row justify-content-end">
+                        <i id="edit-address-{{$address->id}}" class="bi bi-pencil-square col-1 fs-4 px-0 btn edit-address-btn"></i>
+                        <i id="remove-address-{{$address->id}}" class="bi bi-x-lg col-1 fs-4 px-0 btn remove-address-btn"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

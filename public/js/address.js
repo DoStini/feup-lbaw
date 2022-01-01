@@ -65,14 +65,19 @@ function createAddress(data) {
                     ${data.county}<br>
                     ${data.district}<br>
                 </div>
-                <i id="edit-address-${data.id}" class="bi bi-pencil-square col-1 fs-4 px-0 btn edit-address-btn"></i>
+                <div class="col-6 container">
+                    <div class="row justify-content-end">
+                        <i id="edit-address-${data.id}" class="bi bi-pencil-square col-1 fs-4 px-0 btn edit-address-btn"></i>
+                        <i id="remove-address-${data.id}" class="bi bi-x-lg col-1 fs-4 px-0 btn remove-address-btn"></i>
+                    </div>
+                </div>
             </div>
         </div>`
 
     elem.innerHTML = html;
-
+    
     elem.querySelector(".edit-address-btn").addEventListener("click", handleEditClick)
-
+    elem.querySelector(".remove-address-btn").addEventListener("click", handleRemoveClick);
     return elem;
 }
 
@@ -104,6 +109,7 @@ function handleNew(data) {
     console.log("hello", userId, data)
     jsonBodyPost(`/api/users/${userId}/private/address/add`, data)
         .then(response => {
+            console.log("asd")
             document.getElementById("address-root").appendChild(createAddress(response.data));
             addresses[response.data.id] = {
                 ...response.data,
@@ -193,8 +199,30 @@ function handleEditClick(e) {
     editAction(id);
 }
 
+function handleRemoveClick(e) {
+    const el = e.target;
+
+    const id = el.id.split("-")[2];
+
+    if (collapseOpen()) {
+        return;
+    }
+
+    deleteRequest(`/api/users/${userId}/private/address/${id}/remove`)
+        .then(() => {
+            document.getElementById(`address-root-${id}`).remove();
+            delete addresses[id];
+        })
+        .catch();
+
+}
+
+
 document.querySelectorAll(".edit-address-btn")
     .forEach((el) => el.addEventListener("click", handleEditClick));
+
+document.querySelectorAll(".remove-address-btn")
+    .forEach((el) => el.addEventListener("click", handleRemoveClick));
 
 const form = document.getElementById("address-form");
 
