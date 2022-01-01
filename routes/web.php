@@ -14,6 +14,7 @@
 Route::get('/', 'StaticPagesController@home')->name('home');
 
 // Users
+Route::post('users/checkout', 'CartController@checkout')->name('checkout')->middleware(['auth', 'is.shopper']);
 Route::get('users', 'UserController@getAuth')->name('getUsersPage');
 Route::get('users/cart', 'CartController@show')->name('getCart');
 Route::get('users/orders', 'ShopperController@getOrders')->name('getOrders');
