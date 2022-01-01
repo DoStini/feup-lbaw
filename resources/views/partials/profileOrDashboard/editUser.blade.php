@@ -5,17 +5,17 @@
     function updatePhoto(photo) {
         const fallBack = "/img/user.png";
 
-        const userImg = $("#user-img");
-        const headerImg = $("#header-user-img");
+        const userImg = document.getElementById("user-img");
+        const headerImg = document.getElementById("header-user-img");
 
-        if (userImg.attr("src") === photo) {
+        if (userImg.getAttribute("src") === photo) {
             return;
         }
 
-        userImg.on("error", () => userImg.attr("src", fallBack));
-        userImg.on("error", () => headerImg.attr("src", fallBack));
-        userImg.attr("src", photo);
-        headerImg.attr("src", photo);
+        userImg.addEventListener("error", () => userImg.setAttribute("src", fallBack));
+        headerImg.addEventListener("error", () => headerImg.setAttribute("src", fallBack));
+        userImg.setAttribute("src", photo);
+        headerImg.setAttribute("src", photo);
     }
 
     function renderElements(user) {
