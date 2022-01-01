@@ -1204,27 +1204,21 @@ paths:
         '422':
           description: "Product does not exist, is already in cart, or there is no stock."
 
-  /api/users/cart/remove/:
+  /api/users/cart/{product_id}/remove/:
     delete:
       operationId: R403
       summary: 'R403: Remove a product from cart  API'
       description: "Remove a product from the cart. Access: OWN"
       tags:
         - 'M04: Orders and Shopping Cart'
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
 
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                product-id:
-                  type: integer
-                  minimum: 1
-              required:
-                - product-id
-                - amount
       responses:
         '200': 
           description: "Ok. Product was removed from cart"
