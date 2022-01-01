@@ -48,9 +48,11 @@
 
         <div>
             <h4> Available Colors </h4>
-            @foreach (json_decode($product->attributes)->color as $color)
-            <span class="dot" style="--color: {{$color}}"></span>
-            @endforeach
+            @if($product->attributes)
+                @foreach (json_decode($product->attributes)->color as $color)
+                <span class="dot" style="--color: {{$color}}"></span>
+                @endforeach
+            @endif
         </div>
 
         <!---<h3> Stock </h3>
