@@ -10,8 +10,8 @@
         </div>
 
         <div class="col-md-4">
-          <form class="d-flex input-group w-auto my-auto mb-3 mb-md-0">
-            <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search" />
+          <form id="search-products-form" class="d-flex input-group w-auto my-auto mb-3 mb-md-0">
+            <input id="search-products-input" autocomplete="off" type="search" class="form-control rounded" placeholder="Search" />
             <span class="input-group-text border-0 d-none d-lg-flex"><i class="fas fa-search"></i></span>
           </form>
         </div>
@@ -46,7 +46,11 @@
                     @else
                       <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
-                    <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000">{{Auth::user()->name}}</h5>
+                    <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000;">
+                      {{strlen(explode(" ", Auth::user()->name)[0]) > 13 ? 
+                        substr(explode(" ", Auth::user()->name)[0], 0, 10) . '...' :
+                        explode(" ", Auth::user()->name)[0]}}
+                    </h5>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     @if(Auth::user()->is_admin)

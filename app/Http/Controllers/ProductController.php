@@ -32,10 +32,18 @@ class ProductController extends Controller {
      * @return Response
      */
     public function search() {
+        return view('pages.search.products');
+    }
 
-        $products = Product::all()->take(25);
-
-        return view('pages.search.products', ['products' => $products]);
+    /**
+     * Serializes the query
+     */
+    public function serializeQuery($query) {
+        return array_map(function ($entry) {
+            $entry->photos = array_map(fn ($photo) => $photo->url, $entry->photos);
+            $entry->attributes = json_decode($entry->attributes);
+            return $entry;
+        }, json_decode(json_encode($query)));
     }
 
     /**
@@ -45,11 +53,16 @@ class ProductController extends Controller {
      */
     public function list(Request $request) {
         try {
-            $query = DB::table('product')
+            $query = Product
+                ::with("photos")
                 ->whereRaw('stock > 0')
                 ->when($request->text, function ($q) use ($request) {
-                    return $q->whereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text]);
+                    $words = explode(' ', $request->text);
+                    foreach($words as &$word)
+                        $word = $word . ':*';
+                    $val = implode(' & ', $words);
+                    return $q->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
                 })
                 ->when($request->input('price-min'), function ($q) use ($request) {
                     return $q->where('price', '>', [$request->input('price-min')]);
@@ -63,7 +76,6 @@ class ProductController extends Controller {
                 ->when($request->input('rate-max'), function ($q) use ($request) {
                     return $q->where('avg_stars', '<', [$request->input('rate-max')]);
                 });
-
             switch ($request->order) {
                 case 'price-asc':
                     $query = $query->orderBy('price');
@@ -96,9 +108,9 @@ class ProductController extends Controller {
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $query->get()
+                "query" => $this->serializeQuery($query->get())
             ]);
-        } catch (Exception) {
+        } catch (Exception $e) {
             return response()->json(
                 ['message' => 'Unexpected error'],
                 401

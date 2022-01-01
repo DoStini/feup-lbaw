@@ -21,6 +21,25 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/users', [
+    'middleware' => 'searchUsers',
+    'uses' => 'UserController@list'
+]);
+Route::get('/address/zipcode', 'AddressController@zipCode');
+
+Route::group(
+    [
+        'prefix' => 'users/{id}/private/address',
+        'middleware' => ['auth.api', 'user.owner.admin'],
+    ],
+    function () {
+        Route::get('/', 'AddressController@get');
+        Route::post('/add', 'AddressController@create');
+        Route::post('/{address_id}/edit', 'AddressController@edit');
+        Route::delete('/{address_id}/remove', 'AddressController@remove');
+    }
+);
+
 Route::group(
     [
         'prefix' => 'users/cart',
@@ -30,6 +49,6 @@ Route::group(
         Route::get('/', 'CartController@get');
         Route::post('/add', 'CartController@add');
         Route::post('/update', 'CartController@update');
-        Route::delete('/remove', 'CartController@delete');
+        Route::delete('/{id}/remove', 'CartController@delete');
     }
 );

@@ -5,7 +5,6 @@
 @section('content')
 
 @if($errors->any())
-
 @foreach($errors->getMessages() as $key => $message)
     <p>{{$key}} = @foreach ($message as $mess) {{$mess}}</p><br> @endforeach
 @endforeach
@@ -27,6 +26,17 @@
     <input  class="form-control" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}"  multiple>
     <label for="price"> PRICE</label>
     <input  class="form-control" type="number" step="0.01" value="{{old('price')}}" name="price">
+    <button type="submit"> SUBMIT</button>
+</form>
+
+<form class="container form" method="POST" action="{{route('checkout')}}">
+    @csrf
+    <label for="address-id"> ADDRESS ID</label>
+    <input type="number" name="address-id" value="{{old('address-id')}}">
+    <label for="coupon-id"> COUPON ID</label>
+    <input type="number" name="coupon-id" value="{{old('coupon-id')}}">
+    <label for="payment-type"> PAYMENT TYPE</label>
+    <input type="string" name="payment-type" value="{{old('payment-type')}}">
 
     <button type="submit"> SUBMIT</button>
 </form>
