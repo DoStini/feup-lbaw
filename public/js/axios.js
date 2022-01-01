@@ -23,18 +23,6 @@ function formDataPost(path, data) {
     )
 }
 
-function jsonBodyDelete(path, data) {
-    return window.axios.delete(
-        path,
-        {
-            data,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-    );
-}
-
 function deleteRequest(path) {
     return window.axios.delete(
         path,
@@ -43,4 +31,8 @@ function deleteRequest(path) {
 
 function get(path) {
     return window.axios.get(path);
+}
+
+function getQuery(path, query) {
+    return window.axios.get(path, {params : query});
 }

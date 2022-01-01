@@ -10,7 +10,22 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
-{
+{   
+
+    public function show($id) {
+
+        $order = Order::find($id);
+
+        $this->authorize('view', $order);
+
+        $order = Order::leftJoin('users', 'order.shopper_id', '=', 'users.id')
+                        ->leftJoin('authenticated_shopper', 'order.shopper_id', '=', 'authenticated_shopper.id')
+                        ->where('order.id', '=', $id)
+                        ->first(['order.id AS id', 'order.*', 'users.name', 'users.email', 'authenticated_shopper.nif', 'authenticated_shopper.phone_number']);
+
+        return view('pages.order', ['order' => $order]);
+    }
+
     /**
      * Gets all enum values for Order Status.
      *

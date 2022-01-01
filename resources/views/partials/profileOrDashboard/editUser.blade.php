@@ -1,26 +1,32 @@
 @include('partials.errormodal')
 
 
+<script type="text/javascript">const userID = <?= Auth::user()->id ?>;</script>
 <script type="text/javascript" defer>
-    function updatePhoto(photo) {
+    function updatePhoto(photo, user) {
         const fallBack = "/img/user.png";
 
-        const userImg = $("#user-img");
-        const headerImg = $("#header-user-img");
+        const userImg = document.getElementById("user-img");
+        const headerImg = document.getElementById("header-user-img");
 
-        if (userImg.attr("src") === photo) {
+        if (userImg.getAttribute("src") === photo) {
             return;
         }
 
-        userImg.on("error", () => userImg.attr("src", fallBack));
-        userImg.on("error", () => headerImg.attr("src", fallBack));
-        userImg.attr("src", photo);
-        headerImg.attr("src", photo);
+        userImg.addEventListener("error", () => userImg.setAttribute("src", fallBack));
+        userImg.setAttribute("src", photo);
+
+        if(user.id === userID) {
+            headerImg.addEventListener("error", () => headerImg.setAttribute("src", fallBack));
+            headerImg.setAttribute("src", photo);
+        }
     }
 
     function renderElements(user) {
-        $("#header-user-name").text(user.name);
-        updatePhoto(user.photo);
+        if(user.id === userID) document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
+
+        document.getElementById("name-profile").innerText = user.name;
+        updatePhoto(user.photo, user);
     }
 
     function send(event) {
@@ -86,12 +92,12 @@
     <div class="row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
-            <input required id="name" class="form-control" type="text" name="name" value="{{Auth::user()->name}}">
+            <input required id="name" class="form-control" type="text" name="name" value="{{$shopper ? $shopper->user->name : $admin->name}}">
             <span class="error form-text text-danger" id="name-error"></span>
         </div>
         <div class="form-group col-md-6">
             <label for="email">Email</label>
-            <input required id="email" class="form-control" type="email" name="email" value="{{Auth::user()->email}}">
+            <input required id="email" class="form-control" type="email" name="email" value="{{$shopper ? $shopper->user->email : $admin->email}}">
             <span class="error form-text text-danger" id="email-error"></span>
         </div>
     </div>
@@ -112,7 +118,7 @@
         <input id="profile-picture" class="form-control" type="file" name="profile-picture">
         <span class="error form-text text-danger" id="profile-picture-error"></span>
     </div>
-    
+
     @if($shopper)
         <div class="mb-3">
             <label for="about-me"> About Me</label>
@@ -129,7 +135,7 @@
             <div class="form-group col-md-6">
                 <label for="phone-number"> Phone</label>
                 <input id="phone-number" type="text" class="form-control" name="phone-number" value="{{$shopper->phone_number}}">
-                <span class="error form-text text-danger" id="phone_number-error"></span>        
+                <span class="error form-text text-danger" id="phone_number-error"></span>
             </div>
         </div>
     @endif
@@ -139,6 +145,6 @@
         <input autocomplete="on" required id="cur-password" class="form-control" type="password" name="cur-password">
         <span class="error form-text text-danger" id="cur-password-error"></span>
     </div>
-    
+
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

@@ -5,3 +5,4 @@
     <h6>Price</h3>
     <p> {{$order_item->details->unit_price}} £</p>
 </article>
+

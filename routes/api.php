@@ -21,6 +21,10 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/users', [
+    'middleware' => 'searchUsers',
+    'uses' => 'UserController@list'
+]);
 Route::get('/address/zipcode', 'AddressController@zipCode');
 
 Route::group(
@@ -45,6 +49,6 @@ Route::group(
         Route::get('/', 'CartController@get');
         Route::post('/add', 'CartController@add');
         Route::post('/update', 'CartController@update');
-        Route::delete('/remove', 'CartController@delete');
+        Route::delete('/{id}/remove', 'CartController@delete');
     }
 );
