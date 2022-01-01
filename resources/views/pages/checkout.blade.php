@@ -32,7 +32,6 @@
             document.getElementById("errorMessageBody").appendChild(header);
 
             products.forEach((elem) => {
-                console.log(elem);
                 let product = elem;
 
                 const productImg = product.photos[0];
