@@ -298,59 +298,8 @@ function setupListeners() {
         newAction();
     });
 }
-
-const collapse = document.getElementById('address-form-collapse-trigger');
 const form = document.getElementById("address-form");
 
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries((new FormData(e.target)).entries());
-
-    if (!action) {
-        return;
-    }
-
-    action.action(data);
-});
-
-form.addEventListener("reset", (e) => {
-    const zip = $('#zip');
-    zip.trigger({
-        type: 'select2:select',
-        params: {
-            data: {}
-        }
-    });
-    zip.html("");
-});
-
-document.getElementById("close-window").addEventListener("click", () => {
-    closeCollapse();
-    resetAction();
-})
-
-$("#zip").on("select2:select", (e) => {
-    const data = e.params.data;
-    document.querySelector("span.select2-selection__arrow").innerText = "";
-    document.getElementById('county').value = data.county;
-    document.getElementById('district').value = data.district;
-    document.getElementById('zip_code_id').value = data.id || data.zip_code_id;
-});
-
-document.getElementById("new-address").addEventListener("click", (e) => {
-    e.preventDefault();
-
-    if (collapseOpen()) {
-        return;
-    }
-
-    form.querySelector("h4").innerText = "New address";
-    form.dispatchEvent(new Event("reset"));
-    document.querySelector("span.select2-selection__arrow").innerText = "";
-
-    openCollapse();
-    newAction();
-});
 if (collapse) {
     setupListeners();
 }

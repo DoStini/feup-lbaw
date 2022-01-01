@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 use stdClass;
 
 class AddressController extends Controller {
@@ -25,8 +26,8 @@ class AddressController extends Controller {
         $request->merge(['address_id' => $request->route('address_id')]);
         return Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
-            'street' => 'required|string|min:1',
-            'door' => 'string|required|min:1',
+            'street' => 'required|string|min:1|max:255',
+            'door' => 'string|required|min:1|max:10',
             'zip_code_id' => 'required|integer|min:1|exists:zip_code,id'
         ], [], [
             'id' => 'ID',
@@ -40,8 +41,8 @@ class AddressController extends Controller {
         return Validator::make($request->all(), [
             'id' => 'integer|min:1|exists:authenticated_shopper,id',
             'address_id' => 'required|integer|min:1|exists:address,id',
-            'street' => 'string|min:1',
-            'door' => 'string|min:1',
+            'street' => 'string|min:1|max:255',
+            'door' => 'string|min:1|max:10',
             'zip_code_id' => 'min:1|exists:zip_code,id'
         ], [], [
             'id' => 'id',
@@ -70,7 +71,7 @@ class AddressController extends Controller {
 
     /**
      * Verifies if a given address belongs to the shopper
-     * 
+     *
      * @return boolean
      */
     private function addressInShopper(Address $address, Shopper $shopper) {
@@ -79,7 +80,7 @@ class AddressController extends Controller {
 
     /**
      * Retrieves the addresses associated to a user
-     * 
+     *
      * @return array
      */
     private function retrieveAddresses(Shopper $shopper) {

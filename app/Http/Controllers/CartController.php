@@ -323,6 +323,12 @@ class CartController extends Controller {
             }
         }
 
+        $products = array_map(function ($entry) {
+            $entry->photos = array_map(function ($photo) { return $photo['url'];}, $entry->photos->toArray());
+            $entry->attributes = json_decode($entry->attributes);
+            return $entry;
+        }, $products);
+
         if(!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
     }
 

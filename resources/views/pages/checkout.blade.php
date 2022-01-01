@@ -4,6 +4,71 @@
 
 @section('content')
 
+@include('partials.errormodal')
+
+@if($errors->any())
+<script async>
+    (async() => {
+        while(!window.hasOwnProperty('reportData'))
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+        let errors = JSON.parse(`<?php echo($errors->toJson())?>`);
+        let products = errors.products;
+
+        if(products) {
+            delete errors.products;
+        }
+
+        reportData("There was an error while checking out the cart", errors, {
+            "cart" : "Cart",
+            "payment-type" : "Payment Type",
+            "address-id" : "Address"
+        });
+
+        if(products) {
+            const header = document.createElement('h6');
+            header.style.fontWeight = "bold";
+            header.innerText = "Products without stock:"
+            document.getElementById("errorMessageBody").appendChild(header);
+
+            products.forEach((elem) => {
+                console.log(elem);
+                let product = elem;
+
+                const productImg = product.photos[0];
+                const fallBack = "/img/default.jpg";
+
+                const html = `
+                    <div id="product-${product.id}" class="card mb-5 search-products-item">
+                        <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
+                        <div class="card-body">
+                            <h4 class="card-title">${product.name.toUpperCase()}</h4>
+                            <div class="container ps-0 pe-0">
+                                <div class="row justify-content-between align-items-center">
+                                    <h4 class="col-7 mb-0">${product.price} &euro;</h4>
+                                    <span class="col">Stock: ${product.stock}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                const element = document.createElement("div");
+                element.id = `root-product-${product.id}`;
+                element.className = "col-md-6 col-xs-12";
+                element.style = "visibility: visible";
+                element.innerHTML = html;
+
+                element.querySelector("img").addEventListener('click', () => route(`products/${product.id}`));
+
+                document.getElementById("errorMessageBody").appendChild(element);
+            })
+            document.getElementById("errorMessageBody").classList.add("row");
+        }
+    })();
+</script>
+@endif
+
+
 <div class="container">
     <form class="row" method="POST" action="{{route('checkout')}}">
         @csrf
