@@ -1,95 +1,67 @@
-<h4 class="text-center my-2">Active Users</h4>
-
-<div class="accordion accordion-flush my-4" id="activeUsersAccordion">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="activeUsersFlush">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-activeUsers" aria-expanded="false" aria-controls="flush-activeUsers">
-          {{$info->activeUsers->count()}} Active Users
-        </button>
-      </h2>
-      <div id="flush-activeUsers" class="accordion-collapse collapse" aria-labelledby="activeUsersFlush" data-bs-parent="#activeUsersAccordion">
-        <div class="accordion-body">
-            <table class="table my-4" style="font-size: 0.9em;">
-                <thead class="table-dark">
-                    <tr>
-                        <th class="text-center">User ID</th>
-                        <th class="text-center">Account Created At</th>
-                        <th class="text-center">Name</th>
-                        <th class="text-center">Email</th>
-                        <th class="text-center">Phone Number</th>
-                        <th class="text-center">NIF</th>
-                        <th class="text-center">Subscribed to Newsletter?</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach ($info->activeUsers as $activeUser)
-                    <tr>    
-                        <th class="text-center">{{$activeUser->id}}</th>
-                        <th class="text-center">TBD</th>
-                        <th class="text-center">{{$activeUser->name}}</th>
-                        <th class="text-center">{{$activeUser->email}}</th>
-                        <th class="text-center">{{$activeUser->phone_number}}</th>
-                        <th class="text-center">{{$activeUser->nif}}</th>
-                        <th class="text-center">{{$activeUser->newsletter_subcribed ? 'Yes' : 'No'}}</th>
-                        <th>
-                            <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                                <a class="bi bi-info-circle-fill icon-click" href={{route('getUser', ['id' => $activeUser->id])}} data-bs-toggle="tooltip" title="Go to User Page"></a>
-                                <a class="bi bi-pencil-square icon-click px-1" href={{route('editPage', ['id' => $activeUser->id])}} data-bs-toggle="tooltip" title="Edit User Info"></a>
-                                <a class="bi bi-dash-circle-fill icon-click" data-bs-toggle="tooltip" title="Ban User"></a>
-                            </div>
-                        </th>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+<div class="container">
+    <div class="row d-flex align-items-center">
+        <div class="col-md-12 d-flex justify-content-end">
+            <a class="btn btn-primary mx-1" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
+                Create New Admin
+            </a>
+            <a class="btn btn-primary mx-1" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
+                Filters
+            </a>
         </div>
-      </div>
     </div>
-  </div>
+    <div class="row">
+        <table class="table table-responsive my-4" style="font-size: 0.9em;">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center">User ID</th>
+                    <th class="text-center">Account Created At</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Phone Number</th>
+                    <th class="text-center">NIF</th>
+                    <th class="text-center">Subscribed to Newsletter?</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="user-area">
+            </tbody>
+        </table>
+    </div>
+</div>
 
+<div class="offcanvas offcanvas-end" tabindex="-1" id="usersOffCanvas" aria-labelledby="usersOffCanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="usersOffCanvasLabel">Filters</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form id="user-dashboard-form" name="form1">
+          <div class="container">
+            <div class="row my-3">
+                <div class="col-md-12">
+                    <label for="name">Name</label>
+                    <input id="name" class="form-control" type="text" name="name" value="">
+                    <span class="error form-text text-danger" id="name-error"></span>
+                </div>
+            </div>
+            <div class="row">
+                <p>Status</p>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="blocked" id="blockedCheck">
+                    <label class="form-check-label" for="blockedCheck">
+                        Blocked
+                    </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </div>
 
-<h4 class="text-center my-4">Blocked Users</h4>
-
-
-<div class="accordion accordion-flush my-4" id="blockedUsersAccordion">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="blockedUsersFlush">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-blockedUsers" aria-expanded="false" aria-controls="flush-blockedUsers">
-          {{$info->blockedUsers->count()}} Blocked Users
-        </button>
-      </h2>
-      <div id="flush-blockedUsers" class="accordion-collapse collapse" aria-labelledby="blockedUsersFlush" data-bs-parent="#blockedUsersAccordion">
-        <div class="accordion-body">
-            <table class="table" style="font-size: 0.9em;">
-                <thead class="table-dark">
-                    <tr>
-                        <th class="text-center">User ID</th>
-                        <th class="text-center">Account Created At</th>
-                        <th class="text-center">Name</th>
-                        <th class="text-center">Email</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach ($info->blockedUsers as $blockedUser)
-                    <tr>    
-                        <th class="text-center">{{$blockedUser->id}}</th>
-                        <th class="text-center">TBD</th>
-                        <th class="text-center">{{$blockedUser->name}}</th>
-                        <th class="text-center">{{$blockedUser->email}}</th>
-                        <th>
-                            <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                                <a class="bi bi-info-circle-fill icon-click" href={{route('getUser', ['id' => $blockedUser->id])}} data-bs-toggle="tooltip" title="Go to User Page"></a>
-                                <a class="bi bi-pencil-square icon-click px-1" href={{route('editPage', ['id' => $activeUser->id])}} data-bs-toggle="tooltip" title="Edit User Info"></a>
-                                <a class="bi bi-flag icon-click" data-bs-toggle="tooltip" title="Unblock User"></a>
-                            </div>
-                        </th>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-      </div>
+      </form>
     </div>
   </div>

@@ -13,6 +13,9 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
+use Exception;
+
+
 class UserController extends Controller {
 
     /**
@@ -213,6 +216,32 @@ class UserController extends Controller {
         $shopper = Shopper::find($id);
         if (!$shopper && Auth::user()->id == $id) $admin = User::find($id);
         return view('pages.profile', ['shopper' => $shopper, 'admin' => $admin, 'page' => 'editUser']);
+    }
+
+    /**
+     * Search users (excluding admins) according to filters in the query
+     *
+     * @return Response
+     */
+    public function list(Request $request) {
+        try {
+            $query = User::join('authenticated_shopper', 'users.id', '=', 'authenticated_shopper.id')
+                ->when($request->name, function ($q) use ($request) {
+                    return $q->whereRaw('UPPER(name) LIKE UPPER(?)', [$request->name . '%']);
+                })
+                ->when($request->blocked, function ($q) use ($request) {
+                    return $q->where('is_blocked', '=', [$request->blocked]);
+                });
+
+            return response()->json([
+                "query" => $query->get()
+            ]);
+        } catch (Exception) {
+            return response()->json(
+                ['message' => 'Unexpected error'],
+                401
+            );
+        }
     }
 
     public function getAddresses($id) {

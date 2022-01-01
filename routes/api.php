@@ -21,6 +21,10 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/users', [
+    'middleware' => 'searchUsers',
+    'uses' => 'UserController@list'
+]);
 Route::get('/address/zipcode', 'AddressController@zipCode');
 
 Route::group(

@@ -61,14 +61,6 @@ class AdminController extends Controller {
 
         $this->authorize('isAdmin', User::class);
 
-        $info = new stdClass();
-
-
-        $allUsers =  Shopper::leftJoin('users', 'authenticated_shopper.id', '=', 'users.id')->where('is_deleted', '=', false);
-
-        $info->activeUsers = $allUsers->where('is_blocked', '=', false)->get();
-        $info->blockedUsers = $allUsers->where('is_blocked', '=', true)->get();
-
-        return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'userDashboard']);
+        return view('pages.adminDashboard', ['admin' => Auth::user(), 'page' => 'userDashboard']);
     }
 }
