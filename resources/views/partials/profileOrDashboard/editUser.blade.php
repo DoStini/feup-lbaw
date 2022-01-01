@@ -3,7 +3,7 @@
 
 <script type="text/javascript">const userID = <?= Auth::user()->id ?>;</script>
 <script type="text/javascript" defer>
-    function updatePhoto(photo) {
+    function updatePhoto(photo, user) {
         const fallBack = "/img/user.png";
 
         const userImg = document.getElementById("user-img");
@@ -14,16 +14,19 @@
         }
 
         userImg.addEventListener("error", () => userImg.setAttribute("src", fallBack));
-        headerImg.addEventListener("error", () => headerImg.setAttribute("src", fallBack));
         userImg.setAttribute("src", photo);
-        headerImg.setAttribute("src", photo);
+
+        if(user.id === userID) {
+            headerImg.addEventListener("error", () => headerImg.setAttribute("src", fallBack));
+            headerImg.setAttribute("src", photo);
+        }
     }
 
     function renderElements(user) {
         if(user.id === userID) document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
 
         document.getElementById("name-profile").innerText = user.name;
-        updatePhoto(user.photo);
+        updatePhoto(user.photo, user);
     }
 
     function send(event) {
