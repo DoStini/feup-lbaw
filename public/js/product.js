@@ -1,8 +1,6 @@
-
-
 const currentPriceContainer = document.getElementById('current-price');
 
-$(`#quantity-container`).append(createNumberSelector({
+document.getElementById(`quantity-container`).append(createNumberSelector({
     id: `product-amount-${productInfo.id}`,
     value: 1,
     min: 1,
@@ -17,7 +15,7 @@ const addToCartButton = document.getElementById('add-to-cart-btn');
 addToCartButton.addEventListener('click', async () => {
     jsonBodyPost("/api/users/cart/add", {
         "product_id": productInfo.id ,
-        "amount": parseInt($(`#product-amount-${productInfo.id}`).val()),
+        "amount": parseInt(document.getElementsByTagName(`product-amount-${productInfo.id}`).value),
     })
     .then((response) => {
         launchSuccessAlert("Added sucessfully to cart");
