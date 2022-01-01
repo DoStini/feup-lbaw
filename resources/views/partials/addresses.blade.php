@@ -2,7 +2,7 @@
 
 <div id="address-root" class="accordion" id="addresses-accordion">
     @foreach ($shopper->addresses as $address)
-    <div class="accordion-item">
+    <div id="address-root-{{$address->id}}" class="accordion-item">
         <h2 class="accordion-header" id="address-heading{{$address->id}}">
             <button
                 class="accordion-button collapsed"
@@ -20,7 +20,7 @@
             aria-labelledby="address-heading{{$address->id}}"
         >
             <div class="accordion-body row container justify-content-between align-items-center">
-                <div class="col-6">
+                <div class="col-6 address-info">
                     {{$address->street}} {{$address->door}}<br>
                     {{$address->zip_code->zip_code}}<br>
                     {{$address->zip_code->county->name}}<br>
@@ -33,11 +33,11 @@
     @endforeach
 </div>
 
-<div class="mb-5"></div>
 
 <a id="address-form-collapse-trigger" data-bs-toggle="collapse" href="#address-form-collapse" role="button" aria-expanded="false" aria-controls="address-form-collapse">
 </a>
 <div class="collapse" id="address-form-collapse">
+    <div class="mb-5"></div>
     <form id="address-form">
     <div class="card card-body container">
         <div class="row justify-content-between">
@@ -87,4 +87,18 @@
 
 <script>
     const userId = {{Auth::user()->id}};
+    const addresses = {};
+
+    @foreach ($shopper->addresses as $address)
+        addresses[ "{{$address->id}}" ] = {
+            zip_code: "{{$address->zip_code->zip_code}}",
+            zip_code_id: "{{$address->zip_code->id}}",
+            street: "{{$address->street}}",
+            door: "{{$address->door}}",
+            county: "{{$address->zip_code->county->name}}",
+            district: "{{$address->zip_code->county->district->name}}",
+        }
+        
+    @endforeach
+
 </script>

@@ -11,7 +11,7 @@ $((function() {
             url: 'http://localhost:8000/api/address/zipcode',
             delay: 500,
             data: function (params) {
-              var query = {
+              const query = {
                 code: params.term,
               }
         
@@ -20,7 +20,6 @@ $((function() {
             },
             processResults: function (data) {
                 data.forEach((el) => el.text = el.zip_code)
-                console.log(data)
                 // Transforms the top-level key of the response object from 'items' to 'results'
                 return {
                   results: data
@@ -31,17 +30,16 @@ $((function() {
 }));
 
 
+
+console.log(addresses)
 const collapse = document.getElementById('address-form-collapse-trigger');
 
 let action = {};
 
-function handleEdit(data) {
-
-}
-
-function insertAddress(data) {
+function createAddress(data) {
     const elem = document.createElement('div');
     elem.className = "accordion-item";
+    elem.id=`address-root-${data.id}`
 
     const html = `
         <h2 class="accordion-header" id="address-heading-${data.id}">
@@ -61,7 +59,7 @@ function insertAddress(data) {
             aria-labelledby="address-heading-${data.id}"
         >
             <div class="accordion-body row container justify-content-between align-items-center">
-                <div class="col-6">
+                <div class="col-6 address-info">
                     ${data.street} ${data.door}<br>
                     ${data.zip_code}<br>
                     ${data.county}<br>
@@ -70,18 +68,49 @@ function insertAddress(data) {
                 <i id="edit-address-${data.id}" class="bi bi-pencil-square col-1 fs-4 px-0 btn edit-address-btn"></i>
             </div>
         </div>`
-    
+
     elem.innerHTML = html;
 
-    document.getElementById("address-root").appendChild(elem);
+    elem.querySelector(".edit-address-btn").addEventListener("click", handleEditClick)
 
+    return elem;
+}
+
+function modifyAddress(data) {
+    const root = document.getElementById(`address-root-${data.id}`);
+    root.querySelector("button").innerHTML = `${data.zip_code}, ${data.street} ${data.door}`;
+    root.querySelector(".address-info").innerHTML = `
+        ${data.street} ${data.door}<br>
+        ${data.zip_code}<br>
+        ${data.county}<br>
+        ${data.district}<br>
+    `;
+}
+
+function handleEdit(data) {
+    jsonBodyPost(`/api/users/${userId}/private/address/${action.id}/edit`, data)
+        .then(response => {
+            modifyAddress(response.data);
+            addresses[response.data.id] = {
+                ...response.data,
+                ...addresses
+            }
+            closeCollapse();
+        })
+        .catch(handleError);
 }
 
 function handleNew(data) {
     console.log("hello", userId, data)
     jsonBodyPost(`/api/users/${userId}/private/address/add`, data)
         .then(response => {
-            insertAddress(response.data)
+            document.getElementById("address-root").appendChild(createAddress(response.data));
+            addresses[response.data.id] = {
+                ...response.data,
+                ...addresses
+            }
+            console.log(addresses);
+            closeCollapse();
         })
         .catch(handleError);
 }
@@ -89,7 +118,7 @@ function handleNew(data) {
 function handleError(error) {
     if(error.response) {
         if(error.response.data) {
-            reportData("There was an managing an address", error.response.data["errors"], {
+            reportData("There was an error managing an address", error.response.data["errors"], {
                 'street' : 'Street',
                 'zip_code_id' : 'Zip Code',
                 'door' : 'Door',
@@ -115,10 +144,6 @@ function resetAction() {
     action = {}
 }
 
-function handleEdit(data) {
-
-}
-
 function collapseOpen() {
     return collapse.getAttribute("aria-expanded") === "true"
 }
@@ -137,19 +162,39 @@ function closeCollapse() {
     collapse.dispatchEvent(new Event("click"));
 }
 
-document.querySelectorAll(".edit-address-btn")
-    .forEach((el) => el.addEventListener("click", () => {
-        const id = el.id.split("-")[2];
+function handleEditClick(e) {
+    const el = e.target;
 
-        if (collapseOpen()) {
-            return;
+    const id = el.id.split("-")[2];
+
+    if (collapseOpen()) {
+        return;
+    }
+
+    form.querySelector("h4").innerText = "Edit address";
+
+    const cachedData = addresses[id];
+    console.log(cachedData)
+
+    form.dispatchEvent(new Event("reset"));
+
+    document.getElementById("street-name").value = cachedData.street;
+    document.getElementById("door").value = cachedData.door;
+
+    $('#zip').trigger({
+        type: 'select2:select',
+        params: {
+            data: cachedData
         }
+    });
+    document.querySelector("span.select2-selection__arrow").innerText = cachedData.zip_code;
 
-        form.querySelector("h4").innerText = "Edit address";
-    
-        openCollapse();
-        editAction(id);
-}));
+    openCollapse();
+    editAction(id);
+}
+
+document.querySelectorAll(".edit-address-btn")
+    .forEach((el) => el.addEventListener("click", handleEditClick));
 
 const form = document.getElementById("address-form");
 
@@ -164,6 +209,17 @@ form.addEventListener("submit", (e) => {
     action.action(data);
 });
 
+form.addEventListener("reset", (e) => {
+    const zip = $('#zip');
+    zip.trigger({
+        type: 'select2:select',
+        params: {
+            data: {}
+        }
+    });
+    zip.html("");
+});
+
 document.getElementById("close-window").addEventListener("click", () => {
     closeCollapse();
     resetAction();
@@ -171,9 +227,10 @@ document.getElementById("close-window").addEventListener("click", () => {
 
 $("#zip").on("select2:select", (e) => {
     const data = e.params.data;
+    document.querySelector("span.select2-selection__arrow").innerText = "";
     document.getElementById('county').value = data.county;
     document.getElementById('district').value = data.district;
-    document.getElementById('zip_code_id').value = data.id;
+    document.getElementById('zip_code_id').value = data.id || data.zip_code_id;
 });
 
 document.getElementById("new-address").addEventListener("click", (e) => {
@@ -185,6 +242,7 @@ document.getElementById("new-address").addEventListener("click", (e) => {
 
     form.querySelector("h4").innerText = "New address";
     form.dispatchEvent(new Event("reset"));
+    document.querySelector("span.select2-selection__arrow").innerText = "";
 
     openCollapse();
     newAction();    

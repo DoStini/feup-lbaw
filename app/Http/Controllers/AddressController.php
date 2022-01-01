@@ -26,7 +26,7 @@ class AddressController extends Controller {
         return Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
             'street' => 'required|string|min:1',
-            'door' => 'required|integer|min:1',
+            'door' => 'string|required|min:1',
             'zip_code_id' => 'required|integer|min:1|exists:zip_code,id'
         ], [], [
             'id' => 'ID',
@@ -40,8 +40,8 @@ class AddressController extends Controller {
         return Validator::make($request->all(), [
             'id' => 'integer|min:1|exists:authenticated_shopper,id',
             'address_id' => 'required|integer|min:1|exists:address,id',
-            'street' => 'string|min:5',
-            'door' => 'integer|min:1',
+            'street' => 'string|min:1',
+            'door' => 'string|min:1',
             'zip_code_id' => 'min:1|exists:zip_code,id'
         ], [], [
             'id' => 'id',
