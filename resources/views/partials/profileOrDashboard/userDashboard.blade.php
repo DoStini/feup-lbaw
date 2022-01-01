@@ -25,7 +25,7 @@
             </thead>
             <tbody id="user-area">
             </tbody>
-        </table>  
+        </table>
     </div>
 </div>
 
@@ -61,7 +61,7 @@
                 <button type="submit" class="btn btn-primary">Search</button>
             </div>
           </div>
-          
+
       </form>
     </div>
   </div>

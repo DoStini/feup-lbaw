@@ -27,6 +27,10 @@ class LoginController extends Controller {
         return '/products';
     }
 
+    protected function loggedOut(Request $request) {
+        return redirect()->back();
+    }
+
     /**
      * Create a new controller instance.
      *

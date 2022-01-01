@@ -17,6 +17,24 @@ use Exception;
 
 
 class UserController extends Controller {
+
+    /**
+     * Validates a user password or admin
+     */
+    public static function validateUserPasswordOrAdmin($user, $password) {
+        if (
+            !$user->is_admin &&
+            !Hash::check($password, $user->password)
+        ) {
+            $response = [];
+            $response["errors"] = [
+                "password" => "Current password does not match our records"
+            ];
+
+            return response()->json($response, 403);
+        }
+    }
+
     /**
      * Shows the user for a given id.
      *
@@ -112,8 +130,9 @@ class UserController extends Controller {
             ];
 
         $shopper_attrs = null;
+        $user = User::find($id);
 
-        if (!Auth::user()->is_admin)
+        if (!$user->is_admin)
             $shopper_attrs = [
                 'about_me' => $request->input("about-me"),
                 'nif' => $request->input("nif"),
@@ -161,8 +180,6 @@ class UserController extends Controller {
             unset($user_attrs["password"]);
         }
 
-        $user = Auth::user();
-
         try {
             DB::beginTransaction();
 
@@ -201,7 +218,7 @@ class UserController extends Controller {
         return view('pages.profile', ['shopper' => $shopper, 'admin' => $admin, 'page' => 'editUser']);
     }
 
-/**
+    /**
      * Search users (excluding admins) according to filters in the query
      *
      * @return Response
@@ -210,12 +227,12 @@ class UserController extends Controller {
         try {
             $query = User::join('authenticated_shopper', 'users.id', '=', 'authenticated_shopper.id')
                 ->when($request->name, function ($q) use ($request) {
-                return $q->whereRaw('UPPER(name) LIKE UPPER(?)', [$request->name . '%']);
+                    return $q->whereRaw('UPPER(name) LIKE UPPER(?)', [$request->name . '%']);
                 })
                 ->when($request->blocked, function ($q) use ($request) {
                     return $q->where('is_blocked', '=', [$request->blocked]);
                 });
-                              
+
             return response()->json([
                 "query" => $query->get()
             ]);
@@ -227,4 +244,8 @@ class UserController extends Controller {
         }
     }
 
-}   
+    public function getAddresses($id) {
+        $shopper = Shopper::find($id);
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'addresses']);
+    }
+}

@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['auth:sanctum', 'userOwnerAdmin'])->name("edit_user");
-Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth:sanctum', 'admin'])->name("edit_order");
+Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['auth.api', 'user.owner.admin'])->name("edit_user");
+Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.api', 'admin'])->name("edit_order");
 
 Route::get('/products', [
     'middleware' => 'searchProducts',
@@ -25,16 +25,30 @@ Route::get('/users', [
     'middleware' => 'searchUsers',
     'uses' => 'UserController@list'
 ]);
+Route::get('/address/zipcode', 'AddressController@zipCode');
+
+Route::group(
+    [
+        'prefix' => 'users/{id}/private/address',
+        'middleware' => ['auth.api', 'user.owner.admin'],
+    ],
+    function () {
+        Route::get('/', 'AddressController@get');
+        Route::post('/add', 'AddressController@create');
+        Route::post('/{address_id}/edit', 'AddressController@edit');
+        Route::delete('/{address_id}/remove', 'AddressController@remove');
+    }
+);
 
 Route::group(
     [
         'prefix' => 'users/cart',
-        'middleware' => ['auth:sanctum', 'is.shopper']
+        'middleware' => ['auth.api', 'is.shopper']
     ],
     function () {
         Route::get('/', 'CartController@get');
         Route::post('/add', 'CartController@add');
         Route::post('/update', 'CartController@update');
-        Route::delete('/remove', 'CartController@delete');
+        Route::delete('/{id}/remove', 'CartController@delete');
     }
 );

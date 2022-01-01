@@ -36,5 +36,11 @@ return [
             'code' => 422,
             'message' => 'Product does not have enough stock'
         ],
+    ],
+    'address' => [
+        'not_in_user' => [
+            'code' => 422,
+            'message' => 'Address does not belong to the user'
+        ]
     ]
 ];

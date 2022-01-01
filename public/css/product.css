@@ -1,7 +1,15 @@
 .search-products-item {
-    cursor: pointer;
     transition: top 1s ease 0s, opacity 1s;
     top: 0;
+}
+
+.search-products-item img {
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.search-card-top {
+    height: 15em;
 }
 
 .next-page-search {
@@ -25,10 +33,9 @@
 }
 
 .dot:hover {
-    border: 3px solid #BADA55;
+    border: 3px solid #bada55;
 }
 
 .product-slide {
     width: 60%;
 }
-
