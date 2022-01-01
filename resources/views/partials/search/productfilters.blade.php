@@ -1,4 +1,4 @@
-<div class="container sticky-top pt-5">
+<div class="container sticky-md-top pt-5">
 
     <h2 id="results-text" class="mb-5">No results</h2>
 
@@ -67,4 +67,14 @@
             <label class="form-check-label" for="rate-desc">Highest Rating First</label>
         </div>
     </div>
+
+    <div class="mb-3"></div>
+
+    <div class="row justify-content-center">
+        <button type="reset" class="btn btn-primary col-lg-8 col-md-12">
+            Reset Filters
+        </button>
+    </div>
+
+    <div class="mb-5"></div>
 </div>

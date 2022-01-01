@@ -1,0 +1,38 @@
+#address-form i#close-window {
+    padding-left: 0;
+    cursor: pointer;
+    font-size: 1.2em;
+    width: 1.2em;
+    margin-right: 0.5em;
+    transition: color 0.5s;
+}
+
+#address-form i#close-window:hover {
+    color: rgb(150, 150, 150);
+}
+
+i.edit-address-btn {
+    padding-left: 0;
+    cursor: pointer;
+    font-size: 1.2em;
+    width: 1.2em;
+    margin-right: 0.5em;
+    transition: color 0.5s;
+}
+
+i.edit-address-btn:hover {
+    color: rgb(150, 150, 150);
+}
+
+i.remove-address-btn {
+    padding-left: 0;
+    cursor: pointer;
+    font-size: 1.2em;
+    width: 1.2em;
+    margin-right: 0;
+    transition: color 0.5s;
+}
+
+i.remove-address-btn:hover {
+    color: rgb(150, 150, 150);
+}

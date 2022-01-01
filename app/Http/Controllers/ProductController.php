@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
 use Exception;
+use stdClass;
 
 class ProductController extends Controller {
 
@@ -28,10 +29,18 @@ class ProductController extends Controller {
      * @return Response
      */
     public function search() {
+        return view('pages.search.products');
+    }
 
-        $products = Product::all()->take(25);
-
-        return view('pages.search.products', ['products' => $products]);
+    /**
+     * Serializes the query 
+     */
+    public function serializeQuery($query) {
+        return array_map(function ($entry) {
+            $entry->photos = array_map(fn ($photo) => $photo->url, $entry->photos);
+            $entry->attributes = json_decode($entry->attributes);
+            return $entry;
+        }, json_decode(json_encode($query)));
     }
 
     /**
@@ -41,7 +50,8 @@ class ProductController extends Controller {
      */
     public function list(Request $request) {
         try {
-            $query = DB::table('product')
+            $query = Product
+                ::with("photos")
                 ->whereRaw('stock > 0')
                 ->when($request->text, function ($q) use ($request) {
                     return $q->whereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
@@ -92,7 +102,7 @@ class ProductController extends Controller {
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $query->get()
+                "query" => $this->serializeQuery($query->get())
             ]);
         } catch (Exception) {
             return response()->json(
