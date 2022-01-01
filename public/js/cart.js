@@ -3,6 +3,27 @@ let loading = false;
 const menu = $("#cart-dropdown-menu");
 const menuContent = $("#cart-dropdown-menu-content");
 
+function addToCartRequest(id, amount) {
+    jsonBodyPost("/api/users/cart/add", {
+        "product_id": id ,
+        "amount": amount,
+    })
+    .then((response) => {
+        launchSuccessAlert("Added sucessfully to cart");
+    })
+    .catch((error) => {
+        if(error.response) {
+            if(error.response.data) {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+                launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+            }
+        }
+    });
+}
+
 function noProducts() {
     const elem = document.createElement("div");
     elem.className = "container";
@@ -74,7 +95,7 @@ function insertProduct(product, idx) {
     menuContent.append(elem);
 
     $(`#cart-remove-${idx}`).on('click', () => {
-        jsonBodyDelete("/api/users/cart/remove", { product_id: product.id })
+        deleteRequest(`/api/users/cart/${product.id}/remove`)
             .then(response => {
                 if (response.status === 200) {
                     handleDelete(response.data);

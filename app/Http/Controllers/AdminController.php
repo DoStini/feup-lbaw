@@ -87,8 +87,6 @@ class AdminController extends Controller {
 
         $this->authorize('isAdmin', User::class);
 
-        $user = Auth::user();
-
         $info = new stdClass();
 
         $info->userNum = Shopper::leftJoin('users', 'users.id', '=', 'authenticated_shopper.id')
@@ -100,9 +98,9 @@ class AdminController extends Controller {
 
         $info->proposedProductNum = 0;
 
-        return view('pages.adminDashboard', ['admin' => $user, 'info' => $info, 'page' => 'generalDashboard']);
+        return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'generalDashboard']);
     }
-
+    
     public function getNewAdminPage() {
 
         $this->authorize('isAdmin', User::class);
@@ -112,4 +110,31 @@ class AdminController extends Controller {
         return view('pages.adminDashboard', ['admin' => $user, 'info' => null, 'page' => 'createNewAdmin']);
     }
 
+    public function getOrderDashboard() {
+
+        $this->authorize('isAdmin', User::class);
+
+        $info = new stdClass();
+
+        $info->updatableOrders = Order::where('status', '<>', 'shipped')
+                                 ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
+                                 ->orderBy('status')
+                                 ->orderBy('timestamp', 'asc')
+                                 ->get(['order.id','name','shopper_id','timestamp','total','status']); //need to add created_at and updated_at in sql
+
+        $info->finishedOrders = Order::where('status', '=', 'shipped')
+                                ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
+                                ->orderBy('status')
+                                ->orderBy('timestamp', 'asc')
+                                ->get(['order.id','name','shopper_id','timestamp','total','status']); //need to add created_at and updated_at in sql
+
+        return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'orderDashboard']);
+    }
+
+    public function getUserDashboard() {
+
+        $this->authorize('isAdmin', User::class);
+
+        return view('pages.adminDashboard', ['admin' => Auth::user(), 'page' => 'userDashboard']);
+    }
 }

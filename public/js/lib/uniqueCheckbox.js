@@ -15,5 +15,4 @@ function setupUniqueCheckboxes(formId, onChange) {
             onChange && onChange(e);
         })
     });
-
 }

@@ -70,6 +70,7 @@ class Kernel extends HttpKernel {
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'user.owner.admin' => \App\Http\Middleware\EnsureOwnerOrAdmin::class,
         'searchProducts' => \App\Http\Middleware\ProductSearch::class,
+        'searchUsers' => \App\Http\Middleware\UserSearch::class,
         'admin' => \App\Http\Middleware\EnsureAdmin::class,
     ];
 }

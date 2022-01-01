@@ -1,5 +1,4 @@
-// let errorModal = new bootstrap.Modal(document.getElementById('errorMessage'));
-$('#errorMessage').modal();
+let errorModal = new bootstrap.Modal(document.getElementById('errorMessage'));
 
 function reportData(message, data, attributes) {
     document.getElementById("errorMessageTitle").innerText = message;
@@ -33,5 +32,5 @@ function reportData(message, data, attributes) {
 
     document.getElementById("errorMessageBody").innerHTML = "";
     document.getElementById("errorMessageBody").appendChild(result);
-    $('#errorMessage').modal('show')
+    errorModal.show();
 }

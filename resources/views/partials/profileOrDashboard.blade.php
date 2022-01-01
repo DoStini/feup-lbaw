@@ -14,11 +14,11 @@
                         <img id="user-img" src="/img/user.png" class="img-fluid" alt="" loading="lazy" />
                     @endif
                 </div>
-                <div>
+                <div class="w-100">
                     @if($admin)
-                        <h3>{{$admin->name}}</h3>
+                        <h3 id="name-profile" class="text-center" style="overflow-wrap: break-word;">{{$admin->name}}</h3>
                     @else
-                        <h3>{{$shopper->user->name}}</h3>
+                        <h3 id="name-profile" class="text-center style="overflow-wrap: break-word;">{{$shopper->user->name}}</h3>
                     @endif
                 </div>
             </div>
@@ -27,7 +27,10 @@
             </div>
         </div>
         <div class="col-md-9 col-sm-12 container">
-            @include('partials.' . $page, ['shopper' => $shopper ?? null, 'admin' => $admin ?? null, 'info' => $info ?? null])
+            @include('partials.profileOrDashboard.' . $page, 
+            ['shopper' => $shopper ?? null,
+             'admin' => $admin ?? null,
+             'info' => $info ?? null])
         </div>
     </div>
 </div>

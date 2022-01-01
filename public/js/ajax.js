@@ -1,5 +1,4 @@
 function route(route, data) {
-    console.log(route)
     history.pushState(data, document.title, "");
     window.location.assign(`/${route}`);
 }
@@ -13,7 +12,7 @@ function encodeForAjax(data) {
 
 function sendAjaxQueryRequest(method, url, data, handler) {
     let request = new XMLHttpRequest();
-    
+
     const parsed = encodeForAjax(data);
 
     request.open(method, `${url}${!!parsed ? "?" + parsed : ""}`, true);

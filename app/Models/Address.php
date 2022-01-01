@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use stdClass;
 
 class Address extends Model {
     // Don't add create and update timestamps in database.
@@ -16,6 +17,7 @@ class Address extends Model {
     protected $fillable = [
         'street',
         'door',
+        'zip_code_id',
     ];
 
     /**
@@ -24,6 +26,20 @@ class Address extends Model {
      * @var array
      */
     protected $hidden = [];
+
+    /**
+     * Aggregates the address and returns every related attribute
+     */
+    public function aggregate() {
+        $address = [];
+        $address["street"]   = $this->street;
+        $address["door"]     = $this->door;
+        $address["county"]   = $this->zip_code->county->name;
+        $address["district"] = $this->zip_code->district->name;
+        $address["zip_code"] = $this->zip_code->zip_code;
+        $address["id"] = $this->id;
+        return $address;
+    }
 
     public function zip_code() {
         return $this->belongsTo(ZipCode::class, 'zip_code_id', 'id');

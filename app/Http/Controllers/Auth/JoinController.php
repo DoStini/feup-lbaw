@@ -13,6 +13,10 @@ class JoinController extends Controller {
      * @return Response
      */
     public function show() {
+        if(!session()->has('url.intended')){
+            session()->put('url.intended', url()->previous());
+        }
+
         return view('auth.join');
     }
 }

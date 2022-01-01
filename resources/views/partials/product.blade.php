@@ -8,7 +8,7 @@
                     @foreach ($product->photos as $photo)
                     @if (File::exists(public_path($photo->url)))
                     <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
-                        <img class="d-block w-100" src={{Storage::url($photo->url)}}>
+                        <img class="d-block w-100" src={{asset($photo->url)}}>
                     </div>
                     {{$insertedPhotos++;}}
                     @endif
@@ -74,7 +74,11 @@
 
         <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
             @if ($product->stock > 0)
+            @if(Auth::check() && !Auth::user()->is_admin)
             <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
+            @else
+            <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
+            @endif
             <button class="btn btn-success w-100 my-2">In Stock</button>
             @else
             <button class="btn btn-danger w-100 my-2">Out of Stock</button>
