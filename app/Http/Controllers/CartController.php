@@ -27,7 +27,7 @@ class CartController extends Controller {
     public function show() {
         if (!Auth::check()) return redirect('/join');
         $user = Auth::user();
-        
+
         //if($user->is_admin) return redirect('/orders');
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
@@ -107,12 +107,9 @@ class CartController extends Controller {
     private function cartToJson($cart) {
         return $cart->map(
             function ($product) {
-                $prodJson = json_decode($product->toJson());
-                $prodJson->photos = $product->photos->map(fn ($photo) => $photo->url);
-                $prodJson->attributes = json_decode($prodJson->attributes);
+                $prodJson = $product->serialize();
                 $prodJson->amount = $prodJson->details->amount;
                 unset($prodJson->details);
-
                 return $prodJson;
             },
         );
