@@ -10,14 +10,14 @@ function createAddress(data) {
             <button
                 class="accordion-button collapsed"
                 type="button" data-bs-toggle="collapse"
-                data-bs-target="#address-panel-collapse-${data.id}" 
+                data-bs-target="#address-panel-collapse-${data.id}"
                 aria-expanded="false"
                 aria-controls="address-panel-collapse-${data.id}"
                 id="address-button-${data.id}">
                 ${data.zip_code}, ${data.street} ${data.door}
             </button>
         </h2>
-        <div id="address-panel-collapse-${data.id}" 
+        <div id="address-panel-collapse-${data.id}"
             data-bs-parent="#addresses-accordion"
             class="accordion-collapse collapse"
             aria-labelledby="address-heading-${data.id}"
@@ -39,7 +39,7 @@ function createAddress(data) {
         </div>`
 
     elem.innerHTML = html;
-    
+
     elem.querySelector(".edit-address-btn").addEventListener("click", handleEditClick)
     elem.querySelector(".remove-address-btn").addEventListener("click", handleRemoveClick);
     return elem;
@@ -70,16 +70,13 @@ function handleEdit(data) {
 }
 
 function handleNew(data) {
-    console.log("hello", userId, data)
     jsonBodyPost(`/api/users/${userId}/private/address/add`, data)
         .then(response => {
-            console.log("asd")
             document.getElementById("address-root").appendChild(createAddress(response.data));
             addresses[response.data.id] = {
                 ...response.data,
                 ...addresses
             }
-            console.log(addresses);
             closeCollapse();
         })
         .catch(handleError);
@@ -144,7 +141,6 @@ function handleEditClick(e) {
     form.querySelector("h4").innerText = "Edit address";
 
     const cachedData = addresses[id];
-    console.log(cachedData)
 
     form.dispatchEvent(new Event("reset"));
 
@@ -198,7 +194,7 @@ function setupListeners() {
                   const query = {
                     code: params.term,
                   }
-            
+
                   // Query parameters will be ?search=[term]&type=public
                   return query;
                 },
@@ -212,7 +208,7 @@ function setupListeners() {
               }
         });
     }));
-    
+
     document.querySelectorAll(".edit-address-btn")
         .forEach((el) => el.addEventListener("click", handleEditClick));
 
@@ -266,7 +262,7 @@ function setupListeners() {
         document.querySelector("span.select2-selection__arrow").innerText = "";
 
         openCollapse();
-        newAction();    
+        newAction();
     });
 }
 

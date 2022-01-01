@@ -4,7 +4,7 @@ const searchInterval = 500;
 let current = {};
 
 function ensureBounds(target) {
-    if (target.getAttribute("type") !== "number") return; 
+    if (target.getAttribute("type") !== "number") return;
     let min = parseInt(target.getAttribute("min"));
     if (min === NaN) min = -Infinity;
     const max = parseInt(target.getAttribute("max"));
@@ -132,7 +132,7 @@ function createProduct(product, delay) {
     element.innerHTML = html;
 
     element.querySelector("img").addEventListener('click', () => route(`products/${product.id}`, current));
-    
+
     if (isShopper) {
         const cartButton = element.querySelector("button");
         cartButton.addEventListener("click", (e) => {
@@ -182,7 +182,7 @@ function insertProducts(data, shouldAnimate) {
 
     document.getElementById("results-text").innerText = data.docCount ? `${data.docCount} Results` : "No results";
 
-    data.query.forEach((target, idx) => 
+    data.query.forEach((target, idx) =>
         container.appendChild(createProduct(target, factor * (idx + 1) * baseDelay)));
 
     insertNextPageButton(factor * (data.query.length + 1) * baseDelay);
@@ -222,7 +222,7 @@ function handleSearchProducts() {
 function restoreCache() {
     if (history.state) {
         current = history.state;
-        insertProducts(history.state, false);    
+        insertProducts(history.state, false);
     } else {
         sendSearchProductsRequest(handleSearchProducts);
     }
@@ -269,7 +269,7 @@ function setupInputForm() {
         elem.onsubmit = (e) => {
             e.preventDefault();
             const text = document.getElementById("search-products-input").value;
-            window.location.assign(`/products${text ? `?text=${encodeURIComponent(text)}` : ""}`);    
+            window.location.assign(`/products${text ? `?text=${encodeURIComponent(text)}` : ""}`);
         };
     }
 }
