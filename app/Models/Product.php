@@ -28,6 +28,16 @@ class Product extends Model {
         return $this->belongsToMany(Photo::class, 'product_photo', 'product_id', 'photo_id');
     }
 
+    /**
+     * Serialize a product to json
+     */
+    public function serialize() {
+        $prodJson = json_decode($this->toJson());
+        $prodJson->photos = $this->photos->map(fn ($photo) => $photo->url);
+        $prodJson->attributes = json_decode($prodJson->attributes);
+        return $prodJson;
+    }
+
     /** 
      * The attributes that should be hidden for arrays.
      *

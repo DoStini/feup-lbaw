@@ -21,6 +21,21 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/address/zipcode', 'AddressController@zipCode');
+
+Route::group(
+    [
+        'prefix' => 'users/{id}/private/address',
+        'middleware' => ['auth.api', 'user.owner.admin'],
+    ],
+    function () {
+        Route::get('/', 'AddressController@get');
+        Route::post('/add', 'AddressController@create');
+        Route::post('/{address_id}/edit', 'AddressController@edit');
+        Route::delete('/{address_id}/remove', 'AddressController@remove');
+    }
+);
+
 Route::group(
     [
         'prefix' => 'users/cart',

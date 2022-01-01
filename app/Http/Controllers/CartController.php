@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ApiError;
 use App\Exceptions\UnexpectedErrorLogger;
+use App\Models\Coupon;
+use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Shopper;
@@ -11,10 +14,13 @@ use ErrorException;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Type\Integer;
 
 class CartController extends Controller {
@@ -107,12 +113,9 @@ class CartController extends Controller {
     private function cartToJson($cart) {
         return $cart->map(
             function ($product) {
-                $prodJson = json_decode($product->toJson());
-                $prodJson->photos = $product->photos->map(fn ($photo) => $photo->url);
-                $prodJson->attributes = json_decode($prodJson->attributes);
+                $prodJson = $product->serialize();
                 $prodJson->amount = $prodJson->details->amount;
                 unset($prodJson->details);
-
                 return $prodJson;
             },
         );
@@ -270,6 +273,132 @@ class CartController extends Controller {
         $cartTotal = $this->cartPrice($cart);
 
         return view("pages.checkout", ["cart" => $cart, "shopper" => $shopper, "cartTotal" => $cartTotal]);
+    }
+
+    /**
+     *
+     * @param Array $data
+     * @param Shopper $shopper
+     */
+    private function getCheckoutValidator($data, $addresses) {
+        return Validator::make($data, [
+            "address-id" => [
+                "required",
+                "min:1",
+                "exists:address,id",
+                "integer",
+                Rule::in($addresses)
+            ],
+            "coupon-id" => "nullable|exists:coupon,id|integer|min:1",
+            "payment-type" => "required|string|in:paypal,bank"
+        ], [], [
+            "address-id" => "address",
+            "coupon-id" => "coupon",
+            "payment-type" => "payment type",
+        ]);
+    }
+
+    private function validateCoupon($coupon, $cart_price) {
+        if(!$coupon->is_active) {
+            return redirect()->back()->withErrors(['coupon-id' => 'The selected coupon is not active.'])->withInput();
+        }
+
+        if($coupon->minimum_cart_value > $cart_price) {
+            return redirect()->back()->withErrors(['coupon-id' => "The cart's total cost does not meet the selected coupon's minimum cart cost."])->withInput();
+        }
+    }
+
+    private function validateStock($cart) {
+        $products = [];
+
+        foreach ($cart as $product) {
+            if($product->details->amount > $product->stock) {
+                array_push($products, $product);
+            }
+        }
+
+        if(!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
+    }
+
+    private function validateCheckoutData(Request $request) {
+        $user = Auth::user();
+        $shopper = Shopper::find($user->id);
+        $cart = $shopper->cart;
+
+        if($cart->isEmpty()) {
+            return redirect()->back()->withErrors(["cart" => "The cart is empty."])->withInput();
+        }
+
+        $addressesID = array_map(fn($address): int => $address["id"], $shopper->addresses->toArray());
+
+        $validator = $this->getCheckoutValidator($request->all(), $addressesID);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        if($request->has("coupon-id") && !is_null($request->input("coupon-id"))) {
+            $cart_price = $this->cartPrice($cart);
+
+            $coupon = Coupon::find($request->input("coupon-id"));
+            $result = $this->validateCoupon($coupon, $cart_price);
+            if(!is_null($result)) {
+                return $result;
+            }
+        }
+
+        $result = $this->validateStock($cart);
+        if(!is_null($result)) {
+            return $result;
+        }
+    }
+
+    private function addPayment(Request $request, $order_id) {
+        $order = Order::find($order_id);
+
+        $payment = new Payment;
+        $payment->order_id = $order_id;
+
+        if($request->input("payment-type") == 'bank') {
+            $payment->entity = "12345";
+            $payment->reference = rand(10,10000);
+        } else {
+            $payment->paypal_transaction_id = rand(10,10000);
+        }
+
+        $payment->value = $order->total;
+        $payment->save();
+
+        return $order_id;
+    }
+
+    public function checkout(Request $request) {
+        $result = $this->validateCheckoutData($request);
+        if(!is_null($result)) {
+            return $result;
+        }
+
+        $addressID = $request->input("address-id");
+        $couponID = $request->input("coupon-id");
+        $order_id;
+
+        try {
+            DB::beginTransaction();
+            DB::unprepared("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
+
+            DB::statement("CALL create_order(?, ?, ?);", [Auth::user()->id, $addressID, $couponID]);
+
+            $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
+            $this->addPayment($request, $order_id);
+
+            DB::commit();
+        } catch(QueryException $ex) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
+        }
+
+
+        return redirect("/orders/".$order_id);
     }
 
     /**

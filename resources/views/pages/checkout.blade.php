@@ -5,7 +5,8 @@
 @section('content')
 
 <div class="container">
-    <form class="row" method="POST" action="">
+    <form class="row" method="POST" action="{{route('checkout')}}">
+        @csrf
         <div class="col-md-8">
             <section id="order-address" class="mb-4">
                 <h2 class="mb-4">Address</h2>

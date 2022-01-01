@@ -35,6 +35,12 @@ function jsonBodyDelete(path, data) {
     );
 }
 
+function deleteRequest(path) {
+    return window.axios.delete(
+        path,
+    );
+}
+
 function get(path) {
     return window.axios.get(path);
 }

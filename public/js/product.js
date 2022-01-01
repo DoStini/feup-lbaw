@@ -14,23 +14,6 @@ $(`#quantity-container`).append(createNumberSelector({
 }));
 
 const addToCartButton = document.getElementById('add-to-cart-btn');
-addToCartButton.addEventListener('click', async () => {
-    jsonBodyPost("/api/users/cart/add", {
-        "product_id": productInfo.id ,
-        "amount": parseInt($(`#product-amount-${productInfo.id}`).val()),
-    })
-    .then((response) => {
-        launchSuccessAlert("Added sucessfully to cart");
-    })
-    .catch((error) => {
-        if(error.response) {
-            if(error.response.data) {
-                let errors = "";
-                for(var key in error.response.data.errors) {
-                    errors = errors.concat(error.response.data.errors[key]);
-                }
-                launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
-            }
-        }
-    });
-});
+addToCartButton.addEventListener('click', async () => 
+    addToCartRequest(productInfo.id, parseInt($(`#product-amount-${productInfo.id}`).val()))
+);
