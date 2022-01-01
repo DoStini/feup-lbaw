@@ -25,7 +25,7 @@
                 @endif
 
                 <!-- Notification -->
-                <div class="dropdown mt-1">
+                <div class="dropdown">
                 <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
