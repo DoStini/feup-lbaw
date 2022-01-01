@@ -1,23 +1,23 @@
 @include('partials.errormodal')
 
-<div class="accordion" id="addresses-accordion">
+<div id="address-root" class="accordion" id="addresses-accordion">
     @foreach ($shopper->addresses as $address)
     <div class="accordion-item">
-        <h2 class="accordion-header" id="address-heading{{$loop->index}}">
+        <h2 class="accordion-header" id="address-heading{{$address->id}}">
             <button
                 class="accordion-button collapsed"
                 type="button" data-bs-toggle="collapse"
-                data-bs-target="#address-panel-collapse{{$loop->index}}" 
+                data-bs-target="#address-panel-collapse{{$address->id}}" 
                 aria-expanded="false"
-                aria-controls="address-panel-collapse{{$loop->index}}"
-                id="address-button{{$loop->index}}">
+                aria-controls="address-panel-collapse{{$address->id}}"
+                id="address-button{{$address->id}}">
                 {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
             </button>
         </h2>
-        <div id="address-panel-collapse{{$loop->index}}" 
+        <div id="address-panel-collapse{{$address->id}}" 
             data-bs-parent="#addresses-accordion"
             class="accordion-collapse collapse"
-            aria-labelledby="address-heading{{$loop->index}}"
+            aria-labelledby="address-heading{{$address->id}}"
         >
             <div class="accordion-body row container justify-content-between align-items-center">
                 <div class="col-6">
@@ -33,11 +33,18 @@
     @endforeach
 </div>
 
+<div class="mb-5"></div>
+
 <a id="address-form-collapse-trigger" data-bs-toggle="collapse" href="#address-form-collapse" role="button" aria-expanded="false" aria-controls="address-form-collapse">
 </a>
 <div class="collapse" id="address-form-collapse">
+    <form id="address-form">
     <div class="card card-body container">
-        <div class="row">
+        <div class="row justify-content-between">
+            <h4 class="col-6">New Address</h4>
+            <i id="close-window" class="col-2 bi bi-x-lg"></i>
+        </div>
+        <div class="row justify-content-center">
             <div class="mb-3 col-12 col-lg-8">
                 <label for="street-name" class="form-label">Street</label>
                 <input name="street" class="form-control" id="street-name" placeholder="Street Name">
@@ -61,15 +68,23 @@
                 <label for="district" class="form-label">District</label>
                 <input name="district" class="form-control" id="district" placeholder="Distict" disabled readonly>
             </div>
+                <button class="btn btn-primary mt-3 col-12 col-md-2" type="submit">Submit</button>
+            <input id="zip_code_id" name="zip_code_id" style="visibility:collapse"></input>
         </div>
     </div>
+    </form>
 </div>
 
-{{-- <label for="id_label_single">
-    Click this 
-</label>
-<select class="select-2 js-states form-control" id="id_label_single">
-    <option>ola</option>
-    <option>mundo</option>
-    <option>miro</option>
-</select> --}}
+
+<div class="mb-5"></div>
+<form>
+    <div id="new-address" class="d-flex justify-content-center align-items-center">
+        <button class="btn btn-primary">Add a new address</button>
+    </div>        
+    </div>
+</form>
+
+
+<script>
+    const userId = {{Auth::user()->id}};
+</script>

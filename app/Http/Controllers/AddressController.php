@@ -202,6 +202,7 @@ class AddressController extends Controller {
             $zipJson['id'] = $zip->id;
             $zipJson['county'] = $zip->county->name;
             $zipJson['district'] = $zip->district->name;
+            $zipJson['zip_code'] = $zip->zip_code;
             return $zipJson;
         });
 

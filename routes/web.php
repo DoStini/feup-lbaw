@@ -19,6 +19,7 @@ Route::get('users/cart', 'CartController@show')->name('getCart');
 Route::get('users/orders', 'ShopperController@getOrders')->name('getOrders');
 Route::get('users/{id}', 'UserController@showProfile')->name('getUser');
 Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
+Route::get('users/{id}/private/addresses', 'UserController@getAddresses')->name('addresses');
 
 //Administration
 Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
