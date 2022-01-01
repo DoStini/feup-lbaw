@@ -271,6 +271,16 @@ class CartController extends Controller {
         }
     }
 
+    public function checkoutPage() {
+        $user = Auth::user();
+        $shopper = Shopper::find($user->id);
+        $cart = $shopper->cart;
+
+        $cartTotal = $this->cartPrice($cart);
+
+        return view("pages.checkout", ["cart" => $cart, "shopper" => $shopper, "cartTotal" => $cartTotal]);
+    }
+
     /**
      *
      * @param Array $data
@@ -313,6 +323,12 @@ class CartController extends Controller {
             }
         }
 
+        $products = array_map(function ($entry) {
+            $entry->photos = array_map(function ($photo) { return $photo['url'];}, $entry->photos->toArray());
+            $entry->attributes = json_decode($entry->attributes);
+            return $entry;
+        }, $products);
+
         if(!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
     }
 
@@ -348,8 +364,7 @@ class CartController extends Controller {
         }
     }
 
-    private function addPayment(Request $request) {
-        $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
+    private function addPayment(Request $request, $order_id) {
         $order = Order::find($order_id);
 
         $payment = new Payment;
@@ -364,6 +379,8 @@ class CartController extends Controller {
 
         $payment->value = $order->total;
         $payment->save();
+
+        return $order_id;
     }
 
     public function checkout(Request $request) {
@@ -374,6 +391,7 @@ class CartController extends Controller {
 
         $addressID = $request->input("address-id");
         $couponID = $request->input("coupon-id");
+        $order_id;
 
         try {
             DB::beginTransaction();
@@ -381,7 +399,8 @@ class CartController extends Controller {
 
             DB::statement("CALL create_order(?, ?, ?);", [Auth::user()->id, $addressID, $couponID]);
 
-            $this->addPayment($request);
+            $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
+            $this->addPayment($request, $order_id);
 
             DB::commit();
         } catch(QueryException $ex) {
@@ -391,7 +410,7 @@ class CartController extends Controller {
         }
 
 
-        return redirect("/orders/");
+        return redirect(route('orders', ['id' => $order_id]));
     }
 
     /**
