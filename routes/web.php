@@ -22,6 +22,8 @@ Route::get('users/{id}/private', 'UserController@getEditPage')->name('editPage')
 
 //Administration
 Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
+Route::get('admin/create', 'AdminController@getNewAdminPage')->name('getNewAdminPage');
+Route::post('admin/register', 'AdminController@registerAdmin')->name('registerAdmin');
 
 // Products
 Route::get('products', 'ProductController@search')->name('getProductSearch');
@@ -32,3 +34,4 @@ Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest'
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('register', 'Auth\RegisterController@register')->name('register');
+
