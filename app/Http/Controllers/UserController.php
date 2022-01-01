@@ -127,8 +127,9 @@ class UserController extends Controller {
             ];
 
         $shopper_attrs = null;
+        $user = User::find($id);
 
-        if (!Auth::user()->is_admin)
+        if (!$user->is_admin)
             $shopper_attrs = [
                 'about_me' => $request->input("about-me"),
                 'nif' => $request->input("nif"),
@@ -175,8 +176,6 @@ class UserController extends Controller {
         } else {
             unset($user_attrs["password"]);
         }
-
-        $user = Auth::user();
 
         try {
             DB::beginTransaction();

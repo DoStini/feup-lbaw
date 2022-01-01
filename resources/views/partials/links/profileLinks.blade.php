@@ -17,6 +17,10 @@
         @csrf
         <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>
     </form>
+@elseif(Auth::user()->is_admin && $shopper)
+    <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> About {{$shopper->user->name}} </a>
+    <a href={{route('editPage', ['id' => $shopper->user->id])}} class="my-2 btn btn-primary w-100">  Edit {{$shopper->user->name}}'s Personal Data </a>
+    <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> {{$shopper->user->name}}'s Wishlist </a>
 @else
     <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> About {{$shopper->user->name}} </a>
     <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> {{$shopper->user->name}}'s Wishlist </a>

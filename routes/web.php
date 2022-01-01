@@ -23,11 +23,16 @@ Route::middleware('auth')->get('users/{id}/private/addresses', 'UserController@g
 Route::middleware('auth')->post('users/checkout', 'CartController@checkout')->name('checkout')->middleware(['auth', 'is.shopper']);
 
 //Administration
-Route::middleware('auth')->get('admin', 'AdminController@getDashboard')->name('getDashboard');
+Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
+Route::get('admin/orders', 'AdminController@getOrderDashboard')->name('getOrderDashboard');
+Route::get('admin/users', 'AdminController@getUserDashboard')->name('getUserDashboard');
 
 // Products
 Route::get('products', 'ProductController@search')->name('getProductSearch');
 Route::get('products/{id}', 'ProductController@show')->name('getProduct');
+
+// Orders
+Route::get('orders/{id}', 'OrderController@show')->name('orders');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');

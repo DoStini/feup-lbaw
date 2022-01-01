@@ -1,0 +1,61 @@
+.badge-decoration-none {
+    text-decoration: none;
+}
+
+.badge-clickable {
+    cursor: pointer;
+    background-color: black;
+    color: white;
+}
+
+.badge-clickable:hover {
+    color: white;
+    background-color: rgb(80, 79, 79);
+}
+
+.badge-created {
+    background-color: rgb(25, 140, 218);
+    color: rgb(5, 68, 110);
+}
+
+
+.badge-created:hover {
+    color: rgb(5, 68, 110);
+}
+
+.badge-paid {
+    background-color: rgb(149, 45, 209);
+    color: rgb(88, 10, 133);
+}
+
+.badge-paid:hover {
+    color: rgb(131, 131, 72);
+}
+
+.badge-processing {
+    background-color: yellow;
+    color: rgb(107, 107, 12);
+}
+
+.badge-processing:hover {
+    color: rgb(187, 187, 102);
+}
+
+.badge-shipped {
+    background-color: rgb(55, 155, 80);
+    color: rgb(2, 97, 26);
+}
+
+.badge-shipped:hover {
+    color: rgb(2, 97, 26);
+}
+
+.icon-click {
+    color: black;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.icon-click:hover{
+    color: rgb(63, 63, 63);
+}
