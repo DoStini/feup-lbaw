@@ -1,8 +1,7 @@
 
-
 const currentPriceContainer = document.getElementById('current-price');
 
-$(`#quantity-container`).append(createNumberSelector({
+document.getElementById(`quantity-container`).append(createNumberSelector({
     id: `product-amount-${productInfo.id}`,
     value: 1,
     min: 1,

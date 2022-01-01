@@ -4,7 +4,7 @@ const searchInterval = 500;
 let current = {};
 
 function ensureBounds(target) {
-    if (target.getAttribute("type") !== "number") return; 
+    if (target.getAttribute("type") !== "number") return;
     let min = parseInt(target.getAttribute("min"));
     if (min === NaN) min = -Infinity;
     const max = parseInt(target.getAttribute("max"));
@@ -133,11 +133,13 @@ function createProduct(product, delay) {
 
     element.querySelector("img").addEventListener('click', () => route(`products/${product.id}`, current));
 
-    const cartButton = element.querySelector("button");
-    cartButton.addEventListener("click", (e) => {
-        addToCartRequest(product.id);
-        cartButton.dispatchEvent(new Event("blur"));
-    })
+    if (isShopper) {
+        const cartButton = element.querySelector("button");
+        cartButton.addEventListener("click", (e) => {
+            addToCartRequest(product.id);
+            cartButton.dispatchEvent(new Event("blur"));
+        });
+    }
 
     if (delay !== 0)
         setupAnimation(element.querySelector(".card"), delay);
@@ -180,7 +182,7 @@ function insertProducts(data, shouldAnimate) {
 
     document.getElementById("results-text").innerText = data.docCount ? `${data.docCount} Results` : "No results";
 
-    data.query.forEach((target, idx) => 
+    data.query.forEach((target, idx) =>
         container.appendChild(createProduct(target, factor * (idx + 1) * baseDelay)));
 
     insertNextPageButton(factor * (data.query.length + 1) * baseDelay);
@@ -207,20 +209,18 @@ function handleSearchNewPageProducts() {
     insertProducts(response, true);
 }
 
-function handleSearchProducts() {
-    const response = JSON.parse(this.response);
+function handleSearchProducts(response) {
+    if (response.status !== 200) return;
 
-    if (this.status !== 200) return;
+    current = response.data;
 
-    current = response;
-
-    setNewProducts(response);
+    setNewProducts(response.data);
 }
 
 function restoreCache() {
     if (history.state) {
         current = history.state;
-        insertProducts(history.state, false);    
+        insertProducts(history.state, false);
     } else {
         sendSearchProductsRequest(handleSearchProducts);
     }
@@ -267,7 +267,7 @@ function setupInputForm() {
         elem.onsubmit = (e) => {
             e.preventDefault();
             const text = document.getElementById("search-products-input").value;
-            window.location.assign(`/products${text ? `?text=${encodeURIComponent(text)}` : ""}`);    
+            window.location.assign(`/products${text ? `?text=${encodeURIComponent(text)}` : ""}`);
         };
     }
 }
@@ -278,7 +278,7 @@ function sendSearchProductsRequest(callback, page) {
         ...getInputs(),
     }
 
-    sendAjaxQueryRequest('get', `/api/products`, query, callback);
+    getQuery(`/api/products`, query).then(callback);
 }
 
 
