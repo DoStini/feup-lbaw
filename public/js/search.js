@@ -209,14 +209,12 @@ function handleSearchNewPageProducts() {
     insertProducts(response, true);
 }
 
-function handleSearchProducts() {
-    const response = JSON.parse(this.response);
+function handleSearchProducts(response) {
+    if (response.status !== 200) return;
 
-    if (this.status !== 200) return;
+    current = response.data;
 
-    current = response;
-
-    setNewProducts(response);
+    setNewProducts(response.data);
 }
 
 function restoreCache() {
@@ -280,7 +278,7 @@ function sendSearchProductsRequest(callback, page) {
         ...getInputs(),
     }
 
-    sendAjaxQueryRequest('get', `/api/products`, query, callback);
+    getQuery(`/api/products`, query).then(callback);
 }
 
 

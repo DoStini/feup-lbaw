@@ -32,3 +32,7 @@ function deleteRequest(path) {
 function get(path) {
     return window.axios.get(path);
 }
+
+function getQuery(path, query) {
+    return window.axios.get(path, {params : query});
+}
