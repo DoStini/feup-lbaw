@@ -302,7 +302,6 @@ function setupListeners() {
 const collapse = document.getElementById('address-form-collapse-trigger');
 const form = document.getElementById("address-form");
 
-<<<<<<< HEAD
 form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = Object.fromEntries((new FormData(e.target)).entries());
@@ -352,8 +351,6 @@ document.getElementById("new-address").addEventListener("click", (e) => {
     openCollapse();
     newAction();
 });
-=======
 if (collapse) {
     setupListeners();
 }
->>>>>>> origin/main
