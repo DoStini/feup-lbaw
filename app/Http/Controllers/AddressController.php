@@ -69,14 +69,6 @@ class AddressController extends Controller {
         ]);
     }
 
-    /**
-     * Verifies if a given address belongs to the shopper
-     *
-     * @return boolean
-     */
-    private function addressInShopper(Address $address, Shopper $shopper) {
-        return $shopper->addresses->contains($address);
-    }
 
     /**
      * Retrieves the addresses associated to a user
@@ -84,6 +76,7 @@ class AddressController extends Controller {
      * @return array
      */
     private function retrieveAddresses(Shopper $shopper) {
+
         return $shopper->addresses->map(
             function ($addr) {
                 $address = $addr->aggregate();
@@ -98,6 +91,9 @@ class AddressController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function get(Request $request, $id) {
+
+        $this->authorize('view');
+
         if (($v = $this->validateGet($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
@@ -113,6 +109,9 @@ class AddressController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request, $id) {
+
+        $this->authorize('create');
+
         if (($v = $this->validateCreate($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
@@ -141,13 +140,11 @@ class AddressController extends Controller {
             return ApiError::validatorError($v->errors());
         }
 
-        $shopper = Shopper::find($id);
-        $address = Address::find($request->address_id);
+        $addressId = $request->address_id;
 
-        if (!$this->addressInShopper($address, $shopper)) {
-            return ApiError::addressNotInUser();
-        }
+        $this->authorize('update', $addressId);
 
+        $address = Address::find($addressId);
 
         $address->update(array_filter([
             "street" => $request->street,
@@ -170,12 +167,11 @@ class AddressController extends Controller {
         }
 
         $addressId = $request->address_id;
+
+        $this->authorize('delete', $addressId);
+
         $shopper = Shopper::find($id);
         $address = Address::find($addressId);
-
-        if (!$this->addressInShopper($address, $shopper)) {
-            return ApiError::addressNotInUser();
-        }
 
         $shopper->addresses()->detach($addressId);
 

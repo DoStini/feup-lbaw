@@ -62,6 +62,8 @@ class ProductController extends Controller {
                         $word = $word . ':*';
                     $val = implode(' & ', $words);
                     return $q->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
                         ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
                 })
                 ->when($request->input('price-min'), function ($q) use ($request) {
