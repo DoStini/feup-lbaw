@@ -27,11 +27,9 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewOwnProfile(User $user)
+    public function viewProfile(User $user, User $model)
     {
-        return $user->is_admin
-        ? Response::deny('No such page for admin.')
-        : Response::allow();
+        return !$model->is_admin || ($user->id == $model->id);
     }
 
     /**

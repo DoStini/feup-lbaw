@@ -43,7 +43,9 @@ class UserController extends Controller {
      */
     public function showProfile($id) {
 
-        $response = Gate::inspect('viewOwnProfile', User::class);
+        $user = User::find($id);
+
+        $response = Gate::inspect('viewProfile', [User::class, $user]);
 
         if($response->denied()) abort(404, $response->message());
 
