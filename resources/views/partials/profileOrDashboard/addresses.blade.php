@@ -99,8 +99,8 @@
         addresses[ "{{$address->id}}" ] = {
             zip_code: "{{$address->zip_code->zip_code}}",
             zip_code_id: "{{$address->zip_code->id}}",
-            street: "{{$address->street}}",
-            door: "{{$address->door}}",
+            street: "{{addslashes($address->street)}}",
+            door: "{{addslashes($address->door)}}",
             county: "{{$address->zip_code->county->name}}",
             district: "{{$address->zip_code->county->district->name}}",
         }
