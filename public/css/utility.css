@@ -8,6 +8,10 @@
     color: white;
 }
 
+#updatable-orders-dashboard .dropdown-menu {
+    width: 15rem;
+}
+
 .badge-clickable:hover {
     color: white;
     background-color: rgb(80, 79, 79);

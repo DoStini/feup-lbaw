@@ -100,7 +100,7 @@ class AdminController extends Controller {
 
         return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'generalDashboard']);
     }
-    
+
     public function getNewAdminPage() {
 
         $this->authorize('isAdmin', User::class);
@@ -128,7 +128,9 @@ class AdminController extends Controller {
                                 ->orderBy('timestamp', 'asc')
                                 ->get(['order.id','name','shopper_id','timestamp','total','status']); //need to add created_at and updated_at in sql
 
-        return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'orderDashboard']);
+        $statuses = OrderController::getPossibleStatus();
+
+        return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info,'statuses' => $statuses, 'page' => 'orderDashboard']);
     }
 
     public function getUserDashboard() {
