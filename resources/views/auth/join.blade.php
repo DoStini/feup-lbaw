@@ -24,7 +24,7 @@
 
                 <div class="form-group">
                     <label for="email-login">Email</label>
-                    <input id="email-login" class="form-control" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
+                    <input id="email-login" class="form-control" type="email" name="email" value="{{ $errors->hasBag('login_form')  ? old('email') : "" }}" required autofocus onkeypress="return event.charCode != 32">
                     @if ($errors->login_form->has('email'))
                         <span class="error form-text">
                         {{ $errors->login_form->first('email') }}
@@ -82,7 +82,12 @@
 
                 <div class="form-group">
                     <label for="name-register">Name</label>
-                    <input class="form-control" id="name-register" name="name" type="text">
+                    <input class="form-control" id="name-register" name="name" type="text" value="{{ old('name') }}">
+                    @error('name', 'register_form')
+                        <span class="error form-text">
+                            {{$message}}
+                        </span>
+                    @enderror
                 </div>
 
                 {{-- <label for="name-register">Surname</label>
@@ -90,7 +95,7 @@
 
                 <div class="form-group">
                     <label for="email-register">Email</label>
-                    <input class="form-control" id="email-register" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
+                    <input class="form-control" id="email-register" type="email" name="email" value="{{ $errors->hasBag('register_form')  ? old('email') : "" }}" required autofocus onkeypress="return event.charCode != 32">
                     @error('email', 'register_form')
                         <span class="error form-text">
                             {{$message}}

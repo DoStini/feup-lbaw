@@ -5,7 +5,12 @@
 
     <div class="form-group">
         <label for="name-register">Name</label>
-        <input class="form-control" id="name-register" name="name" type="text">
+        <input class="form-control" id="name-register" name="name" type="text" value="{{ old('name') }}">
+        @error('name', 'register_form')
+        <span class="error form-text">
+            {{$message}}
+        </span>
+    @enderror
     </div>
 
     <div class="form-group">
