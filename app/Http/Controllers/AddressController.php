@@ -105,7 +105,7 @@ class AddressController extends Controller {
      */
     public function create(Request $request, $id) {
 
-        $this->authorize('create');
+        $this->authorize('create', Address::class);
 
         if (($v = $this->validateCreate($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -138,7 +138,7 @@ class AddressController extends Controller {
         $addressId = $request->address_id;
         $address = Address::find($addressId);
 
-        $this->authorize('update', $address);
+        $this->authorize('update', [Address::class, $address]);
 
         $address->update(array_filter([
             "street" => $request->street,
@@ -163,7 +163,7 @@ class AddressController extends Controller {
         $addressId = $request->address_id;
         $address = Address::find($addressId);
 
-        $this->authorize('delete', $address);
+        $this->authorize('delete', [Address::class, $address]);
 
         $shopper = Shopper::find($id);
 

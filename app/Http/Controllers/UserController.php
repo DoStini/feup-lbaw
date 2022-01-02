@@ -119,7 +119,7 @@ class UserController extends Controller {
 
         $user = User::find($id);
 
-        $this->authorize('update', $user);
+        $this->authorize('update', [User::class, $user]);
 
         if (!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
             $response = [];
@@ -225,7 +225,7 @@ class UserController extends Controller {
 
         $user = User::find($id);
 
-        $this->authorize('update', $user);
+        $this->authorize('update', [User::class, $user]);
 
         $admin = null;
         $shopper = Shopper::find($id);
@@ -261,14 +261,5 @@ class UserController extends Controller {
                 401
             );
         }
-    }
-
-    public function getAddresses($id) {
-
-        $shopper = Shopper::find($id);
-
-        $this->authorize('view', [Address::class, $shopper]);
-
-        return view('pages.profile', ['shopper' => $shopper, 'page' => 'addresses']);
     }
 }

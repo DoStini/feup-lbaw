@@ -27,4 +27,13 @@ class ShopperController extends Controller {
 
         return view('pages.profile', ['shopper' => $shopper, 'page' => 'showShopperOrders']);
     }
+
+    public function getAddresses($id) {
+
+        $shopper = Shopper::find($id);
+
+        $this->authorize('viewUserAddresses', [Shopper::class, $shopper]);
+
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'addresses']);
+    }
 }

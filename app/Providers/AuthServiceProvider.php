@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Shopper;
+use App\Models\ZipCode;
 use App\Policies\AddressPolicy;
 use App\Policies\CouponPolicy;
 use App\Policies\UserPolicy;

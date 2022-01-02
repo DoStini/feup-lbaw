@@ -16,7 +16,7 @@ class OrderController extends Controller
 
         $order = Order::find($id);
 
-        $this->authorize('view', $order);
+        $this->authorize('view', [Order::class, $order]);
 
         $order = Order::leftJoin('users', 'order.shopper_id', '=', 'users.id')
                         ->leftJoin('authenticated_shopper', 'order.shopper_id', '=', 'authenticated_shopper.id')
@@ -72,7 +72,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, int $id) {
 
-        $this->authorize('updateAny');
+        $this->authorize('updateAny', Order::class);
 
         $data = [
             "id" => $id,

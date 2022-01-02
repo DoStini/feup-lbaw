@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ApiError;
-use App\Models\Photo;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 use Illuminate\Support\Facades\Validator;
-use App\Models\Shopper;
 use App\Models\ZipCode;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Hash;
 
-class ShopperController extends Controller {
+class ZipCodeController extends Controller {
 
     private function validateZipCode(Request $request) {
         return Validator::make($request->all(), [

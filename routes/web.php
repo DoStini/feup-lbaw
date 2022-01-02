@@ -21,7 +21,7 @@ Route::middleware('auth')->get('users/cart', 'CartController@show')->name('getCa
 Route::middleware('auth')->get('users/orders', 'ShopperController@getOrders')->name('getOrders');
 Route::middleware('auth')->get('users/{id}', 'UserController@showProfile')->name('getUser');
 Route::middleware('auth')->get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
-Route::middleware('auth')->get('users/{id}/private/addresses', 'UserController@getAddresses')->name('addresses');
+Route::middleware('auth')->get('users/{id}/private/addresses', 'ShopperController@getAddresses')->name('addresses');
 
 //Administration
 Route::post('admin/products/create', 'ProductController@addProduct')->name('addProduct');

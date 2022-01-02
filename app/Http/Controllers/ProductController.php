@@ -145,7 +145,7 @@ class ProductController extends Controller {
 
     public function addProduct(Request $request) {
 
-        $this->authorize('create');
+        $this->authorize('create', Product::class);
 
         $validator = $this->getValidatorAddProduct($request);
         if($validator->fails()) {
