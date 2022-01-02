@@ -35,19 +35,6 @@ class OrderPolicy
         return $user->is_admin || $user->id == $order->shopper_id;
     }
 
-    /**
-     * Determine whether the user can view the checkout page.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewCheckout(User $user, Order $order)
-    {
-        return $user->is_admin
-            ? Response::deny('No such page for admin.')
-            : Response::allow();
-    }
 
     /**
      * Determine whether the user can create models.
@@ -69,7 +56,18 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user)
+    public function update(User $user, Order $order)
+    {
+        //
+    }
+
+        /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function updateAny(User $user)
     {
         return $user->is_admin;
     }

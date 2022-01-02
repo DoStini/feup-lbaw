@@ -72,7 +72,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, int $id) {
 
-        $this->authorize('update');
+        $this->authorize('updateAny');
 
         $data = [
             "id" => $id,

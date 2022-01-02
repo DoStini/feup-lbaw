@@ -63,6 +63,37 @@ class ShopperPolicy
             : Response::allow();
     }
 
+        /**
+     * Determine whether the user can view the checkout page.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewCheckout(User $user, Shopper $shopper)
+    {
+        if($user->is_admin)
+            return Response::deny('No such page for admin.');
+
+        if($shopper->cart->isEmpty()) 
+            return Response::deny('No such page for empty cart.');
+        
+        return Response::allow();
+    }
+
+            /**
+     * Determine whether the user can view the address the shopper owns.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Shopper  $shopper
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewUserAddresses(User $user, Shopper $shopper)
+    {
+
+        return $user->is_admin || $shopper->id == $user->id;
+    }
+
     /**
      * Determine whether the user can create models.
      *

@@ -150,7 +150,7 @@ class CartController extends Controller {
      */
     public function update(Request $request) {
 
-        $response = Gate::inspect('viewCart', Shopper::class);
+        $response = Gate::inspect('updateCart', Shopper::class);
 
         if($response->denied()) abort(404, $response->message());
 
@@ -192,7 +192,7 @@ class CartController extends Controller {
      */
     public function add(Request $request) {
 
-        $response = Gate::inspect('viewCart', Shopper::class);
+        $response = Gate::inspect('updateCart', Shopper::class);
 
         if($response->denied()) abort(404, $response->message());
 
@@ -298,12 +298,13 @@ class CartController extends Controller {
 
     public function checkoutPage() {
 
-        $response = Gate::inspect('viewCheckout', Order::class);
+        $user = Auth::user();
+        $shopper = Shopper::find($user->id);
+
+        $response = Gate::inspect('viewCheckout', [Shopper::class, $shopper]);
 
         if($response->denied()) abort(404, $response->message());
 
-        $user = Auth::user();
-        $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
 
         $cartTotal = $this->cartPrice($cart);

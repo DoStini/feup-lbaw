@@ -63,12 +63,6 @@ class AddressController extends Controller {
         );
     }
 
-    private function validateZipCode(Request $request) {
-        return Validator::make($request->all(), [
-            'code' => 'required|string|min:3',
-        ]);
-    }
-
 
     /**
      * Retrieves the addresses associated to a user
@@ -90,11 +84,11 @@ class AddressController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function get(Request $request, $id) {
+    public function getUserAddresses(Request $request, $id) {
 
         $shopper = Shopper::find($id);
 
-        $this->authorize('view', $shopper);
+        $this->authorize('viewUserAddresses', [Shopper::class, $shopper]);
 
         if (($v = $this->validateGet($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -179,30 +173,5 @@ class AddressController extends Controller {
 
         $addresses = $this->retrieveAddresses($shopper->fresh());
         return response($addresses);
-    }
-
-    /**
-     * Retrieves possible postal codes for a given input
-     */
-    public function zipCode(Request $request) {
-        if (($v = $this->validateZipCode($request))->fails()) {
-            return ApiError::validatorError($v->errors());
-        }
-
-        $query = ZipCode
-            ::where("zip_code", "LIKE", $request->code . "%")
-            ->take(15)
-            ->get();
-
-        $aggregate = $query->map(function ($zip) {
-            $zipJson = [];
-            $zipJson['id'] = $zip->id;
-            $zipJson['county'] = $zip->county->name;
-            $zipJson['district'] = $zip->district->name;
-            $zipJson['zip_code'] = $zip->zip_code;
-            return $zipJson;
-        });
-
-        return $aggregate;
     }
 }
