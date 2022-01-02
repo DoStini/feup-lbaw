@@ -195,7 +195,7 @@ paths:
   /users/{id}:
     get:  
       operationId: R201
-      summary: 'R201: View user  profile'
+      summary: 'R201: View user profile'
       description: 'Show user profile. Access: USR'
       tags:
         - 'M02: User Profiles'
@@ -1207,7 +1207,7 @@ paths:
   /api/users/cart/{product_id}/remove/:
     delete:
       operationId: R403
-      summary: 'R403: Remove a product from cart  API'
+      summary: 'R403: Remove a product from cart API'
       description: "Remove a product from the cart. Access: OWN"
       tags:
         - 'M04: Orders and Shopping Cart'
@@ -1230,8 +1230,8 @@ paths:
   /api/users/cart/update/:
     post:
       operationId: R404
-      summary: 'R404: Set product amount from cart  API'
-      description: "Set product amount of cart. Access: OWN"
+      summary: 'R404: Set product amount on cart API'
+      description: "Set product amount on cart. Access: OWN"
       tags:
         - 'M04: Orders and Shopping Cart'
 
