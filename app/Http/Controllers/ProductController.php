@@ -144,6 +144,9 @@ class ProductController extends Controller {
     }
 
     public function addProduct(Request $request) {
+
+        $this->authorize('create');
+
         $validator = $this->getValidatorAddProduct($request);
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

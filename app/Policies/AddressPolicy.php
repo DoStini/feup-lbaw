@@ -30,9 +30,10 @@ class AddressPolicy
      * @param  \App\Models\Address  $address
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Address $address)
+    public function view(User $user, Shopper $shopper)
     {
-        return Auth::check();
+
+        return $user->is_admin || $shopper->id == Auth::user()->id;
     }
 
     /**

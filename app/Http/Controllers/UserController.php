@@ -42,6 +42,9 @@ class UserController extends Controller {
      * @return Response
      */
     public function showProfile($id) {
+
+        //authorize and return 404 if admin, p.e
+
         $shopper = Shopper::find($id);
         if (!$shopper) {
             if (Auth::user()->id == $id) return redirect("users/" . strval(Auth::user()->id) . "/private");
@@ -111,6 +114,11 @@ class UserController extends Controller {
      * @return Response 200 if OK.
      */
     public function edit(Request $request, int $id) {
+
+        $user = User::find($id);
+
+        $this->authorize('update', $user);
+
         if (!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
             $response = [];
             $response["errors"] = [
@@ -212,18 +220,27 @@ class UserController extends Controller {
     }
 
     public function getEditPage($id) {
+
+        $user = User::find($id);
+
+        $this->authorize('update', $user);
+
         $admin = null;
         $shopper = Shopper::find($id);
-        if (!$shopper && Auth::user()->id == $id) $admin = User::find($id);
+
+        if (!$shopper && Auth::user()->id == $id) $admin = $user;
         return view('pages.profile', ['shopper' => $shopper, 'admin' => $admin, 'page' => 'editUser']);
     }
 
     /**
-     * Search users (excluding admins) according to filters in the query
+     * Search users according to filters in the query
      *
      * @return Response
      */
     public function list(Request $request) {
+
+        $this->authorize('viewAny', User::class);
+
         try {
             $query = User::join('authenticated_shopper', 'users.id', '=', 'authenticated_shopper.id')
                 ->when($request->name, function ($q) use ($request) {
@@ -245,7 +262,11 @@ class UserController extends Controller {
     }
 
     public function getAddresses($id) {
+
         $shopper = Shopper::find($id);
+
+        $this->authorize('view', [Address::class, $shopper]);
+
         return view('pages.profile', ['shopper' => $shopper, 'page' => 'addresses']);
     }
 }

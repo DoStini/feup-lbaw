@@ -386,7 +386,7 @@ class CartController extends Controller {
     private function addPayment(Request $request, $order_id) {
         $order = Order::find($order_id);
         
-        $this->authorize('create', $order, Payment::class);
+        $this->authorize('create', [Payment::class, $order]);
 
         $payment = new Payment;
         $payment->order_id = $order_id;

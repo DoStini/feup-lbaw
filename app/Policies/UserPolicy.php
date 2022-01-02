@@ -17,7 +17,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->is_admin;
     }
 
     /**
@@ -63,7 +63,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        //
+        return $user->is_admin || $user->id == $model->id;
     }
 
     /**

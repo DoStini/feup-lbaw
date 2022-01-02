@@ -20,9 +20,10 @@ class ShopperController extends Controller {
      * @return Response
      */
     public function getCart() {
-        if (!Auth::check()) return redirect('/login');
+        
+        $this->authorize('viewCart');
+
         $user = Auth::user();
-        if ($user->is_admin) return redirect('/login');
 
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
@@ -31,9 +32,10 @@ class ShopperController extends Controller {
     }
 
     public function getOrders() {
-        if (!Auth::check()) return redirect('/login');
+        
+        $this->authorize('viewOrders');
+
         $user = Auth::user();
-        if ($user->is_admin) return redirect('/login');
 
         $shopper = Shopper::find($user->id);
 

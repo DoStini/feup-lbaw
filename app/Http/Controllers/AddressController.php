@@ -92,13 +92,14 @@ class AddressController extends Controller {
      */
     public function get(Request $request, $id) {
 
-        $this->authorize('view');
+        $shopper = Shopper::find($id);
+
+        $this->authorize('view', $shopper);
 
         if (($v = $this->validateGet($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
 
-        $shopper = Shopper::find($id);
         $addresses = $this->retrieveAddresses($shopper);
         return response($addresses);
     }

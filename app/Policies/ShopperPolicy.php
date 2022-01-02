@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Shopper;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class ShopperPolicy
 {
@@ -31,6 +32,30 @@ class ShopperPolicy
     public function view(User $user, Shopper $shopper)
     {
         //
+    }
+
+        /**
+     * Determine whether the user can view the cart.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Shopper  $shopper
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewCart(User $user)
+    {
+        return Auth::check() && !$user->is_admin;
+    }
+
+    /**
+     * Determine whether the user can view its orders.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Shopper  $shopper
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewOrders(User $user)
+    {
+        return Auth::check() && !$user->is_admin;
     }
 
     /**
