@@ -16,12 +16,12 @@ Route::get('/', 'StaticPagesController@home')->name('home');
 // Users
 Route::middleware('auth')->post('users/checkout', 'CartController@checkout')->name('checkout')->middleware(['auth', 'is.shopper']);
 Route::middleware('auth')->get('users/checkout', 'CartController@checkoutPage')->name('checkout-page')->middleware(['auth','is.shopper']);
-Route::middleware('auth')->get('users', 'UserController@getAuth')->name('getUsersPage');
+Route::middleware('auth')->get('users', 'UserController@getAuthProfile')->name('getUsersPage');
 Route::middleware('auth')->get('users/cart', 'CartController@show')->name('getCart');
 Route::middleware('auth')->get('users/orders', 'ShopperController@getOrders')->name('getOrders');
 Route::middleware('auth')->get('users/{id}', 'UserController@showProfile')->name('getUser');
 Route::middleware('auth')->get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
-Route::middleware('auth')->get('users/{id}/private/addresses', 'UserController@getAddresses')->name('addresses');
+Route::middleware('auth')->get('users/{id}/private/addresses', 'ShopperController@getAddresses')->name('addresses');
 
 //Administration
 Route::post('admin/products/create', 'ProductController@addProduct')->name('addProduct');

@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Shopper;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Validator;
@@ -34,6 +35,8 @@ class AdminController extends Controller {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function registerAdmin(Request $request){
+
+        $this->authorize('createAdmin', User::class);
 
         $this->validator($request->all())->validateWithBag('admin_register_form');
 
@@ -85,7 +88,7 @@ class AdminController extends Controller {
      */
     public function getDashboard() {
 
-        $this->authorize('isAdmin', User::class);
+        Gate::authorize('isAdmin');
 
         $info = new stdClass();
 
@@ -103,7 +106,7 @@ class AdminController extends Controller {
     
     public function getNewAdminPage() {
 
-        $this->authorize('isAdmin', User::class);
+        Gate::authorize('isAdmin');
 
         $user = Auth::user();
 
@@ -112,7 +115,7 @@ class AdminController extends Controller {
 
     public function getOrderDashboard() {
 
-        $this->authorize('isAdmin', User::class);
+        Gate::authorize('isAdmin');
 
         $info = new stdClass();
 
@@ -133,7 +136,7 @@ class AdminController extends Controller {
 
     public function getUserDashboard() {
 
-        $this->authorize('isAdmin', User::class);
+        Gate::authorize('isAdmin');
 
         return view('pages.adminDashboard', ['admin' => Auth::user(), 'page' => 'userDashboard']);
     }

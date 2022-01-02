@@ -48,14 +48,13 @@ function setUsers(data) {
     insertUsers(data, true);
 }
 
-function handleSearchUsers() {
-    const response = JSON.parse(this.response);
+function handleSearchUsers(response) {
 
-    if (this.status !== 200) return;
+    const parsedResponse = JSON.parse(response.target.response);
 
-    current = response;
+    if (response.target.status !== 200) return;
 
-    setUsers(response);
+    setUsers(parsedResponse);
 }
 
 function setupSearchListeners() {

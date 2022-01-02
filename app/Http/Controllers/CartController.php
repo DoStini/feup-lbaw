@@ -10,12 +10,14 @@ use App\Models\Payment;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Shopper;
+use App\Policies\CartPolicy;
 use ErrorException;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -31,10 +33,13 @@ class CartController extends Controller {
      * @return Response
      */
     public function show() {
-        if (!Auth::check()) return redirect('/join');
+        
+        $response = Gate::inspect('viewCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
+
         $user = Auth::user();
 
-        //if($user->is_admin) return redirect('/orders');
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
         $cartTotal = $this->cartPrice($cart);
@@ -144,6 +149,11 @@ class CartController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request) {
+
+        $response = Gate::inspect('updateCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
+
         if (($v = $this->validatorUpdate($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
@@ -181,6 +191,11 @@ class CartController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function add(Request $request) {
+
+        $response = Gate::inspect('updateCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
+
         if (($v = $this->validatorAdd($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
@@ -222,6 +237,11 @@ class CartController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(Request $request) {
+
+        $response = Gate::inspect('deleteFromCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
+
         if (($v = $this->validatorDelete($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
@@ -253,6 +273,11 @@ class CartController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function get() {
+
+        $response = Gate::inspect('viewCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
+
         try {
             $user = Auth::user();
             $shopper = Shopper::find($user->id);
@@ -272,8 +297,14 @@ class CartController extends Controller {
     }
 
     public function checkoutPage() {
+
         $user = Auth::user();
         $shopper = Shopper::find($user->id);
+
+        $response = Gate::inspect('viewCheckout', [Shopper::class, $shopper]);
+
+        if($response->denied()) abort(404, $response->message());
+
         $cart = $shopper->cart;
 
         $cartTotal = $this->cartPrice($cart);
@@ -366,6 +397,8 @@ class CartController extends Controller {
 
     private function addPayment(Request $request, $order_id) {
         $order = Order::find($order_id);
+        
+        $this->authorize('create', [Payment::class, $order]);
 
         $payment = new Payment;
         $payment->order_id = $order_id;
@@ -384,6 +417,9 @@ class CartController extends Controller {
     }
 
     public function checkout(Request $request) {
+
+        $this->authorize('create', Order::class);
+
         $result = $this->validateCheckoutData($request);
         if(!is_null($result)) {
             return $result;
@@ -391,7 +427,6 @@ class CartController extends Controller {
 
         $addressID = $request->input("address-id");
         $couponID = $request->input("coupon-id");
-        $order_id;
 
         try {
             DB::beginTransaction();
