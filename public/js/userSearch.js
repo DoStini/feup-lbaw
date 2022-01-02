@@ -15,9 +15,10 @@ function createUser(user) {
             <div class="d-flex justify-content-around" style="font-size: 1.2em;">
                 <a class="bi bi-info-circle-fill icon-click" href="/users/${user.id}" data-bs-toggle="tooltip" title="Go to User Page"></a>
                 <a class="bi bi-pencil-square icon-click px-1" href="/users/${user.id}/private/" data-bs-toggle="tooltip" title="Edit User Info"></a>
-                <a class="bi bi-dash-circle-fill icon-click" data-bs-toggle="tooltip" title="Ban User"></a>
             </div>
         </th>`;
+
+    // <a class="bi bi-dash-circle-fill icon-click" data-bs-toggle="tooltip" title="Ban User"></a>
 
     const element = document.createElement('tr');
     element.style = "visibility: visible";
