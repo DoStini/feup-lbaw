@@ -671,14 +671,6 @@ paths:
       tags:
         - 'M02: User Profiles'
 
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-            minimum: 1
-          required: true
-
       responses:
         '200':
           description: 'Ok. Show Manage Users Page UI17'
