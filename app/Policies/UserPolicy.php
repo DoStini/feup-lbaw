@@ -44,6 +44,17 @@ class UserPolicy
     }
 
     /**
+     * Determine whether the user can create admin models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function createAdmin(User $user)
+    {
+        return $user->is_admin;
+    }
+
+    /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user

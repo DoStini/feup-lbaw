@@ -13,6 +13,9 @@ document.getElementById(`quantity-container`).append(createNumberSelector({
 }));
 
 const addToCartButton = document.getElementById('add-to-cart-btn');
-addToCartButton.addEventListener('click', async () => 
-    addToCartRequest(productInfo.id, parseInt($(`#product-amount-${productInfo.id}`).val()))
-);
+if(addToCartButton) {
+    addToCartButton.addEventListener('click', async () =>
+        addToCartRequest(productInfo.id, parseInt($(`#product-amount-${productInfo.id}`).val()))
+    );
+}
+
