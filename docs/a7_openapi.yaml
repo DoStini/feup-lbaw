@@ -614,17 +614,12 @@ paths:
       tags:
         - 'M02: User Profiles'
 
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                code:
-                  type: string
-              required:
-                - "code"
+      parameters:
+        - in: query
+          name: code
+          description: Partial or total zipcode to search for
+          schema:
+            type: string
 
       responses:
         '200':
@@ -972,6 +967,14 @@ paths:
       description: 'Show product edit page. Access: ADM'
       tags:
         - 'M03: Products'
+      
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
 
       responses:
         '200':
@@ -1350,7 +1353,7 @@ paths:
                 example: '/'
               examples:
                 302Success:
-                  description: 'Successful chekcout. Redirect to order page R407'
+                  description: 'Successful checkout. Redirect to order page R407'
                   value: '/orders/{id}'
                 302Auth:
                   description: 'Failed authentication. Redirect to Login and Register Page'
@@ -1382,6 +1385,14 @@ paths:
       description: 'Show Order page. Access: OWN, ADM'
       tags:
         - 'M04: Orders and Shopping Cart'
+      
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
 
       responses:
         '200':
