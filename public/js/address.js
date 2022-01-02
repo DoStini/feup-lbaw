@@ -1,36 +1,3 @@
-$((function() {
-    $('.address-select').select2({
-        dropdownParent: $('#address-form-collapse'),
-        theme: "bootstrap-5",
-        "language": {
-            "noResults": function(){
-                return "Search for a zip code";
-            }
-        },
-        ajax: {
-            url: 'http://localhost:8000/api/address/zipcode',
-            delay: 500,
-            data: function (params) {
-              const query = {
-                code: params.term,
-              }
-
-              // Query parameters will be ?search=[term]&type=public
-              return query;
-            },
-            processResults: function (data) {
-                data.forEach((el) => el.text = el.zip_code)
-                // Transforms the top-level key of the response object from 'items' to 'results'
-                return {
-                  results: data
-                };
-              }
-          }
-    });
-}));
-
-const collapse = document.getElementById('address-form-collapse-trigger');
-
 let action = {};
 
 function createAddress(data) {
@@ -221,7 +188,7 @@ function setupListeners() {
                 }
             },
             ajax: {
-                url: 'http://localhost:8000/api/address/zipcode',
+                url: '/api/address/zipcode',
                 delay: 500,
                 data: function (params) {
                   const query = {
@@ -298,6 +265,8 @@ function setupListeners() {
         newAction();
     });
 }
+
+const collapse = document.getElementById('address-form-collapse-trigger');
 const form = document.getElementById("address-form");
 
 if (collapse) {
