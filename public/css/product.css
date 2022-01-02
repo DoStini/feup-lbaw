@@ -39,3 +39,19 @@
 .product-slide {
     width: 60%;
 }
+
+.carousel-control-next {
+    transition: background-color 0.3s;
+}
+
+.carousel-control-next:hover {
+    background-color: grey;
+}
+
+.carousel-control-prev {
+    transition: background-color 0.3s;
+}
+
+.carousel-control-prev:hover {
+    background-color: grey;
+}

@@ -6,9 +6,9 @@
                     {{$insertedPhotos = 0;}}
                     @if ($product->photos)
                     @foreach ($product->photos as $photo)
-                    @if (File::exists(public_path($photo->url)))
+                    @if (File::exists(public_path($photo->url)) || filter_var($photo->url, FILTER_VALIDATE_URL))
                     <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
-                        <img class="d-block w-100" src={{asset($photo->url)}}>
+                        <img class="d-block w-100" src={{$photo->url}}>
                     </div>
                     {{$insertedPhotos++;}}
                     @endif
