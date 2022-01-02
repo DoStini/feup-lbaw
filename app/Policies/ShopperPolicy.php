@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Shopper;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
 
 class ShopperPolicy
@@ -43,7 +44,9 @@ class ShopperPolicy
      */
     public function viewCart(User $user)
     {
-        return Auth::check() && !$user->is_admin;
+        return $user->is_admin
+            ? Response::deny('No such page for admin.')
+            : Response::allow();
     }
 
     /**
@@ -55,7 +58,9 @@ class ShopperPolicy
      */
     public function viewOrders(User $user)
     {
-        return Auth::check() && !$user->is_admin;
+        return $user->is_admin
+            ? Response::deny('No such page for admin.')
+            : Response::allow();
     }
 
     /**
@@ -81,6 +86,21 @@ class ShopperPolicy
         //
     }
 
+        /**
+     * Determine whether the user can update the cart.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Shopper  $shopper
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function updateCart(User $user)
+    {
+        return $user->is_admin
+            ? Response::deny('No such page for admin.')
+            : Response::allow();
+    }
+
+
     /**
      * Determine whether the user can delete the model.
      *
@@ -91,6 +111,21 @@ class ShopperPolicy
     public function delete(User $user, Shopper $shopper)
     {
         //
+    }
+
+
+    /**
+     * Determine whether the user can delete a product from the Cart.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Shopper  $shopper
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function deleteFromCart(User $user)
+    {
+        return $user->is_admin
+        ? Response::deny('No such page for admin.')
+        : Response::allow();
     }
 
     /**

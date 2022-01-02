@@ -34,11 +34,12 @@ class CartController extends Controller {
      */
     public function show() {
         
-        Gate::authorize('isShopper');
+        $response = Gate::inspect('viewCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
 
         $user = Auth::user();
 
-        //if($user->is_admin) return redirect('/orders');
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
         $cartTotal = $this->cartPrice($cart);
@@ -149,7 +150,9 @@ class CartController extends Controller {
      */
     public function update(Request $request) {
 
-        Gate::authorize('isShopper');
+        $response = Gate::inspect('viewCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
 
         if (($v = $this->validatorUpdate($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -189,7 +192,9 @@ class CartController extends Controller {
      */
     public function add(Request $request) {
 
-        Gate::authorize('isShopper');
+        $response = Gate::inspect('viewCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
 
         if (($v = $this->validatorAdd($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -233,7 +238,9 @@ class CartController extends Controller {
      */
     public function delete(Request $request) {
 
-        Gate::authorize('isShopper');
+        $response = Gate::inspect('deleteFromCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
 
         if (($v = $this->validatorDelete($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -267,7 +274,9 @@ class CartController extends Controller {
      */
     public function get() {
 
-        Gate::authorize('isShopper');
+        $response = Gate::inspect('viewCart', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
 
         try {
             $user = Auth::user();
@@ -289,7 +298,9 @@ class CartController extends Controller {
 
     public function checkoutPage() {
 
-        Gate::authorize('isShopper');
+        $response = Gate::inspect('viewCheckout', Order::class);
+
+        if($response->denied()) abort(404, $response->message());
 
         $user = Auth::user();
         $shopper = Shopper::find($user->id);

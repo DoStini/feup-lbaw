@@ -14,7 +14,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
 use Exception;
-
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller {
 
@@ -43,7 +43,9 @@ class UserController extends Controller {
      */
     public function showProfile($id) {
 
-        //authorize and return 404 if admin, p.e
+        $response = Gate::inspect('viewOwnProfile', User::class);
+
+        if($response->denied()) abort(404, $response->message());
 
         $shopper = Shopper::find($id);
         if (!$shopper) {
@@ -215,8 +217,8 @@ class UserController extends Controller {
         );
     }
 
-    public function getAuth() {
-        return redirect("/users/" . strval(Auth::id()));
+    public function getAuthProfile() {
+        return redirect(route('getUser', ['id' => Auth::id()]));
     }
 
     public function getEditPage($id) {

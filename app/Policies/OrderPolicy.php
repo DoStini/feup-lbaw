@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
 
 class OrderPolicy
@@ -35,6 +36,20 @@ class OrderPolicy
     }
 
     /**
+     * Determine whether the user can view the checkout page.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewCheckout(User $user, Order $order)
+    {
+        return $user->is_admin
+            ? Response::deny('No such page for admin.')
+            : Response::allow();
+    }
+
+    /**
      * Determine whether the user can create models.
      *
      * @param  \App\Models\User  $user
@@ -42,7 +57,9 @@ class OrderPolicy
      */
     public function create(User $user)
     {
-        return Auth::check() && !$user->is_admin;
+        return $user->is_admin
+            ? Response::deny('No such action for admin.')
+            : Response::allow();
     }
 
     /**
