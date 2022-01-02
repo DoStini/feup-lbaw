@@ -141,10 +141,9 @@ class AddressController extends Controller {
         }
 
         $addressId = $request->address_id;
-
-        $this->authorize('update', $addressId);
-
         $address = Address::find($addressId);
+
+        $this->authorize('update', $address);
 
         $address->update(array_filter([
             "street" => $request->street,
@@ -167,11 +166,11 @@ class AddressController extends Controller {
         }
 
         $addressId = $request->address_id;
+        $address = Address::find($addressId);
 
-        $this->authorize('delete', $addressId);
+        $this->authorize('delete', $address);
 
         $shopper = Shopper::find($id);
-        $address = Address::find($addressId);
 
         $shopper->addresses()->detach($addressId);
 
