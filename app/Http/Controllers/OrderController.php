@@ -71,6 +71,9 @@ class OrderController extends Controller
      * @return Response
      */
     public function update(Request $request, int $id) {
+
+        $this->authorize('update');
+
         $data = [
             "id" => $id,
             "status" => $request->input("status")

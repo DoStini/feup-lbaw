@@ -2,9 +2,11 @@
 
 namespace App\Policies;
 
+use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentPolicy
 {
@@ -39,9 +41,9 @@ class PaymentPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user, Order $order)
     {
-        //
+        return Auth::check() && $user->id == $order->shopper_id;
     }
 
     /**

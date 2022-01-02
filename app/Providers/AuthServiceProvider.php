@@ -18,6 +18,7 @@ use App\Policies\PaymentPolicy;
 use App\Policies\PhotoPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ShopperPolicy;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -49,6 +50,11 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('isAdmin', function (User $user) {
           return $user->is_admin;
         });
+
+        Gate::define('isShopper', function (User $user) {
+          return !$user->is_admin;
+        });
+
 
     }
 }

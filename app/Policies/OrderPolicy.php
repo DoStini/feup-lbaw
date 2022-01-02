@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class OrderPolicy
 {
@@ -41,7 +42,7 @@ class OrderPolicy
      */
     public function create(User $user)
     {
-        //
+        return Auth::check() && !$user->is_admin;
     }
 
     /**
@@ -51,9 +52,9 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Order $order)
+    public function update(User $user)
     {
-        //
+        return $user->is_admin;
     }
 
     /**
