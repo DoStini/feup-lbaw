@@ -9,11 +9,6 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-
-    public function isAdmin(User $user) {
-        return $user->is_admin;
-    }
-
     /**
      * Determine whether the user can view any models.
      *

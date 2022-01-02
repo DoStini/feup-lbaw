@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Shopper;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Providers\RouteServiceProvider;
 use stdClass;
 
@@ -20,7 +21,7 @@ class AdminController extends Controller {
      */
     public function getDashboard() {
 
-        $this->authorize('isAdmin', User::class);
+        Gate::authorize('isAdmin');
 
         $info = new stdClass();
 
@@ -38,7 +39,7 @@ class AdminController extends Controller {
 
     public function getOrderDashboard() {
 
-        $this->authorize('isAdmin', User::class);
+        Gate::authorize('isAdmin');
 
         $info = new stdClass();
 
@@ -59,7 +60,7 @@ class AdminController extends Controller {
 
     public function getUserDashboard() {
 
-        $this->authorize('isAdmin', User::class);
+        Gate::authorize('isAdmin');
 
         return view('pages.adminDashboard', ['admin' => Auth::user(), 'page' => 'userDashboard']);
     }
