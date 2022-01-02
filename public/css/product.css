@@ -8,6 +8,15 @@
     object-fit: cover;
 }
 
+.search-products-item .card-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
 .search-card-top {
     height: 15em;
 }

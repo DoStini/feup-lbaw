@@ -193,20 +193,18 @@ function setNewProducts(data) {
     insertProducts(data, true);
 }
 
-function handleSearchNewPageProducts() {
-    const response = JSON.parse(this.response);
-
-    if (this.status !== 200) return;
+function handleSearchNewPageProducts(response) {
+    if (response.status !== 200) return;
 
     const lastQuery = current.query;
 
-    current = {...response};
+    current = {...response.data};
     current.query = [
         ...lastQuery,
         ...current.query,
     ];
 
-    insertProducts(response, true);
+    insertProducts(response.data, true);
 }
 
 function handleSearchProducts(response) {
