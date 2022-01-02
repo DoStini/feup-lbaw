@@ -209,11 +209,12 @@ function setupCart() {
 }
 
 
-const buttonElem = document.getElementById("cart-dropdown");
-const button = new bootstrap.Dropdown(buttonElem);
 const menu = document.getElementById("cart-dropdown-menu");
 const menuContent = document.getElementById("cart-dropdown-menu-content");
+const buttonElem = document.getElementById("cart-dropdown");
+let button;
 
 if (menu) {
     setupCart();
+    button = new bootstrap.Dropdown(buttonElem);
 }
