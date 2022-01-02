@@ -25,7 +25,7 @@
                 @endif
 
                 <!-- Notification -->
-                <div class="dropdown">
+                {{--<div class="dropdown">
                 <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
@@ -35,7 +35,7 @@
                     <li><a class="dropdown-item" href="#">Another news</a></li>
                     <li><a class="dropdown-item" href="#">Something else here</a></li>
                 </ul>
-                </div>
+                </div>--}}
 
                 <!-- User -->
                 <div class="dropdown">
