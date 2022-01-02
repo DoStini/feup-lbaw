@@ -178,35 +178,40 @@ function handleRemoveClick(e) {
 }
 
 function setupListeners() {
-    $((function() {
-        $('.address-select').select2({
-            dropdownParent: $('#address-form-collapse'),
-            theme: "bootstrap-5",
-            "language": {
-                "noResults": function(){
-                    return "Search for a zip code";
-                }
-            },
-            ajax: {
-                url: '/api/address/zipcode',
-                delay: 500,
-                data: function (params) {
-                  const query = {
-                    code: params.term,
-                  }
+    // $((function() {
+    //     $('.address-select').select2({
+    //         dropdownParent: $('#address-form-collapse'),
+    //         theme: "bootstrap-5",
+    //         "language": {
+    //             "noResults": function(){
+    //                 return "Search for a zip code";
+    //             }
+    //         },
+    //         ajax: {
+    //             url: '/api/address/zipcode',
+    //             delay: 500,
+    //             data: function (params) {
+    //               const query = {
+    //                 code: params.term,
+    //               }
 
-                  // Query parameters will be ?search=[term]&type=public
-                  return query;
-                },
-                processResults: function (data) {
-                    data.forEach((el) => el.text = el.zip_code)
-                    // Transforms the top-level key of the response object from 'items' to 'results'
-                    return {
-                      results: data
-                    };
-                  }
-              }
-        });
+    //               // Query parameters will be ?search=[term]&type=public
+    //               return query;
+    //             },
+    //             processResults: function (data) {
+    //                 data.forEach((el) => el.text = el.zip_code)
+    //                 // Transforms the top-level key of the response object from 'items' to 'results'
+    //                 return {
+    //                   results: data
+    //                 };
+    //               }
+    //           }
+    //     });
+    // }));
+
+    const selectTarget = document.getElementById("select-target");
+    selectTarget.replaceWith(selectTarget, createSelect({
+        id: "zip",
     }));
 
     document.querySelectorAll(".edit-address-btn")
@@ -244,7 +249,7 @@ function setupListeners() {
 
     $("#zip").on("select2:select", (e) => {
         const data = e.params.data;
-        document.querySelector("span.select2-selection__arrow").innerText = "";
+        // document.querySelector("span.select2-selection__arrow").innerText = "";
         document.getElementById('county').value = data.county;
         document.getElementById('district').value = data.district;
         document.getElementById('zip_code_id').value = data.id || data.zip_code_id;
@@ -259,7 +264,7 @@ function setupListeners() {
 
         form.querySelector("h4").innerText = "New address";
         form.dispatchEvent(new Event("reset"));
-        document.querySelector("span.select2-selection__arrow").innerText = "";
+        // document.querySelector("span.select2-selection__arrow").innerText = "";
 
         openCollapse();
         newAction();

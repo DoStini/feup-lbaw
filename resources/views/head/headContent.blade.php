@@ -24,6 +24,7 @@
     <link href="{{ asset('css/login.css') }}" rel="stylesheet">
     <link href="{{ asset('css/checkout.css') }}" rel="stylesheet">
     <link href="{{ asset('css/number.selector.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/select.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cart.css') }}" rel="stylesheet">
     <link href="{{ asset('css/address.css') }}" rel="stylesheet">
     <link href="{{ asset('css/product.css') }}" rel="stylesheet">
@@ -38,6 +39,7 @@
     </script>
     <script type="text/javascript" src={{ asset('js/app.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/lib/uniqueCheckbox.js') }} defer></script>
+    <script type="text/javascript" src={{ asset('js/lib/select.js') }} defer></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
     <link rel="stylesheet" href="{{ asset('css/select2-bootstrap-5-theme.min.css') }}">

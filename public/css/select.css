@@ -1,0 +1,4 @@
+.select-container {
+    overflow-y: auto;
+    max-height: 10em;
+}
