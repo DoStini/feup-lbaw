@@ -7,8 +7,6 @@ dropdownElements.forEach(function (element) {
     dropdowns[element.id] = new bootstrap.Dropdown(element);
 });
 
-/**dropdown-menu-order-status-btn */
-
 function sendOrderStatus(event, id) {
     let requestURL = "/api/orders/";
     const formData = new FormData(document.getElementById(`edit-order-status-form-${id}`));
@@ -20,15 +18,9 @@ function sendOrderStatus(event, id) {
     jsonBodyPost(requestURL,  {'status' : formData.get('status')})
     .then((response) => {
         launchSuccessAlert("Order Updated Successfully!");
-        console.log(response);
     })
     .catch((error) => {
-        launchErrorAlert("There was an error editing the status: " + error.response.data.message + "<br>" + error.response.data["errors"]);
-
-        // reportData("There was an error editing the status", error.response.data["errors"], {
-        //     "id" : "ID",
-        //     "status" : "Status"
-        // });
+        launchErrorAlert("There was an error editing the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
     });
 
     event.preventDefault();
