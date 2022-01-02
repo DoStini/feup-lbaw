@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller {
     /*
@@ -31,7 +32,7 @@ class RegisterController extends Controller {
      * @var string
      */
     public function redirectTo() {
-        return '/users';
+        return route('editPage', ['id' => Auth::id()]);
     }
 
     /**
