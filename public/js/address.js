@@ -212,6 +212,21 @@ function setupListeners() {
     const selectTarget = document.getElementById("select-target");
     selectTarget.replaceWith(selectTarget, createSelect({
         id: "zip",
+        ajax: true,
+        delay: 1000,
+        url: '/api/address/zipcode',
+        data: function (value) {
+            const query = {
+                code: value,
+            }
+            return query;
+        },
+        processResults: function (data) {
+            data.forEach((el) => el.text = el.zip_code)
+            return {
+                results: data
+            };
+        }
     }));
 
     document.querySelectorAll(".edit-address-btn")
