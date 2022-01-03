@@ -1,8 +1,8 @@
-<div class="product container m-0 w-100" data-id={{ $product->id }}>
+<div class="product container m-0 my-5 w-100" data-id={{ $product->id }}>
     <div class="row vw-100">
-        <div class="product-images col-8 d-flex justify-content-center align-items-center">
-            <div id="productCarousel" class="carousel slide product-slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
+        <div class="product-images mt-4 col-8 d-flex justify-content-center align-items-center">
+            <div id="productCarousel" class="carousel slide product-slide product-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner product-carousel">
                     {{$insertedPhotos = 0;}}
                     @if ($product->photos)
                     @foreach ($product->photos as $photo)
