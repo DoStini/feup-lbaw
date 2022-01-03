@@ -33,10 +33,10 @@ class CartController extends Controller {
      * @return Response
      */
     public function show() {
-        
+
         $response = Gate::inspect('viewCart', Shopper::class);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         $user = Auth::user();
 
@@ -152,7 +152,7 @@ class CartController extends Controller {
 
         $response = Gate::inspect('updateCart', Shopper::class);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         if (($v = $this->validatorUpdate($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -194,7 +194,7 @@ class CartController extends Controller {
 
         $response = Gate::inspect('updateCart', Shopper::class);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         if (($v = $this->validatorAdd($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -240,7 +240,7 @@ class CartController extends Controller {
 
         $response = Gate::inspect('deleteFromCart', Shopper::class);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         if (($v = $this->validatorDelete($request))->fails()) {
             return ApiError::validatorError($v->errors());
@@ -276,7 +276,7 @@ class CartController extends Controller {
 
         $response = Gate::inspect('viewCart', Shopper::class);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         try {
             $user = Auth::user();
@@ -299,11 +299,11 @@ class CartController extends Controller {
     public function checkoutPage() {
 
         $user = Auth::user();
-        $shopper = Shopper::find($user->id);
+        $shopper = Shopper::findOrFail($user->id);
 
         $response = Gate::inspect('viewCheckout', [Shopper::class, $shopper]);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         $cart = $shopper->cart;
 
@@ -336,11 +336,11 @@ class CartController extends Controller {
     }
 
     private function validateCoupon($coupon, $cart_price) {
-        if(!$coupon->is_active) {
+        if (!$coupon->is_active) {
             return redirect()->back()->withErrors(['coupon-id' => 'The selected coupon is not active.'])->withInput();
         }
 
-        if($coupon->minimum_cart_value > $cart_price) {
+        if ($coupon->minimum_cart_value > $cart_price) {
             return redirect()->back()->withErrors(['coupon-id' => "The cart's total cost does not meet the selected coupon's minimum cart cost."])->withInput();
         }
     }
@@ -349,18 +349,20 @@ class CartController extends Controller {
         $products = [];
 
         foreach ($cart as $product) {
-            if($product->details->amount > $product->stock) {
+            if ($product->details->amount > $product->stock) {
                 array_push($products, $product);
             }
         }
 
         $products = array_map(function ($entry) {
-            $entry->photos = array_map(function ($photo) { return $photo['url'];}, $entry->photos->toArray());
+            $entry->photos = array_map(function ($photo) {
+                return $photo['url'];
+            }, $entry->photos->toArray());
             $entry->attributes = json_decode($entry->attributes);
             return $entry;
         }, $products);
 
-        if(!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
+        if (!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
     }
 
     private function validateCheckoutData(Request $request) {
@@ -368,46 +370,46 @@ class CartController extends Controller {
         $shopper = Shopper::find($user->id);
         $cart = $shopper->cart;
 
-        if($cart->isEmpty()) {
+        if ($cart->isEmpty()) {
             return redirect()->back()->withErrors(["cart" => "The cart is empty."])->withInput();
         }
 
-        $addressesID = array_map(fn($address): int => $address["id"], $shopper->addresses->toArray());
+        $addressesID = array_map(fn ($address): int => $address["id"], $shopper->addresses->toArray());
 
         $validator = $this->getCheckoutValidator($request->all(), $addressesID);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        if($request->has("coupon-id") && !is_null($request->input("coupon-id"))) {
+        if ($request->has("coupon-id") && !is_null($request->input("coupon-id"))) {
             $cart_price = $this->cartPrice($cart);
 
             $coupon = Coupon::find($request->input("coupon-id"));
             $result = $this->validateCoupon($coupon, $cart_price);
-            if(!is_null($result)) {
+            if (!is_null($result)) {
                 return $result;
             }
         }
 
         $result = $this->validateStock($cart);
-        if(!is_null($result)) {
+        if (!is_null($result)) {
             return $result;
         }
     }
 
     private function addPayment(Request $request, $order_id) {
         $order = Order::find($order_id);
-        
+
         $this->authorize('create', [Payment::class, $order]);
 
         $payment = new Payment;
         $payment->order_id = $order_id;
 
-        if($request->input("payment-type") == 'bank') {
+        if ($request->input("payment-type") == 'bank') {
             $payment->entity = "12345";
-            $payment->reference = rand(10,10000);
+            $payment->reference = rand(10, 10000);
         } else {
-            $payment->paypal_transaction_id = rand(10,10000);
+            $payment->paypal_transaction_id = rand(10, 10000);
         }
 
         $payment->value = $order->total;
@@ -421,7 +423,7 @@ class CartController extends Controller {
         $this->authorize('create', Order::class);
 
         $result = $this->validateCheckoutData($request);
-        if(!is_null($result)) {
+        if (!is_null($result)) {
             return $result;
         }
 
@@ -438,7 +440,7 @@ class CartController extends Controller {
             $this->addPayment($request, $order_id);
 
             DB::commit();
-        } catch(QueryException $ex) {
+        } catch (QueryException $ex) {
             DB::rollBack();
 
             return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();

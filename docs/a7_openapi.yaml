@@ -211,13 +211,6 @@ paths:
       responses:
         '200':
           description: 'Ok. Show Public Profile Page [UI15](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui15-profile-public-profile)'
-        '302':
-          description: 'User is owner, redirect to private page'
-          headers:
-            Location:
-              schema:
-                type: string
-                example: '/users/private/{id}'
         '401':
           description: "Can't show resource because the requester isn't a user."
         '404':
@@ -242,13 +235,8 @@ paths:
       responses:
         '200':
           description: 'Ok. Show Personal Data Page [UI12](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui12-profile-personal-data)'
-        '302':
-          description: 'User is not the owner of the page. Redirect to public profile'
-          headers:
-            Location:
-              schema:
-                type: string
-                example: '/users/{id}'
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
         '404':
           description: 'Not Found. Show Not Found Page'
 
@@ -256,7 +244,7 @@ paths:
     post:  
       operationId: R203
       summary: 'R203: Edit profile private data API'
-      description: 'Processes the edited fields submitted. Access: OWN, ADM'
+      description: 'Processes the submitted edited fields. Access: OWN, ADM'
       tags:
         - 'M02: User Profiles'
       requestBody:
@@ -374,7 +362,7 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'      
 
-  /api/address/{id}/private/address/{address_id}/add:
+  /api/address/{id}/private/address/add:
     post:
       operationId: R205
       summary: 'R205: Add address to user addresses'
@@ -384,12 +372,6 @@ paths:
       parameters:
         - in: path
           name: id
-          schema:
-            type: integer
-            minimum: 1
-          required: true
-        - in: path
-          name: address_id
           schema:
             type: integer
             minimum: 1
@@ -434,7 +416,7 @@ paths:
                   id:
                     type: integer
         '403':
-          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          description: 'Forbidden. Not the owner of this account, or is not admin.'
           content:
             application/json:
               schema:
@@ -653,8 +635,6 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/ValidationError'
-        '406':
-          description: 'Failed when updating database'
         '401':
           description: 'User not authenticated'
           content:
@@ -674,6 +654,69 @@ paths:
       responses:
         '200':
           description: 'Ok. Show Manage Users Page UI17'
+        '403':
+          description: 'Forbidden. Not an admin'
+
+  /admin/create:
+    get:  
+      operationId: R210
+      summary: 'R210: View create admin page'
+      description: 'Show create admin page. Access: ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      responses:
+        '200':
+          description: 'Ok. Show Create Admin Page UI22'
+        '403':
+          description: 'Forbidden. Not an admin'
+    post:
+      operationId: R211
+      summary: 'R211: Create new Admin Action'
+      description: 'Processes the new admin registration form submission. Access: PUB'
+      tags:
+        - 'M02: User Profiles'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - name
+                - password
+
+      responses:
+        '302':
+          description: 'Redirect after processing the new admin information.'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/admin/users'
+              examples:
+                302Success:
+                  description: 'Successful authentication. Redirect to user personal data or to Redirect-URI'
+                  value: '/admin/users'
+                302Error:
+                  description: 'Email invalid or already exists. Redirect to create admin form.'
+                  value: '/admin/create'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string   
 
 
   #M03
@@ -730,7 +773,7 @@ paths:
           description: Page
           schema:
             type: integer
-            minimum: 0
+            minimum: 1
           required: false
         - in: query
           name: page-size
@@ -767,22 +810,6 @@ paths:
           schema:
             type: number
             minimum: 0
-          required: false
-        - in: query
-          name: colors
-          description: Colors of the product
-          schema:
-            type: array
-            items:
-              type: string
-          required: false
-        - in: query
-          name: materials
-          description: Materials of the product
-          schema:
-            type: array
-            items:
-              type: string
           required: false
         - in: query
           name: order
@@ -843,6 +870,9 @@ paths:
                           - 'yellow'
                         materials:
                           - 'wood'
+                      photos:
+                        - "url1"
+                        - "url2"
                       stock: 5
                       description: 'A very beautiful piece of furniture'
                       price:
@@ -857,6 +887,8 @@ paths:
                         materials:
                           - 'wood'
                           - 'wool'
+                      photos:
+                        - "url3"
                       stock: 5
                       description: 'A very cheap piece of furniture'
                       price:
@@ -1110,6 +1142,8 @@ paths:
               schema:
                 type: string
                 example: '/'
+        '404':
+          description: 'Not Found. Show Not Found Page if it is an admin'
 
   /api/users/cart/:
     get:
@@ -1175,6 +1209,9 @@ paths:
                           - 'yellow'
                         materials:
                           - 'wood'
+                      photos:
+                        - 'pic1'
+                        - 'pic2'
                       stock: 5
                       description: 'A very beautiful piece of furniture'
                       price: 325.99
@@ -1189,15 +1226,15 @@ paths:
                         materials:
                           - 'wood'
                           - 'wool'
+                      photos:
+                        - 'pic5'
                       stock: 5
                       description: 'A very cheap piece of furniture'
                       price: 25.99
                       avg_stars: 0.2
                       amount: 1
-        '403':
+        '404':
           description: "User not logged in or is logged in as an admin"
-        '422':
-          description: "Product does not exist, is already in cart, or there is no stock."
 
   /api/users/cart/{product_id}/remove/:
     delete:
@@ -1308,6 +1345,8 @@ paths:
               schema:
                 type: string
                 example: '/'
+        '404':
+          description: "Not Found. Is an admin or shopper doesn't have products"
     post:
       operationId: R410
       summary: 'R410: Checkout current cart action'
