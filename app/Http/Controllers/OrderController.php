@@ -9,19 +9,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class OrderController extends Controller
-{   
+class OrderController extends Controller {
 
     public function show($id) {
 
-        $order = Order::find($id);
+        $order = Order::findOrFail($id);
 
         $this->authorize('view', [Order::class, $order]);
 
         $order = Order::leftJoin('users', 'order.shopper_id', '=', 'users.id')
-                        ->leftJoin('authenticated_shopper', 'order.shopper_id', '=', 'authenticated_shopper.id')
-                        ->where('order.id', '=', $id)
-                        ->first(['order.id AS id', 'order.*', 'users.name', 'users.email', 'authenticated_shopper.nif', 'authenticated_shopper.phone_number']);
+            ->leftJoin('authenticated_shopper', 'order.shopper_id', '=', 'authenticated_shopper.id')
+            ->where('order.id', '=', $id)
+            ->first(['order.id AS id', 'order.*', 'users.name', 'users.email', 'authenticated_shopper.nif', 'authenticated_shopper.phone_number']);
 
         return view('pages.order', ['order' => $order]);
     }
@@ -86,6 +85,7 @@ class OrderController extends Controller
 
         return response()->json(
             ["updated-order" => $order],
-        200);
+            200
+        );
     }
 }

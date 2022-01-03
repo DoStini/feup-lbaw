@@ -43,11 +43,11 @@ class UserController extends Controller {
      */
     public function showProfile($id) {
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
 
         $response = Gate::inspect('viewProfile', [User::class, $user]);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         $shopper = Shopper::find($id);
         if (!$shopper) {
@@ -225,7 +225,7 @@ class UserController extends Controller {
 
     public function getEditPage($id) {
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
 
         $this->authorize('update', [User::class, $user]);
 
