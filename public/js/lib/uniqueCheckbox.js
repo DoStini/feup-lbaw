@@ -1,5 +1,5 @@
 function setupUniqueCheckboxes(formId, onChange) {
-    const formTargets = $(`#${formId} input[unique][type='checkbox']`).toArray();
+    const formTargets = [...document.querySelectorAll(`#${formId} input[unique][type='checkbox']`)];
     
     formTargets.forEach((elem) => {
         elem.addEventListener('change', (e) => {
@@ -7,8 +7,9 @@ function setupUniqueCheckboxes(formId, onChange) {
                 const group = e.currentTarget.getAttribute("group");
                 const id = e.currentTarget.id;
     
-                const targets = $(`#${formId} input[unique][type='checkbox'][id!=${id}][group=${group}]`).toArray();
-                
+                const targets = [...document
+                    .querySelectorAll(`#${formId} input[unique][type='checkbox'][group=${group}]:not([id=${id}])`)];
+
                 targets.forEach((elem) => elem.checked = false);
             }
 

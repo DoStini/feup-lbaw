@@ -1,4 +1,4 @@
-const alertPlaceholder = $('#alert-placeholder');
+const alertPlaceholder = document.getElementById('alert-placeholder');
 
 function launchSuccessAlert(message) {
     launchAlert(message, 'success')

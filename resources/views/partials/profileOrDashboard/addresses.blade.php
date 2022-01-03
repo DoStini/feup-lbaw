@@ -62,7 +62,8 @@
                 <label for="zip" class="form-label">
                     Zip Code
                 </label>
-                <select class="address-select form-select" id="zip">
+                <div id="select-target"></div>
+                {{-- <select class="address-select form-select" id="zip"> --}}
                 </select>
             </div>
             <div class="mb-3 col-12 col-lg-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Choose a zip code and we will fill this out for you">
@@ -98,8 +99,8 @@
         addresses[ "{{$address->id}}" ] = {
             zip_code: "{{$address->zip_code->zip_code}}",
             zip_code_id: "{{$address->zip_code->id}}",
-            street: "{{$address->street}}",
-            door: "{{$address->door}}",
+            street: "{{addslashes($address->street)}}",
+            door: "{{addslashes($address->door)}}",
             county: "{{$address->zip_code->county->name}}",
             district: "{{$address->zip_code->county->district->name}}",
         }
