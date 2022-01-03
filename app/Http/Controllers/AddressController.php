@@ -86,7 +86,7 @@ class AddressController extends Controller {
      */
     public function getUserAddresses(Request $request, $id) {
 
-        $shopper = Shopper::find($id);
+        $shopper = Shopper::findOrFail($id);
 
         $this->authorize('viewUserAddresses', [Shopper::class, $shopper]);
 

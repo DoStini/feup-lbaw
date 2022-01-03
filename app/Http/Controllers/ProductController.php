@@ -22,7 +22,7 @@ class ProductController extends Controller {
      * @return Response
      */
     public function show($id) {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
         return view('pages.product', ['product' => $product]);
     }
 
@@ -58,7 +58,7 @@ class ProductController extends Controller {
                 ->whereRaw('stock > 0')
                 ->when($request->text, function ($q) use ($request) {
                     $words = explode(' ', $request->text);
-                    foreach($words as &$word)
+                    foreach ($words as &$word)
                         $word = $word . ':*';
                     $val = implode(' & ', $words);
                     return $q->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
@@ -135,7 +135,7 @@ class ProductController extends Controller {
         $messages = [];
 
         foreach ($photos as $key => $val) {
-            $messages[$key.'.image'] = $val->getClientOriginalName() . " must be an image.";
+            $messages[$key . '.image'] = $val->getClientOriginalName() . " must be an image.";
         }
 
         return Validator::make($photos, [
@@ -148,13 +148,13 @@ class ProductController extends Controller {
         $this->authorize('create', Product::class);
 
         $validator = $this->getValidatorAddProduct($request);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $photos = $request->file('photos');
         $validator = $this->getValidatorPhotos($photos);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -171,7 +171,7 @@ class ProductController extends Controller {
                 "price" => $request->input('price'),
             ]);
 
-            foreach($photos as $productPhoto) {
+            foreach ($photos as $productPhoto) {
                 $path = $productPhoto->storePubliclyAs(
                     "images/product",
                     "product" . $product->id . "-" . uniqid() . "." . $productPhoto->extension(),
@@ -187,7 +187,7 @@ class ProductController extends Controller {
             }
 
             DB::commit();
-        } catch(QueryException $ex) {
+        } catch (QueryException $ex) {
             DB::rollBack();
 
             Storage::disk('public')->delete($savedPhotos);
