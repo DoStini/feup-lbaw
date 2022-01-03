@@ -46,14 +46,14 @@
             <h3> {{$product->price}} €</h3>
         </div>
 
-        <div>
+        {{-- <div>
             <h4> Available Colors </h4>
             @if($product->attributes)
                 @foreach (json_decode($product->attributes)->color as $color)
                 <span class="dot" style="--color: {{$color}}"></span>
                 @endforeach
             @endif
-        </div>
+        </div> --}}
 
         <!---<h3> Stock </h3>
             <p>{{$product->stock}}</p>
