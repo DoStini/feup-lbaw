@@ -1,0 +1,8 @@
+.number-selector button {
+    font-size: 0.5em;
+}
+
+.number-selector button:focus {
+    outline: none;
+    box-shadow: none;
+}
