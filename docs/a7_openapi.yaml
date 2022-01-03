@@ -1,0 +1,1527 @@
+openapi: 3.0.0
+
+info:
+  title: 'reFurniture Web API'
+  version: '1.0'
+  description: 'Web Resources Specification (A7) for reFurniture'
+
+servers:
+- url: http://lbaw.fe.up.pt/
+  description: Production server
+- url: http://localhost:8000/
+  description: Local Server
+
+externalDocs:
+  description: Find more info here.
+  url: https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/eap
+
+tags:
+  - name: 'M01: Authentication'
+  - name: 'M02: User Profiles'
+  - name: 'M03: Products'
+  - name: 'M04: Orders and Shopping Cart'
+  - name: 'M05: Static Pages'
+
+components:
+  schemas:
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Describes what happened
+        errors:
+          type: object
+          description: What fields failed validation and why.
+          additionalProperties:
+            type: array
+            description: Reasons why the field failed validation
+            items:
+              type: string
+            
+
+
+          
+
+
+paths:
+
+  # M01
+
+  /join:
+    get:
+      operationId: R101
+      summary: 'R101: Login and Register Form'
+      description: 'Provide login and register form. Access: PUB'
+      tags:
+        - 'M01: Authentication'
+      parameters:
+        - in: query
+          name: redirect-uri
+          schema:
+            type: string
+          description: 'URI to return when login is successful.'
+      responses:
+        '200':
+          description: 'Ok. Show log-in and register form [UI05](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui05-sign-in-sign-up)'
+        '302':
+          description: 'User already authenticated. Redirect to Home Page (UI 01) or to Redirect-URI query parameter'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+    
+  /login:
+    post:
+      operationId: R102
+      summary: 'R102: Login Action'
+      description: 'Processes the login form submission. Access: PUB'
+      tags:
+        - 'M01: Authentication'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                redirect-uri:
+                  type: string
+                  description: 'URI to return when login is successful.'
+              required:
+                - email
+                - password
+ 
+      responses:
+        '302':
+          description: 'Redirect after processing login credentials.'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+              examples:
+                302Success:
+                  description: 'Successful authentication. Redirect to Home Page or to Redirect-URI'
+                  value: '/'
+                302Error:
+                  description: 'Failed authentication. Redirect to Login and Register Page'
+                  value: '/join?redirect-uri=$redirect-uri'
+
+  /register:
+    post:
+      operationId: R103
+      summary: 'R103: Register Action'
+      description: 'Processes the new user registration form submission. Access: PUB'
+      tags:
+        - 'M01: Authentication'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                redirect-uri:
+                  type: string
+                  description: 'URI to return when login is successful.'
+              required:
+                - email
+                - name
+                - password
+
+      responses:
+        '302':
+          description: 'Redirect after processing the new user information.'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/users/private/{id}'
+              examples:
+                302Success:
+                  description: 'Successful authentication. Redirect to user personal data or to Redirect-URI'
+                  value: '/users/private/{id}'
+                302Error:
+                  description: 'Email invalid or already exists. Redirect to login and register form.'
+                  value: '/join?redirect-uri=$redirect-uri'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+             
+  /logout:
+    post:
+      operationId: R104
+      summary: 'R104: Logout'
+      description: 'Logs the user out of their account. Access: USR, ADM'
+      tags:
+        - 'M01: Authentication'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: "string"
+              example: "/"
+        description: "URI to return when logout is successful."
+      responses:
+        '302':
+          description: 'Redirect user after logout to Home Page or to Redirect-URI.'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+
+
+  #M02
+
+  /users/{id}:
+    get:  
+      operationId: R201
+      summary: 'R201: View user profile'
+      description: 'Show user profile. Access: USR'
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Public Profile Page [UI15](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui15-profile-public-profile)'
+        '302':
+          description: 'User is owner, redirect to private page'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/users/private/{id}'
+        '401':
+          description: "Can't show resource because the requester isn't a user."
+        '404':
+          description: 'Not Found. Show Not Found Page'
+
+  /users/{id}/private:
+    get:  
+      operationId: R202
+      summary: 'R202: View profile private data'
+      description: 'Show the individual user private data. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Personal Data Page [UI12](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui12-profile-personal-data)'
+        '302':
+          description: 'User is not the owner of the page. Redirect to public profile'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/users/{id}'
+        '404':
+          description: 'Not Found. Show Not Found Page'
+
+  /api/users/{id}/private/edit:
+    post:  
+      operationId: R203
+      summary: 'R203: Edit profile private data API'
+      description: 'Processes the edited fields submitted. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data: # Support files
+          # application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                password-confirmation:
+                  type: string
+                cur-password:
+                  type: string
+                name:
+                  type: string
+                phone-number:
+                  type: string
+                birth:
+                  type: string
+                nif:
+                  type: number
+                about-me:
+                  type: string
+                profile-picture:
+                  type: file
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Profile edited successfully.'
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Profile edit failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+
+  /api/users/{id}/private/address:
+    get:
+      operationId: R204
+      summary: "R204: Retrieve user's addresses"
+      description: "Get user's addresses. Access: OWN, ADM"
+      tags:
+        - 'M02: User Profiles'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+            
+      responses:
+        '200':
+          description: 'Retrieve addresses succesfully.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    door:
+                      type: string
+                    county:
+                      type: string
+                    district:
+                      type: string
+                    zip_code:
+                      type: string
+                    id:
+                      type: integer
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'      
+
+  /api/address/{id}/private/address/{address_id}/add:
+    post:
+      operationId: R205
+      summary: 'R205: Add address to user addresses'
+      description: ' Add address to user addresses. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+        - in: path
+          name: address_id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                street:
+                  type: string
+                door:
+                  type: string
+                zip_code_id:
+                  type: string
+              required:
+                - street
+                - door
+                - zip_code_id
+            
+      responses:
+        '200':
+          description: 'Address added succesfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  street:
+                    type: string
+                  door:
+                    type: string
+                  county:
+                    type: string
+                  district:
+                    type: string
+                  zip_code:
+                    type: string
+                  id:
+                    type: integer
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'      
+
+  /api/users/{id}/private/address/{address_id}/edit:
+    post:
+      operationId: R206
+      summary: 'R206: Edit specific address of user addresses'
+      description: 'Edit specific address of user addresses. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+        - in: path
+          name: address_id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                street:
+                  type: string
+                door:
+                  type: string
+                zip_code_id:
+                  type: string
+
+      responses:
+        '200':
+          description: 'Address edited succesfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  street:
+                    type: string
+                  door:
+                    type: string
+                  county:
+                    type: string
+                  district:
+                    type: string
+                  zip_code:
+                    type: string
+                  id:
+                    type: integer
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'    
+      
+  /api/users/{id}/private/address/{address_id}/remove:
+    delete:
+      operationId: R207
+      summary: 'R207: Remove specific address of user addresses'
+      description: 'Remove specific address of user addresses. Access: OWN, ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+        - in: path
+          name: address_id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Address removed succesfully.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    door:
+                      type: string
+                    county:
+                      type: string
+                    district:
+                      type: string
+                    zip_code:
+                      type: string
+                    id:
+                      type: integer
+
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'    
+
+  /api/address/zipcode:
+    get:
+      operationId: R208
+      summary: 'R208: Get the list of possible matches for the requested zipcode'
+      description: "Search for a zipcode. Access: USR"
+      tags:
+        - 'M02: User Profiles'
+
+      parameters:
+        - in: query
+          name: code
+          description: Partial or total zipcode to search for
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: 'Retrieved addresses successfully.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    county:
+                      type: string
+                    district:
+                      type: string
+                    zip_code:
+                      type: string
+                    id:
+                      type: integer
+        '403':
+          description: 'Forbidden. Not the owner of this account, or is not admin, or cur-password does not match current user password.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '406':
+          description: 'Failed when updating database'
+        '401':
+          description: 'User not authenticated'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'    
+
+  /admin/users:
+    get:  
+      operationId: R209
+      summary: 'R209: View manage users page'
+      description: 'Show manage users page. Access: ADM'
+      tags:
+        - 'M02: User Profiles'
+
+      responses:
+        '200':
+          description: 'Ok. Show Manage Users Page UI17'
+
+
+  #M03
+
+  /products:
+    get:  
+      operationId: R301
+      summary: 'R301: View search products page'
+      description: 'Show search products page. Access: PUB'
+      tags:
+        - 'M03: Products'
+
+      responses:
+        '200':
+          description: 'Ok. Show Search Products Page [UI07](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui07-search-products)'
+
+  /products/{id}:
+    get:  
+      operationId: R302
+      summary: 'R302: View product'
+      description: 'Show product page. Access: PUB'
+      tags:
+        - 'M03: Products'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Product Info Page [UI08](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui08-product-info)'
+  
+  /api/products:
+    get:
+      operationId: R303
+      summary: 'R303: Search Products API'
+      description: 'Return products information as JSON. Access: PUB'
+      tags:
+        - 'M03: Products'
+
+      parameters:
+        - in: query
+          name: text
+          description: String to use for full-text search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: page
+          description: Page
+          schema:
+            type: integer
+            minimum: 0
+          required: false
+        - in: query
+          name: page-size
+          description: Entries per page
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 50
+          required: false
+        - in: query
+          name: price-min
+          description: Minimum price of products
+          schema:
+            type: number
+            minimum: 0
+          required: false
+        - in: query
+          name: price-max
+          description: Maxmimum price of products
+          schema:
+            type: number
+            minimum: 0
+          required: false
+        - in: query
+          name: stars-min
+          description: Minimum stars value
+          schema:
+            type: number
+            minimum: 0
+          required: false
+        - in: query
+          name: stars-max
+          description: Maximum stars value
+          schema:
+            type: number
+            minimum: 0
+          required: false
+        - in: query
+          name: colors
+          description: Colors of the product
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+        - in: query
+          name: materials
+          description: Materials of the product
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+        - in: query
+          name: order
+          description: Ordering of results
+          schema:
+            type: string
+            enum:
+              - 'price-asc'
+              - 'price-desc'
+              - 'rate-asc'
+              - 'rate-desc'
+
+
+      responses:
+        '200':
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    name:
+                      type: string
+                    attributes:
+                      type: object
+                      properties:
+                        colors:
+                          type: array
+                          items: 
+                            type: string
+                        materials:
+                          type: array
+                          items:
+                            type: string
+                    stock:
+                      type: integer
+                      minimum: 1
+                    description:
+                      type: string
+                    photos:
+                      type: array
+                      items:
+                        type: string
+                    price:
+                      type: number
+                    avg_stars:
+                      type: number
+                  example:
+                    - id: 2
+                      name: 'Funny Bed'
+                      attributes:
+                        colors:
+                          - 'blue'
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                      stock: 5
+                      description: 'A very beautiful piece of furniture'
+                      price:
+                        type: 325.99
+                      avg_stars: 2.5
+
+                    - id: 1
+                      name: 'Not a very good bed'
+                      attributes:
+                        colors:
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                          - 'wool'
+                      stock: 5
+                      description: 'A very cheap piece of furniture'
+                      price:
+                        type: 25.99
+                      avg_stars: 0.2
+
+  /admin/products/create:
+    get:
+      operationId: R304
+      summary: 'R304: View product creation page'
+      description: 'Show product creation page. Access: ADM'
+      tags:
+        - 'M03: Products'
+
+      responses:
+        '200':
+          description: 'Ok. Show New Product Page UI16'
+        '403':
+          description: 'Forbidden. Not an admin.'
+
+    post:
+      operationId: R305
+      summary: 'R305: Create product Action'
+      description: 'Processes the creation product form. Access: ADM'
+      tags:
+        - 'M03: Products'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data: # Support files
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                attributes:
+                  type: object
+                  properties:
+                    colors:
+                      type: array
+                      items: 
+                        type: string
+                    materials:
+                      type: array
+                      items:
+                        type: string
+                stock:
+                  type: integer
+                  minimum: 0
+                description:
+                  type: string
+                photos:
+                  type: array
+                  items:
+                    type: string ## FILE TYPE
+                price:
+                  type: number
+              required:
+                - name
+                - attributes
+                - stock
+                - description
+                - photos
+                - price
+                
+              example:
+                name: 'Funny Bed'
+                attributes:
+                  colors:
+                    - 'blue'
+                    - 'yellow'
+                  materials:
+                    - 'wood'
+                stock: 5
+                description: 'A very beautiful piece of furniture'
+                price:
+                  type: 325.99
+
+      responses:
+        '201':
+          description: 'Product was created succesfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product-url:
+                    type: string
+                    example: '/products/{id}'
+                  product-name:
+                    type: string
+                    example: 'IKEA Chair'
+        '403':
+          description: "User doesn't have privileges"
+
+  /admin/products/{id}/edit:
+    get:
+      operationId: R306
+      summary: 'R306: View product edit page'
+      description: 'Show product edit page. Access: ADM'
+      tags:
+        - 'M03: Products'
+      
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Edit Product Page UI16'
+        '403':
+          description: 'Forbidden. Not an admin.'
+
+  /api/products/{id}/edit:
+    post:
+      operationId: R307
+      summary: 'R307: Edit product API'
+      description: 'Processes edited fields. Access: ADM'
+      tags:
+        - 'M03: Products'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          
+          multipart/form-data: # Support files
+          # application/x-www-form-urlencoded:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  attributes:
+                    type: object
+                    properties:
+                      colors:
+                        type: array
+                        items: 
+                          type: string
+                      materials:
+                        type: array
+                        items:
+                          type: string
+                  stock:
+                    type: integer
+                    minimum: 0
+                  description:
+                    type: string
+                  photos:
+                    type: array
+                    items:
+                      type: string ## FILE TYPE
+                  price:
+                    type: number
+                required:
+                  - name
+                  - attributes
+                  - stock
+                  - description
+                  - photos
+                  - price
+
+                example:
+                  name: 'Funny Bed'
+                  attributes:
+                    colors:
+                      - 'blue'
+                      - 'yellow'
+                    materials:
+                      - 'wood'
+                  stock: 5
+                  description: 'A very beautiful piece of furniture'
+                  price:
+                    type: 325.99
+      responses:
+        '200':
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  attributes:
+                    type: object
+                    properties:
+                      colors:
+                        type: array
+                        items: 
+                          type: string
+                      materials:
+                        type: array
+                        items:
+                          type: string
+                  stock:
+                    type: integer
+                    minimum: 0
+                  description:
+                    type: string
+                  photos:
+                    type: array
+                    items:
+                      type: string ## FILE TYPE
+                  price:
+                    type: number
+
+                example:
+                  name: 'Funny Bed'
+                  attributes:
+                    colors:
+                      - 'blue'
+                      - 'yellow'
+                    materials:
+                      - 'wood'
+                  stock: 5
+                  description: 'A very beautiful piece of furniture'
+                  price:
+                    type: 325.99         
+ 
+ 
+ #M04
+
+  /users/cart:
+    get:
+      operationId: R401
+      summary: 'R401: View Shopping Cart'
+      description: 'Show Shopping Cart. Access: PUB'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: "Ok. Show Shopping Cart [UI09](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui09-shopping-cart)"
+        '302':
+          description: 'User not logged in. Redirect to Home Page (UI 01).'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+
+  /api/users/cart/:
+    get:
+      operationId: R402
+      summary: 'R402: Get cart api'
+      description: "Return products in user's cart as JSON. Access: OWN"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                        attributes:
+                          type: object
+                          properties:
+                            color:
+                              type: array
+                              items: 
+                                type: string
+                            material:
+                              type: array
+                              items:
+                                type: string
+                        stock:
+                          type: integer
+                        description:
+                          type: string
+                        photos:
+                          type: array
+                          items:
+                            type: string
+                        price:
+                          type: number
+                        avg_stars:
+                          type: number
+                        amount:
+                          type: number
+
+                example:
+                  total: 351.98
+                  items: 
+                    - id: 2
+                      name: 'Funny Bed'
+                      attributes:
+                        colors:
+                          - 'blue'
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                      stock: 5
+                      description: 'A very beautiful piece of furniture'
+                      price: 325.99
+                      avg_stars: 2.5
+                      amount: 1
+
+                    - id: 4
+                      name: 'Not a very good bed'
+                      attributes:
+                        colors:
+                          - 'yellow'
+                        materials:
+                          - 'wood'
+                          - 'wool'
+                      stock: 5
+                      description: 'A very cheap piece of furniture'
+                      price: 25.99
+                      avg_stars: 0.2
+                      amount: 1
+        '403':
+          description: "User not logged in or is logged in as an admin"
+        '422':
+          description: "Product does not exist, is already in cart, or there is no stock."
+
+  /api/users/cart/{product_id}/remove/:
+    delete:
+      operationId: R403
+      summary: 'R403: Remove a product from cart API'
+      description: "Remove a product from the cart. Access: OWN"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200': 
+          description: "Ok. Product was removed from cart"
+        '403':
+          description: "User not logged in or is logged in as an admin"
+        '422':
+          description: "Product does not exist or is not in cart."
+
+  /api/users/cart/update/:
+    post:
+      operationId: R404
+      summary: 'R404: Set product amount on cart API'
+      description: "Set product amount on cart. Access: OWN"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                product-id:
+                  type: integer
+                  minimum: 1
+                amount:
+                  type: integer
+                  minimum: 1
+              required:
+                - product-id
+                - amount
+      responses:
+        '200': 
+          description: "Ok. Product amount was modified to cart"
+        '401':
+          description: "User not logged in"
+        '403':
+          description: "User is logged in as an admin"
+        '422':
+          description: "Product does not exist, or there is not enough stock."
+
+  /api/users/cart/add/:
+    post:
+      operationId: R411
+      summary: 'R411 Add product amount to cart API'
+      description: "Add product amount to cart. Access: OWN"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                product-id:
+                  type: integer
+                  minimum: 1
+                amount:
+                  type: integer
+                  minimum: 1
+              required:
+                - product-id
+                - amount
+      responses:
+        '200': 
+          description: "Ok. Product amount was added to cart"
+        '401':
+          description: "User not logged in"
+        '403':
+          description: "User is logged in as an admin"
+        '422':
+          description: "Product does not exist, or there is not enough stock."
+
+  /users/checkout:
+    get:
+      operationId: R405
+      summary: 'R405: View Checkout Page'
+      description: 'Show Checkout Page. Access: USR'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: "Ok. Show Checkout Page [UI10](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/wikis/er#ui10-checkout)"
+        '302':
+          description: 'User not logged in. Redirect to Home Page (UI 01).'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+    post:
+      operationId: R410
+      summary: 'R410: Checkout current cart action'
+      description: 'Checkout the current user cart. Access: USR'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties: 
+                address-id: 
+                  type: integer
+                  description: ID of the address to send the order.
+                coupon-id:
+                  type: integer
+                  description: ID of the coupon being applied.
+                payment-type:
+                  type: string
+                  description: Payment type used to pay for the order
+              required:
+                - address-id
+                - payment-type
+
+      responses:
+        '302':
+          description: 'Checkout successful, redirect to order page R407 OR User not authenticated and redirect to JOIN page R101 OR Input error and redirect to R405 OR User is ADMIN'
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+              examples:
+                302Success:
+                  description: 'Successful checkout. Redirect to order page R407'
+                  value: '/orders/{id}'
+                302Auth:
+                  description: 'Failed authentication. Redirect to Login and Register Page'
+                  value: '/join'
+                302Validation:
+                  description: 'Coupon not active or does not exist or not applicable, address does not exist or does not belong to shopper, payment-type not valid, product does not have enough stock. Redirect to R405'
+                  value: '/users/checkout'
+        '403':
+          description: 'User is not a shopper'
+
+  /users/orders:
+    get:
+      operationId: R406
+      summary: 'R406: View Profile Purchase History page'
+      description: 'Show Profile Purchase History page. Access: OWN'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: 'Ok. Show Profile Purchase History UI13'
+        '403':
+          description: 'Forbidden. Not the owner.'
+  
+  /orders/{id}:
+    get:
+      operationId: R407
+      summary: 'R407: View Order page'
+      description: 'Show Order page. Access: OWN, ADM'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+      
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      responses:
+        '200':
+          description: 'Ok. Show Profile Purchase History UI13'
+        '403':
+          description: 'Forbidden. Not an admin nor the owner.'
+
+  /admin/orders:
+    get:
+      operationId: R408
+      summary: 'R408: View manage orders page'
+      description: 'Show manage orders page . Access: ADM'
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      responses:
+        '200':
+          description: 'Ok. Show Manage Orders UI18'
+        '403':
+          description: 'Forbidden. Not an admin.'
+
+  /api/orders/{id}/status:
+    post:
+      operationId: R409
+      summary: 'R409: Update order status API'
+      description: "Update order status. Access: ADM"
+      tags:
+        - 'M04: Orders and Shopping Cart'
+
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                    - 'created'
+                    - 'paid'
+                    - 'processing'
+                    - 'shipped'
+      responses:
+        '200':
+          description: 'Ok. Order status was updated.'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Contains the updated order
+                properties:
+                  "updated-order":
+                    type: object
+              example:
+                {
+                  "updated-order": {
+                    "id": 1,
+                    "shopper_id": 6,
+                    "address_id": 6,
+                    "timestamp": "2021-12-27 11:27:04.028898",
+                    "total": "16774.9816",
+                    "subtotal": "64519.16",
+                    "status": "paid",
+                    "coupon_id": 2
+                  }
+                }
+        '422':
+          description: 'Field(s) failed validation'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+        '403':
+          description: 'Forbidden. Not an admin.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+
+ #M05
+
+  /:
+    get:
+      operationId: R501
+      summary: 'R501: View Home Page'
+      description: 'Show Home Page. Access: PUB'
+      tags:
+        - 'M05: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show Home Page UI01'
+
+  /about:
+    get:
+      operationId: R502
+      summary: 'R502: View About Page'
+      description: 'Show About Page. Access: PUB'
+      tags:
+        - 'M05: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show About Page UI02'
+
+  /contacts:
+    get:
+      operationId: R503
+      summary: 'R503: View Contacts Page'
+      description: 'Show Contacts Page. Access: PUB'
+      tags:
+        - 'M05: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show Contacts Us Page UI03'
+
+  /features:
+    get:
+      operationId: R504
+      summary: 'R504: View Main Features Page'
+      description: 'Show Main Features Page. Access: PUB'
+      tags:
+        - 'M05: Static Pages'
+
+      responses:
+        '200':
+          description: 'Ok. Show Main Features Page UI04'
+
