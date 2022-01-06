@@ -19,3 +19,9 @@ if(addToCartButton) {
     );
 }
 
+const wishlistButton = document.getElementById('add-to-wishlist-btn');
+if(wishlistButton) {
+    wishlistButton.addEventListener('click', async () =>
+        addToWishlistRequest(productInfo.id)
+    );
+}

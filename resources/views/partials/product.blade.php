@@ -77,11 +77,12 @@
         <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
             @if(Auth::check() && !Auth::user()->is_admin)
             <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
+            <button id="add-to-wishlist-btn" class="btn btn-primary w-100 my-2">Add to Wishlist</button>
             @elseif(!Auth::check() || !Auth::user()->is_admin)
             <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
             @endif
             @if ($product->stock > 0)
-            <button class="btn btn-success w-100 my-2" disabled>In Stock</button>
+            <button class="btn btn-success w-100 my-2" disabled>{{$product->stock}} in Stock</button>
             @else
             <button class="btn btn-danger w-100 my-2" disabled>Out of Stock</button>
             @endif

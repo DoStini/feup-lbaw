@@ -116,8 +116,11 @@ function createProduct(product, delay) {
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>
                         ${isShopper ?
-                            `<button type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+                            `<button id="add-cart" type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
                                 <i class="bi bi-cart-plus mx-auto"></i>
+                            </button>
+                            <button id="add-wishlist" type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+                                <i class="bi bi-heart-fill mx-auto"></i>
                             </button>`
                             : ""}
                     </div>
@@ -134,10 +137,15 @@ function createProduct(product, delay) {
     element.querySelector("img").addEventListener('click', () => route(`products/${product.id}`, current));
 
     if (isShopper) {
-        const cartButton = element.querySelector("button");
+        const cartButton = element.querySelector("#add-cart");
+        const wishlistButton = element.querySelector("#add-wishlist");
         cartButton.addEventListener("click", (e) => {
             addToCartRequest(product.id);
             cartButton.dispatchEvent(new Event("blur"));
+        });
+        wishlistButton.addEventListener("click", (e) => {
+            addToWishlistRequest(product.id);
+            wishlistButton.dispatchEvent(new Event("blur"));
         });
     }
 

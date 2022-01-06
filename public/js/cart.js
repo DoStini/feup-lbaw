@@ -21,6 +21,26 @@ function addToCartRequest(id, amount) {
     });
 }
 
+function addToWishlistRequest(id, amount) {
+    jsonBodyPost("/api/users/wishlist/add", {
+        "product_id": id ,
+    })
+    .then((response) => {
+        launchSuccessAlert("Added sucessfully to wishlist");
+    })
+    .catch((error) => {
+        if(error.response) {
+            if(error.response.data) {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+                launchErrorAlert("There was an error adding to the wishlist: " + error.response.data.message + "<br>" + errors);
+            }
+        }
+    });
+}
+
 function noProducts() {
     const elem = document.createElement("div");
     elem.className = "container";
