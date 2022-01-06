@@ -6,6 +6,21 @@
         <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>
     </form>
 @elseif (Auth::check() && Auth::user()->id == $shopper->user->id)
+    <ul class="nav nav-tabs v-nav-tabs flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+        </li>
+  </ul>
+
     <a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100"> About Me </a>
     {{--<a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Wishlist </a>--}}
     <a href={{route('editPage', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a>

@@ -1,0 +1,19 @@
+.v-nav-tabs {
+    border: 0;
+}
+
+.v-nav-tabs .nav-link {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0.25rem;
+    border-right: 1px solid #dee2e6;
+    padding: 0.8rem 1rem;
+}
+
+.v-nav-tabs .nav-link.active,
+.v-nav-tabs .nav-item.show .nav-link {
+    border-left: 1px solid #dee2e6;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    border-right: 0;
+}
