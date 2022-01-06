@@ -1,5 +1,5 @@
 @if($admin)
-    <a href={{route('editPage', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a>
+    {{-- <a href={{route('editPage', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a> --}}
     {{--<a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Delete Account </a>--}}
     <form  method="POST" action="{{ route('logout') }}">
         @csrf
