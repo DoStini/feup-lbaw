@@ -64,6 +64,13 @@
             @if ($product->stock > 0)
             <div id="quantity-container" class="w-25">
             </div>
+
+            @if(Auth::check() && !Auth::user()->is_admin)
+            <button id="add-to-wishlist-btn" type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+                <i class="bi bi-heart-fill mx-auto"></i>
+            </button>
+            @endif
+
             <div class="calculated-price">
                 <h6 id="current-price">Subtotal: {{$product->price}} €</h6>
             </div>
@@ -77,7 +84,7 @@
         <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
             @if(Auth::check() && !Auth::user()->is_admin)
             <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
-            <button id="add-to-wishlist-btn" class="btn btn-primary w-100 my-2">Add to Wishlist</button>
+            
             @elseif(!Auth::check() || !Auth::user()->is_admin)
             <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
             @endif
