@@ -86,7 +86,8 @@ class AdminController extends Controller {
      * @return Response
      */
     public function getDashboard() {
-        return redirect(route('getUserDashboard'));
+        Gate::authorize('isAdmin');
+        return redirect(route('getOrderDashboard'));
     }
 
     public function getNewAdminPage() {
