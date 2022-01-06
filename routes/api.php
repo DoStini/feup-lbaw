@@ -43,12 +43,24 @@ Route::group(
 Route::group(
     [
         'prefix' => 'users/cart',
-        'middleware' => ['auth.api', 'is.shopper']
+        'middleware' => ['auth.api']
     ],
     function () {
         Route::get('/', 'CartController@get');
         Route::post('/add', 'CartController@add');
         Route::post('/update', 'CartController@update');
         Route::delete('/{id}/remove', 'CartController@delete');
+    }
+);
+
+Route::group(
+    [
+        'prefix' => 'users/wishlist',
+        'middleware' => ['auth.api']
+    ],
+    function () {
+        Route::get('/', 'WishlistController@get');
+        Route::post('/add', 'WishlistController@add');
+        Route::delete('/{id}/remove', 'WishlistController@delete');
     }
 );

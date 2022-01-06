@@ -8,8 +8,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
 
-class ShopperPolicy
-{
+class ShopperPolicy {
     use HandlesAuthorization;
 
     /**
@@ -18,8 +17,7 @@ class ShopperPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
-    {
+    public function viewAny(User $user) {
         //
     }
 
@@ -30,20 +28,18 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Shopper $shopper)
-    {
+    public function view(User $user, Shopper $shopper) {
         //
     }
 
-        /**
+    /**
      * Determine whether the user can view the cart.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewCart(User $user)
-    {
+    public function viewCart(User $user) {
         return $user->is_admin
             ? Response::deny('No such page for admin.')
             : Response::allow();
@@ -56,40 +52,37 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewOrders(User $user)
-    {
+    public function viewOrders(User $user) {
         return $user->is_admin
             ? Response::deny('No such page for admin.')
             : Response::allow();
     }
 
-        /**
+    /**
      * Determine whether the user can view the checkout page.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewCheckout(User $user, Shopper $shopper)
-    {
-        if($user->is_admin)
+    public function viewCheckout(User $user, Shopper $shopper) {
+        if ($user->is_admin)
             return Response::deny('No such page for admin.');
 
-        if($shopper->cart->isEmpty()) 
+        if ($shopper->cart->isEmpty())
             return Response::deny('No such page for empty cart.');
-        
+
         return Response::allow();
     }
 
-            /**
+    /**
      * Determine whether the user can view the address the shopper owns.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewUserAddresses(User $user, Shopper $shopper)
-    {
+    public function viewUserAddresses(User $user, Shopper $shopper) {
 
         return $user->is_admin || $shopper->id == $user->id;
     }
@@ -100,8 +93,7 @@ class ShopperPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
-    {
+    public function create(User $user) {
         //
     }
 
@@ -112,20 +104,18 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Shopper $shopper)
-    {
+    public function update(User $user, Shopper $shopper) {
         //
     }
 
-        /**
+    /**
      * Determine whether the user can update the cart.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function updateCart(User $user)
-    {
+    public function updateCart(User $user) {
         return $user->is_admin
             ? Response::deny('No such page for admin.')
             : Response::allow();
@@ -139,8 +129,7 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Shopper $shopper)
-    {
+    public function delete(User $user, Shopper $shopper) {
         //
     }
 
@@ -152,11 +141,23 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteFromCart(User $user)
-    {
+    public function deleteFromCart(User $user) {
         return $user->is_admin
-        ? Response::deny('No such page for admin.')
-        : Response::allow();
+            ? Response::deny('No such page for admin.')
+            : Response::allow();
+    }
+
+    /**
+     * Determine whether the user can manage the Wishlist.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Shopper  $shopper
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function manageWishlist(User $user) {
+        return $user->is_admin
+            ? Response::deny('No such page for admin.')
+            : Response::allow();
     }
 
     /**
@@ -166,8 +167,7 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Shopper $shopper)
-    {
+    public function restore(User $user, Shopper $shopper) {
         //
     }
 
@@ -178,8 +178,7 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Shopper $shopper)
-    {
+    public function forceDelete(User $user, Shopper $shopper) {
         //
     }
 }
