@@ -18,8 +18,10 @@ Route::middleware(['auth', 'is.shopper'])->post('users/checkout', 'CartControlle
 Route::middleware('auth')->get('users/checkout', 'CartController@checkoutPage')->name('checkout-page');
 Route::middleware('auth')->get('users', 'UserController@getAuthProfile')->name('getUsersPage');
 Route::middleware('auth')->get('users/cart', 'CartController@show')->name('getCart');
+Route::middleware('auth')->get('users/wishlist', 'WishlistController@redirect')->name('getWishlistPage');
 Route::middleware('auth')->get('users/orders', 'ShopperController@getOrders')->name('getOrders');
 Route::middleware('auth')->get('users/{id}', 'UserController@showProfile')->name('getUser');
+Route::middleware('auth')->get('users/{id}/wishlist', 'WishlistController@show')->name('getWishlist');
 Route::middleware('auth')->get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
 Route::middleware('auth')->get('users/{id}/private/addresses', 'ShopperController@getAddresses')->name('addresses');
 

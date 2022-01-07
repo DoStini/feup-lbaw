@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Shopper;
+use App\Models\User;
 use App\Policies\CartPolicy;
 use ErrorException;
 use Exception;
@@ -42,24 +43,22 @@ class WishlistController extends Controller {
         );
     }
 
+    public function redirect() {
+        return redirect(route('getWishlist', ['id' => Auth::id()]));
+    }
+
     /**
      * Shows cart contents
      *
      * @return Response
      */
-    public function show() {
+    public function show(Request $request) {
+        $userId = $request->route("id");
 
-        $response = Gate::inspect('manageWishlist', Shopper::class);
+        $user = User::findOrFail($userId);
+        $shopper = Shopper::findOrFail($userId);
 
-        if ($response->denied()) abort(404, $response->message());
-
-        $user = Auth::user();
-
-        $shopper = Shopper::find($user->id);
-        $cart = $shopper->cart;
-        $cartTotal = $this->cartPrice($cart);
-
-        return view('pages.cart', ['cart' => $cart, 'cartTotal' => $cartTotal, 'user' => $user]);
+        return view('pages.wishlist', ['wishlist' => $shopper->wishlist, 'user' => $user]);
     }
 
     /**
