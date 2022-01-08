@@ -40,23 +40,6 @@
     width: 60%;
 }
 
-.carousel-control-next {
-    background-color: rgba(160, 160, 160, 0.609);
-    transition: background-color 0.3s;
-}
-
-.carousel-control-next:hover {
-    background-color: rgba(68, 68, 68, 0.609);
-}
-
-.carousel-control-prev {
-    background-color: rgba(160, 160, 160, 0.609);
-    transition: background-color 0.3s;
-}
-
-.carousel-control-prev:hover {
-    background-color: rgba(68, 68, 68, 0.609);
-}
 
 .product-carousel {
     width: 45vw;
