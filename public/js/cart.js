@@ -1,8 +1,5 @@
 let loading = false;
 
-const menu = $("#cart-dropdown-menu");
-const menuContent = $("#cart-dropdown-menu-content");
-
 function addToCartRequest(id, amount) {
     jsonBodyPost("/api/users/cart/add", {
         "product_id": id ,
@@ -34,7 +31,7 @@ function noProducts() {
         </div>
     `;
 
-    menuContent.append(elem);
+    menuContent.appendChild(elem);
 }
 
 function handleDelete(data) {
@@ -45,9 +42,9 @@ function handleDelete(data) {
 function handleUpdate(product, idx, amount, total) {
     product.amount = amount;
 
-    $(`#item-amount-${idx}`).text(formatAmount(product));
-    $(`#item-subtotal-${idx}`).text(formatProductSubtotal(product));
-    $("#price-total").text(`${total}€`);
+    document.getElementById(`item-amount-${idx}`).innerText = formatAmount(product);
+    document.getElementById(`item-subtotal-${idx}`).innerText = formatProductSubtotal(product);
+    document.getElementById("price-total").innerText = `${total}€`;
 }
 
 function formatAmount(product) {
@@ -61,40 +58,37 @@ function formatProductSubtotal(product) {
 function insertProduct(product, idx) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
-    const elem = $(
-        `
-            <div id=cart-product-${idx}>
-                <div class="container" href="#">
-                    <div class="row align-items-center mb-3">
-                        <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
-                        <div class="col-9">
-                            <div class="row align-items-center justify-content-between">
-                                <div class="col-10 dropdown-cart-name">${product.name}</div>
-                                <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
-                            </div>
-                            <div class="row dropdown-cart-amount justify-content-between">
-                                <div id="item-amount-${idx}" class="col px-0">
-                                    ${formatAmount(product)}
-                                </div>
-                                <div id="item-subtotal-${idx}" class="col item-subtotal">
-                                    ${formatProductSubtotal(product)}
-                                </div>
-                            </div>
-                            <div class="row dropdown-cart-amount justify-content-center">
-                                <div id="cart-number-selector-${idx}" class="col-6"></div>
-                            </div>
+    const elem = document.createElement("div");
+    elem.id = `cart-product-${idx}`;
+    elem.innerHTML = 
+        `<div class="container" href="#">
+            <div class="row align-items-center mb-3">
+                <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
+                <div class="col-9">
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-10 dropdown-cart-name">${product.name}</div>
+                        <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
+                    </div>
+                    <div class="row dropdown-cart-amount justify-content-between">
+                        <div id="item-amount-${idx}" class="col px-0">
+                            ${formatAmount(product)}
                         </div>
+                        <div id="item-subtotal-${idx}" class="col item-subtotal">
+                            ${formatProductSubtotal(product)}
+                        </div>
+                    </div>
+                    <div class="row dropdown-cart-amount justify-content-center">
+                        <div id="cart-number-selector-${idx}" class="col-6"></div>
                     </div>
                 </div>
             </div>
-        `
-    );
+        </div>`;
 
-    elem.find('img').on('click', () => route(`products/${product.id}`));
+    elem.querySelector('img').addEventListener('click', () => route(`products/${product.id}`));
 
-    menuContent.append(elem);
+    menuContent.appendChild(elem);
 
-    $(`#cart-remove-${idx}`).on('click', () => {
+    elem.querySelector(".cart-remove").addEventListener('click', () => {
         deleteRequest(`/api/users/cart/${product.id}/remove`)
             .then(response => {
                 if (response.status === 200) {
@@ -133,13 +127,16 @@ function insertProduct(product, idx) {
                 });
         }
     });
-    $(`#cart-number-selector-${idx}`).append(selector);
+    document.getElementById(`cart-number-selector-${idx}`).appendChild(selector);
 }
 
 function clearElements() {
-    menuContent.html("");
-    $("#cart-dropdown-menu .dropdown-divider").remove();
-    $("#cart-resume").remove();
+    menuContent.innerHTML = "";
+    let elem = document.querySelector("#cart-dropdown-menu .dropdown-divider");
+    elem?.remove();
+
+    elem = document.getElementById("cart-resume");
+    elem?.remove();
 }
 
 function fillMenu(products, total) {
@@ -171,7 +168,7 @@ function fillMenu(products, total) {
     </li>
     `;
 
-    menu.append(fixed);
+    menu.appendChild(fixed);
 }
 
 function renderCart() {
@@ -187,34 +184,37 @@ function renderCart() {
         <div class="row justify-content-center">
             <i class="spinner-border" role="status"></i>
         </div>`;
-    menuContent.html(spinner);
+
+    menuContent.appendChild(spinner);
 
     get("/api/users/cart")
         .then((response) => {
             loading = false;
-            menuContent.html("");
+            menuContent.innerHTML = "";
             if (response.status === 200) {
                 fillMenu(response.data.items, response.data.total);
             }
         });
 }
 
-function closeCart() {
-    const button = $("#cart-dropdown");
-    button.dropdown("hide");
-}
-
 function setupCart() {
-    const button = $("#cart-dropdown");
-
-    menu.on("click", (e) => {
+    menu.addEventListener("click", (e) => {
         e.stopPropagation();
     });
 
-    button?.on("click", (e) => {
-        if (menu.hasClass("show"))
+    buttonElem?.addEventListener("click", (e) => {
+        if (menu.classList.contains("show"))
             renderCart();
     });
 }
 
-setupCart();
+
+const menu = document.getElementById("cart-dropdown-menu");
+const menuContent = document.getElementById("cart-dropdown-menu-content");
+const buttonElem = document.getElementById("cart-dropdown");
+let button;
+
+if (menu) {
+    setupCart();
+    button = new bootstrap.Dropdown(buttonElem);
+}

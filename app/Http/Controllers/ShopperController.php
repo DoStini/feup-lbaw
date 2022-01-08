@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,29 +15,25 @@ use Illuminate\Support\Facades\Hash;
 
 class ShopperController extends Controller {
 
-    /**
-     * Shows cart contents
-     *
-     * @return Response
-     */
-    public function getCart() {
-        if (!Auth::check()) return redirect('/login');
-        $user = Auth::user();
-        if ($user->is_admin) return redirect('/login');
-
-        $shopper = Shopper::find($user->id);
-        $cart = $shopper->cart;
-
-        return view('pages.cart', ['cart' => $cart]);
-    }
-
     public function getOrders() {
-        if (!Auth::check()) return redirect('/login');
+        
+        $response = Gate::inspect('viewOrders', Shopper::class);
+
+        if($response->denied()) abort(404, $response->message());
+
         $user = Auth::user();
-        if ($user->is_admin) return redirect('/login');
 
         $shopper = Shopper::find($user->id);
 
         return view('pages.profile', ['shopper' => $shopper, 'page' => 'showShopperOrders']);
+    }
+
+    public function getAddresses($id) {
+
+        $shopper = Shopper::find($id);
+
+        $this->authorize('viewUserAddresses', [Shopper::class, $shopper]);
+
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'addresses']);
     }
 }

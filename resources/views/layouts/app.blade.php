@@ -6,7 +6,7 @@
       <header>
         @include('layouts.header')
       </header>
-      <section id="content">
+      <section id="content h-100">
         @yield('content')
       </section>
     </main>

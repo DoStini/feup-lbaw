@@ -1,7 +1,7 @@
 <div class="card my-3" style="height: 8em;">
     <div class="row g-6 h-100">
       <div class="col-md-2 h-100">
-        <img src="/img/default.jpg" class="img-fluid rounded-start h-100" style="object-fit: cover;">
+        <img src="{{asset($cart_item->photos[0]->url)}}" class="img-fluid rounded-start h-100" style="object-fit: cover;">
       </div>
       <div class="col">
         <div class="card-body container-fluid">

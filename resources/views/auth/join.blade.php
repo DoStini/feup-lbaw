@@ -9,7 +9,7 @@
             <header>
                 <h2>Already have an account?<br>Sign in here</h2>
             </header>
-            <form id="oauth-login" class="align-self-stretch">
+            {{--<form id="oauth-login" class="align-self-stretch">
                 @csrf
 
                 <button class="btn btn-primary w-100" value="oauth-login" type="submit">Sign in with Google <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
@@ -18,13 +18,13 @@
                 <div class="separator"></div>
                 <div>or</div>
                 <div class="separator"></div>
-            </div>
+            </div>--}}
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
 
                 <div class="form-group">
                     <label for="email-login">Email</label>
-                    <input id="email-login" class="form-control" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
+                    <input id="email-login" class="form-control" type="email" name="email" value="{{ $errors->hasBag('login_form')  ? old('email') : "" }}" required autofocus onkeypress="return event.charCode != 32">
                     @if ($errors->login_form->has('email'))
                         <span class="error form-text">
                         {{ $errors->login_form->first('email') }}
@@ -55,7 +55,7 @@
                             Remember Me
                         </label>
                     </div> --}}
-                    <a href="/">Forgot your password?</a>
+                    {{--<a href="/">Forgot your password?</a>--}}
                 </div>
 
                 <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
@@ -68,7 +68,7 @@
             <header>
                 <h2>Create an account</h2>
             </header>
-            <form id="oauth-register" class="align-self-stretch">
+            {{--<form id="oauth-register" class="align-self-stretch">
                 @csrf
                 <button type="submit" value="oauth-register" class="btn btn-primary w-100" type="submit">Create account with Google <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
             </form>
@@ -76,13 +76,18 @@
                 <div class="separator"></div>
                 <div>or</div>
                 <div class="separator"></div>
-            </div>
+            </div>--}}
             <form id="register-form"  method="POST" action="{{ route('register') }}">
                 @csrf
 
                 <div class="form-group">
                     <label for="name-register">Name</label>
-                    <input class="form-control" id="name-register" name="name" type="text">
+                    <input class="form-control" id="name-register" name="name" type="text" value="{{ old('name') }}">
+                    @error('name', 'register_form')
+                        <span class="error form-text">
+                            {{$message}}
+                        </span>
+                    @enderror
                 </div>
 
                 {{-- <label for="name-register">Surname</label>
@@ -90,7 +95,7 @@
 
                 <div class="form-group">
                     <label for="email-register">Email</label>
-                    <input class="form-control" id="email-register" type="email" name="email" value="{{ old('email') }}" required autofocus onkeypress="return event.charCode != 32">
+                    <input class="form-control" id="email-register" type="email" name="email" value="{{ $errors->hasBag('register_form')  ? old('email') : "" }}" required autofocus onkeypress="return event.charCode != 32">
                     @error('email', 'register_form')
                         <span class="error form-text">
                             {{$message}}

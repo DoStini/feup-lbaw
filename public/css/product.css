@@ -41,17 +41,69 @@
 }
 
 .carousel-control-next {
+    background-color: rgba(160, 160, 160, 0.609);
     transition: background-color 0.3s;
 }
 
 .carousel-control-next:hover {
-    background-color: grey;
+    background-color: rgba(68, 68, 68, 0.609);
 }
 
 .carousel-control-prev {
+    background-color: rgba(160, 160, 160, 0.609);
     transition: background-color 0.3s;
 }
 
 .carousel-control-prev:hover {
-    background-color: grey;
+    background-color: rgba(68, 68, 68, 0.609);
+}
+
+.product-carousel {
+    width: 45vw;
+    height: 30vw;
+}
+
+.carousel-item img {
+    object-fit: cover;
+}
+
+.description-box-teaser {
+    display: block;
+}
+
+.description-box-teaser p{
+    height: 7.5vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.description-box-full {
+    display:none;
+}
+
+.show-more,
+.show-less{
+    display: flex;
+    justify-content: center;
+    font-size: larger;
+}
+
+.show-more i:hover,
+.show-less i:hover{
+    cursor: pointer;
+    color: rgb(150, 116, 73);
+}
+
+.cont-icon {
+    background-color: blue;
+}
+
+.variant-color {
+    border-radius: 100%;
+    padding: 0.1em;
+    border: 0.2em solid rgb(255, 255, 255);
+}
+
+.variant-color:hover {
+    border: 0.2em solid rgb(150, 116, 73);
 }

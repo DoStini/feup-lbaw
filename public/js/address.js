@@ -1,36 +1,3 @@
-$((function() {
-    $('.address-select').select2({
-        dropdownParent: $('#address-form-collapse'),
-        theme: "bootstrap-5",
-        "language": {
-            "noResults": function(){
-                return "Search for a zip code";
-            }
-        },
-        ajax: {
-            url: 'http://localhost:8000/api/address/zipcode',
-            delay: 500,
-            data: function (params) {
-              const query = {
-                code: params.term,
-              }
-
-              // Query parameters will be ?search=[term]&type=public
-              return query;
-            },
-            processResults: function (data) {
-                data.forEach((el) => el.text = el.zip_code)
-                // Transforms the top-level key of the response object from 'items' to 'results'
-                return {
-                  results: data
-                };
-              }
-          }
-    });
-}));
-
-const collapse = document.getElementById('address-form-collapse-trigger');
-
 let action = {};
 
 function createAddress(data) {
@@ -179,14 +146,11 @@ function handleEditClick(e) {
 
     document.getElementById("street-name").value = cachedData.street;
     document.getElementById("door").value = cachedData.door;
+    document.getElementById("zip_code_id").value = cachedData.zip_code_id;
 
-    $('#zip').trigger({
-        type: 'select2:select',
-        params: {
-            data: cachedData
-        }
-    });
-    document.querySelector("span.select2-selection__arrow").innerText = cachedData.zip_code;
+    const zip = document.getElementById("zip");
+    zip.value = cachedData.zip_code;
+    zip.dispatchEvent(new Event("update"));
 
     openCollapse();
     editAction(id);
@@ -211,35 +175,31 @@ function handleRemoveClick(e) {
 }
 
 function setupListeners() {
-    $((function() {
-        $('.address-select').select2({
-            dropdownParent: $('#address-form-collapse'),
-            theme: "bootstrap-5",
-            "language": {
-                "noResults": function(){
-                    return "Search for a zip code";
-                }
-            },
-            ajax: {
-                url: 'http://localhost:8000/api/address/zipcode',
-                delay: 500,
-                data: function (params) {
-                  const query = {
-                    code: params.term,
-                  }
-
-                  // Query parameters will be ?search=[term]&type=public
-                  return query;
-                },
-                processResults: function (data) {
-                    data.forEach((el) => el.text = el.zip_code)
-                    // Transforms the top-level key of the response object from 'items' to 'results'
-                    return {
-                      results: data
-                    };
-                  }
-              }
-        });
+    const selectTarget = document.getElementById("select-target");
+    selectTarget.replaceWith(selectTarget, createSelect({
+        id: "zip",
+        name: "zip",
+        label: "Choose your Zip Code",
+        ajax: true,
+        delay: 1000,
+        url: '/api/address/zipcode',
+        data: (value) => {
+            const query = {
+                code: value,
+            }
+            return query;
+        },
+        processResults: (data) => {
+            data.forEach((el) => el.text = el.zip_code)
+            return {
+                results: data
+            };
+        },
+        callback: (item) => {
+            document.getElementById('county').value = item.county;
+            document.getElementById('district').value = item.district;
+            document.getElementById('zip_code_id').value = item.id || item.zip_code_id;
+        }
     }));
 
     document.querySelectorAll(".edit-address-btn")
@@ -259,28 +219,13 @@ function setupListeners() {
         action.action(data);
     });
 
-    form.addEventListener("reset", (e) => {
-        const zip = $('#zip');
-        zip.trigger({
-            type: 'select2:select',
-            params: {
-                data: {}
-            }
-        });
-        zip.html("");
+    form.addEventListener("reset", () => {
+        document.getElementById("zip").dispatchEvent(new Event("reset"));
     });
 
     document.getElementById("close-window").addEventListener("click", () => {
         closeCollapse();
         resetAction();
-    })
-
-    $("#zip").on("select2:select", (e) => {
-        const data = e.params.data;
-        document.querySelector("span.select2-selection__arrow").innerText = "";
-        document.getElementById('county').value = data.county;
-        document.getElementById('district').value = data.district;
-        document.getElementById('zip_code_id').value = data.id || data.zip_code_id;
     });
 
     document.getElementById("new-address").addEventListener("click", (e) => {
@@ -292,12 +237,13 @@ function setupListeners() {
 
         form.querySelector("h4").innerText = "New address";
         form.dispatchEvent(new Event("reset"));
-        document.querySelector("span.select2-selection__arrow").innerText = "";
 
         openCollapse();
         newAction();
     });
 }
+
+const collapse = document.getElementById('address-form-collapse-trigger');
 const form = document.getElementById("address-form");
 
 if (collapse) {
