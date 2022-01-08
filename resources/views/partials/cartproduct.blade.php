@@ -3,12 +3,11 @@
       <div class="col-md-2 h-100">
         <img src="{{asset($cart_item->photos[0]->url)}}" class="img-fluid rounded-start h-100" style="object-fit: cover;">
       </div>
-      <div class="col">
-        <div class="card-body container-fluid">
-          <div class="row">
-            <div class="col">
-              <h5 class="card-title">{{$cart_item->name}}</h5>
-              <p class="card-text">{{$cart_item->description}}</p>
+      <div class="col-md-10 h-100">
+        <div class="card-body container-fluid h-100">
+          <div class="row h-100">
+            <div class="col h-100">
+              <h5 class="card-title h-50" style="overflow: hidden; text-overflow: ellipsis;">{{$cart_item->name}}</h5>
               <p class="card-text"><small class="text-muted">
                       @for ($i = 1; $i <= 5; $i++)
                           <i class="bi bi-star{{floor($cart_item->avg_stars) >= $i ? '-fill' : (ceil($cart_item->avg_stars) == $i ? '-half' : '')}}"></i>
