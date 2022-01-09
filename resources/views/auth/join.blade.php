@@ -38,7 +38,7 @@
                     <div class="input-group">
                         <input id="password-login" class="form-control" name="password" type="password" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary" value="password-login" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-login" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
                         </div>
                     </div>
                     @if ($errors->login_form->has('password'))
@@ -109,7 +109,7 @@
                     <div class="input-group">
                         <input class="form-control" id="password-register" name="password" type="password" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
                         </div>
                     </div>
                     @error('password', 'register_form')
@@ -125,7 +125,7 @@
                     <div class="input-group">
                     <input class="form-control" id="password-confirm" type="password" name="password_confirmation" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
                         </div>
                     </div>
                 </div>

@@ -19,7 +19,7 @@
                 <div class="accordion-item my-4">
                 <h2 class="accordion-header" id={{"panelsStayOpen-heading" . $loop->iteration}}>
                     <div class="container p-0">
-                        <div class="row m-0 p-2 bg-secondary text-white">
+                        <div class="row m-0 p-2 bg-primary text-white">
                             <div class="col-6">
                                 <h5 class="text-start">Order ID: {{$order->id}}</h5>
                             </div>
@@ -28,19 +28,25 @@
                             </div>
                         </div>
                         <div class="row my-2 p-4">
-                            <div class="col-5">
-                                <h6>Total</h6>
-                                @if($order->payment)
-                                    <h6>Payment Method</h6>
-                                @endif
-                                <h6>Current Status</h6>
-                            </div>
-                            <div class="col-4">
-                                <h6>{{$order->total}} €</h6>
-                                @if($order->payment)
-                                    <h6>{{$order->payment->paypal_transaction_id == null ? 'Bank Transfer' : 'PayPal'}}</h6>
-                                @endif
-                                <h6><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></h6>
+                            <div class="col-9">
+                                <table class="table table-borderless">
+                                    <tbody style="font-size: 0.5em;">
+                                        <tr>
+                                            <th scope="row">Total</th>
+                                            <td style="font-family: 'Alata', sans-serif;">{{$order->total}} €</td>
+                                        </tr>
+                                        @if($order->payment)
+                                        <tr>
+                                            <th scope="row">Payment Method</th>
+                                            <td style="font-family: 'Alata', sans-serif;">{{$order->payment->paypal_transaction_id == null ? 'Bank Transfer' : 'PayPal'}}</td>
+                                        </tr>
+                                        @endif
+                                        <tr>
+                                            <th>Current Status</th>
+                                            <td style="font-family: 'Alata', sans-serif;"><h6><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></h6></td>
+                                        </tr>
+                                    <tbody>
+                                </table>
                             </div>
                             <div class="col-3 d-flex flex-column align-items-center justify-content-center">
                                 <a class="btn btn-outline-secondary w-100 collapsed m-1" href={{route('orders', ['id' => $order->id])}}>Invoice</a>
@@ -55,22 +61,22 @@
                     <div class="accordion-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-5">
                                     <div class="container m-0 p-0">
                                         <div class="row">
                                             <div class="col-12">
                                                 <h5><span class="badge bg-secondary">Shipment Details</span></h5>
-                                                <p class="p-0 m-0">{{$order->address->street}}, nº{{$order->address->door}}</p>
-                                                <p class="p-0 m-0">{{$order->address->zip_code->zip_code}}, {{$order->address->zip_code->county->name}}</p>
-                                                <p class="p-0 m-0">{{$order->address->zip_code->county->district->name}}</p>
+                                                <p class="p-2 m-0">{{$order->address->street}}, nº{{$order->address->door}}</p>
+                                                <p class="p-2 m-0">{{$order->address->zip_code->zip_code}}, {{$order->address->zip_code->county->name}}</p>
+                                                <p class="p-2 m-0">{{$order->address->zip_code->county->district->name}}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <h5><span class="badge bg-secondary">Order Summary</span></h5>
                                     <div class="table-responsive">
-                                        <table class="table table-borderless">
+                                        <table class="table d-inline-flex table-borderless">
                                             <tbody>
                                                 <tr>
                                                 <th scope="row">Subtotal</th>
@@ -100,11 +106,11 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-4 container my-2">
+                                <div class="col-5 container my-2">
                                     <h5><span class="badge bg-secondary">Payment</span></h5>
                                     @if($order->payment)
                                         <div class="table-responsive">
-                                            <table class="table table-borderless">
+                                            <table class="table d-inline-flex table-borderless">
                                                 <tbody>
                                                     @if($order->payment->paypal_transaction_id)
                                                         <tr>
@@ -128,14 +134,14 @@
                                         <p>The payment method is yet to be defined.</p>
                                     @endif
                                 </div>
-                                <div class="col-8 my-2">
+                                <div class="col-7 my-2">
                                     <h5><span class="badge bg-secondary">Bought Products</span></h5>
                                     <div class="table-responsive">
 
-                                        <table class="table table-borderless">
+                                        <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Product Name</th>
+                                                    <th scope="col" style="width: 15em;">Product Name</th>
                                                     <th scope="col">Amount</th>
                                                     <th scope="col">Unit Price</th>
                                                 </tr>
@@ -143,8 +149,9 @@
                                             <tbody>
                                                 @foreach ($order->products as $product)
                                                 <tr>
-                                                    <td><a class="badge rounded-pill bg-dark product-link" 
-                                                        href={{route('getProduct', ['id' => $product->id])}} target="_blank">
+                                                    <td><a class="badge rounded-pill bg-primary product-link" 
+                                                        href={{route('getProduct', ['id' => $product->id])}} target="_blank"
+                                                        style="width: 15em; overflow: hidden;   text-overflow: ellipsis;">
                                                         {{$product->name}}</a></td>
                                                     <td>{{$product->details->amount}}</td>
                                                     <td>{{$product->details->unit_price}} €</td>
