@@ -1,6 +1,6 @@
 <div class="product container vw-100" data-id={{ $product->id }}>
     <div class="row w-100">
-        <div class="product-images mt-4 col-7 d-flex justify-content-center">
+        <div class="product-images mt-4 col-md-7 d-flex justify-content-center">
             <div id="productCarousel" class="carousel slide product-slide product-carousel" data-bs-ride="carousel">
                 <div class="carousel-inner product-carousel">
                     {{$insertedPhotos = 0;}}
@@ -30,7 +30,7 @@
                 @endif
             </div>
         </div>
-        <div class="product-info col-5">
+        <div class="product-info col-md-5">
             <div class="my-3">
                 <p>
                     @for ($i = 1; $i <= 5; $i++) <i
