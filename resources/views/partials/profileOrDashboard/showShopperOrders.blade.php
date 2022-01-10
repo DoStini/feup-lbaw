@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="row my-2 p-4">
-                            <div class="col-9">
+                            <div class="col-md-9">
                                 <table class="table table-borderless">
                                     <tbody style="font-size: 0.5em;">
                                         <tr>
@@ -48,7 +48,7 @@
                                     <tbody>
                                 </table>
                             </div>
-                            <div class="col-3 d-flex flex-column align-items-center justify-content-center">
+                            <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
                                 <a class="btn btn-outline-secondary w-100 collapsed m-1" href={{route('orders', ['id' => $order->id])}}>Invoice</a>
                                 <button class="btn btn-outline-secondary w-100 collapsed" type="button" data-bs-toggle="collapse" data-bs-target={{"#panelsStayOpen-collapse" . $loop->iteration}} aria-expanded="true" aria-controls={{"panelsStayOpen-collapse" . $loop->iteration}}>
                                     View More Details
@@ -61,7 +61,7 @@
                     <div class="accordion-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-5">
+                                <div class="col-md-5">
                                     <div class="container m-0 p-0">
                                         <div class="row">
                                             <div class="col-12">
@@ -73,30 +73,30 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-7">
+                                <div class="col-md-7">
                                     <h5><span class="badge bg-secondary">Order Summary</span></h5>
                                     <div class="table-responsive">
                                         <table class="table d-inline-flex table-borderless">
                                             <tbody>
                                                 <tr>
-                                                <th scope="row">Subtotal</th>
+                                                <th scope="row" style="width: 15em;">Subtotal</th>
                                                 <td>{{$order->subtotal}} €</td>
                                                 </tr>
                                                 <tr>
-                                                    <th scope="row">Used Coupon?</th>
+                                                    <th scope="row" style="width: 15em;">Used Coupon?</th>
                                                     <td>{{$order->coupon ? 'Yes' : 'No'}}</td>
                                                 </tr>
                                                 @if($order->coupon)
                                                     <tr>
-                                                        <th scope="row">Code</th>
+                                                        <th scope="row" style="width: 15em;">Code</th>
                                                         <td>{{$order->coupon->code}} ({{$order->coupon->is_active ? 'still active' : 'no longer active'}})</td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row">Percentage Discount</th>
+                                                        <th scope="row" style="width: 15em;">Percentage Discount</th>
                                                         <td>{{round($order->coupon->percentage * 100 )}}%</td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row">Total Discount</th>
+                                                        <th scope="row" style="width: 15em;">Total Discount</th>
                                                         <td>{{$order->subtotal - $order->total}} €</td>
                                                     </tr>
                                                 @endif
@@ -106,7 +106,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-5 container my-2">
+                                <div class="col-md-5 container my-2">
                                     <h5><span class="badge bg-secondary">Payment</span></h5>
                                     @if($order->payment)
                                         <div class="table-responsive">
@@ -134,7 +134,7 @@
                                         <p>The payment method is yet to be defined.</p>
                                     @endif
                                 </div>
-                                <div class="col-7 my-2">
+                                <div class="col-md-7 my-2">
                                     <h5><span class="badge bg-secondary">Bought Products</span></h5>
                                     <div class="table-responsive">
 
