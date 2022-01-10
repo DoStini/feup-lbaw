@@ -1,3 +1,12 @@
+@extends('layouts.app')
+
+@section('title', 'Orders Dashboard')
+
+@section('content')
+
+<div class="container">
+
+@include('partials.links.dashboardLinks', ['page' => 'orderDashboard'])
 <h4 class="text-center my-2">Unfinished Orders</h4>
 <table class="table my-4" style="font-size: 0.9em;">
     <thead class="table-dark">
@@ -79,3 +88,7 @@
       </div>
     </div>
   </div>
+
+</div>
+
+  @endsection

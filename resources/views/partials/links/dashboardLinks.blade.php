@@ -1,4 +1,8 @@
-<a href={{route('getUserDashboard')}} class="my-2 btn btn-primary w-100">  Manage Users </a>
-<a href={{route('getOrderDashboard')}} class="my-2 btn btn-primary w-100">  Manage Orders </a>
-{{--<a href={{route('getDashboard')}} class="my-2 btn btn-primary w-100">  Manage Products </a>
-<a href={{route('getDashboard')}} class="my-2 btn btn-primary w-100">  Manage Proposed Products </a>--}}
+<ul class="nav nav-tabs my-5">
+    <li class="nav-item">
+        <a class="nav-link{{($page == 'orderDashboard' ? ' active' : '')}}" href={{route('getOrderDashboard')}}> Manage Orders </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{{($page == 'userDashboard' ? ' active' : '')}}" href={{route('getUserDashboard')}}>  Manage Users </a>
+    </li>
+</ul>
