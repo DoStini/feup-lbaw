@@ -66,8 +66,25 @@ class WishlistController extends Controller {
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    private function validator(Request $request) {
-        return Validator::make($request->all(), [
+    private function validatorAdd(Request $request) {
+        return Validator::make([
+            'product_id' => $request->product_id
+        ], [
+            'product_id' => 'required|integer|min:1|exists:product,id',
+        ], [], [
+            'product_id' => 'product id'
+        ]);
+    }
+
+    /**
+     * Returns a validator to update cart function
+     *
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    private function validatorDelete(Request $request) {
+        return Validator::make([
+            'product_id' => $request->route("product_id")
+        ], [
             'product_id' => 'required|integer|min:1|exists:product,id',
         ], [], [
             'product_id' => 'product id'
@@ -96,7 +113,7 @@ class WishlistController extends Controller {
 
         if ($response->denied()) abort(404, $response->message());
 
-        if (($v = $this->validator($request))->fails()) {
+        if (($v = $this->validatorAdd($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
 
@@ -134,7 +151,7 @@ class WishlistController extends Controller {
         }
 
         $userId = Auth::user()->id;
-        $productId = $request->route('id');
+        $productId = $request->route('product_id');
         $product = Product::find($productId);
         $shopper = Shopper::find($userId);
 

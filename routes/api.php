@@ -61,6 +61,6 @@ Route::group(
     function () {
         Route::get('/', 'WishlistController@get');
         Route::post('/add', 'WishlistController@add');
-        Route::delete('/{id}/remove', 'WishlistController@delete');
+        Route::delete('/{product_id}/remove', 'WishlistController@delete');
     }
 );

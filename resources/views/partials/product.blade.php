@@ -66,7 +66,12 @@
             </div>
 
             @if(Auth::check() && !Auth::user()->is_admin)
-            <button id="add-to-wishlist-btn" type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+            <button id="add-wishlist" type="button" class="col-2 me-2 btn btn-outline-secondary px-0"
+                @if($wishlisted) style="visibility:collapse" @endif>
+                <i class="bi bi-heart mx-auto"></i>
+            </button>
+            <button id="remove-wishlist" type="button" class="col-2 me-2 btn btn-outline-secondary px-0"
+                @if(!$wishlisted) style="visibility:collapse" @endif>
                 <i class="bi bi-heart-fill mx-auto"></i>
             </button>
             @endif
@@ -89,7 +94,7 @@
             <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
             @endif
             @if ($product->stock > 0)
-            <button class="btn btn-success w-100 my-2" disabled>{{$product->stock}} in Stock</button>
+            <button class="btn btn-success w-100 my-2" disabled>{{$product->stock}} In Stock</button>
             @else
             <button class="btn btn-danger w-100 my-2" disabled>Out of Stock</button>
             @endif

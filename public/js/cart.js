@@ -21,12 +21,11 @@ function addToCartRequest(id, amount) {
     });
 }
 
-function addToWishlistRequest(id, amount) {
+function addToWishlistRequest(id) {
     jsonBodyPost("/api/users/wishlist/add", {
         "product_id": id ,
     })
     .then((response) => {
-        launchSuccessAlert("Added sucessfully to wishlist");
     })
     .catch((error) => {
         if(error.response) {
@@ -40,6 +39,25 @@ function addToWishlistRequest(id, amount) {
         }
     });
 }
+
+function removeFromWishlistRequest(id) {
+    deleteRequest(`/api/users/wishlist/${id}/remove`)
+    .then((response) => {
+    })
+    .catch((error) => {
+        console.log(error.response)
+        if(error.response) {
+            if(error.response.data) {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+                launchErrorAlert("There was an error removing from the wishlist: " + error.response.data.message + "<br>" + errors);
+            }
+        }
+    });
+}
+
 
 function noProducts() {
     const elem = document.createElement("div");

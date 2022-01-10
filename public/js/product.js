@@ -19,9 +19,18 @@ if(addToCartButton) {
     );
 }
 
-const wishlistButton = document.getElementById('add-to-wishlist-btn');
-if(wishlistButton) {
-    wishlistButton.addEventListener('click', async () =>
-        addToWishlistRequest(productInfo.id)
-    );
-}
+const addToWishlist = document.getElementById("add-wishlist");
+const removeFromWishlist = document.getElementById("remove-wishlist");
+addToWishlist.addEventListener("click", (e) => {
+    addToWishlistRequest(productInfo.id);
+    addToWishlist.dispatchEvent(new Event("blur"));
+    removeFromWishlist.style.visibility = "";
+    addToWishlist.style.visibility = "collapse";
+
+});
+removeFromWishlist.addEventListener("click", (e) => {
+    removeFromWishlistRequest(productInfo.id);
+    removeFromWishlist.dispatchEvent(new Event("blur"));
+    removeFromWishlist.style.visibility = "collapse";
+    addToWishlist.style.visibility = "";
+});

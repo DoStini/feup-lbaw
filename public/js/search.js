@@ -107,6 +107,8 @@ function createProduct(product, delay) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
 
+    const wishlisted = !product.shopper_id; // If the product is wihslisted, shopper will not be null
+
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
@@ -116,17 +118,25 @@ function createProduct(product, delay) {
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>
                         ${isShopper ?
-                            `<button id="add-cart" type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+                            `<button type="button" class="add-cart col-2 me-2 btn btn-outline-secondary px-0">
                                 <i class="bi bi-cart-plus mx-auto"></i>
                             </button>
-                            <button id="add-wishlist" type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
+                            <button type="button" class="remove-wishlist col-2 me-2 btn btn-outline-secondary px-0" 
+                                ${wishlisted ? `style="visibility:collapse"` : ""}>
                                 <i class="bi bi-heart-fill mx-auto"></i>
+                            </button>
+                            <button type="button" class="add-wishlist col-2 me-2 btn btn-outline-secondary px-0"
+                                ${!wishlisted ? `style="visibility:collapse"` : ""}>
+                                <i class="bi bi-heart mx-auto"></i>
                             </button>`
                             : ""}
                     </div>
                 </div>
             </div>
         </div>`;
+
+    console.log(html)
+
 
     const element = document.createElement("div");
     element.id = `root-product-${product.id}`;
@@ -137,15 +147,27 @@ function createProduct(product, delay) {
     element.querySelector("img").addEventListener('click', () => route(`products/${product.id}`, current));
 
     if (isShopper) {
-        const cartButton = element.querySelector("#add-cart");
-        const wishlistButton = element.querySelector("#add-wishlist");
+        const cartButton = element.querySelector(".add-cart");
+        const addToWishlist = element.querySelector(".add-wishlist");
+        const removeFromWishlist = element.querySelector(".remove-wishlist");
+        addToWishlist.addEventListener("click", (e) => {
+            addToWishlistRequest(product.id);
+            addToWishlist.dispatchEvent(new Event("blur"));
+            removeFromWishlist.style.visibility = "";
+            addToWishlist.style.visibility = "collapse";
+
+        });
+        removeFromWishlist.addEventListener("click", (e) => {
+            removeFromWishlistRequest(product.id);
+            removeFromWishlist.dispatchEvent(new Event("blur"));
+            removeFromWishlist.style.visibility = "collapse";
+            addToWishlist.style.visibility = "";
+        });
+
+
         cartButton.addEventListener("click", (e) => {
             addToCartRequest(product.id);
             cartButton.dispatchEvent(new Event("blur"));
-        });
-        wishlistButton.addEventListener("click", (e) => {
-            addToWishlistRequest(product.id);
-            wishlistButton.dispatchEvent(new Event("blur"));
         });
     }
 
