@@ -67,11 +67,11 @@
 
             @if(Auth::check() && !Auth::user()->is_admin)
             <button id="add-wishlist" type="button" class="col-2 me-2 btn btn-outline-secondary px-0"
-                @if($wishlisted) style="visibility:collapse" @endif>
+                @if($wishlisted) style="display:none" @endif>
                 <i class="bi bi-heart mx-auto"></i>
             </button>
             <button id="remove-wishlist" type="button" class="col-2 me-2 btn btn-outline-secondary px-0"
-                @if(!$wishlisted) style="visibility:collapse" @endif>
+                @if(!$wishlisted) style="display:none" @endif>
                 <i class="bi bi-heart-fill mx-auto"></i>
             </button>
             @endif

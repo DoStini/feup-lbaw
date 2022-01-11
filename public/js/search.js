@@ -122,11 +122,11 @@ function createProduct(product, delay) {
                                 <i class="bi bi-cart-plus mx-auto"></i>
                             </button>
                             <button type="button" class="remove-wishlist col-2 me-2 btn btn-outline-secondary px-0" 
-                                ${wishlisted ? `style="visibility:collapse"` : ""}>
+                                ${wishlisted ? `style="display:none"` : ""}>
                                 <i class="bi bi-heart-fill mx-auto"></i>
                             </button>
                             <button type="button" class="add-wishlist col-2 me-2 btn btn-outline-secondary px-0"
-                                ${!wishlisted ? `style="visibility:collapse"` : ""}>
+                                ${!wishlisted ? `style="display:none"` : ""}>
                                 <i class="bi bi-heart mx-auto"></i>
                             </button>`
                             : ""}
@@ -153,15 +153,15 @@ function createProduct(product, delay) {
         addToWishlist.addEventListener("click", (e) => {
             addToWishlistRequest(product.id);
             addToWishlist.dispatchEvent(new Event("blur"));
-            removeFromWishlist.style.visibility = "";
-            addToWishlist.style.visibility = "collapse";
+            removeFromWishlist.style.display = "";
+            addToWishlist.style.display = "none";
 
         });
         removeFromWishlist.addEventListener("click", (e) => {
             removeFromWishlistRequest(product.id);
             removeFromWishlist.dispatchEvent(new Event("blur"));
-            removeFromWishlist.style.visibility = "collapse";
-            addToWishlist.style.visibility = "";
+            removeFromWishlist.style.display = "none";
+            addToWishlist.style.display = "";
         });
 
 

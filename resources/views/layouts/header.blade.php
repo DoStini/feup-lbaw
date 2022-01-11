@@ -20,10 +20,11 @@
           <div class="d-flex align-items-center">
             @if(Auth::check())
                 @if(!Auth::user()->is_admin)
-                <!-- Cart -->
                 @include("partials.dropdowncart")
                 @endif
-
+                <a class="me-3" href={{route('getWishlistPage')}}>
+                    <i class="bi bi-bookmark-heart-fill" style="color: #000000; font-size:1.5em;"></i>
+                </a>
                 <!-- Notification -->
                 {{--<div class="dropdown">
                 <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
