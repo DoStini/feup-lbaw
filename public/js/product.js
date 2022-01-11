@@ -33,3 +33,17 @@ removeFromWishlist.addEventListener("click", (e) => {
     removeFromWishlist.style.display = "none";
     addToWishlist.style.display = "";
 });
+const showMoreButton = document.getElementById('show-more-button');
+const teaserDescContainer = document.getElementById('description-box-teaser');
+const showLessButton = document.getElementById('show-less-button');
+const fullDescContainer = document.getElementById('description-box-full');
+
+showMoreButton.addEventListener('click', () => {
+    teaserDescContainer.style.display = "none";
+    fullDescContainer.style.display = "block";
+})
+
+showLessButton.addEventListener('click', () => {
+    teaserDescContainer.style.display = "block";
+    fullDescContainer.style.display = "none";
+})
