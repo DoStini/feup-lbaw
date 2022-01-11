@@ -12,40 +12,12 @@ main {
     flex-direction: column;
 }
 
-#auth {
-    font-family: serif;
-    color: #4E351C;
-}
-
-#auth .btn-primary {
-    background-color: #4E351C;
-    border: none;
-    color: white;
-}
-
-#auth .btn-primary:hover {
-    background-color: #6d553d;
-}
-
-#auth .error {
-    color: #4E351C;
-    font-size: 1em;
-}
-
-#auth header {
-    font-family: 'DM Serif Display', serif;
-}
-
 #content {
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex-grow: 2;
-}
-
-#auth label {
-    color: #4E351C
 }
 
 #auth .separator {

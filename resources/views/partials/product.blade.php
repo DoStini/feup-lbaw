@@ -33,7 +33,7 @@
     </div>
     <div class="product-info col me-5">
         <div class="my-3">
-            <h1>{{$product->name}}</h1>
+            <h1>{{strtoupper($product->name)}}</h1>
             <p>
                 @for ($i = 1; $i <= 5; $i++) <i
                     class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
