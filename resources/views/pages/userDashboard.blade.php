@@ -1,5 +1,12 @@
+@extends('layouts.app')
+
+@section('title', 'Users Dashboard')
+
+@section('content')
+
 <div class="container">
     <div class="row d-flex align-items-center">
+        @include('partials.links.dashboardLinks', ['page' => 'userDashboard'])
         <div class="col-md-12 d-flex justify-content-end">
             <a class="btn btn-primary mx-1" href={{route('getNewAdminPage')}}>
                 Create New Admin
@@ -65,3 +72,5 @@
       </form>
     </div>
   </div>
+
+  @endsection

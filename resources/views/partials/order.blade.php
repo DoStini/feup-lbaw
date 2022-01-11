@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-center">
-    <div class="container w-75 bg-greyish">
+    <div class="container w-75 bg-greyish" style="background-color: white;">
         <div class="row m-5">
             <div class="col-md-6 d-flex justify-content-center justify-content-md-start my-3">
                 <a href={{route('getProductSearch')}} class="ms-md-2">

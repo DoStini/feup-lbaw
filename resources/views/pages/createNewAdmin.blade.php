@@ -1,5 +1,14 @@
 <script type="text/javascript" src={{ asset('js/login.js') }}></script>
 
+@extends('layouts.app')
+
+@section('title', 'Users Dashboard')
+
+@section('content')
+
+<div class="container">
+@include('partials.links.dashboardLinks', ['page' => 'userDashboard'])
+
 <form id="admin-register-form"  method="POST" action={{route('registerAdmin')}}>
     @csrf
 
@@ -52,3 +61,7 @@
 
     <button type="submit" class="w-100 mt-3 btn btn-primary">Create Admin</button>
 </form>
+
+</div>
+
+@endsection

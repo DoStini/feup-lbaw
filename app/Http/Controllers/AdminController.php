@@ -34,7 +34,7 @@ class AdminController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function registerAdmin(Request $request){
+    public function registerAdmin(Request $request) {
 
         $this->authorize('createAdmin', User::class);
 
@@ -49,7 +49,6 @@ class AdminController extends Controller {
         return $request->wantsJson()
             ? new JsonResponse([], 201)
             : redirect($this->adminRedirectTo());
-
     }
 
     /**
@@ -87,30 +86,16 @@ class AdminController extends Controller {
      * @return Response
      */
     public function getDashboard() {
-
         Gate::authorize('isAdmin');
-
-        $info = new stdClass();
-
-        $info->userNum = Shopper::leftJoin('users', 'users.id', '=', 'authenticated_shopper.id')
-                                  ->where('is_deleted', false)->where('is_blocked', false)->count();
-
-        $info->orderNum = Order::where('status', '<>', 'shipped')->count();
-
-        $info->productNum = Product::where('stock', '<', 2)->count();
-
-        $info->proposedProductNum = 0;
-
-        return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'generalDashboard']);
+        return redirect(route('getOrderDashboard'));
     }
-    
-    public function getNewAdminPage() {
 
+    public function getNewAdminPage() {
         Gate::authorize('isAdmin');
 
         $user = Auth::user();
 
-        return view('pages.adminDashboard', ['admin' => $user, 'info' => null, 'page' => 'createNewAdmin']);
+        return view('pages.createNewAdmin', ['admin' => $user,]);
     }
 
     public function getOrderDashboard() {
@@ -120,24 +105,24 @@ class AdminController extends Controller {
         $info = new stdClass();
 
         $info->updatableOrders = Order::where('status', '<>', 'shipped')
-                                 ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-                                 ->orderBy('status')
-                                 ->orderBy('timestamp', 'asc')
-                                 ->get(['order.id','name','shopper_id','timestamp','total','status']); //need to add created_at and updated_at in sql
+            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
+            ->orderBy('status')
+            ->orderBy('timestamp', 'asc')
+            ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
 
         $info->finishedOrders = Order::where('status', '=', 'shipped')
-                                ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-                                ->orderBy('status')
-                                ->orderBy('timestamp', 'asc')
-                                ->get(['order.id','name','shopper_id','timestamp','total','status']); //need to add created_at and updated_at in sql
+            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
+            ->orderBy('status')
+            ->orderBy('timestamp', 'asc')
+            ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
 
-        return view('pages.adminDashboard', ['admin' => Auth::user(), 'info' => $info, 'page' => 'orderDashboard']);
+        return view('pages.orderDashboard', ['admin' => Auth::user(), 'info' => $info]);
     }
 
     public function getUserDashboard() {
 
         Gate::authorize('isAdmin');
 
-        return view('pages.adminDashboard', ['admin' => Auth::user(), 'page' => 'userDashboard']);
+        return view('pages.userDashboard', ['admin' => Auth::user()]);
     }
 }
