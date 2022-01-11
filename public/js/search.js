@@ -119,17 +119,9 @@ function createProduct(product, delay) {
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>
                         ${isShopper ?
-                            `<button type="button" class="add-cart col-2 me-2 btn btn-outline-secondary px-0">
-                                <i class="bi bi-cart-plus mx-auto"></i>
-                            </button>
-                            <button type="button" class="remove-wishlist col-2 me-2 btn btn-outline-secondary px-0" 
-                                ${wishlisted ? `style="display:none"` : ""}>
-                                <i class="bi bi-heart-fill mx-auto"></i>
-                            </button>
-                            <button type="button" class="add-wishlist col-2 me-2 btn btn-outline-secondary px-0"
-                                ${!wishlisted ? `style="display:none"` : ""}>
-                                <i class="bi bi-heart mx-auto"></i>
-                            </button>`
+                            `<i class="add-cart col-2 bi bi-cart-plus mx-auto" style="font-size: 1.5em; "></i>
+                             <i class="remove-wishlist col-2 icon-click bi bi-heart-fill mx-auto" style="font-size:1.5em;${wishlisted ? `display:none;` : ``}" ></i>
+                             <i class="add-wishlist col-2 icon-click bi bi-heart mx-auto" style="font-size:1.5em;${!wishlisted ? `display:none;` : ``}"></i>`
                             : ""}
                     </div>
                 </div>
