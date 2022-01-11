@@ -12,26 +12,27 @@ COLORS = [
 ]
 
 MATERIAL = [
-    "glass", 
-    "steel", 
-    "aluminum", 
-    "copper", 
-    "brass", 
-    "bronze", 
-    "iron", 
-    "walnut wood", 
-    "pine wood", 
-    "oak wood", 
-    "maple wood", 
-    "mahogany wood", 
-    "cherry wood", 
-    "beech wood", 
-    "ash wood", 
-    "plastic", 
-    "marble", 
-    "bamboo", 
-    "rattan" 
+    "glass",
+    "steel",
+    "aluminum",
+    "copper",
+    "brass",
+    "bronze",
+    "iron",
+    "walnut wood",
+    "pine wood",
+    "oak wood",
+    "maple wood",
+    "mahogany wood",
+    "cherry wood",
+    "beech wood",
+    "ash wood",
+    "plastic",
+    "marble",
+    "bamboo",
+    "rattan"
 ]
+
 
 def pick_random_mat():
     l = []
@@ -52,18 +53,15 @@ def pick_random_color():
 curr = ""
 
 
-f = open("ok.txt", "r")
+f = open("res.sql", "r")
 for x in f:
+    if "product" not in x:
+        print(x)
+        continue
     color = '"color"' + f":[{','.join(pick_random_color())}],"
     mat = '"material"' + f":[{','.join(pick_random_mat())}]"
-    
+
     res = '{' + color + mat + '}'
 
     y = x.replace("[]", res)
     print(y[:-1], sep="")
-
-
-
-
-
-
