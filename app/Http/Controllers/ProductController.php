@@ -133,7 +133,6 @@ class ProductController extends Controller {
                 "query" => $this->serializeQuery($query->get())
             ]);
         } catch (Exception $e) {
-            dd($e);
             return response()->json(
                 ['message' => 'Unexpected error'],
                 401
