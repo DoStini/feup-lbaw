@@ -24,9 +24,9 @@
     </div>
 </form>
 
-@endsection
-
 
 <script>
     const isShopper = "{{ (Auth::check() && !Auth::user()->is_admin) }}";
 </script>
+
+@endsection

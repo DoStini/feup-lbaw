@@ -35,11 +35,12 @@
                 let product = elem;
 
                 const productImg = product.photos[0];
+                console.log(productImg);
                 const fallBack = "/img/default.jpg";
 
                 const html = `
                     <div id="product-${product.id}" class="card mb-5 search-products-item">
-                        <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
+                        <img class="card-img-top search-card-top" src="${productImg.url}" onerror="this.src='${fallBack}'">
                         <div class="card-body">
                             <h4 class="card-title">${product.name.toUpperCase()}</h4>
                             <div class="container ps-0 pe-0">
