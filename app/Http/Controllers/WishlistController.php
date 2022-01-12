@@ -58,7 +58,7 @@ class WishlistController extends Controller {
         $user = User::findOrFail($userId);
         $shopper = Shopper::findOrFail($userId);
 
-        return view('pages.wishlist', ['wishlist' => $shopper->wishlist, 'user' => $user]);
+        return view('pages.profile', ['shopper' => $shopper, 'page' => 'wishlist']);
     }
 
     /**

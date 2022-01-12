@@ -32,13 +32,13 @@
         </div>
         <div class="product-info col-md-5">
             <div class="my-3">
+                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
                 <p>
                     @for ($i = 1; $i <= 5; $i++) <i
                         class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
                         </i>
                         @endfor
                     </p>
-                <h2 style=text-align: justify;">{{strtoupper($product->name)}}</h2>
             </div>
 
             <div class="my-2 d-flex justify-content-between align-items-center">

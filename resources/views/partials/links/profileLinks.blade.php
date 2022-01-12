@@ -19,6 +19,9 @@
         <li class="nav-item">
             <a class="nav-link{{($page == 'showShopperOrders' ? ' active' : '')}}" href={{route('getOrders')}}>  Purchase History </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link{{($page == 'wishlist' ? ' active' : '')}}" href={{route('getWishlistPage')}}> Wishlist </a>
+        </li>
     </ul>
 
     {{--<a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Wishlist </a>--}}

@@ -29,8 +29,7 @@
         <div class="col-md-9 col-sm-12 container">
             @include('partials.profileOrDashboard.' . $page, 
             ['shopper' => $shopper ?? null,
-             'admin' => $admin ?? null,
-             'info' => $info ?? null])
+             'admin' => $admin ?? null])
         </div>
     </div>
 </div>
