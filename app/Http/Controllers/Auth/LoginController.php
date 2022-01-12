@@ -44,7 +44,7 @@ class LoginController extends Controller {
         return $request->user();
     }
 
-     /**
+    /**
      * Get the failed login response instance.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -52,14 +52,13 @@ class LoginController extends Controller {
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    protected function sendFailedLoginResponse(Request $request)
-    {
+    protected function sendFailedLoginResponse(Request $request) {
         throw ValidationException::withMessages([
             $this->username() => [trans('auth.failed')],
         ])->errorBag('login_form');
     }
 
-        /**
+    /**
      * Validate the user login request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -67,8 +66,7 @@ class LoginController extends Controller {
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    protected function validateLogin(Request $request)
-    {
+    protected function validateLogin(Request $request) {
         $request->validateWithBag('login_form', [
             $this->username() => 'required|string',
             'password' => 'required|string',

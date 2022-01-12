@@ -22,6 +22,8 @@ Route::middleware('auth')->get('users/orders', 'ShopperController@getOrders')->n
 Route::middleware('auth')->get('users/{id}', 'UserController@showProfile')->name('getUser');
 Route::middleware('auth')->get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
 Route::middleware('auth')->get('users/{id}/private/addresses', 'ShopperController@getAddresses')->name('addresses');
+Route::middleware('auth')->post('users/{id}/delete', 'UserController@delete')->name('deleteAccount');
+
 
 //Administration
 Route::post('admin/products/create', 'ProductController@addProduct')->name('addProduct');
