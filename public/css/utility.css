@@ -59,3 +59,15 @@
 .icon-click:hover{
     color: rgb(63, 63, 63);
 }
+
+@media (min-width: 768px) {
+    .collapse.dont-collapse-sm {
+      display: block;
+      height: auto !important;
+      visibility: visible;
+    }
+
+    .menu-collapse-btn {
+        display: none;
+    }
+  }
