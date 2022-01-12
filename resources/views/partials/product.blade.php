@@ -43,6 +43,7 @@
 
             <div class="my-2 d-flex justify-content-between align-items-center">
                 <h3> {{$product->price}} €</h3>
+                @if(Auth::check() && !Auth::user()->is_admin)
                 <i class="bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
                     style="font-size:2em;@if($wishlisted)display:none @endif"
                 >
@@ -51,6 +52,7 @@
                     style="font-size:2em;@if(!$wishlisted)display:none @endif"
                 >
                 </i>
+                @endif
             </div>
 
             <div id="description-box-teaser" class="description-box-teaser">

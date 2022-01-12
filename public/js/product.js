@@ -21,18 +21,22 @@ if(addToCartButton) {
 
 const addToWishlist = document.getElementById("add-wishlist");
 const removeFromWishlist = document.getElementById("remove-wishlist");
-addToWishlist.addEventListener("click", (e) => {
-    addToWishlistRequest(productInfo.id);
-    addToWishlist.dispatchEvent(new Event("blur"));
-    removeFromWishlist.style.display = "";
-    addToWishlist.style.display = "none";
-});
-removeFromWishlist.addEventListener("click", (e) => {
-    removeFromWishlistRequest(productInfo.id);
-    removeFromWishlist.dispatchEvent(new Event("blur"));
-    removeFromWishlist.style.display = "none";
-    addToWishlist.style.display = "";
-});
+
+if(addToWishlist && removeFromWishlist) {
+    addToWishlist.addEventListener("click", (e) => {
+        addToWishlistRequest(productInfo.id);
+        addToWishlist.dispatchEvent(new Event("blur"));
+        removeFromWishlist.style.display = "";
+        addToWishlist.style.display = "none";
+    });
+    removeFromWishlist.addEventListener("click", (e) => {
+        removeFromWishlistRequest(productInfo.id);
+        removeFromWishlist.dispatchEvent(new Event("blur"));
+        removeFromWishlist.style.display = "none";
+        addToWishlist.style.display = "";
+    });
+}
+
 const showMoreButton = document.getElementById('show-more-button');
 const teaserDescContainer = document.getElementById('description-box-teaser');
 const showLessButton = document.getElementById('show-less-button');
