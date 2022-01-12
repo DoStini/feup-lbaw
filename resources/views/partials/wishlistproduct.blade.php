@@ -1,8 +1,8 @@
 <div class="card my-3" style="height: 8em;">
   <div class="row g-6 h-100">
-    <div class="col-3 h-100">
-      <a class="icon-click" href={{route('getProduct', ['id' => $wishlistItem->id])}}>
-        <img src="{{asset($wishlistItem->photos[0]->url)}}" class="img-fluid rounded-start h-100" style="object-fit: cover;">
+    <div class="col-3 pe-0 h-100">
+      <a class="icon-click" href={{route('getProduct', ['id' => $wishlistItem->id])}} style="overflow: hidden;">
+        <img src="{{asset($wishlistItem->photos[0]->url)}}" class="img-fluid rounded-start w-100 h-100" style="overflow: hidden;">
       </a>
     </div>
     <div class="col-9 h-100">
