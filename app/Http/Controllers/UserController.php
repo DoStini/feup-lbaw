@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
 use App\Models\User;
+use App\Events\CoolEvent;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
@@ -208,6 +209,7 @@ class UserController extends Controller {
 
         $user = $user->fresh();
         $shopperData = $shopper ? $shopper->fresh()->toArray() : [];
+        event(new CoolEvent('hello world'));
 
         return response(
             array_merge(
