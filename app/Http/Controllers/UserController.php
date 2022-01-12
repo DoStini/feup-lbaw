@@ -45,6 +45,9 @@ class UserController extends Controller {
     public function showProfile($id) {
 
         $user = User::findOrFail($id);
+        if ($user->is_deleted) {
+            abort(404);
+        }
 
         $response = Gate::inspect('viewProfile', [User::class, $user]);
 
