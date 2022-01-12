@@ -44,11 +44,11 @@
             <div class="my-2 d-flex justify-content-between align-items-center">
                 <h3> {{$product->price}} €</h3>
                 @if(Auth::check() && !Auth::user()->is_admin)
-                <i class="bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
+                <i class="add-wishlist icon-click bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
                     style="font-size:2em;@if($wishlisted)display:none @endif"
                 >
                 </i>
-                <i class="bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
+                <i class="remove-wishlist icon-click bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
                     style="font-size:2em;@if(!$wishlisted)display:none @endif"
                 >
                 </i>
