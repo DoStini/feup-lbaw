@@ -128,9 +128,6 @@ function createProduct(product, delay) {
             </div>
         </div>`;
 
-    console.log(html)
-
-
     const element = document.createElement("div");
     element.id = `root-product-${product.id}`;
     element.className = "col-lg-4 col-md-6 col-xs-12";

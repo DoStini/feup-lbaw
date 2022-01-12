@@ -20,20 +20,18 @@ if(addToCartButton) {
 }
 
 const addToWishlist = document.getElementById("add-wishlist");
-const removeFromWishlist = document.getElementById("remove-wishlist");
 
-if(addToWishlist && removeFromWishlist) {
+if(addToWishlist) {
     addToWishlist.addEventListener("click", (e) => {
-        addToWishlistRequest(productInfo.id);
-        addToWishlist.dispatchEvent(new Event("blur"));
-        removeFromWishlist.style.display = "";
-        addToWishlist.style.display = "none";
-    });
-    removeFromWishlist.addEventListener("click", (e) => {
-        removeFromWishlistRequest(productInfo.id);
-        removeFromWishlist.dispatchEvent(new Event("blur"));
-        removeFromWishlist.style.display = "none";
-        addToWishlist.style.display = "";
+        if(addToWishlist.classList.contains('add-to-wishlist')){
+            addToWishlistRequest(productInfo.id);
+            addToWishlist.dispatchEvent(new Event("blur"));
+            addToWishlist.style.display = "none";
+        } else {
+            removeFromWishlistRequest(productInfo.id);
+            removeFromWishlist.dispatchEvent(new Event("blur"));
+            addToWishlist.style.display = "";
+        }
     });
 }
 
