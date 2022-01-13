@@ -52,3 +52,14 @@ Route::group(
         Route::delete('/{id}/remove', 'CartController@delete');
     }
 );
+
+Route::group(
+    [
+        'prefix' => 'users/{id}/notifications',
+        'middleware' => ['auth.api', 'is.shopper']
+    ],
+    function () {
+        Route::get('/', 'NotificationController@get');
+        Route::post('/', 'NotificationController@clear');
+    }
+);

@@ -22,20 +22,18 @@
                 @if(!Auth::user()->is_admin)
                 <!-- Cart -->
                 @include("partials.dropdowncart")
-                @endif
 
                 <!-- Notification -->
-                {{--<div class="dropdown">
-                <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="notification-dropdown">
-                    <li><a class="dropdown-item" href="#">Some news</a></li>
-                    <li><a class="dropdown-item" href="#">Another news</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-                </div>--}}
+                <div class="dropdown">
+                    <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
+                    </a>
+                    <ul id="notification-content" class="dropdown-menu" aria-labelledby="notification-dropdown">
+                    </ul>
+                </div>
+
+                @endif
 
                 <!-- User -->
                 <div class="dropdown">
@@ -75,3 +73,45 @@
   </div>
 
 </nav>
+
+@if(Auth::check() && !Auth::user()->is_admin)
+
+<script>
+	window.addEventListener("load", () => {
+        const notification = document.querySelector("#notification-dropdown i");
+        
+        get(`/api/users/{{Auth::user()->id}}/notifications/`)
+            .then(data => {
+                console.log("DATA", data)
+                data.data.notifications.forEach(noti => parseNotification(noti))
+                if (data.data.new_nots > 0) {
+                    notification.style.color = "red";
+                }
+            });
+
+        
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        const pusher = new Pusher('4c7db76f6f7fd6381f0e', {
+            cluster: 'eu'
+        });
+        const channel = pusher.subscribe("profile-edited");
+        channel.bind("profile-edited-{{Auth::user()->id}}", function(data) {
+            notification.style.color = "red";
+            buildEditedNotifcation(data.message)
+        });
+
+        notification.addEventListener("click", () => {
+            formDataPost(`/api/users/{{Auth::user()->id}}/notifications/`)
+                .then(data => {
+                    console.log(data);
+                    notification.style.color = "black";
+                });
+        });
+
+    });
+
+</script>
+
+@endif

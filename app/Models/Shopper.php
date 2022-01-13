@@ -63,6 +63,14 @@ class Shopper extends Model {
         );
     }
 
+    public function notifications() {
+        return $this->hasMany(
+            Notification::class,
+            'shopper',
+            'id'
+        );
+    }
+
     /**
      * The table associated with the model.
      *
