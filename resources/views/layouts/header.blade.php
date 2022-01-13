@@ -33,6 +33,10 @@
                     </ul>
                 </div>
 
+                <div class="notification-number">
+                    <div>3</div>
+                </div>
+
                 @endif
 
                 <!-- User -->
@@ -79,13 +83,16 @@
 <script>
 	window.addEventListener("load", () => {
         const notification = document.querySelector("#notification-dropdown i");
-        
+        const notificationNumber = document.querySelector(".notification-number");
+        const notificationText = notificationNumber.querySelector("div");
+
         get(`/api/users/{{Auth::user()->id}}/notifications/`)
             .then(data => {
                 console.log("DATA", data)
                 data.data.notifications.forEach(noti => parseNotification(noti))
                 if (data.data.new_nots > 0) {
-                    notification.style.color = "red";
+                    notificationText.innerText = data.data.new_nots;
+                    notificationNumber.style.visibility = "visible";
                 }
             });
 
@@ -98,7 +105,9 @@
         });
         const channel = pusher.subscribe("profile-edited");
         channel.bind("profile-edited-{{Auth::user()->id}}", function(data) {
-            notification.style.color = "red";
+            const newValue = parseInt(notificationText.innerText || 0) + 1;
+            notificationText.innerText = newValue;
+            notificationNumber.style.visibility = "visible";
             buildEditedNotifcation(data.message)
         });
 
@@ -106,7 +115,8 @@
             formDataPost(`/api/users/{{Auth::user()->id}}/notifications/`)
                 .then(data => {
                     console.log(data);
-                    notification.style.color = "black";
+                    notificationText.innerText = 0;
+                    notificationNumber.style.visibility = "";
                 });
         });
 
