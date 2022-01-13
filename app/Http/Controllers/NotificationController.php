@@ -33,15 +33,19 @@ class NotificationController extends Controller {
         }
 
         $id = $request->route('id');
+        $skip = $request->skip ?? 0;
+        $pageSize = 5;
 
         $shopper = Shopper::findOrFail($id);
         $notifications = $shopper->notifications()->orderBy('timestamp');
-        $query = $notifications->get();
+        $count = $notifications->count();
+        $query = $notifications->skip($skip)->take($pageSize)->get();
         $newNotifications = $notifications->where('read', '=', 'false')->count();
 
         return response([
             'new_nots' => $newNotifications,
-            'notifications' => $query
+            'total' => $count,
+            'notifications' => $query,
         ]);
     }
 

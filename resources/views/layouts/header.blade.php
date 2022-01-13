@@ -29,7 +29,7 @@
                     data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
                     </a>
-                    <ul id="notification-content" class="dropdown-menu" aria-labelledby="notification-dropdown">
+                    <ul id="notification-content" class="dropdown-menu dropdown-menu-end" aria-labelledby="notification-dropdown">
                     </ul>
                 </div>
 
@@ -85,11 +85,70 @@
         const notification = document.querySelector("#notification-dropdown i");
         const notificationNumber = document.querySelector(".notification-number");
         const notificationText = notificationNumber.querySelector("div");
+        const notificationContent = document.getElementById("notification-content");
 
-        get(`/api/users/{{Auth::user()->id}}/notifications/`)
+        let skip = 0;
+
+        const removeButton = () => {
+            const prev = document.getElementById("next-page-btn");
+            if (prev) {
+                prev.remove();
+            }
+        }
+
+        const createButton = () => {
+            const button = buildNextNotificationButton();
+            button.addEventListener('click', (e) => {
+                get(`/api/users/{{Auth::user()->id}}/notifications?skip=${skip}`)
+                .then(data => {
+                    handleNextRequest(data.data);
+                });
+                e.stopPropagation();
+            });
+            notificationContent.appendChild(button);
+        }
+
+        const handleNextRequest = (data) => {
+            const notifications = data.notifications;
+            notifications.forEach(noti => {
+                const notif = parseNotification(noti);
+                notificationContent.appendChild(notif);
+            });
+
+            if (data.new_nots > 0) {
+                notificationText.innerText = data.new_nots;
+                notificationNumber.style.visibility = "visible";
+            }
+
+            skip += notifications.length;
+
+            removeButton();
+
+            if (skip < data.total) {
+                createButton();
+            }
+        }
+
+        const handleNewRequest = (data) => {
+            const notifications = data.notifications;
+            notifications.forEach((noti, idx) => {
+                const item = parseNotification(noti);
+                notificationContent.appendChild(item);
+            });
+
+            skip += notifications.length;
+            removeButton();
+
+            if (skip < data.total) {
+                createButton();
+            }
+        }
+
+
+        get(`/api/users/{{Auth::user()->id}}/notifications`)
             .then(data => {
-                console.log("DATA", data)
-                data.data.notifications.forEach(noti => parseNotification(noti))
+                handleNewRequest(data.data)
+                
                 if (data.data.new_nots > 0) {
                     notificationText.innerText = data.data.new_nots;
                     notificationNumber.style.visibility = "visible";
@@ -108,7 +167,9 @@
             const newValue = parseInt(notificationText.innerText || 0) + 1;
             notificationText.innerText = newValue;
             notificationNumber.style.visibility = "visible";
-            buildEditedNotifcation(data.message)
+            skip ++;
+            const notif = buildEditedNotifcation(data.message);
+            notificationContent.prepend(notif);
         });
 
         notification.addEventListener("click", () => {

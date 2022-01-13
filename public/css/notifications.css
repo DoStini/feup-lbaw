@@ -16,3 +16,8 @@
     width: 1.2em;
     height: 1.2em;
 }
+
+#notification-content {
+    max-height: 20vh;
+    overflow-y: auto;
+}
