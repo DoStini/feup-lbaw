@@ -119,7 +119,7 @@ function createProduct(product, delay) {
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>
                         ${isShopper ?
-                            `<i class="add-cart col-2 bi bi-cart-plus mx-auto" style="font-size: 1.5em; "></i>
+                            `<i class="add-cart icon-click col-2 bi bi-cart-plus mx-auto" style="font-size: 1.5em; "></i>
                              <i class="remove-wishlist col-2 icon-click bi bi-heart-fill mx-auto" style="font-size:1.5em;${wishlisted ? `display:none;` : ``}" ></i>
                              <i class="add-wishlist col-2 icon-click bi bi-heart mx-auto" style="font-size:1.5em;${!wishlisted ? `display:none;` : ``}"></i>`
                             : ""}
