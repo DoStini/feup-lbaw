@@ -9,96 +9,61 @@
 <div class="container">
 @include('partials.links.dashboardLinks', ['page' => 'orderDashboard'])
 
-<script type="text/javascript" defer>
-    function send(event) {
-        const formData = new FormData(document.getElementById('add-product-form'));
-        clearErrors();
+@if($errors->any())
+<script async>
+    (async() => {
+        while(!window.hasOwnProperty('reportData'))
+            await new Promise(resolve => setTimeout(resolve, 100));
 
-        formDataPost("/admin/products/create",formData)
-        .then((response) => {
-            console.log(response);
-            reportData("Product Added Successfully!");
-        })
-        .catch((error) => {
-            if(error.response) {
-                if(error.response.data) {
-                    reportData("There was an error creating a product", error.response.data["errors"], {
-                        'name' : 'Product Name',
-                        'attributes' : 'Variations',
-                        'stock' : 'Stock',
-                        'description' : 'Description',
-                        'price' : 'Price',
-                    });
+        let errors = JSON.parse(`<?php echo($errors->toJson()) ?>`.replace(/\s+/g," "));
 
-                    setErrors( error.response.data["errors"]);
-                }
-            }
+        reportData("Couldn't create the product", errors, {
+            'name' : 'Product Name',
+            'attributes' : 'Variations',
+            'stock' : 'Stock',
+            'description' : 'Description',
+            'price' : 'Price',
+            'photos' : 'Photos',
         });
-
-        event.preventDefault();
-    }
-
-    function clearErrors() {
-        document.querySelectorAll(".error").forEach((el) => {
-            el.innerText = "";
-        })
-    }
-
-    function setErrors(errors) {
-        for(let key in errors) {
-            let element = document.getElementById(`${key}-error`);
-            if(element == null) continue;
-
-            let text = "";
-            let obj = errors[key];
-            if(typeof obj === 'object' && obj !== null) {
-                for(let dataKey in obj) {
-                    text = text.concat(obj[dataKey],'<br>');
-                }
-            } else {
-                text = obj;
-            }
-
-            element.innerHTML = text;
-        }
-    }
-
+    })();
 </script>
+@endif
 
 <div class="container">
 
 
-<form class="container d-flex flex-column" id="add-product-form" autocomplete="off" onsubmit="return send(event);">
+<form class="container d-flex flex-column" id="add-product-form" autocomplete="off"  class="container form"  enctype="multipart/form-data" method="POST" action="{{route('addProduct')}}">
+    @csrf
     <div class="row">
         <div class="form-group col-md-12">
             <label for="name">Product Name</label>
-            <input required id="name" class="form-control" type="text" name="name" value="">
+            <input required id="name" class="form-control" type="text" name="name" value="{{old('name')}}">
             <span class="error form-text text-danger" id="name-error"></span>
         </div>
     </div>
     <div class="row">
         <div class="form-group col-md-6">
             <label for="stock">Stock</label>
-            <input id="stock" class="form-control" name="stock" autocomplete="stock">
+            <input id="stock" type="number" value="{{old('stock')}}" class="form-control" name="stock" autocomplete="stock">
             <span class="error form-text text-danger" id="stock-error"></span>
         </div>
         <div class="form-group col-md-6">
             <label for="price">Price</label>
-            <input id="price" class="form-control" name="price">
+            <input id="price" class="form-control" type="number" step="0.01" value="{{old('price')}}" name="price">
             <span class="error form-text text-danger" id="price-error"></span>
         </div>
     </div>
 
     <div class="mb-3">
-        <label for="profile-picture">Product Photos</label>
-        <input multiple="true" id="profile-picture" class="form-control" type="file" name="profile-picture">
-        <span class="error form-text text-danger" id="profile-picture-error"></span>
+        <label for="photos">Product Photos</label>
+        <input multiple="true" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}">
+        <span class="error form-text text-danger" id="photos-error"></span>
     </div>
 
     <div class="mb-3">
-        <label for="about-me">Description</label>
-        <textarea id="about-me" class="form-control" name="about-me" value=""></textarea>
-        <span class="error form-text text-danger" id="about_me-error"></span>
+        <label for="description">Description</label>
+        <textarea id="description" class="form-control" name="description">{{old('description')}}</textarea>
+        <span class="error form-text text-danger" id="description-error"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>

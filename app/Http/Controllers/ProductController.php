@@ -155,7 +155,16 @@ class ProductController extends Controller {
         $photos = $request->file('photos');
         $validator = $this->getValidatorPhotos($photos);
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            $errors = $validator->errors()->messages();
+            $response = [];
+            $response['photos'] = [];
+
+            foreach ($errors as $key => $value) {
+                array_push($response['photos'], $value[0]);
+            }
+            // dd($response);
+
+            return redirect()->back()->withErrors($response)->withInput();
         }
 
         $savedPhotos = [];
@@ -191,13 +200,13 @@ class ProductController extends Controller {
             DB::rollBack();
 
             Storage::disk('public')->delete($savedPhotos);
-            
+
             return redirect()->back()->withErrors(["product" => "Unexpected Error"])->withInput();
         }
 
         return redirect(route("getProduct", ["id" => $product->id]));
     }
-    
+
     public function getAddProductPage(){
         $this->authorize('create', Product::class);
         return view('pages.addProduct');
