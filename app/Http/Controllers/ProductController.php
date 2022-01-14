@@ -191,9 +191,15 @@ class ProductController extends Controller {
             DB::rollBack();
 
             Storage::disk('public')->delete($savedPhotos);
+            
             return redirect()->back()->withErrors(["product" => "Unexpected Error"])->withInput();
         }
 
         return redirect(route("getProduct", ["id" => $product->id]));
+    }
+    
+    public function getAddProductPage(){
+        $this->authorize('create', Product::class);
+        return view('pages.addProduct');
     }
 }
