@@ -56,7 +56,7 @@ class DatatableController extends Controller {
                 if (property_exists($entry, $col["name"])) {
                     $arr[$col["data"]] = $entry->$colName;
                 } else {
-                    $arr[$col["data"]] = "";
+                    $arr[$col["data"]] = "N/A";
                 }
             }
 
