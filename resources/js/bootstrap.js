@@ -5,7 +5,7 @@ try {
     require("popper.js");
 
     window.bootstrap = require('bootstrap');
-    window.dt = require('datatables.net-bs5')();
+    window.dt = require('datatables.net-responsive-bs5')();
 } catch (e) {}
 
 /**
