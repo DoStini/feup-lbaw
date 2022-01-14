@@ -162,7 +162,6 @@ class ProductController extends Controller {
             foreach ($errors as $key => $value) {
                 array_push($response['photos'], $value[0]);
             }
-            // dd($response);
 
             return redirect()->back()->withErrors($response)->withInput();
         }

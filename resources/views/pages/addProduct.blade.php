@@ -38,6 +38,11 @@
         <div class="form-group col-md-12">
             <label for="name">Product Name</label>
             <input required id="name" class="form-control" type="text" name="name" value="{{old('name')}}">
+            @error('name')
+            <span class="error form-text text-danger">
+                {{$message}}
+            </span>
+            @enderror
             <span class="error form-text text-danger" id="name-error"></span>
         </div>
     </div>
@@ -45,25 +50,43 @@
         <div class="form-group col-md-6">
             <label for="stock">Stock</label>
             <input id="stock" type="number" value="{{old('stock')}}" class="form-control" name="stock" autocomplete="stock">
-            <span class="error form-text text-danger" id="stock-error"></span>
+            @error('stock')
+            <span class="error form-text text-danger">
+                {{$message}}
+            </span>
+            @enderror
         </div>
         <div class="form-group col-md-6">
             <label for="price">Price</label>
             <input id="price" class="form-control" type="number" step="0.01" value="{{old('price')}}" name="price">
-            <span class="error form-text text-danger" id="price-error"></span>
+            @error('price')
+            <span class="error form-text text-danger">
+                {{$message}}
+            </span>
+            @enderror
         </div>
     </div>
 
     <div class="mb-3">
         <label for="photos">Product Photos</label>
         <input multiple="true" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}">
-        <span class="error form-text text-danger" id="photos-error"></span>
+        @if($errors->has('photos'))
+        <span class="error form-text text-danger">
+            @foreach ($errors->get('photos') as $message)
+                {{$message}}<br/>
+            @endforeach
+        </span>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label for="description">Description</label>
         <textarea id="description" class="form-control" name="description">{{old('description')}}</textarea>
-        <span class="error form-text text-danger" id="description-error"></span>
+        @error('description')
+        <span class="error form-text text-danger">
+            {{$message}}
+        </span>
+        @enderror
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
