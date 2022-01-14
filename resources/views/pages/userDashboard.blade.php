@@ -4,20 +4,20 @@
 
 @section('content')
 
-<div class="container">
+<div class="container pb-4">
     <div class="row d-flex align-items-center">
         @include('partials.links.dashboardLinks', ['page' => 'userDashboard'])
         <div class="col-md-12 d-flex justify-content-end">
             <a class="btn btn-primary mx-1" href={{route('getNewAdminPage')}}>
                 Create New Admin
             </a>
-            <a class="btn btn-primary mx-1" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
+            {{-- <a class="btn btn-primary mx-1" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
                 Filters
-            </a>
+            </a> --}}
         </div>
     </div>
     <div class="row">
-        <table class="table table-responsive my-4" style="font-size: 0.9em;">
+        <table class="table table-responsive my-4" style="font-size: 0.9em;" id="user-dashboard-table">
             <thead class="table-dark">
                 <tr>
                     <th class="text-center">User ID</th>
@@ -36,7 +36,7 @@
     </div>
 </div>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="usersOffCanvas" aria-labelledby="usersOffCanvasLabel">
+{{-- <div class="offcanvas offcanvas-end" tabindex="-1" id="usersOffCanvas" aria-labelledby="usersOffCanvasLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="usersOffCanvasLabel">Filters</h5>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -71,6 +71,35 @@
 
       </form>
     </div>
-  </div>
+  </div> --}}
+
+<script type="application/javascript" defer>
+    $('#user-dashboard-table').DataTable({
+        'ajax': {
+            'url': '/api/users/',
+            'data': function(e) {
+                console.log(e);
+            }
+        },
+        "drawCallback": function (settings) {
+            // FOR DEBUGGING
+            var response = settings.json;
+            console.log("hello");
+            console.log(response);
+        },
+        serverSide: true,
+        'order': [[5, 'asc']],
+        'columnDefs':[
+            { 'name': 'id', 'targets': 0},
+            // { 'name': 'created_at', 'targets': 1},
+            { 'name': 'name', 'targets': 2},
+            { 'name': 'email', 'targets': 3},
+            { 'name': 'phone_number', 'targets': 4, 'orderable': false},
+            { 'name': 'nif', 'targets': 5, 'orderable': false},
+            { 'name': 'newsletter_subcribed', 'targets': 6},
+            {'targets':7, 'orderable': false, 'searchable': false}
+        ]
+    });
+</script>
 
   @endsection

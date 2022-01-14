@@ -4,19 +4,19 @@ function clearForm(form) {
 
 function createUser(user) {
     const html = `
-        <th class="text-center">${user.id}</th>
-        <th class="text-center">TBD</th>
-        <th class="text-center">${user.name}</th>
-        <th class="text-center">${user.email}</th>
-        <th class="text-center">${user.phone_number ?? '-'}</th>
-        <th class="text-center">${user.nif ?? '-'}</th>
-        <th class="text-center">${user.newsletter_subcribed ? 'Yes' : 'No'}</th>
-        <th>
+        <td class="text-center">${user.id}</td>
+        <td class="text-center">TBD</td>
+        <td class="text-center">${user.name}</td>
+        <td class="text-center">${user.email}</td>
+        <td class="text-center">${user.phone_number ?? '-'}</td>
+        <td class="text-center">${user.nif ?? '-'}</td>
+        <td class="text-center">${user.newsletter_subcribed ? 'Yes' : 'No'}</td>
+        <td>
             <div class="d-flex justify-content-around" style="font-size: 1.2em;">
                 <a class="bi bi-info-circle-fill icon-click" href="/users/${user.id}" data-bs-toggle="tooltip" title="Go to User Page"></a>
                 <a class="bi bi-pencil-square icon-click px-1" href="/users/${user.id}/private/" data-bs-toggle="tooltip" title="Edit User Info"></a>
             </div>
-        </th>`;
+        </td>`;
 
     // <a class="bi bi-dash-circle-fill icon-click" data-bs-toggle="tooltip" title="Ban User"></a>
 
@@ -68,24 +68,19 @@ function setupSearchListeners() {
         sendSearchUsersRequest(form, handleSearchUsers);
     });
 
-    window.onload = () => {
-        clearForm(form);
-        sendSearchUsersRequest(form, handleSearchUsers);
-    }
+    // window.onload = () => {
+    //     clearForm(form);
+    //     sendSearchUsersRequest(form, handleSearchUsers);
+    // }
 
 
 }
 
 function sendSearchUsersRequest(form, callback) {
-
-    let query = {
-        'name': form.name.value,
-        'blocked': form.blocked.checked
-    }
-
     sendAjaxQueryRequest('get', '/api/users', query, callback);
 
     clearForm(form);
 }
+
 
 setupSearchListeners();

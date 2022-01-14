@@ -31,7 +31,6 @@ Route::get('admin/users', 'AdminController@getUserDashboard')->name('getUserDash
 Route::get('admin/create', 'AdminController@getNewAdminPage')->name('getNewAdminPage');
 Route::post('admin/create', 'AdminController@registerAdmin')->name('registerAdmin');
 
-
 // Products
 Route::get('products', 'ProductController@search')->name('getProductSearch');
 Route::get('products/{id}', 'ProductController@show')->name('getProduct');
