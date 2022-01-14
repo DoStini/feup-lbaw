@@ -7,7 +7,7 @@
 @include('partials.errormodal')
 
 <div class="container">
-@include('partials.links.dashboardLinks', ['page' => 'orderDashboard'])
+@include('partials.links.dashboardLinks', ['page' => 'addProduct'])
 
 @if($errors->any())
 <script async>
@@ -67,30 +67,48 @@
         </div>
     </div>
 
-    <div class="mb-3">
-        <label for="photos">Product Photos</label>
-        <input multiple="true" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}">
-        @if($errors->has('photos'))
-        <span class="error form-text text-danger">
-            @foreach ($errors->get('photos') as $message)
-                {{$message}}<br/>
-            @endforeach
-        </span>
-        @enderror
+    <div class="row">
+        <div class="form-group col-12">
+            <label for="photos">Product Photos</label>
+            <input multiple="true" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}">
+            @if($errors->has('photos'))
+            <span class="error form-text text-danger">
+                @foreach ($errors->get('photos') as $message)
+                    {{$message}}<br/>
+                @endforeach
+            </span>
+            @enderror
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label for="description">Description</label>
-        <textarea id="description" class="form-control" name="description">{{old('description')}}</textarea>
-        @error('description')
-        <span class="error form-text text-danger">
-            {{$message}}
-        </span>
-        @enderror
+    <div class="row">
+        <div class="form-group col-12">
+            <label for="description">Description</label>
+            <textarea id="description" class="form-control" name="description">{{old('description')}}</textarea>
+            @error('description')
+            <span class="error form-text text-danger">
+                {{$message}}
+            </span>
+            @enderror
+        </div>
+    </div>
+    <div class="d-flex align-items-center mb-3">
+        <label for="description">Is variant?</label>
+        <input value="" id="flexCheckDefault" class="form-check-input mx-2" type="checkbox" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    </div>
+    <div class="row collapse mb-3" id="collapseExample">
+        <div class="mb-3 col-12">
+            <label for="zip" class="form-label">
+                Variants
+            </label>
+            <div id="select-target-product"></div>
+            {{-- <select class="address-select form-select" id="zip"></select>--}}
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 </div>
 </div>
+
 @endsection

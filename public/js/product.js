@@ -33,3 +33,75 @@ showLessButton.addEventListener('click', () => {
     teaserDescContainer.style.display = "block";
     fullDescContainer.style.display = "none";
 })
+
+function setupListenersProduct(selectTarget) {
+    selectTarget.replaceWith(selectTarget, createSelect({
+        id: "zip",
+        name: "zip",
+        label: "Choose your Zip Code",
+        ajax: true,
+        delay: 1000,
+        url: '/api/address/zipcode',
+        data: (value) => {
+            const query = {
+                code: value,
+            }
+            return query;
+        },
+        processResults: (data) => {
+            data.forEach((el) => el.text = el.zip_code)
+            return {
+                results: data
+            };
+        },
+        callback: (item) => {
+            document.getElementById('county').value = item.county;
+            document.getElementById('district').value = item.district;
+            document.getElementById('zip_code_id').value = item.id || item.zip_code_id;
+        }
+    }));
+
+    document.querySelectorAll(".edit-address-btn")
+        .forEach((el) => el.addEventListener("click", handleEditClick));
+
+    document.querySelectorAll(".remove-address-btn")
+        .forEach((el) => el.addEventListener("click", handleRemoveClick));
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries((new FormData(e.target)).entries());
+
+        if (!action) {
+            return;
+        }
+
+        action.action(data);
+    });
+
+    form.addEventListener("reset", () => {
+        document.getElementById("zip").dispatchEvent(new Event("reset"));
+    });
+
+    document.getElementById("close-window").addEventListener("click", () => {
+        closeCollapse();
+        resetAction();
+    });
+
+    document.getElementById("new-address").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        if (collapseOpen()) {
+            return;
+        }
+
+        form.querySelector("h4").innerText = "New address";
+        form.dispatchEvent(new Event("reset"));
+
+        openCollapse();
+        newAction();
+    });
+}
+
+
+const selectTarget = document.getElementById("select-target-product");
+if(selectTarget) setupListenersProduct(selectTarget);

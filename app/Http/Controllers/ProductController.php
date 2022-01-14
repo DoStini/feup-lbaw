@@ -173,7 +173,7 @@ class ProductController extends Controller {
 
             $product = Product::create([
                 "name" => $request->input('name'),
-                "attributes" => $request->input('attributes'),
+                "attributes" => $request->input('attributes') != null ? $request->input('attributes') : '{}',
                 "stock" => $request->input('stock'),
                 "description" => $request->input('description'),
                 "price" => $request->input('price'),

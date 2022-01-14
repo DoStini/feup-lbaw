@@ -62,9 +62,8 @@
                 <label for="zip" class="form-label">
                     Zip Code
                 </label>
-                <div id="select-target"></div>
-                {{-- <select class="address-select form-select" id="zip"> --}}
-                </select>
+                <div id="select-target-zip"></div>
+                {{-- <select class="address-select form-select" id="zip"></select>--}}
             </div>
             <div class="mb-3 col-12 col-lg-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Choose a zip code and we will fill this out for you">
                 <label for="county" class="form-label">County</label>
