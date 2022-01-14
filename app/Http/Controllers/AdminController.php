@@ -104,16 +104,7 @@ class AdminController extends Controller {
 
         $info = new stdClass();
 
-        $info->updatableOrders = Order::where('status', '<>', 'shipped')
-            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-            ->orderBy('status')
-            ->orderBy('timestamp', 'asc')
-            ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
-
-        $info->finishedOrders = Order::where('status', '=', 'shipped')
-            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-            ->orderBy('status')
-            ->orderBy('timestamp', 'asc')
+        $info->orders = Order::leftJoin('users', 'order.shopper_id', '=', 'users.id')
             ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
 
         return view('pages.orderDashboard', ['admin' => Auth::user(), 'info' => $info]);
