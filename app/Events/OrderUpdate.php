@@ -10,27 +10,29 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class StatusLiked
-{
+class OrderUpdate implements ShouldBroadcast {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    private $id;
+    public $order_id;
+    public $order_notif_type;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
+    public function __construct($id, $order_id, $order_notif_type) {
+        $this->id = $id;
+        $this->order_id = $order_id;
+        $this->order_notif_type = $order_notif_type;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
+    public function broadcastOn() {
+        return ['order-status'];
+    }
+
+    public function broadcastAs() {
+        return "order-status-{$this->id}";
     }
 }

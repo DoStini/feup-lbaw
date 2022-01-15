@@ -133,7 +133,9 @@
             const notifications = data.notifications;
             notifications.forEach((noti, idx) => {
                 const item = parseNotification(noti);
-                notificationContent.appendChild(item);
+                if (item) {
+                    notificationContent.appendChild(item);
+                }
             });
 
             skip += notifications.length;
@@ -162,13 +164,25 @@
         const pusher = new Pusher('4c7db76f6f7fd6381f0e', {
             cluster: 'eu'
         });
-        const channel = pusher.subscribe("profile-edited");
-        channel.bind("profile-edited-{{Auth::user()->id}}", function(data) {
+
+        const handlePusherNotification() {
             const newValue = parseInt(notificationText.innerText || 0) + 1;
             notificationText.innerText = newValue;
             notificationNumber.style.visibility = "visible";
             skip ++;
+        }
+
+        const channel = pusher.subscribe("profile-edited");
+        channel.bind("profile-edited-{{Auth::user()->id}}", function(data) {
+            handlePusherNotification();
             const notif = buildEditedNotifcation(data.message);
+            notificationContent.prepend(notif);
+        });
+
+        const channel = pusher.subscribe("order-status");
+        channel.bind("order-status-{{Auth::user()->id}}", function(data) {
+            handlePusherNotification();
+            const notif = buildOrderNotification(data.message);
             notificationContent.prepend(notif);
         });
 

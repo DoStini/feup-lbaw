@@ -4,6 +4,19 @@ function buildEditedNotifcation(message) {
     return html;
 }
 
+function buildOrderNotification(notification) {
+    const message = `Your order ${notification.order_id} was updated to ${notification.order_notif_type}`;
+
+    const html = document.createElement('li');
+    html.style.cursor = "pointer";
+    html.innerHTML = `<a class="dropdown-item">${message}</a>`;
+    html.addEventListener('click', () => {
+        route(`orders/${notification.order_id}`);
+    });
+
+    return html;
+}
+
 function parseNotification(notification) {
     switch (notification.type) {
         case "account":
@@ -11,7 +24,8 @@ function parseNotification(notification) {
                 return buildEditedNotifcation("Your profile was edited by an admin ");
             }
             break;
-    
+        case "order":
+            return buildOrderNotification(notification);
         default:
             break;
     }
