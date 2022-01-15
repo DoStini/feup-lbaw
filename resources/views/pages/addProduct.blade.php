@@ -99,6 +99,9 @@
         <input value="" id="variantCheck" name="variantCheck" class="form-check-input mx-2" type="checkbox" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" autocomplete="variantCheck">
     </div>
     <div class="row collapse mb-3" id="collapseExample">
+        <div class="col-12">
+            <h5 class="my-2 text-center">Select a color. If this product is the first of its variants, do not select any product ID.</h5>
+        </div>
         <div class="col-md-6">
             <label for="originVariantID" class="mb-3">Variant of (Product ID): </label>
             <input id="originVariantID" type="number" value="{{old('originVariantID')}}" class="form-control" name="originVariantID" autocomplete="originVariantID">
