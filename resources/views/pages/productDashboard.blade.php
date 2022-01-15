@@ -32,12 +32,6 @@
         },
         serverSide: true,
         'order': [[0, 'desc']],
-        "drawCallback": function (settings) {
-            // // FOR DEBUGGING
-            // var response = settings.json;
-            // console.log("hello");
-            // console.log(response);
-        },
         'columnDefs':[
             { 'name': 'id', 'targets': 0, 'className': 'text-center', 'width':'6em'},
             { 'name': 'name', 'targets': 1, 'className': 'text-center'},

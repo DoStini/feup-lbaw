@@ -62,7 +62,7 @@
             'url': '/api/orders/',
         },
         serverSide: true,
-        'order': [[5, 'asc'],[2, 'desc']],
+        'order': [[5, 'asc'],[3, 'desc']],
         'columnDefs':[
             { 'name': 'id', 'targets': 0, 'className': 'text-center'},
             {
@@ -76,7 +76,7 @@
                 }
             },
             { 'name': 'timestamp', 'targets': 2, 'className': 'text-center'},
-            { /*'name': 'updated_at',*/ 'targets': 3, 'className': 'text-center'},
+            { 'name': 'last_update', 'targets': 3, 'className': 'text-center'},
             {
                 'name': 'total', 'targets': 4,
                 'render': function(data, type, row) {
