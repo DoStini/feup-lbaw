@@ -7,7 +7,7 @@
 <div class="container pb-4">
 
 @include('partials.links.dashboardLinks', ['page' => 'orderDashboard'])
-<table class="table my-4" style="font-size: 0.9em;" id="order-dashboard-table">
+<table class="table my-4 w-100" style="font-size: 0.9em;" id="order-dashboard-table">
     <thead class="table-dark">
         <tr>
             <th class="text-center">Order ID</th>
@@ -18,6 +18,15 @@
             <th class="text-center">Status</th>
             <th class="text-center">Actions</th>
         </tr>
+        {{-- <tr class="datatable-searchboxes">
+            <th class="filter-datatable">Order ID</th>
+            <th class="filter-datatable">Shopper Name (ID)</th>
+            <th class="filter-datatable">Created At</th>
+            <th class="filter-datatable" >Last Update</th>
+            <th class="filter-datatable" >Total</th>
+            <th class="filter-datatable">Status</th>
+            <th ></th>
+        </tr> --}}
     </thead>
     <tbody>
     {{-- @foreach ($info->orders as $order)
@@ -42,6 +51,11 @@
 </div>
 
 <script type="application/javascript" defer>
+    // $('#order-dashboard-table thead tr.datatable-searchboxes th.filter-datatable').each( function () {
+    //     var title = $(this).text();
+    //     $(this).html( '<input class="w-100" type="text" placeholder="Search '+title+'" />' );
+    // } );
+
     $('#order-dashboard-table').DataTable({
         'responsive': true,
         'ajax': {
@@ -51,7 +65,16 @@
         'order': [[5, 'asc'],[2, 'desc']],
         'columnDefs':[
             { 'name': 'id', 'targets': 0, 'className': 'text-center'},
-            { 'name': 'name', 'targets': 1, 'className': 'text-center'},
+            {
+                'name': 'name', 'targets': 1, 'className': 'text-center',
+                'render': function(data, type, row) {
+                    if(type === "display") {
+                        data = data + ` (${row[7]})`;
+                    }
+
+                    return data;
+                }
+            },
             { 'name': 'timestamp', 'targets': 2, 'className': 'text-center'},
             { /*'name': 'updated_at',*/ 'targets': 3, 'className': 'text-center'},
             {
@@ -90,6 +113,9 @@
 
                     return data;
                 }, 'className': 'text-center'
+            },
+            {
+                'targets':7, 'orderable': false, 'visible':false, 'name':'shopper_id'
             }
         ]
     });
