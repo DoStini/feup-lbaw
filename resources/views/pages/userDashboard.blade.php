@@ -11,9 +11,6 @@
             <a class="btn btn-primary mx-1" href={{route('getNewAdminPage')}}>
                 Create New Admin
             </a>
-            {{-- <a class="btn btn-primary mx-1" data-bs-toggle="offcanvas" href="#usersOffCanvas" role="button" aria-controls="usersOffCanvas">
-                Filters
-            </a> --}}
         </div>
     </div>
     <div class="row">
@@ -26,7 +23,7 @@
                     <th class="text-center">Email</th>
                     <th class="text-center">Phone Number</th>
                     <th class="text-center">NIF</th>
-                    <th class="text-center">Subscribed to Newsletter?</th>
+                    <th class="text-center">Blocked?</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -41,16 +38,6 @@
         'responsive': true,
         'ajax': {
             'url': '/api/users/',
-            'data': function(e) {
-                // console.log(e);
-            }
-        },
-        "drawCallback": function (settings) {
-            // // FOR DEBUGGING
-            // var response = settings.json;
-            // console.log("hello");
-            // console.log(response);
-            //table.columns.adjust()
         },
         serverSide: true,
         'order': [[0, 'desc']],
@@ -62,20 +49,7 @@
             { 'name': 'phone_number', 'targets': 4, 'orderable': false, 'className': 'text-center'},
             { 'name': 'nif', 'targets': 5, 'orderable': false, 'className': 'text-center'},
             {
-                'name': 'newsletter_subcribed', 'targets': 6,
-                'render': function(data, type, row) {
-                    let text = "";
-                    if(type === "display") {
-                        if(data === false) {
-                            text = "NO";
-                        } else {
-                            text = "YES";
-                        }
-                        data = text;
-                    }
-
-                    return data;
-                }, 'className': 'text-center'
+                'name': 'is_blocked', 'targets': 6, 'className': 'text-center'
             },
             {
                 'targets':7, 'orderable': false, 'searchable': false,
@@ -84,8 +58,9 @@
                     if(type === 'display') {
                         text = `
                         <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                            <a class="bi bi-info-circle-fill icon-click" href="/users/${row[0]}" data-bs-toggle="tooltip" title="Go to User Page"></a>
                             <a class="bi bi-pencil-square icon-click px-1" href="/users/${row[0]}/private/" data-bs-toggle="tooltip" title="Edit User Info"></a>
+                            <a class="bi bi-exclamation-diamond-fill icon-click" href="/users/${row[0]}" data-bs-toggle="tooltip" title="Block User"></a>
+                            <a class="bi bi-info-circle-fill icon-click" href="/users/${row[0]}" data-bs-toggle="tooltip" title="Go to User Page"></a>
                         </div>`;
                         data = text;
                     }

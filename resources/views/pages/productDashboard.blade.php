@@ -70,7 +70,7 @@
                         text = `
                         <div class="d-flex justify-content-evenly" style="font-size: 1.2em;">
                             <a class="bi bi-pencil-square icon-click px-1" href="/admin/products/${row[0]}/edit/" data-bs-toggle="tooltip" title="Edit Product"></a>
-                            <a class="bi bi-trash icon-click px-1" href="/admin/products/${row[0]}/remove/" data-bs-toggle="tooltip" title="Remove Product"></a>
+                            <a class="bi bi-trash-fill icon-click px-1" href="/admin/products/${row[0]}/remove/" data-bs-toggle="tooltip" title="Remove Product"></a>
                             <a class="bi bi-info-circle-fill icon-click" href='/products/${row[0]}' data-bs-toggle="tooltip" title="Go to Product Page"></a>
                         </div>`;
                         data = text;
