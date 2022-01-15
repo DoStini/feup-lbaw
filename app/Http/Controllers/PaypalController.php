@@ -31,19 +31,35 @@ class PaypalController extends Controller {
         $orderId = $request->route('id');
         $order = Order::findOrFail($orderId);
 
+        $address = $order->address;
+        $zip_code = $address->zip_code;
+
         $provider = new PayPalClient();
         $provider->setApiCredentials(Config::get('paypal'));
         $data = [
             "intent" => "CAPTURE",
             "application_context" => [
                 "return_url" => route('finishTransaction', ['id' => $orderId]),
-                "cancel_url" => route('orders', ['id' => $orderId])
+                "cancel_url" => route('orders', ['id' => $orderId]),
+                "brand_name" => "reFurniture",
             ],
             "purchase_units" => [
                 0 => [
                     "amount" => [
                         "currency_code" => "EUR",
                         "value" => $order->total,
+                    ],
+                    "shipping" => [
+                        "name" => [
+                            "full_name" => $order->shopper->name,
+                        ],
+                        "address" => [
+                            "address_line_1" => $address->street,
+                            "address_line_2" => $address->door,
+                            "country_code" => "PT",
+                            "admin_area_1" => $zip_code->district->name,
+                            "admin_area_2" => $zip_code->county->name,
+                        ]
                     ]
                 ]
             ]
