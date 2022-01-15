@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach ($info->orders as $order)
+    {{-- @foreach ($info->orders as $order)
         <tr>
             <td class="text-center">{{$order->id}}</td>
             <td class="text-center">{{$order->name}} ({{$order->shopper_id}})</td>
@@ -30,12 +30,12 @@
             <td class="text-center"><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></td>
             <td>
                 <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                    {{--<a class="bi bi-forward-fill icon-click" href="" data-bs-toggle="tooltip" title="Advance Status"></a>--}}
+                    {{--<a class="bi bi-forward-fill icon-click" href="" data-bs-toggle="tooltip" title="Advance Status"></a>
                     <a class="bi bi-info-circle-fill icon-click" href={{route('orders', ['id' => $order->id])}} data-bs-toggle="tooltip" title="Go to Order Page"></a>
                 </div>
             </td>
         </tr>
-    @endforeach
+    @endforeach --}}
     </tbody>
 </table>
 
@@ -43,7 +43,55 @@
 
 <script type="application/javascript" defer>
     $('#order-dashboard-table').DataTable({
-        'order': [[5, 'asc']],
+        'responsive': true,
+        'ajax': {
+            'url': '/api/orders/',
+        },
+        serverSide: true,
+        'order': [[5, 'asc'],[2, 'desc']],
+        'columnDefs':[
+            { 'name': 'id', 'targets': 0, 'className': 'text-center'},
+            { 'name': 'name', 'targets': 1, 'className': 'text-center'},
+            { 'name': 'timestamp', 'targets': 2, 'className': 'text-center'},
+            { /*'name': 'updated_at',*/ 'targets': 3, 'className': 'text-center'},
+            {
+                'name': 'total', 'targets': 4,
+                'render': function(data, type, row) {
+                    if(type === "display") {
+                        data = parseFloat(data).toFixed(2) + " €";
+                    }
+
+                    return data;
+                }
+            },
+            {
+                'name': 'status', 'targets': 5,
+                'render': function(data, type, row) {
+                    let text = "";
+                    if(type === "display") {
+                        text = `<a class="badge rounded-pill badge-decoration-none badge-${data} ">${data.toUpperCase()}</a>`
+                        data = text;
+                    }
+                    return data;
+                }, 'className': 'text-center'
+            },
+            {
+                'targets':6, 'orderable': false, 'searchable': false,
+                'render': function(data, type, row) {
+                    let text = "";
+                    if(type === 'display') {
+                        text = `
+                        <div class="d-flex justify-content-around" style="font-size: 1.2em;">
+                            {{--<a class="bi bi-forward-fill icon-click" href="" data-bs-toggle="tooltip" title="Advance Status"></a>--}}
+                             <a class="bi bi-info-circle-fill icon-click" href='/orders/${row[0]}' data-bs-toggle="tooltip" title="Go to Order Page"></a>
+                        </div>`;
+                        data = text;
+                    }
+
+                    return data;
+                }, 'className': 'text-center'
+            }
+        ]
     });
 </script>
 

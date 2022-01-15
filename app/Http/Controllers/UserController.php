@@ -242,29 +242,9 @@ class UserController extends Controller {
      * @return Response
      */
     public function list(Request $request) {
-
         $this->authorize('viewAny', User::class);
 
         $dc =  new DatatableController();
         return $dc->get($request, DB::table('user_shopper'));
-
-        // try {
-        //     $query = User::join('authenticated_shopper', 'users.id', '=', 'authenticated_shopper.id')
-        //         ->when($request->name, function ($q) use ($request) {
-        //             return $q->whereRaw('UPPER(name) LIKE UPPER(?)', [$request->name . '%']);
-        //         })
-        //         ->when($request->blocked, function ($q) use ($request) {
-        //             return $q->where('is_blocked', '=', [$request->blocked]);
-        //         });
-
-        //     return response()->json([
-        //         "query" => $query->get()
-        //     ]);
-        // } catch (Exception) {
-        //     return response()->json(
-        //         ['message' => 'Unexpected error'],
-        //         401
-        //     );
-        // }
     }
 }

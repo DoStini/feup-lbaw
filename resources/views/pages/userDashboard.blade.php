@@ -54,12 +54,12 @@
         serverSide: true,
         'order': [[0, 'desc']],
         'columnDefs':[
-            { 'name': 'id', 'targets': 0},
-            // { 'name': 'created_at', 'targets': 1},
-            { 'name': 'name', 'targets': 2},
-            { 'name': 'email', 'targets': 3},
-            { 'name': 'phone_number', 'targets': 4, 'orderable': false},
-            { 'name': 'nif', 'targets': 5, 'orderable': false},
+            { 'name': 'id', 'targets': 0, 'className': 'text-center'},
+            { /*'name': 'created_at',*/ 'targets': 1, 'className': 'text-center'},
+            { 'name': 'name', 'targets': 2, 'className': 'text-center'},
+            { 'name': 'email', 'targets': 3, 'className': 'text-center'},
+            { 'name': 'phone_number', 'targets': 4, 'orderable': false, 'className': 'text-center'},
+            { 'name': 'nif', 'targets': 5, 'orderable': false, 'className': 'text-center'},
             {
                 'name': 'newsletter_subcribed', 'targets': 6,
                 'render': function(data, type, row) {
@@ -74,7 +74,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'text-center'
             },
             {
                 'targets':7, 'orderable': false, 'searchable': false,
@@ -90,7 +90,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'text-center'
             }
         ]
     });

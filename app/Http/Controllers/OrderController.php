@@ -25,6 +25,14 @@ class OrderController extends Controller {
         return view('pages.order', ['order' => $order]);
     }
 
+    public function list(Request $request)  {
+        $this->authorize('viewAny', User::class);
+
+        $dc =  new DatatableController();
+        return $dc->get($request, DB::table('order_shopper'));
+    }
+
+
     /**
      * Gets all enum values for Order Status.
      *
