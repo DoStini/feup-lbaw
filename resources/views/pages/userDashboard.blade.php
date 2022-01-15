@@ -52,7 +52,7 @@
             // console.log(response);
         },
         serverSide: true,
-        'order': [[5, 'asc']],
+        'order': [[0, 'desc']],
         'columnDefs':[
             { 'name': 'id', 'targets': 0},
             // { 'name': 'created_at', 'targets': 1},

@@ -43,10 +43,32 @@ class DatatableController extends Controller {
             }
         }
 
+        $i = 0;
+        $searchTerm = $req->input("search")["value"];
+        if ($searchTerm !== null) {
+            foreach ($req->input("columns") as $col) {
+                $colName = $col["name"];
+                if ($col["searchable"] && $colName !== null) {
+                    if ($i === 0) {
+                        $query->whereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
+                    } else {
+                        $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
+                    }
+                }
+
+                $i++;
+            }
+        }
+        $recordsFiltered = $query->count();
+
         $pageSize = $req->input('length');
         $start = $req->input('start');
 
+        DB::enableQueryLog();
+
         $result = $query->skip($start)->take($pageSize)->get()->toArray();
+
+        // dd(DB::getQueryLog());
         $result = array_map(function ($entry) use ($req) {
             $arr = [];
 
@@ -63,6 +85,6 @@ class DatatableController extends Controller {
             return $arr;
         }, $result);
 
-        return response()->json(['draw' => $req->input('draw'), 'data' => $result, 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $recordsTotal]);
+        return response()->json(['draw' => intval($req->input('draw')), 'data' => $result, 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $recordsFiltered]);
     }
 }
