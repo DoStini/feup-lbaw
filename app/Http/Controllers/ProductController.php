@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\ApiError;
+use Craft\StringHelper;
+
 
 use App\Models\Product;
 use Exception;
@@ -123,7 +126,8 @@ class ProductController extends Controller {
     private function getValidatorAddProduct(Request $request) {
         return Validator::make($request->all(), [
             "name" => "required|string|max:100",
-            "attributes" => "nullable|json",
+            "originVariantID" => "nullable|integer",
+            "colorVariant" => "nullable|string",
             "stock" => "required|integer|min:0",
             "description" => "nullable|string|max:255",
             "photos" => "required",
@@ -209,5 +213,28 @@ class ProductController extends Controller {
     public function getAddProductPage(){
         $this->authorize('create', Product::class);
         return view('pages.addProduct');
+    }
+
+    private function validateVariants(Request $request) {
+        return Validator::make($request->all(), [
+            'code' => 'required|string|min:1',
+        ]);
+    }
+
+        /**
+     * Retrieves possible variants for a given input
+     */
+    public function variants(Request $request) {
+        if (($v = $this->validateVariants($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $colors = DB::select('select distinct (attributes ->> \'color\') as text from product where LOWER(attributes ->> \'color\') LIKE LOWER(\'%' . $request->code . '%\');');
+
+        foreach($colors as $color) {
+            $color->colorCode = strToLower(implode("-", explode(" ", $color->text)));
+        }
+
+        return $colors;
     }
 }

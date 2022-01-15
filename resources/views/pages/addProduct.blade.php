@@ -93,16 +93,30 @@
         </div>
     </div>
     <div class="d-flex align-items-center mb-3">
-        <label for="description">Is variant?</label>
-        <input value="" id="flexCheckDefault" class="form-check-input mx-2" type="checkbox" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <label for="variantCheck">Is variant?</label>
+        <input value="" id="variantCheck" name="variantCheck" class="form-check-input mx-2" type="checkbox" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
     </div>
     <div class="row collapse mb-3" id="collapseExample">
-        <div class="mb-3 col-12">
-            <label for="zip" class="form-label">
-                Variants
+        <div class="col-md-6">
+            <label for="originVariantID" class="mb-3">Variant of (Product ID): </label>
+            <input id="originVariantID" type="number" value="{{old('originVariantID')}}" class="form-control" name="originVariantID" autocomplete="originVariantID">
+            @error('originVariantID')
+            <span class="error form-text text-danger">
+                {{$message}}
+            </span>
+            @enderror
+        </div>
+        <div class="col-md-6">
+            <label for="variantColor" class="form-label">
+                Variant Color
             </label>
-            <div id="select-target-product"></div>
-            {{-- <select class="address-select form-select" id="zip"></select>--}}
+            <div class="d-flex align-items-center">
+                <div id="select-target-variant"></div>
+                {{-- <select class="address-select form-select" id="variantColor"></select>
+                {{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png", $color)}}
+                --}}
+                <img id="variant-img" class="variant-color mx-4" src={{asset('img/notfound.jpg')}} onerror="this.src='{{asset('img/notfound.jpg')}}'">
+            </div>
         </div>
     </div>
 
