@@ -12,7 +12,6 @@ use Illuminate\Validation\Rule;
 class OrderController extends Controller {
 
     public function show($id) {
-
         $order = Order::findOrFail($id);
 
         $this->authorize('view', [Order::class, $order]);

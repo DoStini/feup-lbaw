@@ -2,27 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use Validator;
-use URL;
-use Session;
-use Redirect;
-use Input;
-use PayPal\Rest\ApiContext;
-use PayPal\Auth\OAuthTokenCredential;
-use PayPal\Api\Amount;
-use PayPal\Api\Details;
-use PayPal\Api\Item;
-use PayPal\Api\ItemList;
-use PayPal\Api\Payer;
-use PayPal\Api\Payment;
-use PayPal\Api\RedirectUrls;
-use PayPal\Api\ExecutePayment;
-use PayPal\Api\PaymentExecution;
-use PayPal\Api\Transaction;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PaypalController extends Controller {
@@ -97,12 +79,16 @@ class PaypalController extends Controller {
             $errors = [
                 'message' => $response['message'],
             ];
+
+            return redirect(route('orders', ['id' => $orderId]))->withErrors($errors);
         } else if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             $order = Order::findOrFail($orderId);
             $order->status = 'paid';
+            $order->payment->paypal_transaction_id = $response['id'];
+            $order->payment->save();
             $order->save();
         }
 
-        return redirect(route('orders', ['id' => $orderId]));
+        return redirect(route('orders', ['id' => $orderId]))->withErrors("hello");
     }
 }
