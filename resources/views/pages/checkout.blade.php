@@ -35,7 +35,6 @@
                 let product = elem;
 
                 const productImg = product.photos[0];
-                console.log(productImg);
                 const fallBack = "/img/default.jpg";
 
                 const html = `
