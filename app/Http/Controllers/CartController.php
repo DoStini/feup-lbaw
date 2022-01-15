@@ -410,8 +410,6 @@ class CartController extends Controller {
         if ($request->input("payment-type") == 'bank') {
             $payment->entity = "12345";
             $payment->reference = rand(10, 10000);
-        } else {
-            $payment->paypal_transaction_id = 0;
         }
 
         $payment->value = $order->total;
@@ -437,9 +435,11 @@ class CartController extends Controller {
             DB::statement("CALL create_order(?, ?, ?);", [Auth::user()->id, $addressID, $couponID]);
 
             $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
+            $this->addPayment($request, $order_id);
 
             DB::commit();
         } catch (QueryException $ex) {
+            dd($ex);
             DB::rollBack();
 
             return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
