@@ -126,6 +126,7 @@ class ProductController extends Controller {
     private function getValidatorAddProduct(Request $request) {
         return Validator::make($request->all(), [
             "name" => "required|string|max:100",
+            "variantCheck" => "nullable|string|max:3",
             "originVariantID" => "nullable|integer",
             "colorVariant" => "nullable|string",
             "stock" => "required|integer|min:0",
@@ -171,13 +172,32 @@ class ProductController extends Controller {
         }
 
         $savedPhotos = [];
+        $attributes = '{}';
+
+        dd($request->input('colorVariant'));
+
+        if($request->input('variantCheck')) {
+            $colorInfo = $request->input('colorVariant');
+            dd($colorInfo);
+            $id = DB::select('SELECT currval(\'product_id_seq\');');
+            if($request->input('originVariantID')) {
+                $product = Product::where('id', '=', $request->input('originVariantID'));
+
+                //converter para json, iterar os produtos e adicionar a variante nova
+                //dar update de todos os produtos
+                //adicionar variantes ao próprio, em baixo será guardado
+
+            } else  {
+                $attributes = "{\"color\": \"$colorInfo->regular\", \"variants\": { \"$id\" : \"$colorInfo->kebabcase\" }}" ;
+            }
+        }
 
         try {
             DB::beginTransaction();
 
             $product = Product::create([
                 "name" => $request->input('name'),
-                "attributes" => $request->input('attributes') != null ? $request->input('attributes') : '{}',
+                "attributes" => $attributes,
                 "stock" => $request->input('stock'),
                 "description" => $request->input('description'),
                 "price" => $request->input('price'),

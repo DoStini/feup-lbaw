@@ -107,7 +107,7 @@
             @enderror
         </div>
         <div class="col-md-6">
-            <label for="variantColor" class="form-label">
+            <label for="variant" class="form-label">
                 Variant Color
             </label>
             <div class="d-flex align-items-center">
