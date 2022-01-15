@@ -5,6 +5,8 @@
         @csrf
         <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>
     </form>
+    <a id="show-delete-confirm" class="my-2 btn btn-danger w-100">  Delete Account </a>
+
 @elseif (Auth::check() && Auth::user()->id == $shopper->user->id)
     <ul class="nav nav-tabs v-nav-tabs flex-column mb-5">
         <li class="nav-item">
@@ -24,11 +26,11 @@
     {{--<a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Wishlist </a>--}}
     {{--<a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Furniture Offers </a>
     --}}
-    <a id="show-delete-confirm" class="my-2 btn btn-danger w-100">  Delete Account </a>
     <form  method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>
     </form>
+    <a id="show-delete-confirm" class="my-2 btn btn-danger w-100">  Delete Account </a>
 @elseif(Auth::user()->is_admin && $shopper)
     <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> About {{$shopper->user->name}} </a>
     <a href={{route('editPage', ['id' => $shopper->user->id])}} class="my-2 btn btn-primary w-100">  Edit {{$shopper->user->name}}'s Personal Data </a>
@@ -38,7 +40,11 @@
     {{--<a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> {{$shopper->user->name}}'s Wishlist </a>--}}
 @endif
 
-@if (Auth::check() && !Auth::user()->is_admin && Auth::user()->id == $shopper->user->id)
+@if (Auth::check() && 
+    ($shopper ? 
+        (Auth::user()->id == $shopper->user->id)
+         : 
+        (Auth::user()->id == $admin->id)))
 <div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="confirmContent">
@@ -49,7 +55,7 @@
             </div>
             <div class="modal-body" id="confirmBody">
                 This is an irreversible action, please take caution
-                <form  method="POST" action="{{route('deleteAccount', ['id' => $shopper->user->id])}}">
+                <form  method="POST" action="{{route('deleteAccount', ['id' => Auth::user()->id])}}">
                     @csrf
                     <div class="form-group my-4">
                         <label for="cur-password"><b>Confirm your password before applying changes:</b></label>

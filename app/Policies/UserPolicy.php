@@ -79,7 +79,7 @@ class UserPolicy {
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, User $model) {
-        return $user->id == $model->id && !$model->is_admin;
+        return $user->id == $model->id;
     }
 
     /**
