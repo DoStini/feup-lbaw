@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,14 +11,14 @@ class DatatableController extends Controller {
 
     protected string $name;
 
-    protected function filter() {
-        return DB::table('user_shopper');
+    private function escapeColumnName($columnName) {
+        return preg_replace('/[^A-Za-z0-9_]+/', '', $columnName);
     }
 
-    public function get(Request $req) {
-        $recordsTotal = $this->filter()->count();
+    public function get(Request $req, $filter) {
+        $recordsTotal = $filter->count();
 
-        $query = $this->filter();
+        $query = $filter;
         foreach ($req->input("order") as $value) {
             $columnName = null;
             $orderable = null;
@@ -33,6 +34,8 @@ class DatatableController extends Controller {
                 continue;
             }
 
+            $columnName = $this->escapeColumnName($columnName);
+
             switch ($value["dir"]) {
                 case "asc":
                     $query->orderBy($columnName); // SQL INJECTION
@@ -43,20 +46,19 @@ class DatatableController extends Controller {
             }
         }
 
-        $i = 0;
         $searchTerm = $req->input("search")["value"];
-        if ($searchTerm !== null) {
-            foreach ($req->input("columns") as $col) {
-                $colName = $col["name"];
-                if ($col["searchable"] && $colName !== null) {
-                    if ($i === 0) {
-                        $query->whereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
-                    } else {
-                        $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
-                    }
+        foreach ($req->input("columns") as $col) {
+            $colName = $col["name"];
+            if ($col["searchable"] && $colName !== null) {
+                $colName = $this->escapeColumnName($colName);
+
+                if($searchTerm !== null) {
+                    $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
                 }
 
-                $i++;
+                if($col["search"] !== null && $col["search"]["value"] != null) {
+                    $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $col["search"]["value"] . "%"]);
+                }
             }
         }
         $recordsFiltered = $query->count();
@@ -64,11 +66,13 @@ class DatatableController extends Controller {
         $pageSize = $req->input('length');
         $start = $req->input('start');
 
-        DB::enableQueryLog();
+        $result;
+        try {
+            $result = $query->skip($start)->take($pageSize)->get()->toArray();
+        } catch(\Exception $e) {
+            return response()->json(['draw' => intval($req->input('draw')),'error' => "Couldn't retrieve data"],422);
+        }
 
-        $result = $query->skip($start)->take($pageSize)->get()->toArray();
-
-        // dd(DB::getQueryLog());
         $result = array_map(function ($entry) use ($req) {
             $arr = [];
 

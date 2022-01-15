@@ -246,7 +246,7 @@ class UserController extends Controller {
         $this->authorize('viewAny', User::class);
 
         $dc =  new DatatableController();
-        return $dc->get($request);
+        return $dc->get($request, DB::table('user_shopper'));
 
         // try {
         //     $query = User::join('authenticated_shopper', 'users.id', '=', 'authenticated_shopper.id')
