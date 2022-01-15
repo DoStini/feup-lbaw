@@ -26,7 +26,7 @@ class OrderController extends Controller {
     }
 
     public function list(Request $request)  {
-        $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', Order::class);
 
         $dc =  new DatatableController();
         return $dc->get($request, DB::table('order_shopper'));

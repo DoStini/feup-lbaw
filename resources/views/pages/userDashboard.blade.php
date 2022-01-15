@@ -50,6 +50,7 @@
             // var response = settings.json;
             // console.log("hello");
             // console.log(response);
+            //table.columns.adjust()
         },
         serverSide: true,
         'order': [[0, 'desc']],
