@@ -47,8 +47,8 @@
             </div>
 
             <div id="description-box-teaser" class="description-box-teaser">
-                <p style=text-align: center;">{{$product->description}}</p>
-                <div class="show-more">
+                <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
+                <div class="show-more" id="show-more-btn">
                     <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
                 </div>
             </div>
