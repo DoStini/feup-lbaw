@@ -27,40 +27,46 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PaypalController extends Controller {
 
-    public function createOrder($order_id) {
+    public function createTransaction(Request $request) {
+        $orderId = $request->route('id');
+        $order = Order::findOrFail($orderId);
+
         $provider = new PayPalClient();
         $provider->setApiCredentials(Config::get('paypal'));
         $data = [
             "intent" => "CAPTURE",
             "application_context" => [
-                "return_url" => route('confirmPaypal', ['id' => $order_id]),
-                "cancel_url" => route('confirmPaypal', ['id' => $order_id])
+                "return_url" => route('finishTransaction', ['id' => $orderId]),
+                "cancel_url" => route('orders', ['id' => $orderId])
             ],
             "purchase_units" => [
                 0 => [
                     "amount" => [
-                        "currency_code" => "USD",
-                        "value" => "1000.00"
+                        "currency_code" => "EUR",
+                        "value" => $order->total,
                     ]
                 ]
             ]
         ];
 
-        $accessToken = $provider->getAccessToken();
+        $provider->getAccessToken();
 
-        $order = $provider->createOrder($data);
+        $paypalOrder = $provider->createOrder($data);
 
-        foreach ($order['links'] as $link) {
+        if (isset($paypalOrder['type']) && $paypalOrder['type'] == 'error') {
+            return redirect(route('orders', ['id' => $orderId]))->withErrors([
+                'message' => $paypalOrder['message']
+            ]);
+        }
+
+        foreach ($paypalOrder['links'] as $link) {
             if ($link['rel'] == 'approve') {
                 $redirect_url = $link['href'];
                 break;
             }
         }
 
-        return [
-            'order' => $order,
-            'redirect' => $redirect_url
-        ];
+        return redirect()->away($redirect_url);
     }
 
     public function finishTransaction(Request $request) {

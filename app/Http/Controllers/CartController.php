@@ -399,42 +399,6 @@ class CartController extends Controller {
         }
     }
 
-    private function payPalPayment($order_id) {
-        $provider = new PayPalClient();
-        $provider->setApiCredentials(Config::get('paypal'));
-        $data = [
-            "intent" => "CAPTURE",
-            "application_context" => [
-                "return_url" => route('confirmPaypal', ['id' => $order_id]),
-                "cancel_url" => route('confirmPaypal', ['id' => $order_id])
-            ],
-            "purchase_units" => [
-                0 => [
-                    "amount" => [
-                        "currency_code" => "USD",
-                        "value" => "1000.00"
-                    ]
-                ]
-            ]
-        ];
-
-        $accessToken = $provider->getAccessToken();
-
-        $order = $provider->createOrder($data);
-
-        foreach ($order['links'] as $link) {
-            if ($link['rel'] == 'approve') {
-                $redirect_url = $link['href'];
-                break;
-            }
-        }
-
-        return [
-            'order' => $order,
-            'redirect' => $redirect_url
-        ];
-    }
-
     private function addPayment(Request $request, $order_id) {
         $order = Order::find($order_id);
 
@@ -447,14 +411,11 @@ class CartController extends Controller {
             $payment->entity = "12345";
             $payment->reference = rand(10, 10000);
         } else {
-            $paypal = $this->payPalPayment($order_id);
-            $payment->paypal_transaction_id = $paypal['order']['id'];
+            $payment->paypal_transaction_id = 0;
         }
 
         $payment->value = $order->total;
         $payment->save();
-
-        return $paypal;
     }
 
     public function checkout(Request $request) {
@@ -476,7 +437,6 @@ class CartController extends Controller {
             DB::statement("CALL create_order(?, ?, ?);", [Auth::user()->id, $addressID, $couponID]);
 
             $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
-            $paypal = $this->addPayment($request, $order_id);
 
             DB::commit();
         } catch (QueryException $ex) {
@@ -488,7 +448,7 @@ class CartController extends Controller {
         if ($request->input("payment-type") == 'bank') {
             return redirect(route('orders', ['id' => $order_id]));
         } else {
-            return redirect()->away($paypal['redirect']);
+            return redirect(route('createTransaction', ['id' => $order_id]));
         }
     }
 
