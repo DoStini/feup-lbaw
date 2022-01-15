@@ -40,10 +40,10 @@
             'url': '/api/users/',
         },
         serverSide: true,
-        'order': [[0, 'desc']],
+        'order': [[1, 'desc']],
         'columnDefs':[
             { 'name': 'id', 'targets': 0, 'className': 'text-center'},
-            { /*'name': 'created_at',*/ 'targets': 1, 'className': 'text-center'},
+            { 'name': 'timestamp', 'targets': 1, 'className': 'text-center'},
             { 'name': 'name', 'targets': 2, 'className': 'text-center'},
             { 'name': 'email', 'targets': 3, 'className': 'text-center'},
             { 'name': 'phone_number', 'targets': 4, 'orderable': false, 'className': 'text-center'},
