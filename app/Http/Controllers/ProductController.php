@@ -172,7 +172,6 @@ class ProductController extends Controller {
         }
 
         $savedPhotos = [];
-        $attributes = json_decode('{}', true);
         $variants = json_decode('{}', true);
 
         $colorInfo = $request->input('variantColor');
@@ -190,10 +189,14 @@ class ProductController extends Controller {
         try {
             DB::beginTransaction();
 
-            $id = DB::select('SELECT last_value FROM product_id_seq')[0]->last_value;
-            $variants[strval($id + 1)] = strToLower(implode("-", explode(" ", $colorInfo)));
-            $attributes['variants'] = $variants;
-            $attributes['color'] = $colorInfo;
+            if($colorInfo){
+                $attributes = json_decode('{}', true);
+                $id = DB::select('SELECT last_value FROM product_id_seq')[0]->last_value;
+                $variants[strval($id + 1)] = strToLower(implode("-", explode(" ", $colorInfo)));
+                $attributes['variants'] = $variants;
+                $attributes['color'] = $colorInfo;
+            } else $attributes = json_decode('{}');
+
 
             $product = Product::create([
                 "name" => $request->input('name'),
@@ -210,10 +213,6 @@ class ProductController extends Controller {
                 $productAttributes['variants'] = $variants;
                 $productToUpdate->update(['attributes' => json_encode($productAttributes)]);
             }
-
-            //converter para json, iterar os produtos e adicionar a variante nova
-            //dar update de todos os produtos
-            //adicionar variantes ao próprio, em baixo será guardado
 
             foreach ($photos as $productPhoto) {
                 $path = $productPhoto->storePubliclyAs(
