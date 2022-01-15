@@ -38,6 +38,7 @@ Route::get('products/{id}', 'ProductController@show')->name('getProduct');
 
 // Orders
 Route::get('orders/{id}', 'OrderController@show')->name('orders');
+Route::get('orders/{id}/pay', 'PaypalController@finishTransaction')->name('confirmPaypal');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');

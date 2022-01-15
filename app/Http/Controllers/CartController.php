@@ -17,6 +17,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Type\Integer;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class CartController extends Controller {
 
@@ -397,6 +399,42 @@ class CartController extends Controller {
         }
     }
 
+    private function payPalPayment($order_id) {
+        $provider = new PayPalClient();
+        $provider->setApiCredentials(Config::get('paypal'));
+        $data = [
+            "intent" => "CAPTURE",
+            "application_context" => [
+                "return_url" => route('confirmPaypal', ['id' => $order_id]),
+                "cancel_url" => route('confirmPaypal', ['id' => $order_id])
+            ],
+            "purchase_units" => [
+                0 => [
+                    "amount" => [
+                        "currency_code" => "USD",
+                        "value" => "1000.00"
+                    ]
+                ]
+            ]
+        ];
+
+        $accessToken = $provider->getAccessToken();
+
+        $order = $provider->createOrder($data);
+
+        foreach ($order['links'] as $link) {
+            if ($link['rel'] == 'approve') {
+                $redirect_url = $link['href'];
+                break;
+            }
+        }
+
+        return [
+            'order' => $order,
+            'redirect' => $redirect_url
+        ];
+    }
+
     private function addPayment(Request $request, $order_id) {
         $order = Order::find($order_id);
 
@@ -409,13 +447,14 @@ class CartController extends Controller {
             $payment->entity = "12345";
             $payment->reference = rand(10, 10000);
         } else {
-            $payment->paypal_transaction_id = rand(10, 10000);
+            $paypal = $this->payPalPayment($order_id);
+            $payment->paypal_transaction_id = $paypal['order']['id'];
         }
 
         $payment->value = $order->total;
         $payment->save();
 
-        return $order_id;
+        return $paypal;
     }
 
     public function checkout(Request $request) {
@@ -437,7 +476,7 @@ class CartController extends Controller {
             DB::statement("CALL create_order(?, ?, ?);", [Auth::user()->id, $addressID, $couponID]);
 
             $order_id = DB::select("SELECT currval(pg_get_serial_sequence('order','id'));")[0]->currval;
-            $this->addPayment($request, $order_id);
+            $paypal = $this->addPayment($request, $order_id);
 
             DB::commit();
         } catch (QueryException $ex) {
@@ -446,8 +485,11 @@ class CartController extends Controller {
             return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
         }
 
-
-        return redirect(route('orders', ['id' => $order_id]));
+        if ($request->input("payment-type") == 'bank') {
+            return redirect(route('orders', ['id' => $order_id]));
+        } else {
+            return redirect()->away($paypal['redirect']);
+        }
     }
 
     /**
