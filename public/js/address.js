@@ -191,7 +191,6 @@ function setupListeners() {
         },
         processResults: (data) => {
             data.forEach((el) => el.text = el.zip_code)
-            console.log(data);
             return {
                 results: data
             };

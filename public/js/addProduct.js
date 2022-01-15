@@ -13,7 +13,6 @@ function setupListenersProduct(selectTarget) {
             return query;
         },
         processResults: (data) => {
-            console.log(data);
             return {
                 results: data
             };
