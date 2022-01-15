@@ -172,36 +172,48 @@ class ProductController extends Controller {
         }
 
         $savedPhotos = [];
-        $attributes = '{}';
+        $attributes = json_decode('{}', true);
+        $variants = json_decode('{}', true);
 
-        dd($request->input('colorVariant'));
+        $colorInfo = $request->input('variantColor');
 
-        if($request->input('variantCheck')) {
-            $colorInfo = $request->input('colorVariant');
-            dd($colorInfo);
-            $id = DB::select('SELECT currval(\'product_id_seq\');');
-            if($request->input('originVariantID')) {
-                $product = Product::where('id', '=', $request->input('originVariantID'));
+        if($request->input('originVariantID')) {
+            $origin = Product::find($request->input('originVariantID'));
 
-                //converter para json, iterar os produtos e adicionar a variante nova
-                //dar update de todos os produtos
-                //adicionar variantes ao próprio, em baixo será guardado
-
-            } else  {
-                $attributes = "{\"color\": \"$colorInfo->regular\", \"variants\": { \"$id\" : \"$colorInfo->kebabcase\" }}" ;
+            if(!$origin || $origin->attributes == '{}') {
+                return redirect()->back()->withErrors(["originVariantID" => "No such product with variants"])->withInput();
             }
+
+            $variants = json_decode($origin->attributes, true)['variants'];
         }
 
         try {
             DB::beginTransaction();
 
+            $id = DB::select('SELECT last_value FROM product_id_seq')[0]->last_value;
+            $variants[strval($id + 1)] = strToLower(implode("-", explode(" ", $colorInfo)));
+            $attributes['variants'] = $variants;
+            $attributes['color'] = $colorInfo;
+
             $product = Product::create([
                 "name" => $request->input('name'),
-                "attributes" => $attributes,
+                "attributes" => json_encode($attributes),
                 "stock" => $request->input('stock'),
                 "description" => $request->input('description'),
                 "price" => $request->input('price'),
             ]);
+
+            foreach($variants as $prodID => $color) {
+                if($prodID == $id + 1) continue;
+                $productToUpdate = Product::find($prodID);
+                $productAttributes = json_decode($productToUpdate->attributes, true);
+                $productAttributes['variants'] = $variants;
+                $productToUpdate->update(['attributes' => json_encode($productAttributes)]);
+            }
+
+            //converter para json, iterar os produtos e adicionar a variante nova
+            //dar update de todos os produtos
+            //adicionar variantes ao próprio, em baixo será guardado
 
             foreach ($photos as $productPhoto) {
                 $path = $productPhoto->storePubliclyAs(

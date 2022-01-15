@@ -19,7 +19,9 @@
 
         reportData("Couldn't create the product", errors, {
             'name' : 'Product Name',
-            'attributes' : 'Variations',
+            'variantCheck' : 'Variations',
+            'originVariantID' : 'Variant ID',
+            'colorVariant' : 'Variant Color',
             'stock' : 'Stock',
             'description' : 'Description',
             'price' : 'Price',
@@ -94,7 +96,7 @@
     </div>
     <div class="d-flex align-items-center mb-3">
         <label for="variantCheck">Is variant?</label>
-        <input value="" id="variantCheck" name="variantCheck" class="form-check-input mx-2" type="checkbox" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <input value="" id="variantCheck" name="variantCheck" class="form-check-input mx-2" type="checkbox" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" autocomplete="variantCheck">
     </div>
     <div class="row collapse mb-3" id="collapseExample">
         <div class="col-md-6">

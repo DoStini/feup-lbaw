@@ -2,7 +2,6 @@ function setupListenersProduct(selectTarget) {
     selectTarget.replaceWith(selectTarget, createSelect({
         id: "variantColor",
         name: "variantColor",
-        class: "form-control",
         label: "Choose your Variant Color",
         ajax: true,
         delay: 1000,
