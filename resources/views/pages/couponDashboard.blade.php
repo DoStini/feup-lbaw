@@ -7,11 +7,6 @@
 <div class="container pb-4">
     <div class="row d-flex align-items-center">
         @include('partials.links.dashboardLinks', ['page' => 'couponDashboard'])
-        <div class="col-md-12 d-flex justify-content-end">
-            <a class="btn btn-primary mx-1" href={{route('getCreateCouponPage')}}>
-                Create New Coupon
-            </a>
-        </div>
     </div>
     <div class="row">
         <table class="table w-100 table-responsive my-4" style="font-size: 0.9em;" id="coupon-dashboard-table">
@@ -20,7 +15,7 @@
                     <th class="text-center">Coupon ID</th>
                     <th class="text-center">Code</th>
                     <th class="text-center">Percentage</th>
-                    <th class="text-center">Minimum Cart Value</th>
+                    <th class="text-center">Minimum Value</th>
                     <th class="text-center">Active</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -40,11 +35,22 @@
         serverSide: true,
         'order': [[1, 'desc']],
         'columnDefs':[
-            { 'name': 'id', 'targets': 0, 'className': 'text-center'},
+            { 'name': 'id', 'targets': 0, 'className': 'text-center', 'width':'6em'},
             { 'name': 'code', 'targets': 1, 'className': 'text-center'},
-            { 'name': 'percentage', 'targets': 2, 'className': 'text-center'},
-            { 'name': 'minimum_cart_value', 'targets': 3, 'className': 'text-center'},
-            { 'name': 'is_active', 'targets': 4, 'className': 'text-center'},
+            { 'name': 'percentage', 'targets': 2, 'className': 'percentage', 'width':'6em'},
+            {
+                'name': 'minimum_cart_value', 
+                'targets': 3, 
+                'width':'8em',
+                'render': function(data, type, row) {
+                    if(type === "display") {
+                        data = parseFloat(data).toFixed(2) + " €";
+                    }
+
+                    return data;
+                }
+            },
+            { 'name': 'is_active', 'targets': 4, 'className': 'text-center', 'width':'6em'},
             {
                 'targets': 5, 'orderable': false, 'searchable': false,
                 'render': function(data, type, row) {

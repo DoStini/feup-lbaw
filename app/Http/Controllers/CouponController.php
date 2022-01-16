@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-use function PHPUnit\Framework\returnSelf;
-
 class CouponController extends Controller {
 
     private function validateCreate(Request $request) {
@@ -43,8 +41,8 @@ class CouponController extends Controller {
         $this->validateCreate($request)->validateWithBag('new_coupon');
 
         $coupon = new Coupon();
-        $coupon->code = $request->code;
-        $coupon->percentage = $request->percentage;
+        $coupon->code = strtoupper($request->code);
+        $coupon->percentage = round($request->percentage / 100, 4);
         $coupon->minimum_cart_value = $request->minimum_cart_value;
 
         if (isset($request->is_active)) {
@@ -107,7 +105,7 @@ class CouponController extends Controller {
 
     private function validateList(Request $request) {
         return Validator::make($request->all(), [
-            'code' => 'required|string|min:1,max:20',
+            'code' => 'required|string|min:1|max:20',
             'min' => 'numeric',
         ]);
     }

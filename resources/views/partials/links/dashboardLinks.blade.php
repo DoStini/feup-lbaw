@@ -11,4 +11,7 @@
     <li class="nav-item">
         <a class="nav-link{{($page == 'couponDashboard' ? ' active' : '')}}" href={{route('getCouponDashboard')}}>  Manage Coupons </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link{{($page == 'createCouponDashboard' ? ' active' : '')}}" href={{route('getCreateCouponPage')}}>  Create Coupon </a>
+    </li>
 </ul>

@@ -7,7 +7,7 @@
 @section('content')
 
 <div class="container">
-@include('partials.links.dashboardLinks', ['page' => 'couponDashboard'])
+@include('partials.links.dashboardLinks', ['page' => 'createCouponDashboard'])
 
 <form id="coupon-form"  method="POST" action={{route('createCoupon')}}>
     @csrf
@@ -23,7 +23,7 @@
 
     <div class="form-group">
         <label for="percentage">Discount</label>
-        <input class="form-control" id="percentage" type="number" min="0" max="1" name="percentage" value="{{ old('percentage') }}" step="0.05" required>
+        <input class="form-control" id="percentage" type="number" min="0" max="100" name="percentage" value="{{ old('percentage') }}" step="0.05" required>
         @error('percentage', 'new_coupon')
             <span class="error form-text">
                 {{$message}}
