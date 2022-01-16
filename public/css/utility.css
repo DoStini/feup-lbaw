@@ -8,9 +8,15 @@
     color: white;
 }
 
-#updatable-orders-dashboard .dropdown-menu {
+#order-dashboard-table .dropdown-menu {
     width: 15rem;
 }
+
+
+#order-dashboard-table .dropstart .dropdown-toggle::before {
+    vertical-align: 0.15em;
+}
+
 
 .badge-clickable:hover {
     color: white;

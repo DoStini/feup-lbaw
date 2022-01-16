@@ -104,9 +104,9 @@
                         text = `
                         <div class="d-flex justify-content-around" id="dropdown-menu-order-status-${row[0]}" style="font-size: 1.2em;">
                             <div class="dropdown dropstart">
-                                <button class="dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
+                                <button class="p-1 dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-forward-fill icon-click" data-bs-toggle="tooltip"
+                                    <i class="bi bi-pencil-square icon-click" data-bs-toggle="tooltip"
                                     title="Advance Status"></i>
                                 </button>
 
@@ -124,7 +124,7 @@
                                         <button type="submit" class="btn btn-primary">Edit Order</button>
                                     </form>
                                 </div>
-                                <a class="bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
+                                <a class="btn p-1 bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
                                     data-bs-toggle="tooltip" title="Go to Order Page"></a>
                             </div>
                         </div>`;
