@@ -18,6 +18,7 @@ class Address extends Model {
         'street',
         'door',
         'zip_code_id',
+        'name'
     ];
 
     /**
@@ -39,6 +40,7 @@ class Address extends Model {
         $address["zip_code"] = $this->zip_code->zip_code;
         $address["zip_code_id"] = $this->zip_code->id;
         $address["id"] = $this->id;
+        $address["name"] = $this->name;
         return $address;
     }
 

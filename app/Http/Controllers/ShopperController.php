@@ -20,10 +20,10 @@ use Illuminate\Support\Facades\Hash;
 class ShopperController extends Controller {
 
     public function getOrders() {
-        
+
         $response = Gate::inspect('viewOrders', Shopper::class);
 
-        if($response->denied()) abort(404, $response->message());
+        if ($response->denied()) abort(404, $response->message());
 
         $user = Auth::user();
 

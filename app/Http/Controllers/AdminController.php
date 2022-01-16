@@ -98,11 +98,21 @@ class AdminController extends Controller {
         return view('pages.createNewAdmin', ['admin' => $user,]);
     }
 
+    public function getNewCouponPage(Request $request) {
+        Gate::authorize('isAdmin');
+
+        $user = Auth::user();
+
+        return view('pages.createCoupon', ['admin' => $user,]);
+    }
+
     public function getOrderDashboard() {
 
         Gate::authorize('isAdmin');
 
-        return view('pages.orderDashboard', ['admin' => Auth::user()]);
+        $statuses = OrderController::getPossibleStatus();
+
+        return view('pages.orderDashboard', ['admin' => Auth::user(), 'statuses' => $statuses]);
     }
 
     public function getProductDashboard() {
@@ -112,9 +122,14 @@ class AdminController extends Controller {
     }
 
     public function getUserDashboard() {
-
         Gate::authorize('isAdmin');
 
         return view('pages.userDashboard', ['admin' => Auth::user()]);
+    }
+
+    public function getCouponDashboard() {
+        Gate::authorize('isAdmin');
+
+        return view('pages.couponDashboard', ['admin' => Auth::user()]);
     }
 }

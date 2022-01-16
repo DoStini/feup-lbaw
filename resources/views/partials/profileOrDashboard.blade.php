@@ -22,15 +22,28 @@
                     @endif
                 </div>
             </div>
+            
             <div class="my-3 mx-2">
-                @include('partials.links.' . $links, ['admin' => $admin ?? null, 'shopper' => $shopper ?? null])
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header menu-collapse-btn" id="flush-headingOne">
+                        <button class="accordion-button collapsed bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                          Menu
+                        </button>
+                      </h2>
+                      <div id="flush-collapseOne" class="accordion-collapse collapse dont-collapse-sm" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            @include('partials.links.' . $links, ['admin' => $admin ?? null, 'shopper' => $shopper ?? null])
+                        </div>
+                      </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-9 col-sm-12 container">
             @include('partials.profileOrDashboard.' . $page, 
             ['shopper' => $shopper ?? null,
-             'admin' => $admin ?? null,
-             'info' => $info ?? null])
+             'admin' => $admin ?? null])
         </div>
     </div>
 </div>
