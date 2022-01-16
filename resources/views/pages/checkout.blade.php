@@ -86,7 +86,11 @@
                                 aria-expanded="true" @else aria-expanded="false" @endif
                                 aria-controls="address-panel-collapse{{$loop->index}}"
                                 id="address-button{{$loop->index}}">
-                                {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                                @if ($address->name != null)
+                                    {{$address->name}}
+                                @else
+                                    {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                                @endif
                             </button>
                         </h2>
                         <div id="address-panel-collapse{{$loop->index}}" data-bs-parent="#addresses-accordion"

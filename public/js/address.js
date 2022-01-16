@@ -14,7 +14,7 @@ function createAddress(data) {
                 aria-expanded="false"
                 aria-controls="address-panel-collapse-${data.id}"
                 id="address-button-${data.id}">
-                ${data.zip_code}, ${data.street} ${data.door}
+                ${data.name != null ? data.name :`${data.zip_code}, ${data.street} ${data.door}` }
             </button>
         </h2>
         <div id="address-panel-collapse-${data.id}"
@@ -47,7 +47,7 @@ function createAddress(data) {
 
 function modifyAddress(data) {
     const root = document.getElementById(`address-root-${data.id}`);
-    root.querySelector("button").innerHTML = `${data.zip_code}, ${data.street} ${data.door}`;
+    root.querySelector("button").innerHTML = data.name != null ? data.name : `${data.zip_code}, ${data.street} ${data.door}`;
     root.querySelector(".address-info").innerHTML = `
         ${data.street} ${data.door}<br>
         ${data.zip_code}<br>
@@ -89,6 +89,7 @@ function handleError(error) {
                 'street' : 'Street',
                 'zip_code_id' : 'Zip Code',
                 'door' : 'Door',
+                'name': 'Name'
             });
         }
     };
@@ -144,6 +145,7 @@ function handleEditClick(e) {
 
     form.dispatchEvent(new Event("reset"));
 
+    document.getElementById("address-name").value = cachedData.name;
     document.getElementById("street-name").value = cachedData.street;
     document.getElementById("door").value = cachedData.door;
     document.getElementById("zip_code_id").value = cachedData.zip_code_id;
