@@ -123,6 +123,37 @@
         </div>
     </div>
 </div>
+@can('reviewProduct', [App\Models\Review::class, $product])
+<div class="container d-flex flex-column justify-content-around mt-4 mb-4">
+    <form class="container" action="" method="POST">
+        <div class="row d-flex justify-content-between align-items-baseline">
+            <h2 class="w-auto">Add a Review</h2>
+            <div class="w-auto fs-4">
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="review-text">Review Body</label>
+                <textarea id="review-text" class="form-control" style="height: 6em" name="text" required></textarea>
+                <span class="error form-text text-danger" id="text-error"></span>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end mt-3">
+            <span class="w-auto">
+                <button type="submit" id="review-text" class="btn btn-secondary" name="text">Cancel</button>
+                <button type="submit" id="review-text" class="btn btn-primary" name="text">Submit</button>
+            </span>
+        </div>
+    </form>
+    {{-- <button class="row btn btn-primary">VIEW REVIEWS</button> --}}
+
+</div>
+@endcan
 
 @include('partials.errormodal')
 @include('partials.alert')
