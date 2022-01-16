@@ -30,7 +30,7 @@
         @csrf
         <button type="submit" class="my-2 btn btn-primary form-control"> Logout </button>
     </form>
-    <a id="show-delete-confirm" class="my-2 btn btn-danger w-100">  Delete Account </a
+    <a id="show-delete-confirm" class="my-2 btn btn-danger w-100">  Delete Account </a>
 @elseif(Auth::user()->is_admin && $shopper)
     <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> About {{$shopper->user->name}} </a>
     <a href={{route('editPage', ['id' => $shopper->user->id])}} class="my-2 btn btn-primary w-100">  Edit {{$shopper->user->name}}'s Personal Data </a>
@@ -40,10 +40,10 @@
     {{--<a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> {{$shopper->user->name}}'s Wishlist </a>--}}
 @endif
 
-@if (Auth::check() && 
-    ($shopper ? 
+@if (Auth::check() &&
+    ($shopper ?
         (Auth::user()->id == $shopper->user->id)
-         : 
+         :
         (Auth::user()->id == $admin->id)))
 <div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -64,7 +64,7 @@
                     </div>
                     <button type="submit" class="my-2 btn btn-danger w-100">
                         Delete Account
-                    </button>              
+                    </button>
                 </form>
             </div>
         </div>
@@ -80,5 +80,5 @@
             errorModal.show();
         });
     })
-    
+
 </script>
