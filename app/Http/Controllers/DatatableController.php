@@ -38,10 +38,10 @@ class DatatableController extends Controller {
 
             switch ($value["dir"]) {
                 case "asc":
-                    $query->orderBy($columnName); // SQL INJECTION
+                    $query->orderBy($columnName);
                     break;
                 case "desc":
-                    $query->orderByDesc($columnName); // SQL INJECTION
+                    $query->orderByDesc($columnName);
                     break;
             }
         }

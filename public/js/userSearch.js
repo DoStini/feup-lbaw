@@ -18,8 +18,6 @@ function createUser(user) {
             </div>
         </td>`;
 
-    // <a class="bi bi-dash-circle-fill icon-click" data-bs-toggle="tooltip" title="Ban User"></a>
-
     const element = document.createElement('tr');
     element.style = "visibility: visible";
     element.innerHTML = html;
@@ -67,12 +65,6 @@ function setupSearchListeners() {
         e.preventDefault();
         sendSearchUsersRequest(form, handleSearchUsers);
     });
-
-    // window.onload = () => {
-    //     clearForm(form);
-    //     sendSearchUsersRequest(form, handleSearchUsers);
-    // }
-
 
 }
 
