@@ -12,11 +12,9 @@
     @php
         $wishlist =  $shopper->wishlist()->paginate(4);
     @endphp
-    <div class="container-fluid px-md-5 min-vh-75">
+    <div class="container-fluid px-md-5">
         <div class="row">
-            <div class="col-12">
-                @each('partials.wishlistproduct', $wishlist , 'wishlistItem')
-            </div>
+            @each('partials.wishlistproduct', $wishlist , 'wishlistItem')
         </div>
     </div>
     <div class="d-flex align-items-center justify-content-end px-md-5">{{$wishlist->links()}}</div>
