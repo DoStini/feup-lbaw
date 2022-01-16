@@ -60,14 +60,14 @@ function insertProduct(product, idx) {
     const fallBack = "/img/default.jpg";
     const elem = document.createElement("div");
     elem.id = `cart-product-${idx}`;
-    elem.innerHTML = 
+    elem.innerHTML =
         `<div class="container" href="#">
             <div class="row align-items-center mb-3">
                 <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
                 <div class="col-9">
                     <div class="row align-items-center justify-content-between">
                         <div class="col-10 dropdown-cart-name">${product.name}</div>
-                        <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
+                        <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-trash-fill"></i>
                     </div>
                     <div class="row dropdown-cart-amount justify-content-between">
                         <div id="item-amount-${idx}" class="col px-0">
@@ -98,10 +98,10 @@ function insertProduct(product, idx) {
     });
 
     const selector = createNumberSelector({
-        id: `number-selector-${idx}`, 
+        id: `number-selector-${idx}`,
         min: 1,
         value: product.amount,
-        max: product.stock, 
+        max: product.stock,
         onBlur: (target, value, prevValue) => {
             if (value === prevValue) {
                 target.value = value;
