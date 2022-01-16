@@ -246,7 +246,7 @@ class UserController extends Controller {
                 "cur-password" => "Current password does not match our records"
             ];
 
-            return redirect()->back();
+            return redirect()->back()->withErrors($response["errors"]);
         }
 
         Auth::logout();

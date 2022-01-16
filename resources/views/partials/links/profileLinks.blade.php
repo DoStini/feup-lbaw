@@ -1,3 +1,20 @@
+
+@if($errors->any())
+<script async>
+    (async() => {
+        while(!window.hasOwnProperty('reportData'))
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+        let errors = JSON.parse(`<?php echo($errors->toJson())?>`);
+
+        reportData("Couldn't delete the account", errors, {
+            "cur-password": "Current Password",
+            "id": "ID",
+        });
+    })();
+</script>
+@endif
+
 @if($admin)
     <form  method="POST" action="{{ route('logout') }}">
         @csrf
@@ -58,6 +75,7 @@
 </ul>
 
 @endif
+
 
 @if (Auth::check() &&
     ($shopper ?

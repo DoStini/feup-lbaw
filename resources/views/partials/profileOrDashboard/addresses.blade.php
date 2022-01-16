@@ -1,5 +1,3 @@
-@include('partials.errormodal')
-
 <div id="address-root" class="accordion" id="addresses-accordion">
     @foreach ($shopper->addresses as $address)
     <div id="address-root-{{$address->id}}" class="accordion-item">
