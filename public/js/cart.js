@@ -15,7 +15,7 @@ function addToCartRequest(id, amount) {
                 for(var key in error.response.data.errors) {
                     errors = errors.concat(error.response.data.errors[key]);
                 }
-                launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                launchErrorAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
             }
         }
     });
@@ -100,7 +100,7 @@ function insertProduct(product, idx) {
     const fallBack = "/img/default.jpg";
     const elem = document.createElement("div");
     elem.id = `cart-product-${idx}`;
-    elem.innerHTML = 
+    elem.innerHTML =
         `<div class="container" href="#">
             <div class="row align-items-center mb-3">
                 <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
@@ -138,10 +138,10 @@ function insertProduct(product, idx) {
     });
 
     const selector = createNumberSelector({
-        id: `number-selector-${idx}`, 
+        id: `number-selector-${idx}`,
         min: 1,
         value: product.amount,
-        max: product.stock, 
+        max: product.stock,
         onBlur: (target, value, prevValue) => {
             if (value === prevValue) {
                 target.value = value;
@@ -161,7 +161,7 @@ function insertProduct(product, idx) {
                             for(var key in error.response.data.errors) {
                                 errors = errors.concat(error.response.data.errors[key]);
                             }
-                            launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                            launchErrorAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
                         }
                     }
                 });

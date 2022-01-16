@@ -140,6 +140,13 @@ class ProductController extends Controller {
         }
     }
 
+    public function datatableList(Request $request)  {
+        $this->authorize('viewAny', Product::class);
+
+        $dc =  new DatatableController();
+        return $dc->get($request, DB::table('product'));
+    }
+
     private function getValidatorAddProduct(Request $request) {
         return Validator::make($request->all(), [
             "name" => "required|string|max:100",

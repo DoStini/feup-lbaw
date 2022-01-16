@@ -50,13 +50,13 @@ RETURNS boolean
 LANGUAGE plpgsql
 AS
 $$
-DECLARE 
+DECLARE
 	result boolean;
 
 BEGIN
 
 result := str ~ '^[0-9\.]+$';
-RETURN result; 
+RETURN result;
 
 END;
 $$;
@@ -68,7 +68,7 @@ RETURNS varchar(9)
 LANGUAGE plpgsql
 AS
 $$
-DECLARE 
+DECLARE
 	j int := 9;
 	i int := 1;
 	total int := 0;
@@ -76,29 +76,29 @@ DECLARE
 	result varchar(9);
 
 BEGIN
- 
-IF  LENGTH(nif_input) = 9 AND is_number(nif_input) AND CAST(LEFT(nif_input,1) AS integer) NOT IN (0,4) THEN    
-    WHILE i < LENGTH(nif_input) LOOP	 
-         total := total + CAST(SUBSTRING(nif_input,i,1) AS integer) * j;            
+
+IF  LENGTH(nif_input) = 9 AND is_number(nif_input) AND CAST(LEFT(nif_input,1) AS integer) NOT IN (0,4) THEN
+    WHILE i < LENGTH(nif_input) LOOP
+         total := total + CAST(SUBSTRING(nif_input,i,1) AS integer) * j;
          j := j-1;
          i := i+1;
-    END LOOP;          
- 
+    END LOOP;
+
     IF MOD(total, 11) = 0 OR MOD(total, 11) = 1 THEN
-         digit_control := 0;         
-    ELSE           
-         digit_control := 11 - MOD(total, 11); 
+         digit_control := 0;
+    ELSE
+         digit_control := 11 - MOD(total, 11);
 	END IF;
- 
-    IF digit_control = CAST(RIGHT(nif_input,1) AS integer) THEN                              
-         result := nif_input;   /* nif válido */       
-    ELSE                   
+
+    IF digit_control = CAST(RIGHT(nif_input,1) AS integer) THEN
+         result := nif_input;   /* nif válido */
+    ELSE
          result := '' ;         /* nif inválido */
 	END IF;
 ELSE
-    result := '';          /* nif inválido */ 
+    result := '';          /* nif inválido */
 END IF;
-RETURN result; 
+RETURN result;
 
 END;
 $$;
@@ -119,7 +119,7 @@ CREATE TABLE "user" (
 	password 			    varchar(255) NOT NULL,
 	photo_id			    integer NOT NULL DEFAULT 1,
     is_admin                boolean DEFAULT FALSE,
-    is_deleted              boolean NOT NULL DEFAULT FALSE, 
+    is_deleted              boolean NOT NULL DEFAULT FALSE,
 	CONSTRAINT "user_pk" PRIMARY KEY (id),
 	CONSTRAINT "photo_id_fk" FOREIGN KEY (photo_id) REFERENCES "photo"
 		ON UPDATE CASCADE
@@ -148,7 +148,7 @@ CREATE TABLE "category" (
 	parent_category integer DEFAULT NULL,
 	CONSTRAINT "category_pk" PRIMARY KEY (id),
 		CONSTRAINT "c_parent_category_fk" FOREIGN KEY (parent_category) REFERENCES "category"
-		ON UPDATE CASCADE 
+		ON UPDATE CASCADE
 		ON DELETE SET NULL,
     CONSTRAINT "name_unique" UNIQUE (name)
 );
@@ -407,7 +407,7 @@ CREATE TABLE "proposed_product_photo" (
 		ON DELETE CASCADE,
 	CONSTRAINT "proposed_product_product_fk" FOREIGN KEY (proposed_product_id) REFERENCES "proposed_product"
 		ON UPDATE CASCADE
-		ON DELETE CASCADE	
+		ON DELETE CASCADE
 );
 
 CREATE TABLE "notification" (
@@ -471,7 +471,7 @@ CREATE TABLE "notification" (
         proposed_product_notif) = 1)
 );
 
-
+CREATE OR REPLACE VIEW user_shopper AS SELECT user.id AS id, name, email, phone_number, nif, newsletter_subcribed FROM user join authenticated_shopper ON (users.id = authenticated_shopper.id)
 
 -- INDEX 1
 CREATE INDEX shopper_cart ON "product_cart" USING hash (shopper_id);
@@ -480,7 +480,7 @@ CREATE INDEX shopper_cart ON "product_cart" USING hash (shopper_id);
 CREATE INDEX review_score ON "review" USING btree (score);
 
 -- INDEX 3
-CREATE INDEX products_of_category ON "product_category" USING btree (category_id); 
+CREATE INDEX products_of_category ON "product_category" USING btree (category_id);
 CLUSTER "product_category" USING products_of_category;
 
 CREATE INDEX shopper_orders ON "order" USING hash (shopper_id);
@@ -504,11 +504,11 @@ BEGIN
             );
     END IF;
     IF TG_OP = 'UPDATE' THEN
-            IF (NEW.name <> OLD.name OR 
-                NEW.description <> OLD.description OR 
-                (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'material')) 
+            IF (NEW.name <> OLD.name OR
+                NEW.description <> OLD.description OR
+                (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'material'))
                     <> (SELECT string_agg(value, ' ') FROM json_array_elements_text(OLD.attributes -> 'material')) OR
-                (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'color')) 
+                (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'color'))
                     <> (SELECT string_agg(value, ' ') FROM json_array_elements_text(NEW.attributes -> 'color'))) THEN
             NEW.tsvectors = (
                 setweight(to_tsvector('english', NEW.name), 'A') ||
@@ -583,23 +583,23 @@ EXECUTE PROCEDURE is_admin_not_updated();
 
 CREATE OR REPLACE FUNCTION  delete_user_info() RETURNS TRIGGER AS $delete_user_info$
 	BEGIN
-		UPDATE "user" 
+		UPDATE "user"
 		SET name = 'deleted', password = 'deleted', photo_id = DEFAULT, is_deleted = True
 		WHERE OLD.id = "user".id;
-        
+
 		IF EXISTS (SELECT * FROM "authenticated_shopper" WHERE id = OLD.ID) THEN
 			UPDATE "authenticated_shopper"
 			SET "about_me" = 'deleted', "phone_number" = NULL, "nif" = NULL, "newsletter_subcribed" = DEFAULT
 			WHERE id = OLD.id;
 		END IF;
-		
+
 		RETURN NULL;
 	END
 $delete_user_info$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS delete_user_info ON "user";
-CREATE TRIGGER delete_user_info 
+CREATE TRIGGER delete_user_info
 BEFORE DELETE ON "user"
 FOR EACH ROW
 EXECUTE PROCEDURE delete_user_info();
@@ -622,7 +622,7 @@ $check_if_bought_to_review$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS check_if_bought_to_review ON "review";
-CREATE TRIGGER check_if_bought_to_review 
+CREATE TRIGGER check_if_bought_to_review
 BEFORE INSERT OR UPDATE ON "review"
 FOR EACH ROW
 EXECUTE PROCEDURE check_if_bought_to_review();
@@ -635,8 +635,8 @@ CREATE OR REPLACE FUNCTION  update_prod_avg_stars() RETURNS TRIGGER AS $update_p
 		UPDATE "product"
 		SET avg_stars = (SELECT CAST(SUM(stars) AS float)
 						 FROM "review"
-						 WHERE "review".product_id = "product".id) 
-						 / 
+						 WHERE "review".product_id = "product".id)
+						 /
 						 (SELECT CAST(COUNT(id) AS float)
 						 FROM "review"
 						 WHERE "review".product_id = "product".id)
@@ -647,7 +647,7 @@ $update_prod_avg_stars$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS update_prod_avg_stars ON "review";
-CREATE TRIGGER update_prod_avg_stars 
+CREATE TRIGGER update_prod_avg_stars
 AFTER INSERT OR UPDATE OR DELETE ON "review"
 FOR EACH ROW
 EXECUTE PROCEDURE update_prod_avg_stars();
@@ -659,7 +659,7 @@ CREATE OR REPLACE FUNCTION  review_vote_updater() RETURNS TRIGGER AS $review_vot
 	BEGIN
 		 IF (TG_OP = 'DELETE') THEN
             UPDATE "review"
-			SET score = 
+			SET score =
 				CASE OLD.vote
 					WHEN 'upvote' THEN score - 1
 					WHEN 'downvote' THEN score + 1
@@ -667,7 +667,7 @@ CREATE OR REPLACE FUNCTION  review_vote_updater() RETURNS TRIGGER AS $review_vot
 			WHERE "review".id = OLD.review_id;
 		ELSIF (TG_OP = 'INSERT') THEN
             UPDATE "review"
-			SET score = 
+			SET score =
 				CASE NEW.vote
 					WHEN 'upvote' THEN score + 1
 					WHEN 'downvote' THEN score - 1
@@ -676,7 +676,7 @@ CREATE OR REPLACE FUNCTION  review_vote_updater() RETURNS TRIGGER AS $review_vot
         ELSIF (TG_OP = 'UPDATE') THEN
 			IF NEW.vote <> OLD.vote THEN
 				UPDATE "review"
-				SET score = 
+				SET score =
 					CASE NEW.vote
 						WHEN 'upvote' THEN score + 2
 						WHEN 'downvote' THEN score - 2
@@ -690,7 +690,7 @@ $review_vote_updater$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS review_vote_updater ON "review_vote";
-CREATE TRIGGER review_vote_updater 
+CREATE TRIGGER review_vote_updater
 AFTER INSERT OR DELETE OR UPDATE ON "review_vote"
 FOR EACH ROW
 EXECUTE PROCEDURE review_vote_updater();
@@ -709,7 +709,7 @@ $update_to_paid$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS update_to_paid ON "payment";
-CREATE TRIGGER update_to_paid 
+CREATE TRIGGER update_to_paid
 AFTER INSERT ON "payment"
 FOR EACH ROW
 EXECUTE PROCEDURE update_to_paid();
@@ -723,14 +723,14 @@ CREATE OR REPLACE FUNCTION  order_status_notif() RETURNS TRIGGER AS $order_statu
 			INSERT INTO "notification" (shopper, type, order_id, order_notif_type)
 			VALUES (NEW.shopper_id, 'order', NEW.id, NEW.status);
 		END IF;
-		
+
 		RETURN NEW;
 	END
 $order_status_notif$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS order_status_notif ON "order";
-CREATE TRIGGER order_status_notif 
+CREATE TRIGGER order_status_notif
 AFTER INSERT OR UPDATE ON "order"
 FOR EACH ROW
 EXECUTE PROCEDURE order_status_notif();
@@ -746,7 +746,7 @@ CREATE OR REPLACE FUNCTION is_max_depth(cat_id integer, i integer) RETURNS boole
 				RETURN FALSE;
 			ELSIF i < 0 THEN
 				RETURN TRUE;
-			ELSE 
+			ELSE
 				cur_parent := (SELECT parent_category
 							   FROM "category"
 							   WHERE "category".id = cat_id);
@@ -774,7 +774,7 @@ $category_max_depth$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS category_max_depth ON "category";
-CREATE TRIGGER category_max_depth 
+CREATE TRIGGER category_max_depth
 AFTER INSERT OR UPDATE ON "category"
 FOR EACH ROW
 EXECUTE PROCEDURE category_max_depth();
@@ -784,8 +784,8 @@ EXECUTE PROCEDURE category_max_depth();
 
 CREATE OR REPLACE FUNCTION  vote_not_self() RETURNS TRIGGER AS $vote_not_self$
 	BEGIN
-		IF ((SELECT creator_id 
-			 FROM "review" 
+		IF ((SELECT creator_id
+			 FROM "review"
 			 WHERE "review".id = NEW.review_id) = NEW.voter_id) THEN
 			 RAISE EXCEPTION 'A user cannot vote on its own review.';
 		END IF;
@@ -795,7 +795,7 @@ $vote_not_self$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS vote_not_self ON "review_vote";
-CREATE TRIGGER vote_not_self 
+CREATE TRIGGER vote_not_self
 BEFORE INSERT OR UPDATE ON "review_vote"
 FOR EACH ROW
 EXECUTE PROCEDURE vote_not_self();
@@ -813,7 +813,7 @@ $send_notif_chng_approv_state$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS send_notif_chng_approv_state ON "proposed_product";
-CREATE TRIGGER send_notif_chng_approv_state 
+CREATE TRIGGER send_notif_chng_approv_state
 AFTER UPDATE ON "proposed_product"
 FOR EACH ROW
 EXECUTE PROCEDURE send_notif_chng_approv_state();
@@ -859,7 +859,7 @@ CREATE OR REPLACE PROCEDURE create_order(shopper_id_param integer, address_id_pa
 		IF (SELECT is_active FROM coupon WHERE coupon.id = coupon_id_param) = FALSE THEN
 			RAISE EXCEPTION 'COUPON IS NOT ACTIVE';
 		END IF;
-	
+
 		products_not_in_stock := (SELECT count(*)
 		FROM (
 			SELECT (stock - amount) AS left_stock
@@ -867,57 +867,57 @@ CREATE OR REPLACE PROCEDURE create_order(shopper_id_param integer, address_id_pa
 			WHERE product_cart.shopper_id = shopper_id_param
 		) AS product_stock
 		WHERE left_stock < 0);
-		
+
 		IF (products_not_in_stock > 0) THEN
 			RAISE EXCEPTION 'ORDER HAS PRODUCTS WITHOUT STOCK';
 			RETURN;
 		END IF;
-		
+
 		DROP TABLE IF EXISTS product_stats;
 		CREATE TEMPORARY TABLE product_stats AS (
 			SELECT product.id AS id, (product.stock - product_cart_t.amount) AS stock, (product.price * product_cart_t.amount) AS price
 			FROM (SELECT * FROM product_cart WHERE (shopper_id = shopper_id_param)) AS product_cart_t
 			LEFT JOIN product ON (product_cart_t.product_id = product.id)
 		);
-		
+
 		subtotal_calc := (
 			SELECT SUM(price)
 			FROM product_stats
 		);
-		
+
 		IF subtotal_calc < (SELECT minimum_cart_value
 						   FROM coupon
 						   WHERE coupon.id = coupon_id_param) THEN
 			RAISE EXCEPTION 'The selected coupon is not valid for this order - the cart value is not minimum required.';
 		END IF;
-		
+
 		c_percentage := (
 			SELECT percentage
 			FROM coupon WHERE (id = coupon_id_param)
 		);
-		
+
 		IF c_percentage IS NULL THEN
 			total_calc := subtotal_calc;
 		ELSE
 			total_calc := subtotal_calc - (subtotal_calc * c_percentage);
 		END IF;
-		
+
 		INSERT INTO "order" ("shopper_id", "address_id", total, subtotal, coupon_id) VALUES (shopper_id_param, address_id_param, total_calc, subtotal_calc, coupon_id_param);
-		
+
 		UPDATE product
 		SET stock = product_stats.stock
 		FROM product_stats
 		WHERE (product.id = product_stats.id);
-	
+
 		INSERT INTO order_product_amount(order_id, product_id, amount, unit_price) (
 			SELECT currval('order_id_seq'), product_id, amount, price
 			FROM (SELECT * FROM product_cart WHERE (shopper_id = shopper_id_param)) AS product_cart_t
 			LEFT JOIN product ON (product_cart_t.product_id = product.id)
 		);
-		
+
 		DELETE FROM product_cart
 		WHERE (shopper_id = shopper_id_param);
-		
+
 		DROP TABLE product_stats;
 	END;
 $$ LANGUAGE plpgsql;

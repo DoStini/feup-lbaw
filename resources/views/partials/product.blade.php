@@ -14,7 +14,7 @@
                     @endif
                     @endforeach
                     @endif
-                    @if ($insertedPhotos < 1) 
+                    @if ($insertedPhotos < 1)
                     <div class="carousel-item active">
                         <img class="d-block w-100" src="/img/default.jpg">
                     </div>
@@ -88,12 +88,12 @@
                                     @foreach ($color_id_pair as $id => $color)
                                         @if($loop->first)
                                             <div class="row my-1">
-                                        @elseif(($loop->iteration - 1) % 3 == 0) 
+                                        @elseif(($loop->iteration - 1) % 3 == 0)
                                             </div> <div class="row my-1">
-                                        @elseif($loop->last) 
+                                        @elseif($loop->last)
                                             </div>
                                         @endif
-                                    <a class="col-4" href={{route('getProduct', ['id' => $id])}} data-toggle="tooltip" data-placement="top" title={{$color}} ><img class="variant-color" src={{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png", $color)}}></a>
+                                    <a class="col-4" href={{route('getProduct', ['id' => $id])}} data-toggle="tooltip" data-placement="top" title={{$color}} ><img class="variant-color" src={{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png", $color)}} onerror="this.src='{{asset('img/notfound.jpg')}}'"></a>
                                 @endforeach
                                 </div>
                                 </div>

@@ -360,7 +360,7 @@ class CartController extends Controller {
             $entry->attributes = json_decode($entry->attributes);
             return $entry;
         }, $products);
-
+        //dd($products);
         if (!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
     }
 
