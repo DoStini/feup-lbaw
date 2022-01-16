@@ -32,23 +32,32 @@
         </div>
         <div class="product-info col-md-5">
             <div class="my-3">
+                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
                 <p>
                     @for ($i = 1; $i <= 5; $i++) <i
                         class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
                         </i>
                         @endfor
                     </p>
-                <h2 style=text-align: justify;">{{strtoupper($product->name)}}</h2>
             </div>
 
             <div class="my-2 d-flex justify-content-between align-items-center">
                 <h3> {{$product->price}} €</h3>
-                <h5> Stock: {{$product->stock}} </h5>
+                @if(Auth::check() && !Auth::user()->is_admin)
+                <i class="add-wishlist icon-click bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
+                    style="font-size:2em;@if($wishlisted)display:none @endif"
+                >
+                </i>
+                <i class="remove-wishlist icon-click bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
+                    style="font-size:2em;@if(!$wishlisted)display:none @endif"
+                >
+                </i>
+                @endif
             </div>
 
             <div id="description-box-teaser" class="description-box-teaser">
-                <p style=text-align: center;">{{$product->description}}</p>
-                <div class="show-more">
+                <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
+                <div class="show-more" id="show-more-btn">
                     <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
                 </div>
             </div>
@@ -107,7 +116,7 @@
                     <i class="bi bi-heart-fill add-to-wishlist"></i>
                     -->
             </div>
-
+          
             <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
                 @if(Auth::check() && !Auth::user()->is_admin)
                 <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>

@@ -2,7 +2,7 @@
 <nav>
   <div class="p-3 text-center text-white">
     <div class="container">
-      <div class="row d-flex align-items-center">
+      <div class="row d-flex align-items-center justify-content-between">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
           <a href={{route('getProductSearch')}} class="ms-md-2">
             <img src="/img/refurniture.svg" alt="" width="200" height=65" />
@@ -17,12 +17,16 @@
         </div>
 
         <div class="col-md-4 d-flex justify-content-center justify-content-md-end align-items-center">
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center justify-content-between">
             @if(Auth::check())
                 @if(!Auth::user()->is_admin)
-                <!-- Cart -->
                 @include("partials.dropdowncart")
-
+                <div>
+                  <a class="me-3" href={{route('getWishlistPage')}}>
+                    <i class="bi bi-bookmark-heart-fill" style="color: #000000; font-size:1.5em;"></i>
+                  </a>
+                </div>
+                @endif
                 <!-- Notification -->
                 <div class="dropdown">
                     <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
@@ -36,9 +40,6 @@
                 <div class="notification-number">
                     <div class="new-notif"></div>
                 </div>
-
-                @endif
-
                 <!-- User -->
                 <div class="dropdown">
                 <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"

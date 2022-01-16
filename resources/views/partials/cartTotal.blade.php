@@ -5,15 +5,15 @@
     <br>
     <div class="row">
         <table id="vertical-1" style="border-spacing: 2em .5em; border-collapse: inherit;">
+            <tr id="coupon-used" style="display:none">
+                <th>Coupon Used</th>
+                <td>25%</td>
+            </tr>
             <tr>
-                <th>Subtotal (Tax Included):</th>
+                <th>Subtotal:</th>
                 <td>{{$cartTotal}} €</td>
             </tr>
-            <tr>
-                <th>Total Tax (IVA):</th>
-                <td>{{round($cartTotal * 0.23, 2)}} €</td>
-            </tr>
-            <tr style="font-size: 1.2em;">
+            <tr style="font-size: 1.2em;" id="order-total" >
                 <th>Total:</th>
                 <td>{{$cartTotal}} €</td>
             </tr>

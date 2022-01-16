@@ -12,14 +12,14 @@
         while(!window.hasOwnProperty('reportData'))
             await new Promise(resolve => setTimeout(resolve, 100));
 
-        let errors = JSON.parse(`<?php echo($errors->toJson())?>`);
+        let errors = JSON.parse(`<?php echo($errors->toJson()) ?>`.replace(/\s+/g," "));
         let products = errors.products;
 
         if(products) {
             delete errors.products;
         }
 
-        reportData("There was an error while checking out the cart", errors, {
+        reportData("Couldn't checkout the cart", errors, {
             "cart" : "Cart",
             "payment-type" : "Payment Type",
             "address-id" : "Address"
@@ -35,22 +35,22 @@
                 let product = elem;
 
                 const productImg = product.photos[0];
-                console.log(productImg);
                 const fallBack = "/img/default.jpg";
 
                 const html = `
-                    <div id="product-${product.id}" class="card mb-5 search-products-item">
-                        <img class="card-img-top search-card-top" src="${productImg.url}" onerror="this.src='${fallBack}'">
-                        <div class="card-body">
-                            <h4 class="card-title">${product.name.toUpperCase()}</h4>
-                            <div class="container ps-0 pe-0">
-                                <div class="row justify-content-between align-items-center">
-                                    <h4 class="col-7 mb-0">${product.price} &euro;</h4>
-                                    <span class="col">Stock: ${product.stock}</span>
-                                </div>
+                <div id="product-${product.id}" class="card mb-5 search-products-item">
+                    <img class="card-img-top search-card-top" src="${productImg.url}" onerror="this.src='${fallBack}'">
+                    <div class="card-body">
+                        <h4 class="card-title" style="height: 2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical; overflow: hidden;">${capitalize(product.name)}</h4>
+                        <div class="container ps-0 pe-0">
+                            <div class="row justify-content-between align-items-center">
+                                <h4 class="col mb-0">${product.price} &euro;</h4>
+                                <span class="col">Stock: ${product.stock}</span>
+
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                </div>`;
 
                 const element = document.createElement("div");
                 element.id = `root-product-${product.id}`;
@@ -86,7 +86,11 @@
                                 aria-expanded="true" @else aria-expanded="false" @endif
                                 aria-controls="address-panel-collapse{{$loop->index}}"
                                 id="address-button{{$loop->index}}">
-                                {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                                @if ($address->name != null)
+                                    {{$address->name}}
+                                @else
+                                    {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                                @endif
                             </button>
                         </h2>
                         <div id="address-panel-collapse{{$loop->index}}" data-bs-parent="#addresses-accordion"
@@ -152,7 +156,7 @@
             </section>
         </div>
         <div class="col-md-4 d-flex align-items-center justify-content-start flex-column">
-            {{--@include('partials.applyCoupon')--}}
+            @include('partials.applyCoupon', ["cartTotal" => $cartTotal])
             @include('partials.cartTotal', ["cartTotal" => $cartTotal])
             <div class="my-4 w-50 d-flex align-items-center justify-content-center">
                 <button type="submit" class="w-100 btn btn-primary">Checkout</button>

@@ -8,6 +8,16 @@
     color: white;
 }
 
+#order-dashboard-table .dropdown-menu {
+    width: 15rem;
+}
+
+
+#order-dashboard-table .dropstart .dropdown-toggle::before {
+    vertical-align: 0.15em;
+}
+
+
 .badge-clickable:hover {
     color: white;
     background-color: rgb(80, 79, 79);
@@ -60,3 +70,14 @@
     color: rgb(63, 63, 63);
 }
 
+@media (min-width: 768px) {
+    .collapse.dont-collapse-sm {
+      display: block;
+      height: auto !important;
+      visibility: visible;
+    }
+
+    .menu-collapse-btn {
+        display: none;
+    }
+  }
