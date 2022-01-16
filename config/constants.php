@@ -14,6 +14,10 @@ return [
             'code' => 403,
             'message' => 'The user is not a shopper'
         ],
+        'blocked' => [
+            'code' => 403,
+            'message' => 'The user has been blocked'
+        ]
     ],
     'fields' => [
         'code' => 422,

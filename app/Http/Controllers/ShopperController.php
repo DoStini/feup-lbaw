@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
+use Exception;
 use Facade\FlareClient\Api;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Database\QueryException;
@@ -43,7 +44,7 @@ class ShopperController extends Controller {
     public function blockShopper(int $id) {
         $shopper = Shopper::findOrFail($id);
 
-        $this->authorize('block', [Shopper::class, $shopper]);
+        $this->authorize('block', Shopper::class);
 
         if($shopper->is_blocked) {
             return ApiError::userAlreadyBlocked();
@@ -55,8 +56,8 @@ class ShopperController extends Controller {
 
         try {
             $shopper->update($shopper_attrs);
-
-        } catch(QueryExecuted $ex) {
+            $shopper->save();
+        } catch(Exception $ex) {
             return ApiError::unexpected();
         }
         return response()->json(
@@ -68,12 +69,12 @@ class ShopperController extends Controller {
     public function unblockShopper(int $id) {
         $shopper = Shopper::findOrFail($id);
 
-        $this->authorize('block', [Shopper::class, $shopper]);
-
+        $this->authorize('block', Shopper::class);
+        
         if(!$shopper->is_blocked) {
             return ApiError::userNotBlocked();
         }
-
+        
         $shopper_attrs = [
             'is_blocked' => false,
         ];

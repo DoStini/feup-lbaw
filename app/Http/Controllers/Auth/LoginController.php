@@ -76,6 +76,7 @@ class LoginController extends Controller {
             ->where('email', $request->email)->first();
 
             if($shopper && $shopper->is_blocked) {
+                $this->logout($request);
                 return $this->sendBlockedLoginResponse($request);
             }
 

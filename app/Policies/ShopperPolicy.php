@@ -151,7 +151,7 @@ class ShopperPolicy
      * @param  \App\Models\Shopper  $shopper
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function block(User $user, Shopper $shopper)
+    public function block(User $user)
     {
         return $user->is_admin;
     }

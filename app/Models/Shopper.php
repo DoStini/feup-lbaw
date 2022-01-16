@@ -20,6 +20,7 @@ class Shopper extends Model {
         'about_me',
         'phone_number',
         'nif',
+        'is_blocked',
     ];
 
     /**
