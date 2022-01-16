@@ -110,7 +110,9 @@ class AdminController extends Controller {
 
         Gate::authorize('isAdmin');
 
-        return view('pages.orderDashboard', ['admin' => Auth::user()]);
+        $statuses = OrderController::getPossibleStatus();
+
+        return view('pages.orderDashboard', ['admin' => Auth::user(), 'statuses' => $statuses]);
     }
 
     public function getProductDashboard() {

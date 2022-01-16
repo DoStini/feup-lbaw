@@ -3,6 +3,9 @@
 @section('title', 'Orders Dashboard')
 
 @section('content')
+<script src={{asset('js/adminOrders.js')}} defer></script>
+@include('partials.alert')
+
 
 <div class="container pb-4">
 
@@ -26,8 +29,18 @@
 </div>
 
 <script type="application/javascript" defer>
-    $('#order-dashboard-table').DataTable({
+    let table = $('#order-dashboard-table').DataTable({
         'responsive': true,
+        'drawCallback': function() {
+            /** @type {Array<Element>} dropdownElements */
+            dropdownElements = [].slice.call(document.querySelectorAll(".dropdown-toggle"));
+            /** @type {Array<bootstrap.Dropdown>} dropdowns */
+            dropdowns = [];
+
+            dropdownElements.forEach(function (element) {
+                dropdowns[element.id] = new bootstrap.Dropdown(element);
+            });
+        },
         'ajax': {
             'url': '/api/orders/',
         },
@@ -74,9 +87,31 @@
                     let text = "";
                     if(type === 'display') {
                         text = `
-                        <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                            {{--<a class="bi bi-forward-fill icon-click" href="" data-bs-toggle="tooltip" title="Advance Status"></a>--}}
-                             <a class="bi bi-info-circle-fill icon-click" href='/orders/${row[0]}' data-bs-toggle="tooltip" title="Go to Order Page"></a>
+                        <div class="d-flex justify-content-around" id="dropdown-menu-order-status-${row[0]}" style="font-size: 1.2em;">
+                            <div class="dropdown dropstart">
+                                <button class="p-1 dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-pencil-square icon-click" data-bs-toggle="tooltip"
+                                    title="Advance Status"></i>
+                                </button>
+
+                                <div class="dropdown-menu"  aria-labelledby="dropdown-menu-order-status-btn-${row[0]}">
+                                    <form class="px-4 py-3" id="edit-order-status-form-${row[0]}" onsubmit="return sendOrderStatus(event, ${row[0]});">
+                                        <div class="mb-3">
+                                            <label for="order-status-${row[0]}" class="form-label">Edit Order Status</label>
+                                            <select id="order-status-${row[0]}" name="status" class="form-select">
+                                                @foreach ($statuses as $status)
+                                                <option ${ '{{$status}}' === row[5] ? "selected" : ""}
+                                                    value="{{$status}}">{{strtoupper($status)}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Edit Order</button>
+                                    </form>
+                                </div>
+                                <a class="btn p-1 bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
+                                    data-bs-toggle="tooltip" title="Go to Order Page"></a>
+                            </div>
                         </div>`;
                         data = text;
                     }
