@@ -38,7 +38,7 @@
 <script>
 document.getElementById("remove-in-wishlist-{{$wishlistItem->id}}").addEventListener("click", (e) => {
   removeFromWishlistRequest({{$wishlistItem->id}}, () => {
-    document.getElementById("product-{{$wishlistItem->id}}-card").remove();
+    location.reload();
   });
 });
 </script>

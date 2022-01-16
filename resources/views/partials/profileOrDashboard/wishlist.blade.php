@@ -9,12 +9,16 @@
         </div>
     @else
     <h3 class="mx-2 text-center d-block">{{$shopper->user->name}}'s Wishlist</h3>
+    @php
+        $wishlist =  $shopper->wishlist()->paginate(4);
+    @endphp
     <div class="container-fluid px-md-5 min-vh-75">
         <div class="row">
             <div class="col-12">
-                @each('partials.wishlistproduct', $shopper->wishlist , 'wishlistItem')
+                @each('partials.wishlistproduct', $wishlist , 'wishlistItem')
             </div>
         </div>
     </div>
+    <div class="d-flex align-items-center justify-content-end px-md-5">{{$wishlist->links()}}</div>
     @endif
 </section>

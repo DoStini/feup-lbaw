@@ -41,10 +41,9 @@ class CartController extends Controller {
         $user = Auth::user();
 
         $shopper = Shopper::find($user->id);
-        $cart = $shopper->cart;
-        $cartTotal = $this->cartPrice($cart);
+        $cartTotal = $this->cartPrice($shopper->cart);
 
-        return view('pages.cart', ['cart' => $cart, 'cartTotal' => $cartTotal, 'user' => $user]);
+        return view('pages.cart', ['cartTotal' => $cartTotal, 'shopper' => $shopper]);
     }
 
     /**

@@ -36,7 +36,7 @@ class WishlistController extends Controller {
     }
 
     /**
-     * Shows cart contents
+     * Shows wishlist contents
      *
      * @return Response
      */
