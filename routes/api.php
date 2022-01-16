@@ -69,6 +69,17 @@ Route::group(
 
 Route::group(
     [
+        'prefix' => 'users/{id}/notifications',
+        'middleware' => ['auth.api', 'is.shopper']
+    ],
+    function () {
+        Route::get('/', 'NotificationController@get');
+        Route::post('/', 'NotificationController@clear');
+    }
+);
+
+Route::group(
+    [
         'prefix' => 'users/wishlist',
         'middleware' => ['auth.api']
     ],
@@ -78,3 +89,5 @@ Route::group(
         Route::delete('/{product_id}/remove', 'WishlistController@delete');
     }
 );
+
+

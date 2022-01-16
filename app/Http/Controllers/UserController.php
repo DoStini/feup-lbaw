@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
 use App\Models\User;
+use App\Events\ProfileEdited;
+use App\Models\Notification;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
@@ -208,6 +210,16 @@ class UserController extends Controller {
 
         $user = $user->fresh();
         $shopperData = $shopper ? $shopper->fresh()->toArray() : [];
+
+        if (Auth::user()->is_admin) {
+            $not = new Notification();
+            $not->shopper = $user->id;
+            $not->type = "account";
+            $not->account_mng_notif_type = "edited";
+            $not->save();
+
+            event(new ProfileEdited($user->id));
+        }
 
         return response(
             array_merge(
