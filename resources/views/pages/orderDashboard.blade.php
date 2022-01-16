@@ -128,10 +128,6 @@
                                     data-bs-toggle="tooltip" title="Go to Order Page"></a>
                             </div>
                         </div>`;
-                        // <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                        //     {{--<a class="bi bi-forward-fill icon-click" href="" data-bs-toggle="tooltip" title="Advance Status"></a>--}}
-                        //      <a class="bi bi-info-circle-fill icon-click" href='/orders/${row[0]}' data-bs-toggle="tooltip" title="Go to Order Page"></a>
-                        // </div>`;
                         data = text;
                     }
 
