@@ -89,6 +89,6 @@ class PaypalController extends Controller {
             $order->save();
         }
 
-        return redirect(route('orders', ['id' => $orderId]))->withErrors("hello");
+        return redirect(route('orders', ['id' => $orderId]));
     }
 }
