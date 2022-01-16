@@ -85,7 +85,7 @@ function handleNew(data) {
 function handleError(error) {
     if(error.response) {
         if(error.response.data) {
-            reportData("There was an error managing an address", error.response.data["errors"], {
+            reportData("Couldn't manage the address", error.response.data["errors"], {
                 'street' : 'Street',
                 'zip_code_id' : 'Zip Code',
                 'door' : 'Door',
