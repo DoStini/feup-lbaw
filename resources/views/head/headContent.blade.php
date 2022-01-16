@@ -39,7 +39,7 @@
     <script>
         window.__theme = 'bs5';
     </script>
-    <script type="text/javascript" src={{ asset('js/app.js') }} defer></script>
+    <script type="text/javascript" src={{ asset('js/app.js') }}></script>
     <script type="text/javascript" src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
     <script type="text/javascript" src={{ asset('js/lib/uniqueCheckbox.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/lib/select.js') }} defer></script>
