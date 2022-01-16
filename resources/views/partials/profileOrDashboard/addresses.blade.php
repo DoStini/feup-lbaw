@@ -111,7 +111,7 @@
             door: "{{addslashes($address->door)}}",
             county: "{{$address->zip_code->county->name}}",
             district: "{{$address->zip_code->county->district->name}}",
-            name: "{{$address->name}}"
+            name: "{{addslashes($address->name)}}"
         }
 
     @endforeach
