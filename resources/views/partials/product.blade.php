@@ -163,14 +163,14 @@
         <div class="row">
             <div class="form-group">
                 <label for="review-text">Review Body</label>
-                <textarea id="review-text" class="form-control" style="height: 6em" name="text" >{{old('text')}}</textarea>
+                <textarea id="review-text" class="form-control" style="height: 6em" name="text" required>{{old('text')}}</textarea>
                 <span class="error form-text text-danger" id="text-error"></span>
             </div>
         </div>
         <div class="row d-flex justify-content-between align-items-end mt-1">
             <div class="form-group col-6">
                 <label for="review-form-photos">Review Photos</label>
-                <input type="file" class="form-control" name="photos[]" id="review-form-photos"  multiple>
+                <input type="file" class="form-control" name="photos[]" id="review-form-photos" required  multiple>
             </div>
 
             <span class="w-auto">
