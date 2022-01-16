@@ -55,6 +55,18 @@ class Shopper extends Model {
         )->withPivot('amount')->as('details');
     }
 
+    /**
+     * The products and their amount the user has in its cart.
+     */
+    public function wishlist() {
+        return $this->belongsToMany(
+            Product::class,
+            'wishlist',
+            'shopper_id',
+            'product_id',
+        );
+    }
+
     public function orders() {
         return $this->hasMany(
             Order::class,
