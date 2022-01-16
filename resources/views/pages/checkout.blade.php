@@ -4,8 +4,6 @@
 
 @section('content')
 
-@include('partials.errormodal')
-
 @if($errors->any())
 <script async>
     (async() => {
@@ -76,6 +74,12 @@
             <section id="order-address" class="mb-4">
                 <h2 class="mb-4">Address</h2>
                 <div class="accordion" id="addresses-accordion">
+                    @if(count($shopper->addresses) === 0)
+                        <div class="container d-flex align-items-center flex-column">
+                            <p class="w-100 text-center address-alert">It seems like you haven't yet registered an address to your account.</p>
+                            <a class="w-50 btn btn-primary" href="{{route("addresses", ["id" => $shopper->id])}}">Click here to register an address</a>
+                        </div>
+                    @else
                     @foreach ($shopper->addresses as $address)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="address-heading{{$loop->index}}">
@@ -117,6 +121,7 @@
                         </div>
                     </div>
                     @endforeach
+                    @endif
                 </div>
             </section>
             <section id="order-payment" class="mb-4 d-flex flex-column">
@@ -159,7 +164,7 @@
             @include('partials.applyCoupon', ["cartTotal" => $cartTotal])
             @include('partials.cartTotal', ["cartTotal" => $cartTotal])
             <div class="my-4 w-50 d-flex align-items-center justify-content-center">
-                <button type="submit" class="w-100 btn btn-primary">Checkout</button>
+                <button type="submit" class="w-100 btn btn-primary" @if(count($shopper->addresses) === 0) disabled  @endif >Checkout</button>
             </div>
         </div>
     </form>

@@ -166,7 +166,7 @@ class CartController extends Controller {
         $shopper = Shopper::find($userId);
 
         if (!$this->validStock($product, $amount)) {
-            return ApiError::notEnoughStock();
+            return response()->json(["message" => 'Product only has a stock of '. $product->stock], 422);
         }
 
 
@@ -210,13 +210,13 @@ class CartController extends Controller {
         if ($this->productInCart($shopper, $product)) {
             $newAmount = $amount + $shopper->cart()->find($productId)->details->amount;
             if (!$this->validStock($product, $newAmount)) {
-                return ApiError::notEnoughStock();
+                return response()->json(["message" => 'Product only has a stock of '. $product->stock], 422);
             }
 
             $shopper->cart()->updateExistingPivot($productId, ['amount' => $newAmount]);
         } else {
             if (!$this->validStock($product, $amount)) {
-                return ApiError::notEnoughStock();
+                return response()->json(["message" => 'Product only has a stock of '. $product->stock], 422);
             }
 
             $shopper->cart()->attach($productId, ['amount' => $amount]);

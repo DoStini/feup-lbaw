@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Models\Photo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -46,6 +47,9 @@ class UserController extends Controller {
     public function showProfile($id) {
 
         $user = User::findOrFail($id);
+        if ($user->is_deleted) {
+            abort(404);
+        }
 
         $response = Gate::inspect('viewProfile', [User::class, $user]);
 
@@ -229,6 +233,27 @@ class UserController extends Controller {
             ),
             200
         );
+    }
+
+    public function delete(Request $request, int $id) {
+        $user = User::find($id);
+
+        $this->authorize('delete', [User::class, $user]);
+
+        if (!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
+            $response = [];
+            $response["errors"] = [
+                "cur-password" => "Current password does not match our records"
+            ];
+
+            return redirect()->back()->withErrors($response["errors"]);
+        }
+
+        Auth::logout();
+
+        $user->delete();
+
+        return redirect("join");
     }
 
     public function getAuthProfile() {

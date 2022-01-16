@@ -1,4 +1,6 @@
 <!-- Navbar -->
+@include('partials.alert')
+
 <nav>
   <div class="p-3 text-center text-white">
     <div class="container">
@@ -50,7 +52,7 @@
                       <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
                     <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000;">
-                      {{strlen(explode(" ", Auth::user()->name)[0]) > 13 ? 
+                      {{strlen(explode(" ", Auth::user()->name)[0]) > 13 ?
                         substr(explode(" ", Auth::user()->name)[0], 0, 10) . '...' :
                         explode(" ", Auth::user()->name)[0]}}
                     </h5>

@@ -137,11 +137,11 @@
                     <i class="bi bi-heart-fill add-to-wishlist"></i>
                     -->
             </div>
-          
+
             <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
-                @if(Auth::check() && !Auth::user()->is_admin)
+                @if(Auth::check() && !Auth::user()->is_admin && $product->stock > 0)
                 <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
-                @elseif(!Auth::check() || !Auth::user()->is_admin)
+                @elseif((!Auth::check() || !Auth::user()->is_admin) && $product->stock > 0)
                 <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
                 @endif
                 @if ($product->stock > 0)

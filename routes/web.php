@@ -26,6 +26,7 @@ Route::middleware(['auth', 'is.blocked'])->get('users/{id}', 'UserController@sho
 Route::middleware(['auth', 'is.blocked'])->get('users/{id}/wishlist', 'WishlistController@show')->name('getWishlist');
 Route::middleware(['auth', 'is.blocked'])->get('users/{id}/private', 'UserController@getEditPage')->name('editPage');
 Route::middleware(['auth', 'is.blocked'])->get('users/{id}/private/addresses', 'ShopperController@getAddresses')->name('addresses');
+Route::middleware(['auth', 'is.blocked'])->post('users/{id}/delete', 'UserController@delete')->name('deleteAccount');
 
 //Administration
 Route::get('admin/products/create', 'ProductController@getAddProductPage')->name('addProductPage');

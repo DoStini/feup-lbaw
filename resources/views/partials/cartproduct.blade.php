@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-2 col-4 d-md-block d-flex justify-content-center p-md-0">
               <a class="icon-click bi bi-x-circle col-2 pe-2 text-end text-danger" id="remove-in-cart-{{$cart_item->id}}"
-                style="font-size:2em" 
+                style="font-size:2em"
               >
               </a>
             </div>
