@@ -75,6 +75,14 @@ class Shopper extends Model {
         );
     }
 
+    public function notifications() {
+        return $this->hasMany(
+            Notification::class,
+            'shopper',
+            'id'
+        );
+    }
+    
     public function reviews() {
         return $this->hasMany(Review::class, 'creator_id');
     }

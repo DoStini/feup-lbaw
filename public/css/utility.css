@@ -35,29 +35,29 @@
 
 .badge-paid {
     background-color: rgb(149, 45, 209);
-    color: rgb(88, 10, 133);
+    color: rgb(196, 144, 224);
 }
 
 .badge-paid:hover {
-    color: rgb(131, 131, 72);
+    color: rgb(196, 144, 224);
 }
 
 .badge-processing {
     background-color: yellow;
-    color: rgb(107, 107, 12);
+    color: rgb(53, 53, 5);
 }
 
 .badge-processing:hover {
-    color: rgb(187, 187, 102);
+    color: rgb(53, 53, 5);
 }
 
 .badge-shipped {
     background-color: rgb(55, 155, 80);
-    color: rgb(2, 97, 26);
+    color: rgb(2, 31, 9);
 }
 
 .badge-shipped:hover {
-    color: rgb(2, 97, 26);
+    color: rgb(2, 31, 9);
 }
 
 .icon-click {
