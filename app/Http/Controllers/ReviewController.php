@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller {
@@ -58,5 +60,44 @@ class ReviewController extends Controller {
 
             return redirect()->back()->withErrors($response)->withInput();
         }
+
+        $savedPhotos = [];
+
+        try {
+            DB::beginTransaction();
+
+            $review = new Review();
+
+            $review->stars = $req->stars;
+            $review->text = $req->text;
+            $review->product_id = $product_id;
+            $review->creator_id = Auth::user()->id;
+
+            $review->save();
+
+            foreach ($photos as $reviewPhoto) {
+                $path = $reviewPhoto->storePubliclyAs(
+                    "images/review",
+                    "review" . $review->id . "-" . uniqid() . "." . $reviewPhoto->extension(),
+                    "public"
+                );
+
+                array_push($savedPhotos, $path);
+
+                $public_path = "/storage/" . $path;
+                $photo = Photo::create(["url" => $public_path]);
+
+                $review->photos()->attach($photo->id);
+            }
+
+            DB::commit();
+        } catch (QueryException $ex) {
+            DB::rollBack();
+
+            Storage::disk('public')->delete($savedPhotos);
+            return redirect()->back()->withErrors(["review" => "Unexpected Error"])->withInput();
+        }
+
+        return redirect(route("getProduct", ["id" => $product_id]));
     }
 }
