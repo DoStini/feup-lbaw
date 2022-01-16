@@ -22,7 +22,7 @@ class ProductController extends Controller {
      * @return Response
      */
     public function show($id) {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
         return view('pages.product', ['product' => $product]);
     }
 
@@ -58,10 +58,12 @@ class ProductController extends Controller {
                 ->whereRaw('stock > 0')
                 ->when($request->text, function ($q) use ($request) {
                     $words = explode(' ', $request->text);
-                    foreach($words as &$word)
+                    foreach ($words as &$word)
                         $word = $word . ':*';
                     $val = implode(' & ', $words);
                     return $q->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
                         ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
                 })
                 ->when($request->input('price-min'), function ($q) use ($request) {
@@ -118,6 +120,13 @@ class ProductController extends Controller {
         }
     }
 
+    public function datatableList(Request $request)  {
+        $this->authorize('viewAny', Product::class);
+
+        $dc =  new DatatableController();
+        return $dc->get($request, DB::table('product'));
+    }
+
     private function getValidatorAddProduct(Request $request) {
         return Validator::make($request->all(), [
             "name" => "required|string|max:100",
@@ -133,7 +142,7 @@ class ProductController extends Controller {
         $messages = [];
 
         foreach ($photos as $key => $val) {
-            $messages[$key.'.image'] = $val->getClientOriginalName() . " must be an image.";
+            $messages[$key . '.image'] = $val->getClientOriginalName() . " must be an image.";
         }
 
         return Validator::make($photos, [
@@ -142,14 +151,17 @@ class ProductController extends Controller {
     }
 
     public function addProduct(Request $request) {
+
+        $this->authorize('create', Product::class);
+
         $validator = $this->getValidatorAddProduct($request);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $photos = $request->file('photos');
         $validator = $this->getValidatorPhotos($photos);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -166,7 +178,7 @@ class ProductController extends Controller {
                 "price" => $request->input('price'),
             ]);
 
-            foreach($photos as $productPhoto) {
+            foreach ($photos as $productPhoto) {
                 $path = $productPhoto->storePubliclyAs(
                     "images/product",
                     "product" . $product->id . "-" . uniqid() . "." . $productPhoto->extension(),
@@ -182,7 +194,7 @@ class ProductController extends Controller {
             }
 
             DB::commit();
-        } catch(QueryException $ex) {
+        } catch (QueryException $ex) {
             DB::rollBack();
 
             Storage::disk('public')->delete($savedPhotos);

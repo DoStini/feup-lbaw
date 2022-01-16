@@ -1,0 +1,9 @@
+.select-container {
+    overflow-y: auto;
+    max-height: 10em;
+}
+
+.autocomplete-select a {
+    color: black;
+    text-decoration: none;
+}

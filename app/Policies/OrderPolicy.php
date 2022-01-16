@@ -5,6 +5,8 @@ namespace App\Policies;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Auth;
 
 class OrderPolicy
 {
@@ -18,7 +20,7 @@ class OrderPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->is_admin;
     }
 
     /**
@@ -33,6 +35,7 @@ class OrderPolicy
         return $user->is_admin || $user->id == $order->shopper_id;
     }
 
+
     /**
      * Determine whether the user can create models.
      *
@@ -41,7 +44,9 @@ class OrderPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->is_admin
+            ? Response::deny('No such action for admin.')
+            : Response::allow();
     }
 
     /**
@@ -54,6 +59,17 @@ class OrderPolicy
     public function update(User $user, Order $order)
     {
         //
+    }
+
+        /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function updateAny(User $user)
+    {
+        return $user->is_admin;
     }
 
     /**

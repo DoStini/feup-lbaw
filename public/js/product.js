@@ -15,7 +15,21 @@ document.getElementById(`quantity-container`).append(createNumberSelector({
 const addToCartButton = document.getElementById('add-to-cart-btn');
 if(addToCartButton) {
     addToCartButton.addEventListener('click', async () =>
-        addToCartRequest(productInfo.id, parseInt($(`#product-amount-${productInfo.id}`).val()))
+        addToCartRequest(productInfo.id, parseInt(document.getElementById(`product-amount-${productInfo.id}`).value))
     );
 }
 
+const showMoreButton = document.getElementById('show-more-button');
+const teaserDescContainer = document.getElementById('description-box-teaser');
+const showLessButton = document.getElementById('show-less-button');
+const fullDescContainer = document.getElementById('description-box-full');
+
+showMoreButton.addEventListener('click', () => {
+    teaserDescContainer.style.display = "none";
+    fullDescContainer.style.display = "block";
+})
+
+showLessButton.addEventListener('click', () => {
+    teaserDescContainer.style.display = "block";
+    fullDescContainer.style.display = "none";
+})

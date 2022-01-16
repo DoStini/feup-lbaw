@@ -1,11 +1,25 @@
 <script type="text/javascript" src={{ asset('js/login.js') }}></script>
 
+@extends('layouts.app')
+
+@section('title', 'Users Dashboard')
+
+@section('content')
+
+<div class="container">
+@include('partials.links.dashboardLinks', ['page' => 'userDashboard'])
+
 <form id="admin-register-form"  method="POST" action={{route('registerAdmin')}}>
     @csrf
 
     <div class="form-group">
         <label for="name-register">Name</label>
-        <input class="form-control" id="name-register" name="name" type="text">
+        <input class="form-control" id="name-register" name="name" type="text" value="{{ old('name') }}">
+        @error('name', 'admin_register_form')
+        <span class="error form-text">
+            {{$message}}
+        </span>
+    @enderror
     </div>
 
     <div class="form-group">
@@ -47,3 +61,7 @@
 
     <button type="submit" class="w-100 mt-3 btn btn-primary">Create Admin</button>
 </form>
+
+</div>
+
+@endsection

@@ -1,11 +1,5 @@
- /** @type {Array<Element>} dropdownElements */
-const dropdownElements = [].slice.call(document.querySelectorAll(".dropdown-toggle"));
- /** @type {Array<bootstrap.Dropdown>} dropdowns */
-const dropdowns = [];
-
-dropdownElements.forEach(function (element) {
-    dropdowns[element.id] = new bootstrap.Dropdown(element);
-});
+let dropdownElements;
+let dropdowns;
 
 function sendOrderStatus(event, id) {
     let requestURL = "/api/orders/";
@@ -20,8 +14,10 @@ function sendOrderStatus(event, id) {
         launchSuccessAlert("Order Updated Successfully!");
     })
     .catch((error) => {
-        launchErrorAlert("There was an error editing the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
+        launchErrorAlert("Couldn't edit the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
     });
+
+    table.ajax.reload();
 
     event.preventDefault();
 }

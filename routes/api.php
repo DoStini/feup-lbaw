@@ -21,11 +21,12 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/products/list', 'ProductController@datatableList');
+Route::get('/orders', 'OrderController@list');
 Route::get('/users', [
-    'middleware' => 'searchUsers',
     'uses' => 'UserController@list'
 ]);
-Route::get('/address/zipcode', 'AddressController@zipCode');
+Route::get('/address/zipcode', 'ZipCodeController@zipCode');
 
 Route::group(
     [
@@ -33,7 +34,7 @@ Route::group(
         'middleware' => ['auth.api', 'user.owner.admin'],
     ],
     function () {
-        Route::get('/', 'AddressController@get');
+        Route::get('/', 'AddressController@getUserAddresses');
         Route::post('/add', 'AddressController@create');
         Route::post('/{address_id}/edit', 'AddressController@edit');
         Route::delete('/{address_id}/remove', 'AddressController@remove');

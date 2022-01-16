@@ -90,7 +90,8 @@ function setupSearchListeners() {
 }
 
 function capitalize(s){
-    return s && s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    return s.toUpperCase();
+    //return s && s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
 function setupAnimation(element, delay) {
@@ -111,7 +112,7 @@ function createProduct(product, delay) {
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
             <div class="card-body">
-                <h4 class="card-title">${capitalize(product.name)}</h4>
+                <h4 class="card-title" style="height: 2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical; overflow: hidden;">${capitalize(product.name)}</h4>
                 <div class="container ps-0 pe-0">
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>
@@ -193,20 +194,18 @@ function setNewProducts(data) {
     insertProducts(data, true);
 }
 
-function handleSearchNewPageProducts() {
-    const response = JSON.parse(this.response);
-
-    if (this.status !== 200) return;
+function handleSearchNewPageProducts(response) {
+    if (response.status !== 200) return;
 
     const lastQuery = current.query;
 
-    current = {...response};
+    current = {...response.data};
     current.query = [
         ...lastQuery,
         ...current.query,
     ];
 
-    insertProducts(response, true);
+    insertProducts(response.data, true);
 }
 
 function handleSearchProducts(response) {
