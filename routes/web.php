@@ -42,6 +42,8 @@ Route::post('admin/coupon/create', 'CouponController@create')->name('createCoupo
 Route::get('products', 'ProductController@search')->name('getProductSearch');
 Route::get('products/{id}', 'ProductController@show')->name('getProduct');
 
+Route::post('products/{product_id}/addReview', 'ReviewController@addReview')->name('addReview');
+
 // Orders
 Route::get('orders/{id}', 'OrderController@show')->name('orders');
 Route::get('orders/{id}/paypal/create', 'PaypalController@createTransaction')->name('createTransaction');

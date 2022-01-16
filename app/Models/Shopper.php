@@ -82,6 +82,14 @@ class Shopper extends Model {
             'id'
         );
     }
+    
+    public function reviews() {
+        return $this->hasMany(Review::class, 'creator_id');
+    }
+
+    public function voted_reviews() {
+        return $this->belongsToMany(Review::class, 'review_vote', 'voter_id', 'review_id')->withPivot('vote')->as('details');
+    }
 
     /**
      * The table associated with the model.

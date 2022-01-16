@@ -1,3 +1,24 @@
+@if($errors->any())
+<script async>
+    (async() => {
+        while(!window.hasOwnProperty('reportData'))
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+        let errors = JSON.parse(`<?php echo($errors->toJson()) ?>`.replace(/\s+/g," "));
+
+        reportData("Couldn't create the product", errors, {
+            'product_id': 'Product ID',
+            'text': 'Review Body',
+            'stars': 'Rating',
+            'photos': 'Photos'
+        });
+
+        setRating({{old("stars")}})
+    })();
+</script>
+@endif
+
+
 <div class="product container vw-100" data-id={{ $product->id }}>
     <div class="row w-100">
         <div class="product-images mt-4 col-md-7 d-flex justify-content-center">
@@ -132,6 +153,69 @@
         </div>
     </div>
 </div>
+@can('reviewProduct', [App\Models\Review::class, $product])
+<div class="container d-flex flex-column justify-content-around mt-4 mb-4">
+    <form id="add-review-form" enctype="multipart/form-data" class="container" action={{route('addReview', ["product_id" => $product->id])}} method="POST">
+        @csrf
+        <div class="row d-flex justify-content-between align-items-baseline">
+            <h2 class="w-auto">Add a Review</h2>
+            <div class="w-auto fs-4">
+                <span class="fs-5 mr-5">Rate the product: </span>
+                <i id="review-form-star-1" class="bi bi-star" onclick="setRating(1)"></i>
+                <i id="review-form-star-2" class="bi bi-star" onclick="setRating(2)"></i>
+                <i id="review-form-star-3" class="bi bi-star" onclick="setRating(3)"></i>
+                <i id="review-form-star-4" class="bi bi-star" onclick="setRating(4)"></i>
+                <i id="review-form-star-5" class="bi bi-star" onclick="setRating(5)"></i>
+            </div>
+            <input id="review-form-star" type="hidden" name="stars" value="0" required>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="review-text">Review Body</label>
+                <textarea id="review-text" class="form-control" style="height: 6em" name="text" required>{{old('text')}}</textarea>
+                <span class="error form-text text-danger" id="text-error"></span>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-between align-items-end mt-1">
+            <div class="form-group col-6">
+                <label for="review-form-photos">Review Photos</label>
+                <input type="file" class="form-control" name="photos[]" id="review-form-photos"  multiple>
+            </div>
+
+            <span class="w-auto">
+                <button type="submit" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </span>
+        </div>
+    </form>
+    {{-- <button class="row btn btn-primary">VIEW REVIEWS</button> --}}
+
+</div>
+
+<script type="application/javascript">
+function setRating(index) {
+    const start = document.getElementById("review-form-star")
+
+    if(parseInt(start.value) === index) {
+        index = 0;
+    }
+
+    start.value = index;
+
+    for(let i = 1; i <= 5; i++) {
+        const starElement = document.getElementById("review-form-star-" + i);
+
+        if(i <= index) {
+            starElement.classList.remove("bi-star");
+            starElement.classList.add("bi-star-fill");
+        } else {
+            starElement.classList.remove("bi-star-fill");
+            starElement.classList.add("bi-star");
+        }
+    }
+}
+</script>
+@endcan
 
 @include('partials.errormodal')
 @include('partials.alert')
