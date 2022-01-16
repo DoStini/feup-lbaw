@@ -83,7 +83,7 @@
 
             </div>
             <div class="col-md-6 d-flex justify-content-end flex-column">
-                <p class="text-end">Subtotal (Without Tax): {{number_format($order->subtotal * (1-0.23), 2)}} €</p>
+                <p class="text-end">Subtotal: {{number_format($order->subtotal, 2)}} €</p>
                 <p class="text-end">Tax (23%): {{number_format($order->subtotal * 0.23, 2)}} €</p>
                 @if($order->coupon)
                 <p class="text-end">Coupon: {{$order->coupon->code}} ({{round($order->coupon->percentage * 100 )}}%)</p>

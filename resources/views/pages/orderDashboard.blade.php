@@ -18,44 +18,14 @@
             <th class="text-center">Status</th>
             <th class="text-center">Actions</th>
         </tr>
-        {{-- <tr class="datatable-searchboxes">
-            <th class="filter-datatable">Order ID</th>
-            <th class="filter-datatable">Shopper Name (ID)</th>
-            <th class="filter-datatable">Created At</th>
-            <th class="filter-datatable" >Last Update</th>
-            <th class="filter-datatable" >Total</th>
-            <th class="filter-datatable">Status</th>
-            <th ></th>
-        </tr> --}}
     </thead>
     <tbody>
-    {{-- @foreach ($info->orders as $order)
-        <tr>
-            <td class="text-center">{{$order->id}}</td>
-            <td class="text-center">{{$order->name}} ({{$order->shopper_id}})</td>
-            <td class="text-center">{{date("d M Y, H:i", strtotime($order->timestamp))}}</td>
-            <td class="text-center">TBD</td>
-            <td class="text-center">{{$order->total}} €</td>
-            <td class="text-center"><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></td>
-            <td>
-                <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                    {{--<a class="bi bi-forward-fill icon-click" href="" data-bs-toggle="tooltip" title="Advance Status"></a>
-                    <a class="bi bi-info-circle-fill icon-click" href={{route('orders', ['id' => $order->id])}} data-bs-toggle="tooltip" title="Go to Order Page"></a>
-                </div>
-            </td>
-        </tr>
-    @endforeach --}}
     </tbody>
 </table>
 
 </div>
 
 <script type="application/javascript" defer>
-    // $('#order-dashboard-table thead tr.datatable-searchboxes th.filter-datatable').each( function () {
-    //     var title = $(this).text();
-    //     $(this).html( '<input class="w-100" type="text" placeholder="Search '+title+'" />' );
-    // } );
-
     $('#order-dashboard-table').DataTable({
         'responsive': true,
         'ajax': {

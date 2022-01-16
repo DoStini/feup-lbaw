@@ -23,8 +23,18 @@ class ApiError {
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function productNotInCart() {
-        $err = Config::get('constants.cart.not_exists');
+    public static function couponNotActive() {
+        $err = Config::get('constants.coupon.not_active');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function couponActive() {
+        $err = Config::get('constants.coupon.active');
         return ApiError::generateErrorMessage($err);
     }
 
