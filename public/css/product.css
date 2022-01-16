@@ -90,3 +90,7 @@
 .variant-color:hover {
     border: 0.2em solid rgb(150, 116, 73);
 }
+
+#add-review-form i {
+    cursor: pointer;
+}
