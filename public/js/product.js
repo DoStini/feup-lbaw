@@ -53,3 +53,10 @@ showLessButton.addEventListener('click', () => {
     teaserDescContainer.style.display = "block";
     fullDescContainer.style.display = "none";
 })
+
+const teaserTextContainer = document.getElementById('description-text-teaser');
+
+let isOverflowing = teaserTextContainer.clientHeight < teaserTextContainer.scrollHeight;
+if(!isOverflowing) {
+    showMoreButton.style.display = "none";
+} 
