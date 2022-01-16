@@ -43,14 +43,14 @@ class RecoverAccountController extends Controller {
         return Validator::make(
             ['token' => $request->token],
             [
-                'token' => 'required|string|min:64,max:64|exists:recover_users,token',
+                'token' => 'required|string|min:32,max:32|exists:recover_users,token',
             ]
         );
     }
 
     private function validateNewPassword($request) {
         return Validator::make($request->all(), [
-            'token' => 'required|string|min:64,max:64|exists:recover_users,token',
+            'token' => 'required|string|min:32,max:32|exists:recover_users,token',
             'password' => 'required|string|min:6|confirmed',
         ]);
     }
@@ -96,8 +96,9 @@ class RecoverAccountController extends Controller {
     public function submitRecoverRequest(Request $request) {
 
         if (!$this->validateRecoverRequest($request)->fails()) {
-            $token = Str::random(64);
             $email = $request->email;
+
+            $token = md5(uniqid($email) . strval(Carbon::now()->timestamp));
 
             if ($old = RecoverUser::where("email", "=", $email)) {
                 $old->delete();
