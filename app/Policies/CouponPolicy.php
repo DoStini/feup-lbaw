@@ -6,8 +6,7 @@ use App\Models\Coupon;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class CouponPolicy
-{
+class CouponPolicy {
     use HandlesAuthorization;
 
     /**
@@ -16,8 +15,7 @@ class CouponPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
-    {
+    public function viewAny(User $user) {
         //
     }
 
@@ -28,8 +26,7 @@ class CouponPolicy
      * @param  \App\Models\Coupon  $coupon
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Coupon $coupon)
-    {
+    public function view(User $user, Coupon $coupon) {
         //
     }
 
@@ -39,9 +36,8 @@ class CouponPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
-    {
-        //
+    public function createCoupon(User $user) {
+        return $user->is_admin;
     }
 
     /**
@@ -51,8 +47,7 @@ class CouponPolicy
      * @param  \App\Models\Coupon  $coupon
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Coupon $coupon)
-    {
+    public function update(User $user, Coupon $coupon) {
         //
     }
 
@@ -63,8 +58,7 @@ class CouponPolicy
      * @param  \App\Models\Coupon  $coupon
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Coupon $coupon)
-    {
+    public function delete(User $user, Coupon $coupon) {
         //
     }
 
@@ -75,8 +69,7 @@ class CouponPolicy
      * @param  \App\Models\Coupon  $coupon
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Coupon $coupon)
-    {
+    public function restore(User $user, Coupon $coupon) {
         //
     }
 
@@ -87,8 +80,7 @@ class CouponPolicy
      * @param  \App\Models\Coupon  $coupon
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Coupon $coupon)
-    {
+    public function forceDelete(User $user, Coupon $coupon) {
         //
     }
 }
