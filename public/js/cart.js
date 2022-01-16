@@ -21,11 +21,12 @@ function addToCartRequest(id, amount) {
     });
 }
 
-function addToWishlistRequest(id) {
+function addToWishlistRequest(id, callback) {
     jsonBodyPost("/api/users/wishlist/add", {
         "product_id": id ,
     })
     .then((response) => {
+        callback && callback(response);
     })
     .catch((error) => {
         if(error.response) {
@@ -40,9 +41,10 @@ function addToWishlistRequest(id) {
     });
 }
 
-function removeFromWishlistRequest(id) {
+function removeFromWishlistRequest(id, callback) {
     deleteRequest(`/api/users/wishlist/${id}/remove`)
     .then((response) => {
+        callback && callback(response);
     })
     .catch((error) => {
         console.log(error.response)

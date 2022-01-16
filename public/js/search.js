@@ -141,17 +141,19 @@ function createProduct(product, delay) {
         const addToWishlist = element.querySelector(".add-wishlist");
         const removeFromWishlist = element.querySelector(".remove-wishlist");
         addToWishlist.addEventListener("click", (e) => {
-            addToWishlistRequest(product.id);
+            addToWishlistRequest(product.id, () => {
+                removeFromWishlist.style.display = "";
+                addToWishlist.style.display = "none";    
+            });
             addToWishlist.dispatchEvent(new Event("blur"));
-            removeFromWishlist.style.display = "";
-            addToWishlist.style.display = "none";
 
         });
         removeFromWishlist.addEventListener("click", (e) => {
-            removeFromWishlistRequest(product.id);
+            removeFromWishlistRequest(product.id, () => {
+                removeFromWishlist.style.display = "none";
+                addToWishlist.style.display = "";
+            });
             removeFromWishlist.dispatchEvent(new Event("blur"));
-            removeFromWishlist.style.display = "none";
-            addToWishlist.style.display = "";
         });
 
 

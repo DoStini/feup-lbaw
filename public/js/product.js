@@ -24,16 +24,18 @@ const removeFromWishlist = document.getElementById("remove-wishlist");
 
 if(addToWishlist && removeFromWishlist) {
     addToWishlist.addEventListener("click", (e) => {
-        addToWishlistRequest(productInfo.id);
+        addToWishlistRequest(productInfo.id, () => {
+            removeFromWishlist.style.display = "";
+            addToWishlist.style.display = "none";    
+        });
         addToWishlist.dispatchEvent(new Event("blur"));
-        removeFromWishlist.style.display = "block";
-        addToWishlist.style.display = "none";
     });
     removeFromWishlist.addEventListener("click", (e) => {
-        removeFromWishlistRequest(productInfo.id);
+        removeFromWishlistRequest(productInfo.id, () => {
+            removeFromWishlist.style.display = "none";
+            addToWishlist.style.display = "";
+        });
         removeFromWishlist.dispatchEvent(new Event("blur"));
-        removeFromWishlist.style.display = "none";
-        addToWishlist.style.display = "block";
     });
 }
 
