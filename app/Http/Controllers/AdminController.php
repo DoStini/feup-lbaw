@@ -98,31 +98,38 @@ class AdminController extends Controller {
         return view('pages.createNewAdmin', ['admin' => $user,]);
     }
 
+    public function getNewCouponPage(Request $request) {
+        Gate::authorize('isAdmin');
+
+        $user = Auth::user();
+
+        return view('pages.createCoupon', ['admin' => $user,]);
+    }
+
     public function getOrderDashboard() {
 
         Gate::authorize('isAdmin');
 
-        $info = new stdClass();
+        $statuses = OrderController::getPossibleStatus();
 
-        $info->updatableOrders = Order::where('status', '<>', 'shipped')
-            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-            ->orderBy('status')
-            ->orderBy('timestamp', 'asc')
-            ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
+        return view('pages.orderDashboard', ['admin' => Auth::user(), 'statuses' => $statuses]);
+    }
 
-        $info->finishedOrders = Order::where('status', '=', 'shipped')
-            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-            ->orderBy('status')
-            ->orderBy('timestamp', 'asc')
-            ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
+    public function getProductDashboard() {
+        Gate::authorize('isAdmin');
 
-        return view('pages.orderDashboard', ['admin' => Auth::user(), 'info' => $info]);
+        return view('pages.productDashboard', ['admin' => Auth::user()]);
     }
 
     public function getUserDashboard() {
-
         Gate::authorize('isAdmin');
 
         return view('pages.userDashboard', ['admin' => Auth::user()]);
+    }
+
+    public function getCouponDashboard() {
+        Gate::authorize('isAdmin');
+
+        return view('pages.couponDashboard', ['admin' => Auth::user()]);
     }
 }

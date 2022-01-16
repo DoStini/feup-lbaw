@@ -15,11 +15,51 @@ function addToCartRequest(id, amount) {
                 for(var key in error.response.data.errors) {
                     errors = errors.concat(error.response.data.errors[key]);
                 }
-                launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                launchErrorAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
             }
         }
     });
 }
+
+function addToWishlistRequest(id, callback) {
+    jsonBodyPost("/api/users/wishlist/add", {
+        "product_id": id ,
+    })
+    .then((response) => {
+        callback && callback(response);
+    })
+    .catch((error) => {
+        if(error.response) {
+            if(error.response.data) {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+                launchErrorAlert("Couldn't add to the whishlist: " + error.response.data.message + "<br>" + errors);
+            }
+        }
+    });
+}
+
+function removeFromWishlistRequest(id, callback) {
+    deleteRequest(`/api/users/wishlist/${id}/remove`)
+    .then((response) => {
+        callback && callback(response);
+    })
+    .catch((error) => {
+        console.log(error.response)
+        if(error.response) {
+            if(error.response.data) {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+                launchErrorAlert("Couldn't remove from the wishlist: " + error.response.data.message + "<br>" + errors);
+            }
+        }
+    });
+}
+
 
 function noProducts() {
     const elem = document.createElement("div");

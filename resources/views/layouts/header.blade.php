@@ -4,7 +4,7 @@
 <nav>
   <div class="p-3 text-center text-white">
     <div class="container">
-      <div class="row d-flex align-items-center">
+      <div class="row d-flex align-items-center justify-content-between">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
           <a href={{route('getProductSearch')}} class="ms-md-2">
             <img src="/img/refurniture.svg" alt="" width="200" height=65" />
@@ -22,22 +22,11 @@
           <div class="d-flex align-items-center">
             @if(Auth::check())
                 @if(!Auth::user()->is_admin)
-                <!-- Cart -->
                 @include("partials.dropdowncart")
-                @endif
-
-                <!-- Notification -->
-                {{--<div class="dropdown">
-                <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
+                <a class="me-3" href={{route('getWishlistPage')}}>
+                    <i class="bi bi-bookmark-heart-fill" style="color: #000000; font-size:1.5em;"></i>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="notification-dropdown">
-                    <li><a class="dropdown-item" href="#">Some news</a></li>
-                    <li><a class="dropdown-item" href="#">Another news</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-                </div>--}}
+                @endif
 
                 <!-- User -->
                 <div class="dropdown">

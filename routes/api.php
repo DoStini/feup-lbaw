@@ -16,16 +16,30 @@ use Illuminate\Http\Request;
 Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['auth.api', 'user.owner.admin'])->name("edit_user");
 Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.api', 'admin'])->name("edit_order");
 
+Route::get('/products/variants', 'ProductController@variants');
 Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/products/list', 'ProductController@datatableList');
+Route::get('/orders', 'OrderController@list');
 Route::get('/users', [
-    'middleware' => 'searchUsers',
     'uses' => 'UserController@list'
 ]);
 Route::get('/address/zipcode', 'ZipCodeController@zipCode');
+Route::get('/coupon/search', 'CouponController@search');
+Route::get('/coupon', 'CouponController@list');
+Route::group(
+    [
+        'prefix' => 'coupon/{id}',
+        'middleware' => ['auth.api'],
+    ],
+    function () {
+        Route::post('/disable', 'CouponController@disable');
+        Route::post('/enable', 'CouponController@enable');
+    }
+);
 
 Route::group(
     [
@@ -43,12 +57,24 @@ Route::group(
 Route::group(
     [
         'prefix' => 'users/cart',
-        'middleware' => ['auth.api', 'is.shopper']
+        'middleware' => ['auth.api']
     ],
     function () {
         Route::get('/', 'CartController@get');
         Route::post('/add', 'CartController@add');
         Route::post('/update', 'CartController@update');
         Route::delete('/{id}/remove', 'CartController@delete');
+    }
+);
+
+Route::group(
+    [
+        'prefix' => 'users/wishlist',
+        'middleware' => ['auth.api']
+    ],
+    function () {
+        Route::get('/', 'WishlistController@get');
+        Route::post('/add', 'WishlistController@add');
+        Route::delete('/{product_id}/remove', 'WishlistController@delete');
     }
 );
