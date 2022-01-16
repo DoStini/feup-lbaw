@@ -90,6 +90,10 @@
     border: 0.2em solid rgb(150, 116, 73);
 }
 
+#add-review-form i {
+    cursor: pointer;
+}
+
 .add-wishlist,
 .remove-wishlist {
     padding-top: 0.1em;
