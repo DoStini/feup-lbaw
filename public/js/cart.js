@@ -34,7 +34,7 @@ function addToWishlistRequest(id) {
                 for(var key in error.response.data.errors) {
                     errors = errors.concat(error.response.data.errors[key]);
                 }
-                launchErrorAlert("There was an error adding to the wishlist: " + error.response.data.message + "<br>" + errors);
+                launchErrorAlert("Couldn't add to the whishlist: " + error.response.data.message + "<br>" + errors);
             }
         }
     });
@@ -52,7 +52,7 @@ function removeFromWishlistRequest(id) {
                 for(var key in error.response.data.errors) {
                     errors = errors.concat(error.response.data.errors[key]);
                 }
-                launchErrorAlert("There was an error removing from the wishlist: " + error.response.data.message + "<br>" + errors);
+                launchErrorAlert("Couldn't remove from the wishlist: " + error.response.data.message + "<br>" + errors);
             }
         }
     });

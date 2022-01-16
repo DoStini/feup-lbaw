@@ -4,26 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ApiError;
 use App\Exceptions\UnexpectedErrorLogger;
-use App\Models\Coupon;
-use App\Models\Order;
-use App\Models\Payment;
-use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Shopper;
 use App\Models\User;
-use App\Policies\CartPolicy;
-use ErrorException;
 use Exception;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Type\Integer;
 
 class WishlistController extends Controller {
