@@ -1,4 +1,4 @@
-<div class="card my-3" style="height: 8em;">
+<div id="product-{{$wishlistItem->id}}-card" class="card my-3" style="height: 8em;">
   <div class="row g-6 h-100">
     <div class="col-3 pe-0 h-100">
       <a class="icon-click" href={{route('getProduct', ['id' => $wishlistItem->id])}} style="overflow: hidden;">
@@ -24,8 +24,8 @@
             <p> {{$wishlistItem->price}} €</p>
           </div>
           <div class="col-2">  
-            <a class="icon-click bi bi-info-circle col-2 pe-2 text-end" id="add-wishlist"
-                    style="font-size:2em" href={{route('getProduct', ['id' => $wishlistItem->id])}}
+            <a class="icon-click bi bi-x-circle col-2 pe-2 text-end" id="remove-in-wishlist-{{$wishlistItem->id}}"
+                    style="font-size:2em" 
                 >
             </a>
           </div>
@@ -34,3 +34,11 @@
     </div>
   </div>
 </div>
+
+<script>
+document.getElementById("remove-in-wishlist-{{$wishlistItem->id}}").addEventListener("click", (e) => {
+  removeFromWishlistRequest({{$wishlistItem->id}}, () => {
+    document.getElementById("product-{{$wishlistItem->id}}-card").remove();
+  });
+});
+</script>
