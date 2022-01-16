@@ -21,8 +21,9 @@ Route::get('/products', [
     'uses' => 'ProductController@list'
 ]);
 
+Route::get('/products/list', 'ProductController@datatableList');
+Route::get('/orders', 'OrderController@list');
 Route::get('/users', [
-    'middleware' => 'searchUsers',
     'uses' => 'UserController@list'
 ]);
 Route::get('/address/zipcode', 'ZipCodeController@zipCode');

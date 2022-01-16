@@ -41,7 +41,7 @@
         .catch((error) => {
             if(error.response) {
                 if(error.response.data) {
-                    reportData("There was an error editing the profile", error.response.data["errors"], {
+                    reportData("Couldn't edit the profile", error.response.data["errors"], {
                         'cur-password' : 'Current Password',
                         'password' : 'New Password',
                         'name' : 'Name',
