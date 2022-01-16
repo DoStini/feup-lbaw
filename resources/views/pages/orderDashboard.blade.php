@@ -4,7 +4,6 @@
 
 @section('content')
 <script src={{asset('js/adminOrders.js')}} defer></script>
-@include('partials.alert')
 
 
 <div class="container pb-4">

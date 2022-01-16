@@ -1,16 +1,25 @@
-
 const currentPriceContainer = document.getElementById('current-price');
 
-document.getElementById(`quantity-container`).append(createNumberSelector({
-    id: `product-amount-${productInfo.id}`,
-    value: 1,
-    min: 1,
-    max: productInfo.stock,
-    onChange: (target, value) => {
-        target.value = value;
-        currentPriceContainer.innerText = `Subtotal: ${(parseFloat(productInfo.price) * value).toFixed(2)} €`;
-    }
-}));
+let quantityContainer = document.getElementById(`quantity-container`)
+let selector;
+if(quantityContainer!=null) {
+    selector = createNumberSelector({
+        id: `product-amount-${productInfo.id}`,
+        value: 1,
+        min: 1,
+        onChange: (target, value) => {
+            target.value = value;
+            if(value > productInfo.stock) {
+                selector.invalidInput(`Product's stock is ${productInfo.stock}`);
+            } else {
+                selector.validInput();
+            }
+            currentPriceContainer.innerText = `Subtotal: ${(parseFloat(productInfo.price) * value).toFixed(2)} €`;
+        }
+    });
+
+    quantityContainer.append(selector);
+}
 
 const addToCartButton = document.getElementById('add-to-cart-btn');
 if(addToCartButton) {
@@ -26,7 +35,7 @@ if(addToWishlist && removeFromWishlist) {
     addToWishlist.addEventListener("click", (e) => {
         addToWishlistRequest(productInfo.id, () => {
             removeFromWishlist.style.display = "";
-            addToWishlist.style.display = "none";    
+            addToWishlist.style.display = "none";
         });
         addToWishlist.dispatchEvent(new Event("blur"));
     });
@@ -59,4 +68,4 @@ const teaserTextContainer = document.getElementById('description-text-teaser');
 let isOverflowing = teaserTextContainer.clientHeight < teaserTextContainer.scrollHeight;
 if(!isOverflowing) {
     showMoreButton.style.display = "none";
-} 
+}
