@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Exceptions\ApiError;
 use App\Http\Controllers\Controller;
 use App\Models\RecoverUser;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -47,6 +48,13 @@ class RecoverAccountController extends Controller {
         );
     }
 
+    private function validateNewPassword($request) {
+        return Validator::make($request->all(), [
+            'token' => 'required|string|min:64,max:64|exists:recover_users,token',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+    }
+
     public function getFinishRecoverPage(Request $request) {
         if ($this->validateFinishRecoverRequest($request)->fails()) {
             return view('auth.invalidtoken');
@@ -61,6 +69,28 @@ class RecoverAccountController extends Controller {
         }
 
         return view('auth.password', ['token' => $token]);
+    }
+
+    public function finishRecoverRequest(Request $request) {
+        $this->validateNewPassword($request)->validateWithBag('new_password_form');
+
+        $token = $request->token;
+        $model = RecoverUser::where("token", "=", $token)->get()[0];
+
+        if (!$this->validTimestamp($model)) {
+            return view('auth.invalidtoken');
+        }
+
+        $password = bcrypt($request->password);
+
+        $user = User::where("email", "=", $model->email);
+        $user->update([
+            'password' => $password,
+        ]);
+
+        $model->delete();
+
+        return redirect('join');
     }
 
     public function submitRecoverRequest(Request $request) {

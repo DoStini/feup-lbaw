@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RecoverUser extends Model {
     public $timestamps  = false;
-    protected $primaryKey = null;
+    protected $primaryKey = "email";
     public $incrementing = false;
 
     /**

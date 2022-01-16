@@ -4,19 +4,42 @@
 
 @include('partials.errormodal')
 
+<script type="text/javascript" src={{ asset('js/login.js') }}></script>
+
 <section id="auth" class="auth container">
     <div class="row justify-content-center">
         <div id="register" class="col-lg-6">
             <h2>Set New Password</h2>
-            <form id="recover-form"">
+            <form id="recover-form" method="POST" action="{{route('newPassword')}}">
                 @csrf
 
                 <input id="token" name="token" style="display:none" value="{{$token}}">
                 </input>
+                <div class="form-group">
+                    <label for="password-register">Password</label>
+
+                    <div class="input-group">
+                        <input class="form-control" id="password-register" name="password" type="password" required>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-primary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                        </div>
+                    </div>
+                    @error('password', 'new_password_form')
+                        <span class="error form-text">
+                            {{$message}}
+                        </span>
+                    @enderror
+                </div>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input class="form-control" id="email" name="email" type="email" required>
+                    <label for="password-confirm">Confirm Password</label>
+
+                    <div class="input-group">
+                    <input class="form-control" id="password-confirm" type="password" name="password_confirmation" required>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-primary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                        </div>
+                    </div>
                 </div>
 
                 <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Recover<span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
@@ -25,19 +48,3 @@
     </div>
 </section>
 @endsection
-
-
-<script defer>
-    window.addEventListener("load", () => {
-        document.getElementById('recover-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            jsonBodyPost("/api/account/recover", {
-                email: document.getElementById("email").value,
-            });
-
-            document.getElementById("email").value = "";
-
-            reportData("If there is an account registered with that email, you will receive an email.")
-        });
-    })
-</script>
