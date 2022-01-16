@@ -13,11 +13,11 @@ function buildEditedNotifcation(notification) {
 }
 
 function buildOrderNotification(notification) {
-    const message = "There was an updated to your order:";
+    const message = "There was an update to your order:";
     const html = document.createElement('li');
     html.style.cursor = "pointer";
     html.innerHTML = `<div class="dropdown-item">
-                        <p>${message}</p>
+                        <p class="text-center">${message}</p>
                         <div d-flex>
                             <h6 class="text-center">Order ${notification.order_id} is now <a class="badge rounded-pill badge-decoration-none badge-${notification.order_notif_type} ">
                             ${notification.order_notif_type.toUpperCase()}

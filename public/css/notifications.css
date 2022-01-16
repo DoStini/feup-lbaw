@@ -11,6 +11,9 @@
 #notification-content {
     max-height: 20vh;
     overflow-y: auto;
+    width: 10vw;
+    min-width: 20em;
+    overflow-x: hidden;
 }
 
 .new-notif {
@@ -25,11 +28,11 @@
 @keyframes load {
     0% {
         background: #e6b580;
-   }
-   80% {
-    background: #f3f1ee;
+    }
+    80% {
+        background: #f3f1ee;
     }
     100% {
         border: 0px solid rgb(255, 255, 255);
-   }
+    }
 }
