@@ -15,6 +15,7 @@
                     <label for="email">Email</label>
                     <input class="form-control" id="email" name="email" type="email" required>
                 </div>
+                <a href="{{route('join')}}">Login</a>
 
                 <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Recover<span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
             </form>
