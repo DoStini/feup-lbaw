@@ -177,7 +177,7 @@ function handleRemoveClick(e) {
 }
 
 function setupListeners() {
-    const selectTarget = document.getElementById("select-target");
+    const selectTarget = document.getElementById("select-target-zip");
     selectTarget.replaceWith(selectTarget, createSelect({
         id: "zip",
         name: "zip",

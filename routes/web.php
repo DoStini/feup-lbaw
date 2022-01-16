@@ -26,6 +26,7 @@ Route::middleware('auth')->get('users/{id}/private', 'UserController@getEditPage
 Route::middleware('auth')->get('users/{id}/private/addresses', 'ShopperController@getAddresses')->name('addresses');
 
 //Administration
+Route::get('admin/products/create', 'ProductController@getAddProductPage')->name('addProductPage');
 Route::post('admin/products/create', 'ProductController@addProduct')->name('addProduct');
 Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
 Route::get('admin/orders', 'AdminController@getOrderDashboard')->name('getOrderDashboard');
