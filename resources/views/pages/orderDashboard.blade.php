@@ -21,29 +21,14 @@
             <th class="text-center">Status</th>
             <th class="text-center">Actions</th>
         </tr>
-        {{-- <tr class="datatable-searchboxes">
-            <th class="filter-datatable">Order ID</th>
-            <th class="filter-datatable">Shopper Name (ID)</th>
-            <th class="filter-datatable">Created At</th>
-            <th class="filter-datatable" >Last Update</th>
-            <th class="filter-datatable" >Total</th>
-            <th class="filter-datatable">Status</th>
-            <th ></th>
-        </tr> --}}
     </thead>
     <tbody>
-
     </tbody>
 </table>
 
 </div>
 
 <script type="application/javascript" defer>
-    // $('#order-dashboard-table thead tr.datatable-searchboxes th.filter-datatable').each( function () {
-    //     var title = $(this).text();
-    //     $(this).html( '<input class="w-100" type="text" placeholder="Search '+title+'" />' );
-    // } );
-
     let table = $('#order-dashboard-table').DataTable({
         'responsive': true,
         'drawCallback': function() {

@@ -86,7 +86,11 @@
                                 aria-expanded="true" @else aria-expanded="false" @endif
                                 aria-controls="address-panel-collapse{{$loop->index}}"
                                 id="address-button{{$loop->index}}">
-                                {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                                @if ($address->name != null)
+                                    {{$address->name}}
+                                @else
+                                    {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                                @endif
                             </button>
                         </h2>
                         <div id="address-panel-collapse{{$loop->index}}" data-bs-parent="#addresses-accordion"
@@ -152,7 +156,7 @@
             </section>
         </div>
         <div class="col-md-4 d-flex align-items-center justify-content-start flex-column">
-            {{--@include('partials.applyCoupon')--}}
+            @include('partials.applyCoupon', ["cartTotal" => $cartTotal])
             @include('partials.cartTotal', ["cartTotal" => $cartTotal])
             <div class="my-4 w-50 d-flex align-items-center justify-content-center">
                 <button type="submit" class="w-100 btn btn-primary">Checkout</button>

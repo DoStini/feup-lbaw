@@ -27,6 +27,18 @@ Route::get('/users', [
     'uses' => 'UserController@list'
 ]);
 Route::get('/address/zipcode', 'ZipCodeController@zipCode');
+Route::get('/coupon/search', 'CouponController@search');
+Route::get('/coupon', 'CouponController@list');
+Route::group(
+    [
+        'prefix' => 'coupon/{id}',
+        'middleware' => ['auth.api'],
+    ],
+    function () {
+        Route::post('/disable', 'CouponController@disable');
+        Route::post('/enable', 'CouponController@enable');
+    }
+);
 
 Route::group(
     [
