@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiError;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -43,55 +44,28 @@ class CouponController extends Controller {
 
         return redirect(route('getCouponDashboard'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request) {
-        //
+    private function validateList(Request $request) {
+        return Validator::make($request->all(), [
+            'code' => 'required|string|min:1,max:20',
+            'min' => 'numeric',
+        ]);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Coupon  $coupon
-     * @return \Illuminate\Http\Response
+     * Retrieves possible coupons for a given input
      */
-    public function show(Coupon $coupon) {
-        //
-    }
+    public function list(Request $request) {
+        if (($v = $this->validateList($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Coupon  $coupon
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Coupon $coupon) {
-        //
-    }
+        $query = Coupon
+            ::where("code", "ILIKE", $request->code . "%")
+            ->where("is_active", "=", "TRUE")
+            ->where("minimum_cart_value", "<=", (@$request->min ?: 0))
+            ->take(15)
+            ->get();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Coupon  $coupon
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Coupon $coupon) {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Coupon  $coupon
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Coupon $coupon) {
-        //
+        return $query;
     }
 }

@@ -26,6 +26,7 @@ Route::get('/users', [
     'uses' => 'UserController@list'
 ]);
 Route::get('/address/zipcode', 'ZipCodeController@zipCode');
+Route::get('/coupon', 'CouponController@list');
 
 Route::group(
     [
