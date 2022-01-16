@@ -19,7 +19,7 @@
             delete errors.products;
         }
 
-        reportData("Couldn't check out the cart", errors, {
+        reportData("Couldn't checkout the cart", errors, {
             "cart" : "Cart",
             "payment-type" : "Payment Type",
             "address-id" : "Address"

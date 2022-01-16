@@ -1,4 +1,9 @@
-<div class="card my-3" style="height: 8em;">
+<div class="card my-3 @if($cart_item->details->amount > $cart_item->stock) border-danger shadow-sm @endif" style="height: 8em;">
+    @if($cart_item->details->amount > $cart_item->stock)
+    <div style="position: absolute; background-color: rgba(0,0,0,0.1); height: 100%; z-index: 91234919243" class="w-100 d-flex justify-content-center align-items-center">
+        <h1 style="display: block;color: red">OUT OF STOCK</h1>
+    </div>
+    @endif
     <div class="row g-6 h-100">
       <div class="col-2 h-100">
         <img src="{{asset($cart_item->photos[0]->url)}}" class="img-fluid rounded-start h-100" style="object-fit: cover;">
