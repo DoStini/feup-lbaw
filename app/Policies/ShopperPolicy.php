@@ -75,9 +75,9 @@ class ShopperPolicy
         if($user->is_admin)
             return Response::deny('No such page for admin.');
 
-        if($shopper->cart->isEmpty()) 
+        if($shopper->cart->isEmpty())
             return Response::deny('No such page for empty cart.');
-        
+
         return Response::allow();
     }
 

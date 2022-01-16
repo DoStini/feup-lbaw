@@ -2,18 +2,24 @@
 const currentPriceContainer = document.getElementById('current-price');
 
 let quantityContainer = document.getElementById(`quantity-container`)
-
+let selector;
 if(quantityContainer!=null) {
-    quantityContainer.append(createNumberSelector({
+    selector = createNumberSelector({
         id: `product-amount-${productInfo.id}`,
         value: 1,
         min: 1,
-        max: productInfo.stock,
         onChange: (target, value) => {
             target.value = value;
+            if(value > productInfo.stock) {
+                selector.invalidInput(`Product's stock is ${productInfo.stock}`);
+            } else {
+                selector.validInput();
+            }
             currentPriceContainer.innerText = `Subtotal: ${(parseFloat(productInfo.price) * value).toFixed(2)} €`;
         }
-    }));
+    });
+
+    quantityContainer.append(selector);
 }
 
 const addToCartButton = document.getElementById('add-to-cart-btn');

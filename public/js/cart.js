@@ -101,7 +101,7 @@ function insertProduct(product, idx) {
         id: `number-selector-${idx}`,
         min: 1,
         value: product.amount,
-        max: product.stock,
+        // max: product.stock,
         onBlur: (target, value, prevValue) => {
             if (value === prevValue) {
                 target.value = value;
@@ -110,6 +110,8 @@ function insertProduct(product, idx) {
             jsonBodyPost("/api/users/cart/update", { product_id: product.id, amount: value})
                 .then(response => {
                     if (response.status === 200) {
+                        selector.validInput();
+
                         target.value = value;
                         handleUpdate(product, idx, value, response.data.total);
                     }
@@ -117,17 +119,23 @@ function insertProduct(product, idx) {
                 .catch(error => {
                     if(error.response) {
                         if(error.response.data) {
+                            selector.invalidInput(`Product's stock is ${product.stock}`);
+
                             let errors = "";
                             for(var key in error.response.data.errors) {
                                 errors = errors.concat(error.response.data.errors[key]);
                             }
-                            launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                            launchErrorAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
                         }
                     }
                 });
         }
     });
     document.getElementById(`cart-number-selector-${idx}`).appendChild(selector);
+
+    if(product.amount > product.stock) {
+        selector.invalidInput(`Product's stock is ${product.stock}`);
+    }
 }
 
 function clearElements() {
