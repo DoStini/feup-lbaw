@@ -22,7 +22,7 @@
             label: "Choose your Coupon",
             ajax: true,
             delay: 1000,
-            url: '/api/coupon',
+            url: '/api/coupon/search',
             data: (value) => {
                 const query = {
                     code: value,

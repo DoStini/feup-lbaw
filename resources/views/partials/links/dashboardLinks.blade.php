@@ -6,6 +6,9 @@
         <a class="nav-link{{($page == 'userDashboard' ? ' active' : '')}}" href={{route('getUserDashboard')}}>  Manage Users </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link{{($page == 'productDashboard' ? ' active' : '')}}" href={{route('getProductDashboard')}}>  Manage Products </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link{{($page == 'couponDashboard' ? ' active' : '')}}" href={{route('getCouponDashboard')}}>  Manage Coupons </a>
     </li>
 </ul>

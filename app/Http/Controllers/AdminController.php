@@ -110,21 +110,13 @@ class AdminController extends Controller {
 
         Gate::authorize('isAdmin');
 
-        $info = new stdClass();
+        return view('pages.orderDashboard', ['admin' => Auth::user()]);
+    }
 
-        $info->updatableOrders = Order::where('status', '<>', 'shipped')
-            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-            ->orderBy('status')
-            ->orderBy('timestamp', 'asc')
-            ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
+    public function getProductDashboard() {
+        Gate::authorize('isAdmin');
 
-        $info->finishedOrders = Order::where('status', '=', 'shipped')
-            ->leftJoin('users', 'order.shopper_id', '=', 'users.id')
-            ->orderBy('status')
-            ->orderBy('timestamp', 'asc')
-            ->get(['order.id', 'name', 'shopper_id', 'timestamp', 'total', 'status']); //need to add created_at and updated_at in sql
-
-        return view('pages.orderDashboard', ['admin' => Auth::user(), 'info' => $info]);
+        return view('pages.productDashboard', ['admin' => Auth::user()]);
     }
 
     public function getUserDashboard() {

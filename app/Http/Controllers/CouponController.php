@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\ApiError;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 use function PHPUnit\Framework\returnSelf;
@@ -114,7 +115,7 @@ class CouponController extends Controller {
     /**
      * Retrieves possible coupons for a given input
      */
-    public function list(Request $request) {
+    public function search(Request $request) {
         if (($v = $this->validateList($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
@@ -127,5 +128,17 @@ class CouponController extends Controller {
             ->get();
 
         return $query;
+    }
+
+    /**
+     * Search users according to filters in the query
+     *
+     * @return Response
+     */
+    public function list(Request $request) {
+        $this->authorize('viewAny', User::class);
+
+        $dc =  new DatatableController();
+        return $dc->get($request, DB::table('coupon_view'));
     }
 }
