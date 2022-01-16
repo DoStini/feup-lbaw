@@ -16,7 +16,7 @@ class ReviewController extends Controller {
             "product_id" => "required|min:1|integer|exists:product,id",
             "stars" => "required|min:0|max:5|integer",
             "text" => "required|between:1,512",
-            "photos" => "required",
+            "photos" => "nullable",
         ], [], [
             "product_id" => "product ID",
             "stars" => "rating",
@@ -32,7 +32,7 @@ class ReviewController extends Controller {
         }
 
         return Validator::make($photos, [
-            "*" => "file|image"
+            "*" => "nullable|file|image"
         ], $messages);
     }
 
@@ -48,17 +48,19 @@ class ReviewController extends Controller {
         }
 
         $photos = $req->file('photos');
-        $validator = $this->getValidatorPhotos($photos);
-        if ($validator->fails()) {
-            $errors = $validator->errors()->messages();
-            $response = [];
-            $response['photos'] = [];
+        if($photos != null) {
+            $validator = $this->getValidatorPhotos($photos);
+            if ($validator->fails()) {
+                $errors = $validator->errors()->messages();
+                $response = [];
+                $response['photos'] = [];
 
-            foreach ($errors as $key => $value) {
-                array_push($response['photos'], $value[0]);
+                foreach ($errors as $key => $value) {
+                    array_push($response['photos'], $value[0]);
+                }
+
+                return redirect()->back()->withErrors($response)->withInput();
             }
-
-            return redirect()->back()->withErrors($response)->withInput();
         }
 
         $savedPhotos = [];
@@ -75,19 +77,21 @@ class ReviewController extends Controller {
 
             $review->save();
 
-            foreach ($photos as $reviewPhoto) {
-                $path = $reviewPhoto->storePubliclyAs(
-                    "images/review",
-                    "review" . $review->id . "-" . uniqid() . "." . $reviewPhoto->extension(),
-                    "public"
-                );
+            if($photos != null) {
+                foreach ($photos as $reviewPhoto) {
+                    $path = $reviewPhoto->storePubliclyAs(
+                        "images/review",
+                        "review" . $review->id . "-" . uniqid() . "." . $reviewPhoto->extension(),
+                        "public"
+                    );
 
-                array_push($savedPhotos, $path);
+                    array_push($savedPhotos, $path);
 
-                $public_path = "/storage/" . $path;
-                $photo = Photo::create(["url" => $public_path]);
+                    $public_path = "/storage/" . $path;
+                    $photo = Photo::create(["url" => $public_path]);
 
-                $review->photos()->attach($photo->id);
+                    $review->photos()->attach($photo->id);
+                }
             }
 
             DB::commit();

@@ -170,7 +170,7 @@
         <div class="row d-flex justify-content-between align-items-end mt-1">
             <div class="form-group col-6">
                 <label for="review-form-photos">Review Photos</label>
-                <input type="file" class="form-control" name="photos[]" id="review-form-photos" required  multiple>
+                <input type="file" class="form-control" name="photos[]" id="review-form-photos"  multiple>
             </div>
 
             <span class="w-auto">
