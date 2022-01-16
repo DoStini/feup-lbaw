@@ -25,7 +25,6 @@
                 <div class="d-flex align-items-center justify-content-end">{{$cart->links()}}</div>
             </div>
             <div class="col-md-4 d-flex align-items-center flex-column">
-                {{--@include('partials.applyCoupon')--}}
                 @include('partials.cartTotal', ["cartTotal" => $cartTotal])
                 <div class="my-4 w-50 d-flex align-items-center justify-content-center">
                     <a href={{route('checkout-page')}} class="btn btn-primary w-100">Proceed to Checkout</a>

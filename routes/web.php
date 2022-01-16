@@ -31,8 +31,11 @@ Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
 Route::get('admin/orders', 'AdminController@getOrderDashboard')->name('getOrderDashboard');
 Route::get('admin/products', 'AdminController@getProductDashboard')->name('getProductDashboard');
 Route::get('admin/users', 'AdminController@getUserDashboard')->name('getUserDashboard');
+Route::get('admin/coupon', 'AdminController@getCouponDashboard')->name('getCouponDashboard');
 Route::get('admin/create', 'AdminController@getNewAdminPage')->name('getNewAdminPage');
 Route::post('admin/create', 'AdminController@registerAdmin')->name('registerAdmin');
+Route::get('admin/coupon/create', 'AdminController@getNewCouponPage')->name('getCreateCouponPage');
+Route::post('admin/coupon/create', 'CouponController@create')->name('createCoupon');
 
 // Products
 Route::get('products', 'ProductController@search')->name('getProductSearch');
@@ -40,6 +43,8 @@ Route::get('products/{id}', 'ProductController@show')->name('getProduct');
 
 // Orders
 Route::get('orders/{id}', 'OrderController@show')->name('orders');
+Route::get('orders/{id}/paypal/create', 'PaypalController@createTransaction')->name('createTransaction');
+Route::get('orders/{id}/paypal/finish', 'PaypalController@finishTransaction')->name('finishTransaction');
 
 // Authentication
 Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest');

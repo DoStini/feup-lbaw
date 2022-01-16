@@ -33,7 +33,7 @@ class Order extends Model {
             "order_product_amount",
             "order_id",
             "product_id"
-        )->withPivot("amount","unit_price")->as("details");
+        )->withPivot("amount", "unit_price")->as("details");
     }
 
     public function address() {
@@ -57,6 +57,14 @@ class Order extends Model {
             Payment::class,
             'order_id',
             'id',
+        );
+    }
+
+    public function shopper() {
+        return $this->hasOne(
+            Shopper::class,
+            'id',
+            'shopper_id'
         );
     }
 
