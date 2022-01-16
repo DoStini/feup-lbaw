@@ -12,7 +12,6 @@ use Illuminate\Validation\Rule;
 class OrderController extends Controller {
 
     public function show($id) {
-
         $order = Order::findOrFail($id);
 
         $this->authorize('view', [Order::class, $order]);
@@ -24,6 +23,14 @@ class OrderController extends Controller {
 
         return view('pages.order', ['order' => $order]);
     }
+
+    public function list(Request $request)  {
+        $this->authorize('viewAny', Order::class);
+
+        $dc =  new DatatableController();
+        return $dc->get($request, DB::table('order_shopper'));
+    }
+
 
     /**
      * Gets all enum values for Order Status.

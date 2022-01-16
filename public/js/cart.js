@@ -15,11 +15,51 @@ function addToCartRequest(id, amount) {
                 for(var key in error.response.data.errors) {
                     errors = errors.concat(error.response.data.errors[key]);
                 }
-                launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                launchErrorAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
             }
         }
     });
 }
+
+function addToWishlistRequest(id, callback) {
+    jsonBodyPost("/api/users/wishlist/add", {
+        "product_id": id ,
+    })
+    .then((response) => {
+        callback && callback(response);
+    })
+    .catch((error) => {
+        if(error.response) {
+            if(error.response.data) {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+                launchErrorAlert("Couldn't add to the whishlist: " + error.response.data.message + "<br>" + errors);
+            }
+        }
+    });
+}
+
+function removeFromWishlistRequest(id, callback) {
+    deleteRequest(`/api/users/wishlist/${id}/remove`)
+    .then((response) => {
+        callback && callback(response);
+    })
+    .catch((error) => {
+        console.log(error.response)
+        if(error.response) {
+            if(error.response.data) {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+                launchErrorAlert("Couldn't remove from the wishlist: " + error.response.data.message + "<br>" + errors);
+            }
+        }
+    });
+}
+
 
 function noProducts() {
     const elem = document.createElement("div");
@@ -60,14 +100,14 @@ function insertProduct(product, idx) {
     const fallBack = "/img/default.jpg";
     const elem = document.createElement("div");
     elem.id = `cart-product-${idx}`;
-    elem.innerHTML = 
+    elem.innerHTML =
         `<div class="container" href="#">
             <div class="row align-items-center mb-3">
                 <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
                 <div class="col-9">
                     <div class="row align-items-center justify-content-between">
                         <div class="col-10 dropdown-cart-name">${product.name}</div>
-                        <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-x-lg"></i>
+                        <i id="cart-remove-${idx}" class="cart-remove col-2 bi bi-trash-fill"></i>
                     </div>
                     <div class="row dropdown-cart-amount justify-content-between">
                         <div id="item-amount-${idx}" class="col px-0">
@@ -98,10 +138,9 @@ function insertProduct(product, idx) {
     });
 
     const selector = createNumberSelector({
-        id: `number-selector-${idx}`, 
+        id: `number-selector-${idx}`,
         min: 1,
         value: product.amount,
-        max: product.stock, 
         onBlur: (target, value, prevValue) => {
             if (value === prevValue) {
                 target.value = value;
@@ -110,6 +149,8 @@ function insertProduct(product, idx) {
             jsonBodyPost("/api/users/cart/update", { product_id: product.id, amount: value})
                 .then(response => {
                     if (response.status === 200) {
+                        selector.validInput();
+
                         target.value = value;
                         handleUpdate(product, idx, value, response.data.total);
                     }
@@ -117,17 +158,23 @@ function insertProduct(product, idx) {
                 .catch(error => {
                     if(error.response) {
                         if(error.response.data) {
+                            selector.invalidInput(`Product's stock is ${product.stock}`);
+
                             let errors = "";
                             for(var key in error.response.data.errors) {
                                 errors = errors.concat(error.response.data.errors[key]);
                             }
-                            launchErrorAlert("There was an error adding to the cart: " + error.response.data.message + "<br>" + errors);
+                            launchSuccessAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
                         }
                     }
                 });
         }
     });
     document.getElementById(`cart-number-selector-${idx}`).appendChild(selector);
+
+    if(product.amount > product.stock) {
+        selector.invalidInput(`Product's stock is ${product.stock}`);
+    }
 }
 
 function clearElements() {

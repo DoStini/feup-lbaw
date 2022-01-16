@@ -7,7 +7,7 @@
 @section('content')
 
 <div class="container">
-@include('partials.links.dashboardLinks', ['page' => 'userDashboard'])
+@include('partials.links.dashboardLinks', ['page' => 'createNewAdmin'])
 
 <form id="admin-register-form"  method="POST" action={{route('registerAdmin')}}>
     @csrf

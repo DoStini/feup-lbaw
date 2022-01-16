@@ -24,9 +24,9 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
     elem.id = `selector-${id}`;
     elem.className = "input-group input-group-sm number-selector";
     elem.innerHTML = `
-            <button class="btn btn-outline-secondary" type="button"><i class="bi bi-dash-lg"></i></button>
-            <input id="${id}" type="text" class="form-control" value=${value || 0}>
-            <button class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-lg"></i></button>
+            <button class="btn btn-outline-secondary" type="button"  data-bs-toggle="tooltip" ><i class="bi bi-dash-lg"></i></button>
+            <input id="${id}" type="text" class="form-control" value=${value || 0}  data-bs-toggle="tooltip" title="">
+            <button class="btn btn-outline-secondary" type="button"  data-bs-toggle="tooltip" ><i class="bi bi-plus-lg"></i></button>
     `;
 
     let prevUpdate = value;
@@ -51,7 +51,7 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
     });
     lessButton.addEventListener("mouseleave", () => {
         lessButton.dispatchEvent(new Event("blur"))
-    }) 
+    })
 
     const moreButton = elem.lastElementChild;
     moreButton.addEventListener("click", () => {
@@ -84,6 +84,24 @@ function createNumberSelector({id, value,  min, max, onChange, onBlur}) {
         onBlur && onBlur(input, newValue, prevBlur);
         prevBlur = newValue;
     });
+
+    elem.invalidInput = (message) => {
+        let children = elem.children;
+
+        for(let i = 0; i < children.length; i++) {
+            children[i].title = message;
+            children[i].classList.add("is-invalid");
+        }
+    }
+
+    elem.validInput = () => {
+        let children = elem.children;
+
+        for(let i = 0; i < children.length; i++) {
+            children[i].title = "";
+            children[i].classList.remove("is-invalid");
+        }
+    }
 
     return elem;
 }

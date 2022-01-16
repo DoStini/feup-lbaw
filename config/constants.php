@@ -37,10 +37,30 @@ return [
             'message' => 'Product does not have enough stock'
         ],
     ],
+    'wishlist' => [
+        'already_exists' => [
+            'code' => 409,
+            'message' => 'Product already in wishlist'
+        ],
+        'not_exists' => [
+            'code' => 422,
+            'message' => 'Product not in wishlist'
+        ],
+    ],
     'address' => [
         'not_in_user' => [
             'code' => 422,
             'message' => 'Address does not belong to the user'
+        ]
+    ],
+    'coupon' => [
+        'not_active' => [
+            'code' => 422,
+            'message' => 'Coupon is not active'
+        ],
+        'active' => [
+            'code' => 422,
+            'message' => 'Coupon is already active'
         ]
     ]
 ];

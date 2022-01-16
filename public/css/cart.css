@@ -51,3 +51,13 @@
     color: red;
     text-align: right;
 }
+
+.cart-product-container {
+    height: auto;
+    overflow: hidden;
+}
+@media only screen and (min-width: 768px) {
+    .cart-product-image {
+        max-height: 8em;
+    }
+}

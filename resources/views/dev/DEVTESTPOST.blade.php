@@ -22,7 +22,7 @@
     <input  class="form-control" type="number" name="stock" value="{{old('stock')}}">
     <label for="description"> DESCRIPTION</label>
     <textarea  class="form-control" type="text" name="description">{{old('description')}}</textarea>
-    <label for="photos[]"> PHOTOS</label>
+    <label for="photos"> PHOTOS</label>
     <input  class="form-control" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}"  multiple>
     <label for="price"> PRICE</label>
     <input  class="form-control" type="number" step="0.01" value="{{old('price')}}" name="price">

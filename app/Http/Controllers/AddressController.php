@@ -28,7 +28,8 @@ class AddressController extends Controller {
             'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
             'street' => 'required|string|min:1|max:255',
             'door' => 'string|required|min:1|max:10',
-            'zip_code_id' => 'required|integer|min:1|exists:zip_code,id'
+            'zip_code_id' => 'required|integer|min:1|exists:zip_code,id',
+            'name' => 'nullable|string|max:255'
         ], [], [
             'id' => 'ID',
             'zip_code_id' => 'zip code ID'
@@ -43,7 +44,8 @@ class AddressController extends Controller {
             'address_id' => 'required|integer|min:1|exists:address,id',
             'street' => 'string|min:1|max:255',
             'door' => 'string|min:1|max:10',
-            'zip_code_id' => 'min:1|exists:zip_code,id'
+            'zip_code_id' => 'min:1|exists:zip_code,id',
+            'name' => 'nullable|string|max:255'
         ], [], [
             'id' => 'id',
             'zip_code_id' => 'zip code ID'
@@ -117,6 +119,7 @@ class AddressController extends Controller {
             "street" => $request->street,
             "door" => $request->door,
             "zip_code_id" => $request->zip_code_id,
+            "name" => $request->name
         ]);
 
         $shopper->addresses()->attach($address->id);
@@ -144,6 +147,7 @@ class AddressController extends Controller {
             "street" => $request->street,
             "door" => $request->door,
             "zip_code_id" => $request->zip_code_id,
+            "name" => $request->name,
         ]));
 
         return response($address->aggregate());
