@@ -123,7 +123,3 @@
         </div>
     </div>
 </div>
-
-{{-- @include('partials.errormodal') --}}
-{{-- @include('partials.alert') --}}
-

@@ -101,7 +101,6 @@ function insertProduct(product, idx) {
         id: `number-selector-${idx}`,
         min: 1,
         value: product.amount,
-        // max: product.stock,
         onBlur: (target, value, prevValue) => {
             if (value === prevValue) {
                 target.value = value;
@@ -125,7 +124,7 @@ function insertProduct(product, idx) {
                             for(var key in error.response.data.errors) {
                                 errors = errors.concat(error.response.data.errors[key]);
                             }
-                            launchErrorAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
+                            launchSuccessAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
                         }
                     }
                 });
