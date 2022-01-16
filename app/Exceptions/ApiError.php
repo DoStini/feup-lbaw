@@ -98,6 +98,27 @@ class ApiError {
         return ApiError::generateErrorMessage($err);
     }
 
+
+    /**
+     * Returns a json response with 
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function userAlreadyBlocked() {
+        $err = Config::get('constants.blocked.already_blocked');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with 
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function userNotBlocked() {
+        $err = Config::get('constants.blocked.not_blocked');
+        return ApiError::generateErrorMessage($err);
+    }
+
     /**
      * Returns a json response with an error regarding user not authenticated
      *
