@@ -124,6 +124,6 @@
     </div>
 </div>
 
-@include('partials.errormodal')
-@include('partials.alert')
+{{-- @include('partials.errormodal') --}}
+{{-- @include('partials.alert') --}}
 

@@ -4,8 +4,6 @@
 
 @section('content')
 
-@include('partials.alert')
-
 <form id="search-form" class="h-100">
     <div class="container h-100 w-100 mw-100 ps-5 pe-5 mt-4 mb-4">
         <div class="col">
