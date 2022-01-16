@@ -51,7 +51,7 @@
     <div class="row">
         <div class="form-group col-md-6">
             <label for="stock">Stock</label>
-            <input id="stock" type="number" value="{{old('stock')}}" class="form-control" name="stock" autocomplete="stock">
+            <input required id="stock" type="number" value="{{old('stock')}}" class="form-control" name="stock" autocomplete="stock">
             @error('stock')
             <span class="error form-text text-danger">
                 {{$message}}
@@ -60,7 +60,7 @@
         </div>
         <div class="form-group col-md-6">
             <label for="price">Price</label>
-            <input id="price" class="form-control" type="number" step="0.01" value="{{old('price')}}" name="price">
+            <input required id="price" class="form-control" type="number" step="0.01" value="{{old('price')}}" name="price">
             @error('price')
             <span class="error form-text text-danger">
                 {{$message}}
@@ -72,7 +72,7 @@
     <div class="row">
         <div class="form-group col-12">
             <label for="photos">Product Photos</label>
-            <input multiple="true" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}">
+            <input required multiple="true" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}">
             @if($errors->has('photos'))
             <span class="error form-text text-danger">
                 @foreach ($errors->get('photos') as $message)
@@ -86,7 +86,7 @@
     <div class="row">
         <div class="form-group col-12">
             <label for="description">Description</label>
-            <textarea id="description" class="form-control" name="description">{{old('description')}}</textarea>
+            <textarea required id="description" class="form-control" name="description">{{old('description')}}</textarea>
             @error('description')
             <span class="error form-text text-danger">
                 {{$message}}
