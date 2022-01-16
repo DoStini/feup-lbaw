@@ -13,8 +13,7 @@ use Illuminate\Queue\SerializesModels;
 class ProfileEdited implements ShouldBroadcast {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    private $id;
-    public $message;
+    public $shopper;
 
     /**
      * Create a new event instance.
@@ -22,8 +21,7 @@ class ProfileEdited implements ShouldBroadcast {
      * @return void
      */
     public function __construct($id) {
-        $this->id = $id;
-        $this->message = "Your profile was edited by an admin";
+        $this->shopper = $id;
     }
 
     public function broadcastOn() {
@@ -31,6 +29,6 @@ class ProfileEdited implements ShouldBroadcast {
     }
 
     public function broadcastAs() {
-        return "profile-edited-{$this->id}";
+        return "profile-edited-{$this->shopper}";
     }
 }

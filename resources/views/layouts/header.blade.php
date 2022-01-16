@@ -32,9 +32,9 @@
                     <ul id="notification-content" class="dropdown-menu dropdown-menu-end" aria-labelledby="notification-dropdown">
                     </ul>
                 </div>
-
+                
                 <div class="notification-number">
-                    <div>3</div>
+                    <div class="new-notif"></div>
                 </div>
 
                 @endif
@@ -84,7 +84,6 @@
 	window.addEventListener("load", () => {
         const notification = document.querySelector("#notification-dropdown i");
         const notificationNumber = document.querySelector(".notification-number");
-        const notificationText = notificationNumber.querySelector("div");
         const notificationContent = document.getElementById("notification-content");
 
         let skip = 0;
@@ -113,11 +112,12 @@
             notifications.forEach(noti => {
                 const notif = parseNotification(noti);
                 notificationContent.appendChild(notif);
+                notificationContent.appendChild(getDivider());
             });
 
             if (data.new_nots > 0) {
-                notificationText.innerText = data.new_nots;
                 notificationNumber.style.visibility = "visible";
+                console.log('new notif');
             }
 
             skip += notifications.length;
@@ -135,6 +135,7 @@
                 const item = parseNotification(noti);
                 if (item) {
                     notificationContent.appendChild(item);
+                    notificationContent.appendChild(getDivider());
                 }
             });
 
@@ -152,8 +153,7 @@
                 handleNewRequest(data.data)
                 
                 if (data.data.new_nots > 0) {
-                    notificationText.innerText = data.data.new_nots;
-                    notificationNumber.style.visibility = "visible";
+                  notificationNumber.style.visibility = "visible";
                 }
             });
 
@@ -165,22 +165,28 @@
             cluster: 'eu'
         });
 
-        const handlePusherNotification() {
-            const newValue = parseInt(notificationText.innerText || 0) + 1;
-            notificationText.innerText = newValue;
+        const handlePusherNotification = () => {
+            skip++;
             notificationNumber.style.visibility = "visible";
-            skip ++;
+            try{
+              const audio = new Audio('/sounds/notif.wav');
+              audio.play();
+            } catch (e) {
+              console.log(e);
+            }
+
         }
 
-        const channel = pusher.subscribe("profile-edited");
-        channel.bind("profile-edited-{{Auth::user()->id}}", function(data) {
+        const channelProfileEdited = pusher.subscribe("profile-edited");
+        channelProfileEdited.bind("profile-edited-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildEditedNotifcation(data.message);
+            notificationContent.prepend(getDivider());
             notificationContent.prepend(notif);
         });
 
-        const channel = pusher.subscribe("order-status");
-        channel.bind("order-status-{{Auth::user()->id}}", function(data) {
+        const channelOrderStatus = pusher.subscribe("order-status");
+        channelOrderStatus.bind("order-status-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildOrderNotification(data.message);
             notificationContent.prepend(notif);
@@ -190,8 +196,7 @@
             formDataPost(`/api/users/{{Auth::user()->id}}/notifications/`)
                 .then(data => {
                     console.log(data);
-                    notificationText.innerText = 0;
-                    notificationNumber.style.visibility = "";
+                    notificationNumber.style.visibility = "hidden";
                 });
         });
 
