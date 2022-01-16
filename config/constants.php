@@ -42,5 +42,15 @@ return [
             'code' => 422,
             'message' => 'Address does not belong to the user'
         ]
+    ],
+    'coupon' => [
+        'not_active' => [
+            'code' => 422,
+            'message' => 'Coupon is not active'
+        ],
+        'active' => [
+            'code' => 422,
+            'message' => 'Coupon is already active'
+        ]
     ]
 ];

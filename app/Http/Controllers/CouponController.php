@@ -7,6 +7,8 @@ use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\returnSelf;
+
 class CouponController extends Controller {
 
     private function validateCreate(Request $request) {
@@ -18,6 +20,14 @@ class CouponController extends Controller {
         ], [], [
             'minimum_cart_value' => 'minimum cart value',
             'is_active' => 'is active',
+        ]);
+    }
+
+    private function validateManage(Request $request) {
+        return Validator::make([
+            'id' => $request->route('id')
+        ], [
+            'id' => 'required|min:1|exists:coupon,id'
         ]);
     }
 
@@ -44,6 +54,56 @@ class CouponController extends Controller {
 
         return redirect(route('getCouponDashboard'));
     }
+
+    /**
+     * Disables a coupon
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request) {
+        $this->authorize('manageCoupon', Coupon::class);
+
+        if (($v = $this->validateManage($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+
+        $coupon = Coupon::findOrFail($request->route("id"));
+
+        if (!$coupon->is_active) {
+            return ApiError::couponNotActive();
+        }
+
+        $coupon->is_active = false;
+        $coupon->save();
+
+        return response("");
+    }
+
+    /**
+     * Show a coupon
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request) {
+        $this->authorize('manageCoupon', Coupon::class);
+
+        if (($v = $this->validateManage($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $coupon = Coupon::findOrFail($request->route("id"));
+
+        if ($coupon->is_active) {
+            return ApiError::couponActive();
+        }
+
+        $coupon->is_active = true;
+        $coupon->save();
+
+        return response("");
+    }
+
     private function validateList(Request $request) {
         return Validator::make($request->all(), [
             'code' => 'required|string|min:1,max:20',
