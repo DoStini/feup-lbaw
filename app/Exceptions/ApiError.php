@@ -43,8 +43,18 @@ class ApiError {
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function productAlreadyInCart() {
-        $err = Config::get('constants.cart.already_exists');
+    public static function productNotInWishlist() {
+        $err = Config::get('constants.wishlist.not_exists');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function productAlreadyInWishlist() {
+        $err = Config::get('constants.wishlist.already_exists');
         return ApiError::generateErrorMessage($err);
     }
 

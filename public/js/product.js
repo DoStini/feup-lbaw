@@ -19,6 +19,26 @@ if(addToCartButton) {
     );
 }
 
+const addToWishlist = document.getElementById("add-wishlist");
+const removeFromWishlist = document.getElementById("remove-wishlist");
+
+if(addToWishlist && removeFromWishlist) {
+    addToWishlist.addEventListener("click", (e) => {
+        addToWishlistRequest(productInfo.id, () => {
+            removeFromWishlist.style.display = "";
+            addToWishlist.style.display = "none";    
+        });
+        addToWishlist.dispatchEvent(new Event("blur"));
+    });
+    removeFromWishlist.addEventListener("click", (e) => {
+        removeFromWishlistRequest(productInfo.id, () => {
+            removeFromWishlist.style.display = "none";
+            addToWishlist.style.display = "";
+        });
+        removeFromWishlist.dispatchEvent(new Event("blur"));
+    });
+}
+
 const showMoreButton = document.getElementById('show-more-button');
 const teaserDescContainer = document.getElementById('description-box-teaser');
 const showLessButton = document.getElementById('show-less-button');

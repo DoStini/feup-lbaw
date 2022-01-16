@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
+use App\Models\Shopper;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,7 +26,16 @@ class ProductController extends Controller {
      */
     public function show($id) {
         $product = Product::findOrFail($id);
-        return view('pages.product', ['product' => $product]);
+        $user = Auth::user();
+        $wishlisted = false;
+        if ($user && !$user->is_admin) {
+            $shopper = Shopper::find($user->id);
+            if ($shopper->wishlist->contains($product)) {
+                $wishlisted = true;
+            }
+        }
+
+        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted]);
     }
 
     /**
@@ -52,9 +64,17 @@ class ProductController extends Controller {
      * @return Response
      */
     public function list(Request $request) {
+        $user = Auth::user();
         try {
             $query = Product
                 ::with("photos")
+                ->when(
+                    $user,
+                    fn ($q) =>
+                    $q->leftJoin('wishlist', fn ($join) =>
+                    $join->on('product.id', '=', 'wishlist.product_id')
+                        ->where('wishlist.shopper_id', '=', $user->id))
+                )
                 ->whereRaw('stock > 0')
                 ->when($request->text, function ($q) use ($request) {
                     $words = explode(' ', $request->text);
