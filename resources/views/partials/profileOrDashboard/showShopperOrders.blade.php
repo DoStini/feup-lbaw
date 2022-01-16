@@ -14,7 +14,7 @@
             <h4>You haven't made any purchases yet.</h4>
         </div>
     @else
-        @foreach ($shopper->orders->sortBy('timestamp')->reverse() as $order)
+        @foreach ($shopper->orders()->orderByDesc('timestamp')->get() as $order)
             <div class="accordion" id={{ "order" . $loop->iteration}}>
                 <div class="accordion-item my-4">
                 <h2 class="accordion-header" id={{"panelsStayOpen-heading" . $loop->iteration}}>
@@ -155,7 +155,7 @@
                                             <tbody>
                                                 @foreach ($order->products as $product)
                                                 <tr>
-                                                    <td><a class="badge rounded-pill bg-primary product-link" 
+                                                    <td><a class="badge rounded-pill bg-primary product-link"
                                                         href={{route('getProduct', ['id' => $product->id])}} target="_blank"
                                                         style="width: 15em; overflow: hidden;   text-overflow: ellipsis;">
                                                         {{$product->name}}</a></td>
@@ -168,7 +168,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
