@@ -24,6 +24,8 @@ class NotificationController extends Controller {
     private function validateOp(Request $request) {
         return Validator::make(['id' => $request->route('id')], [
             'id' => 'required|integer|min:1|exists:authenticated_shopper,id',
+            'skip' => 'integer|min:0',
+            'page_size' => 'integer|min:0',
         ]);
     }
 
@@ -34,7 +36,7 @@ class NotificationController extends Controller {
 
         $id = $request->route('id');
         $skip = $request->skip ?? 0;
-        $pageSize = 5;
+        $pageSize = $request->page_size ?? 5;
 
         $shopper = Shopper::findOrFail($id);
         $notifications = $shopper->notifications()->orderBy('timestamp', 'desc');
