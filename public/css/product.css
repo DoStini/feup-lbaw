@@ -89,3 +89,16 @@
 .variant-color:hover {
     border: 0.2em solid rgb(150, 116, 73);
 }
+
+.add-wishlist,
+.remove-wishlist {
+    padding-top: 0.1em;
+}
+
+.remove-wishlist{
+    color: rgb(201, 69, 69);
+}
+
+.remove-wishlist:hover{
+    color: rgb(194, 92, 92);
+}

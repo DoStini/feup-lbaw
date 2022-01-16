@@ -13,7 +13,7 @@ class ZipCodeController extends Controller {
 
     private function validateZipCode(Request $request) {
         return Validator::make($request->all(), [
-            'code' => 'required|string|min:3',
+            'code' => 'required|string|min:2',
         ]);
     }
 

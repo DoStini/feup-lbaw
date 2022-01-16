@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center mb-5">
     <div class="container w-75 bg-greyish" style="background-color: white;">
         <div class="row m-5">
             <div class="col-md-6 d-flex justify-content-center justify-content-md-start my-3">
@@ -37,9 +37,15 @@
                     <p class="text-end">Total Amount: {{round($order->total, 2)}}€</p>
                     <p class="text-end">Date: {{date("d/m/Y", strtotime($order->timestamp))}}</p>
                     @if($order->payment)
-                            <p class="text-end">Payment Method: {{$order->payment->paypal_transaction_id == null ? 'Bank Transfer' : 'PayPal'}} </p>
-                            @if($order->payment->paypal_transaction_id)
+                            <p class="text-end">Payment Method: {{$order->payment->entity == null ? 'PayPal' : 'Bank Transfer'}} </p>
+                            @if(!$order->payment->entity)
+                            @if($order->status !== 'created')
                                 <p class="text-end">Transaction ID: {{$order->payment->paypal_transaction_id}}</p>
+                                @else
+                                    <form method="GET" action="{{route('createTransaction', ['id' => $order->id])}}">
+                                    <button type="submit" class="text-end btn btn-primary" >Pay using paypal</button>
+                                    </form>
+                                @endif
                             @else
                                 <p class="text-end">Reference: {{$order->payment->reference}}</p>
                                 <p class="text-end">Entity: {{$order->payment->entity}}</p>
@@ -83,7 +89,7 @@
 
             </div>
             <div class="col-md-6 d-flex justify-content-end flex-column">
-                <p class="text-end">Subtotal (Without Tax): {{number_format($order->subtotal * (1-0.23), 2)}} €</p>
+                <p class="text-end">Subtotal: {{number_format($order->subtotal, 2)}} €</p>
                 <p class="text-end">Tax (23%): {{number_format($order->subtotal * 0.23, 2)}} €</p>
                 @if($order->coupon)
                 <p class="text-end">Coupon: {{$order->coupon->code}} ({{round($order->coupon->percentage * 100 )}}%)</p>
