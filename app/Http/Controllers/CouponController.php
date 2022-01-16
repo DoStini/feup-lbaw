@@ -46,7 +46,7 @@ class CouponController extends Controller {
         $coupon->minimum_cart_value = $request->minimum_cart_value;
 
         if (isset($request->is_active)) {
-            $coupon->is_active = $request->is_active;
+            $coupon->is_active = $request->is_active == "on" ? true : false;
         }
 
         $coupon->save();

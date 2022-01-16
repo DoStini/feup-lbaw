@@ -42,6 +42,7 @@
     </div>
 
     <div class="form-group mt-1">
+        <input type="hidden" name="is_active" value="off">
         <input name="is_active" id="is_active" class="form-check-input" type="checkbox"
         aria-label="Active?" checked="{{ old('is_active') || true }}">
 
