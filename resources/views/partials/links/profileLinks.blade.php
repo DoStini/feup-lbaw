@@ -1,3 +1,20 @@
+
+@if($errors->any())
+<script async>
+    (async() => {
+        while(!window.hasOwnProperty('reportData'))
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+        let errors = JSON.parse(`<?php echo($errors->toJson())?>`);
+
+        reportData("Couldn't delete the account", errors, {
+            "cur-password": "Current Password",
+            "id": "ID",
+        });
+    })();
+</script>
+@endif
+
 @if($admin)
     {{-- <a href={{route('editPage', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Edit Personal Data </a> --}}
     {{--<a href={{route('getUser', ['id' => Auth::user()->id])}} class="my-2 btn btn-primary w-100">  Delete Account </a>--}}
@@ -39,6 +56,7 @@
     <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> About {{$shopper->user->name}} </a>
     {{--<a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> {{$shopper->user->name}}'s Wishlist </a>--}}
 @endif
+
 
 @if (Auth::check() &&
     ($shopper ?

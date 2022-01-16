@@ -1,6 +1,3 @@
-@include('partials.errormodal')
-
-
 <script type="text/javascript">const userID = <?= Auth::user()->id ?>;</script>
 <script type="text/javascript" defer>
     function updatePhoto(photo, user) {

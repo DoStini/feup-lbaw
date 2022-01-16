@@ -1,5 +1,3 @@
-@include('partials.errormodal')
-
 <div id="address-root" class="accordion" id="addresses-accordion">
     @foreach ($shopper->addresses as $address)
     <div id="address-root-{{$address->id}}" class="accordion-item">
@@ -7,14 +5,14 @@
             <button
                 class="accordion-button collapsed"
                 type="button" data-bs-toggle="collapse"
-                data-bs-target="#address-panel-collapse{{$address->id}}" 
+                data-bs-target="#address-panel-collapse{{$address->id}}"
                 aria-expanded="false"
                 aria-controls="address-panel-collapse{{$address->id}}"
                 id="address-button{{$address->id}}">
                 {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
             </button>
         </h2>
-        <div id="address-panel-collapse{{$address->id}}" 
+        <div id="address-panel-collapse{{$address->id}}"
             data-bs-parent="#addresses-accordion"
             class="accordion-collapse collapse"
             aria-labelledby="address-heading{{$address->id}}"
@@ -86,7 +84,7 @@
 <form>
     <div id="new-address" class="d-flex justify-content-center align-items-center">
         <button class="btn btn-primary">Add a new address</button>
-    </div>        
+    </div>
     </div>
 </form>
 
@@ -104,7 +102,7 @@
             county: "{{$address->zip_code->county->name}}",
             district: "{{$address->zip_code->county->district->name}}",
         }
-        
+
     @endforeach
 
 </script>

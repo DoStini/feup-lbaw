@@ -2,6 +2,7 @@
 <html lang="{{ app()->getLocale() }}">
   @include('head.headContent')
   <body>
+    @include('partials.errormodal')
     <main>
       <header>
         @include('layouts.header')
