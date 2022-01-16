@@ -44,3 +44,4 @@ Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest'
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('register', 'Auth\RegisterController@register')->name('register');
+Route::get('recover', 'Auth\RecoverAccountController@showEmailForm')->name('recoverPage');

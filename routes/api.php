@@ -28,6 +28,8 @@ Route::get('/users', [
 ]);
 Route::get('/address/zipcode', 'ZipCodeController@zipCode');
 
+Route::post('/account/recover', 'Auth\RecoverAccountController@submitRecoverRequest');
+
 Route::group(
     [
         'prefix' => 'users/{id}/private/address',
