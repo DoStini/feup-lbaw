@@ -28,6 +28,10 @@ Route::get('/users', [
 ]);
 Route::get('/address/zipcode', 'ZipCodeController@zipCode');
 
+Route::post('/users/{id]/block', 'ShopperController@blockShopper');
+Route::post('/users/{id]/unblock', 'ShopperController@unblockShopper');
+
+
 Route::group(
     [
         'prefix' => 'users/{id}/private/address',

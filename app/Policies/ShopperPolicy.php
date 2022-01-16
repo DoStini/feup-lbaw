@@ -144,6 +144,18 @@ class ShopperPolicy
         //
     }
 
+        /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Shopper  $shopper
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function block(User $user, Shopper $shopper)
+    {
+        return $user->is_admin;
+    }
+
 
     /**
      * Determine whether the user can delete a product from the Cart.

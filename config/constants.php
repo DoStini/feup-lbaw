@@ -41,6 +41,16 @@ return [
         'not_in_user' => [
             'code' => 422,
             'message' => 'Address does not belong to the user'
+        ],
+    ],
+    'block' => [
+        'already_blocked' => [
+            'code' => 422,
+            'message' => 'User is already blocked',
+        ],
+        'not_blocked' => [
+            'code' => 422,
+            'message' => 'User is not blocked',
         ]
     ]
 ];
