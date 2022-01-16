@@ -14,7 +14,7 @@ function createAddress(data) {
                 aria-expanded="false"
                 aria-controls="address-panel-collapse-${data.id}"
                 id="address-button-${data.id}">
-                ${data.name != null ? data.name :`${data.zip_code}, ${data.street} ${data.door}` }
+                ${data.name ?? `${data.zip_code}, ${data.street} ${data.door}` }
             </button>
         </h2>
         <div id="address-panel-collapse-${data.id}"
@@ -47,7 +47,7 @@ function createAddress(data) {
 
 function modifyAddress(data) {
     const root = document.getElementById(`address-root-${data.id}`);
-    root.querySelector("button").innerHTML = data.name != null ? data.name : `${data.zip_code}, ${data.street} ${data.door}`;
+    root.querySelector("button").innerHTML = data.name ?? `${data.zip_code}, ${data.street} ${data.door}`;
     root.querySelector(".address-info").innerHTML = `
         ${data.street} ${data.door}<br>
         ${data.zip_code}<br>
