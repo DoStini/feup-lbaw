@@ -4,8 +4,6 @@
 
 @section('content')
 
-@include('partials.errormodal')
-
 @if($errors->any())
 <script async>
     (async() => {

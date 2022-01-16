@@ -218,3 +218,5 @@ function setRating(index) {
 @endcan
 
 @include('partials.errormodal')
+@include('partials.alert')
+
