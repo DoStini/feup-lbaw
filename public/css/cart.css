@@ -8,6 +8,14 @@
     margin-right: 1em;
 }
 
+#header-icons > div:last-child{
+    margin-right: 0;
+}
+
+.dropdown-cart-amount > div {
+    width: 8.5em;
+}
+
 /* #cart-dropdown::after {
     display: none;
 } */

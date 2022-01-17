@@ -216,7 +216,3 @@ function setRating(index) {
 }
 </script>
 @endcan
-
-@include('partials.errormodal')
-@include('partials.alert')
-

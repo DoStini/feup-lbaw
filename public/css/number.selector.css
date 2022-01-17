@@ -2,6 +2,20 @@
     font-size: 0.5em;
 }
 
+div.number-selector > button.btn, div.number-selector > input.form-control{
+    padding: 0.1em;
+}
+
+div.number-selector > button.btn{
+    padding-right: 0.2em;
+    padding-left: 0.2em;
+
+}
+
+div.number-selector > input.form-control{
+    padding-left: 0.5em;
+}
+
 .number-selector button:focus {
     outline: none;
     box-shadow: none;

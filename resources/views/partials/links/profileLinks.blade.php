@@ -111,10 +111,10 @@
 
 <script>
     window.addEventListener('load', () => {
-        let errorModal = new bootstrap.Modal(document.getElementById('confirm'));
+        let deleteModal = new bootstrap.Modal(document.getElementById('confirm'));
 
         document.getElementById("show-delete-confirm").addEventListener("click", () => {
-            errorModal.show();
+            deleteModal.show();
         });
     })
 
