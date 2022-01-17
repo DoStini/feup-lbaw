@@ -130,7 +130,7 @@ function createProduct(product, delay) {
 
     const element = document.createElement("div");
     element.id = `root-product-${product.id}`;
-    element.className = "col-lg-4 col-md-6 col-xs-12";
+    element.className = "col-lg-3 col-md-4 col-sm-6 col-xs-12";
     element.style = "visibility: visible";
     element.innerHTML = html;
 

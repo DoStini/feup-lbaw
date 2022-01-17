@@ -11,7 +11,7 @@
                 @include('partials.search.productfilters')
             </div>
             <div class="row container mw-100 h-100">
-                <div id="search-area" class="col-md-9 col-xs-12">
+                <div id="search-area">
                     <div class="container w-100 pe-0">
                         <div id="products-area" class="row justify-content-start">
                         </div>

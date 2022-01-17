@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class Search {
 
-    protected $defaultPageSize = 10;
+    protected $defaultPageSize = 12;
 
     protected function sanitizeNumeric(Request $request, $field, $default) {
         if (!is_numeric($request[$field])) {
