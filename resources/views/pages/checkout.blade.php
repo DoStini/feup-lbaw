@@ -162,7 +162,7 @@
         </div>
         <div class="col-md-4 d-flex align-items-center justify-content-start flex-column">
             @include('partials.applyCoupon', ["cartTotal" => $cartTotal])
-            @include('partials.cartTotal', ["cartTotal" => $cartTotal])
+            @include('partials.cartTotal', ["cartTotal" => $cartTotal, "showTotal" => true])
             <div class="my-4 w-50 d-flex align-items-center justify-content-center">
                 <button type="submit" class="w-100 btn btn-primary" @if(count($shopper->addresses) === 0) disabled  @endif >Checkout</button>
             </div>

@@ -16,6 +16,10 @@
     width: 8.5em;
 }
 
+#amount .number-selector {
+    width: 8.5em;
+}
+
 /* #cart-dropdown::after {
     display: none;
 } */
