@@ -69,6 +69,8 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
+            $category_array = [1,2];
+
             $query = Product
                 ::with("photos")
                 ->when(
@@ -79,6 +81,9 @@ class ProductController extends Controller {
                         ->where('wishlist.shopper_id', '=', $user->id))
                 )
                 ->whereRaw('stock > 0')
+                ->join('product_category', 'product_category.product_id', '=', 'product.id')
+                ->join('category', 'product_category.category_id', '=', 'category.id')
+                ->whereIn('category.id', $category_array)
                 ->when($request->text, function ($q) use ($request) {
                     $words = explode(' ', $request->text);
                     foreach ($words as &$word)
@@ -118,7 +123,7 @@ class ProductController extends Controller {
 
             $pageSize = $request->input('page-size');
             $page = $request->page;
-
+            
             $count = $query->count();
 
             $lastPage = floor($count / $pageSize);
@@ -133,7 +138,7 @@ class ProductController extends Controller {
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $this->serializeQuery($query->get())
+                "query" => $this->serializeQuery($query->get(['category.name as category_name', 'product.*']))
             ]);
         } catch (Exception $e) {
             return response()->json(
