@@ -247,16 +247,26 @@ function restoreCache() {
 }
 
 function getInputs() {
-    const data = Object.fromEntries((new FormData(document.getElementById("search-form"))).entries());
+
+    const formData = new FormData(document.getElementById("search-form"));
+    const data = Object.fromEntries(formData.entries());
 
     const keys = Object.keys(data);
+    
+    categories = [];
 
     Object.values(data).forEach((val, idx) => {
         if (val === "on") {
             data.order = keys[idx];
             delete data[keys[idx]];
+        } else if (val === "category-active") {
+            categories.push(keys[idx]);
+            delete data[keys[idx]];
         }
     });
+    if(categories) {
+        data.categories = categories;
+    }
 
     return {
         text: document.getElementById("search-products-input").value,

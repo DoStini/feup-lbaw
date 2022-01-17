@@ -71,19 +71,7 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
-            $cat_id = 6;
-            $category_array = [];
-
-            array_push($category_array, $cat_id);
-
-            foreach($category_array as $category_id) {
-                $category = Category::find($category_id);
-
-                $child_categories = $category->child_categories;
-                foreach($child_categories as $child) {
-                    array_push($category_array, $child->id);
-                }
-            }
+            
 
             $query = Product
                 ::with("photos")
@@ -94,11 +82,25 @@ class ProductController extends Controller {
                     $join->on('product.id', '=', 'wishlist.product_id')
                         ->where('wishlist.shopper_id', '=', $user->id))
                 )
-                ->whereRaw('stock > 0')
-                ->join('product_category', 'product_category.product_id', '=', 'product.id')
+                ->whereRaw('stock > 0');
+
+            $category_array = $request->input('categories');
+
+            if($category_array != []) {
+                foreach($category_array as $category_id) {
+                    $category = Category::find($category_id);
+    
+                    $child_categories = $category->child_categories;
+                    foreach($child_categories as $child) {
+                        array_push($category_array, $child->id);
+                    }
+                }
+                $query = $query->join('product_category', 'product_category.product_id', '=', 'product.id')
                 ->join('category', 'product_category.category_id', '=', 'category.id')
-                ->whereIn('category.id', $category_array)
-                ->when($request->text, function ($q) use ($request) {
+                ->whereIn('category.id', $category_array);
+            }
+            
+            $query = $query->when($request->text, function ($q) use ($request) {
                     $words = explode(' ', $request->text);
                     foreach ($words as &$word)
                         $word = $word . ':*';
@@ -152,9 +154,10 @@ class ProductController extends Controller {
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $this->serializeQuery($query->get(['category.name as category_name', 'product.*']))
+                "query" => $this->serializeQuery($query->get(['product.*']))
             ]);
         } catch (Exception $e) {
+            dd($e);
             return response()->json(
                 ['message' => 'Unexpected error'],
                 401

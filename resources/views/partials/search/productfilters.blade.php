@@ -57,25 +57,25 @@
             </div>
             <div class="dropdown-menu p-2" aria-labelledby="dropdownSort">
                 <div class="form-check mb-2">
-                    <input group="sort-input" unique name="price-asc" id="price-asc" class="form-check-input" type="checkbox"
+                    <input group="sort-input" unique name="price-asc" id="price-asc" class="form-check-input sort-checkbox" type="checkbox"
                         aria-label="Lowest Price First">
                     <label class="form-check-label" for="price-asc">Lowest Price First</label>
                 </div>
         
                 <div class="form-check mb-2">
-                    <input group="sort-input" unique name="price-desc" id="price-desc" class="form-check-input" type="checkbox"
+                    <input group="sort-input" unique name="price-desc" id="price-desc" class="form-check-input sort-checkbox" type="checkbox"
                         aria-label="Lowest Price First">
                     <label class="form-check-label" for="price-desc">Highest Price First</label>
                 </div>
         
                 <div class="form-check mb-2">
-                    <input group="sort-input" unique name="rate-asc" id="rate-asc" class="form-check-input" type="checkbox"
+                    <input group="sort-input" unique name="rate-asc" id="rate-asc" class="form-check-input sort-checkbox" type="checkbox"
                         aria-label="Lowest Price First">
                     <label class="form-check-label" for="rate-asc">Lowest Rating First</label>
                 </div>
         
                 <div class="form-check">
-                    <input group="sort-input" unique name="rate-desc" id="rate-desc" class="form-check-input" type="checkbox"
+                    <input group="sort-input" unique name="rate-desc" id="rate-desc" class="form-check-input sort-checkbox" type="checkbox"
                         aria-label="Highest Rating First">
                     <label class="form-check-label" for="rate-desc">Highest Rating First</label>
                 </div>
