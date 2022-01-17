@@ -6,6 +6,7 @@ use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\ApiError;
+use App\Models\Category;
 use Craft\StringHelper;
 
 
@@ -69,7 +70,19 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
-            $category_array = [1,2];
+            $cat_id = 6;
+            $category_array = [];
+
+            array_push($category_array, $cat_id);
+
+            foreach($category_array as $category_id) {
+                $category = Category::find($category_id);
+
+                $child_categories = $category->child_categories;
+                foreach($child_categories as $child) {
+                    array_push($category_array, $child->id);
+                }
+            }
 
             $query = Product
                 ::with("photos")
