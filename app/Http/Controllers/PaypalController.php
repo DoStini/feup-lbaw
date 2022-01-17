@@ -29,7 +29,7 @@ class PaypalController extends Controller {
                 0 => [
                     "amount" => [
                         "currency_code" => "EUR",
-                        "value" => $order->total,
+                        "value" => round($order->total,2),
                     ],
                     "shipping" => [
                         "name" => [
@@ -50,6 +50,7 @@ class PaypalController extends Controller {
         $provider->getAccessToken();
 
         $paypalOrder = $provider->createOrder($data);
+
 
         if (isset($paypalOrder['type']) && $paypalOrder['type'] == 'error') {
             return redirect(route('orders', ['id' => $orderId]))->withErrors([

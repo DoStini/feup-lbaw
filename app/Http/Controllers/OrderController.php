@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderUpdate;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -90,6 +91,7 @@ class OrderController extends Controller {
         $order = Order::find($id);
         $order->update($data);
 
+        event(new OrderUpdate($order->shopper->id, $order->id, $data['status']));
         return response()->json(
             ["updated-order" => $order],
             200

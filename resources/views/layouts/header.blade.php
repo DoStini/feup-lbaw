@@ -183,7 +183,7 @@
         const channelProfileEdited = pusher.subscribe("profile-edited");
         channelProfileEdited.bind("profile-edited-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
-            const notif = buildEditedNotifcation(data.message);
+            const notif = buildEditedNotifcation(data);
             notificationContent.prepend(getDivider());
             notificationContent.prepend(notif);
         });
@@ -191,7 +191,8 @@
         const channelOrderStatus = pusher.subscribe("order-status");
         channelOrderStatus.bind("order-status-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
-            const notif = buildOrderNotification(data.message);
+            const notif = buildOrderNotification(data);
+            notificationContent.prepend(getDivider());
             notificationContent.prepend(notif);
         });
 

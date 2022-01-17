@@ -362,7 +362,6 @@ class CartController extends Controller {
             $entry->attributes = json_decode($entry->attributes);
             return $entry;
         }, $products);
-        //dd($products);
         if (!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
     }
 
@@ -438,7 +437,6 @@ class CartController extends Controller {
 
             DB::commit();
         } catch (QueryException $ex) {
-            dd($ex);
             DB::rollBack();
 
             return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
