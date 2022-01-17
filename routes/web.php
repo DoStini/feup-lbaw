@@ -16,7 +16,7 @@ Route::get('blocked', 'StaticPagesController@blocked')->name('blocked');
 Route::get('contact-us', 'StaticPagesController@contactUs')->name('contact-us');
 
 // Users
-Route::middleware(['auth', 'is.shopper', 'is_blocked'])->post('users/checkout', 'CartController@checkout')->name('checkout');
+Route::middleware(['auth', 'is.shopper', 'is.blocked'])->post('users/checkout', 'CartController@checkout')->name('checkout');
 Route::middleware(['auth', 'is.shopper', 'is.blocked'])->get('users/checkout', 'CartController@checkoutPage')->name('checkout-page');
 Route::middleware(['auth', 'is.blocked'])->get('users', 'UserController@getAuthProfile')->name('getUsersPage');
 Route::middleware(['auth', 'is.blocked'])->get('users/cart', 'CartController@show')->name('getCart');

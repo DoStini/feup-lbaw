@@ -21,15 +21,15 @@ class IsBlocked
     public function handle(Request $request, Closure $next)
     {
         if(Auth::check()) {
-            $shopper = Shopper ::join('users', 'users.id', '=', 'authenticated_shopper.id')
-            ->where('is_blocked', true)
+            $shopper = Shopper::join('users', 'users.id', '=', 'authenticated_shopper.id')
+            ->where('authenticated_shopper.is_blocked', '=', true)
             ->where('users.id', '=', Auth::user()->id)->first();
 
             if($shopper && $shopper->is_blocked) {
                 return redirect(route('blocked'));
             }
         }
-        
+
         return $next($request);
     }
 }
