@@ -64,6 +64,13 @@ class OrderController extends Controller {
         ])->validate();
     }
 
+    /**
+     * Returns next order status given current one.
+     * 
+     * @param Status $status Previous status
+     * 
+     * @return Status Next status
+     */
     public static function getNextStatus($status) {
         $next = [
             "created" => "paid",
@@ -76,7 +83,6 @@ class OrderController extends Controller {
     /**
      * Updates an order
      *
-     * @param Request $request
      * @param int $id ID of the order being edited
      *
      * @return Response

@@ -18,6 +18,11 @@ class ApiError {
         ]);
     }
 
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public static function orderAtTerminalState() {
         $err = Config::get('constants.order.terminal_state');
         return ApiError::generateErrorMessage($err);
