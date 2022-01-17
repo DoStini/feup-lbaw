@@ -66,7 +66,7 @@ class RecoverAccountController extends Controller {
 
     public function getFinishRecoverPage(Request $request) {
         if ($this->validateFinishRecoverRequest($request)->fails()) {
-            return view('auth.invalidtoken');
+            return view('errors.invalidtoken');
         }
 
         $token = $request->token;
@@ -74,7 +74,7 @@ class RecoverAccountController extends Controller {
         $model = RecoverUser::where("token", "=", $token)->first();
 
         if (!$this->validTimestamp($model)) {
-            return view('auth.invalidtoken');
+            return view('errors.invalidtoken');
         }
 
         return view('auth.password', ['token' => $token]);
@@ -87,7 +87,7 @@ class RecoverAccountController extends Controller {
         $model = RecoverUser::where("token", "=", $token)->get()[0];
 
         if (!$this->validTimestamp($model)) {
-            return view('auth.invalidtoken');
+            return view('errors.invalidtoken');
         }
 
         $password = bcrypt($request->password);
