@@ -44,60 +44,12 @@
 </div>
 
 <script>
-window.onload = (() => {
-    document.querySelectorAll("#amount div").forEach((elem) => {
-        const selector = createNumberSelector({
-            id: `number-selector-${elem.dataset.id}`,
-            min: 1,
-            value: elem.dataset.amount,
-            onBlur: (target, value, prevValue) => {
-                if (value === prevValue) {
-                    target.value = value;
-                    return;
-                }
-                jsonBodyPost("/api/users/cart/update", { product_id: elem.dataset.id, amount: value})
-                    .then(response => {
-                        if (response.status === 200) {
-                            selector.validInput();
-
-                            target.value = value;
-
-                            document.getElementById("order-subtotal").innerText = (parseFloat(response.data.total)).toFixed(2) + " €";
-                        }
-                    })
-                    .catch(error => {
-                        if(error.response) {
-                            if(error.response.data) {
-                                selector.invalidInput(`Product's stock is ${elem.dataset.stock}`);
-
-                                let errors = "";
-                                for(var key in error.response.data.errors) {
-                                    errors = errors.concat(error.response.data.errors[key]);
-                                }
-                                launchSuccessAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
-                            }
-                        }
-                    });
-            }
-        });
-        document.getElementById(`cart-number-selector-${elem.dataset.id}`).appendChild(selector);
-
-        console.log(elem.dataset.amount, elem.dataset.stock);
-
-        if(parseInt(elem.dataset.amount) > parseInt(elem.dataset.stock)) {
-            console.log("hey");
-            selector.invalidInput(`Product's stock is ${elem.dataset.stock}`);
+document.getElementById("remove-in-cart-{{$cart_item->id}}").addEventListener("click", (e) => {
+    deleteRequest(`/api/users/cart/{{$cart_item->id}}/remove`)
+    .then(response => {
+        if (response.status === 200) {
+        location.reload();
         }
-    })
-
-    document.getElementById("remove-in-cart-{{$cart_item->id}}").addEventListener("click", (e) => {
-      deleteRequest(`/api/users/cart/{{$cart_item->id}}/remove`)
-        .then(response => {
-          if (response.status === 200) {
-            location.reload();
-          }
-      });
     });
-})
-
+});
 </script>
