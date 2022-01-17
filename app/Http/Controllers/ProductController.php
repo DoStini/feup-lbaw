@@ -48,7 +48,8 @@ class ProductController extends Controller {
      * @return Response
      */
     public function search() {
-        return view('pages.search.products');
+        $categories = Category::where('parent_category', NULL)->get();
+        return view('pages.search.products', ['categories' => $categories]);
     }
 
     /**

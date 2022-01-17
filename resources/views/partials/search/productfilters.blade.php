@@ -1,7 +1,19 @@
 <div class="container sticky-md-top pt-5">
 
     <h2 id="results-text" class="mb-5">No results</h2>
+    <div class="row justify-content-between align-items-center" role="button" data-bs-toggle="collapse"
+        href="#category-input" aria-expanded="false" aria-controls="category-input" aria-controls="category-input">
 
+        <h4 class="col-10">Categories</h4>
+        <i class="col-2 bi bi-caret-down-fill"></i>
+    </div>
+    <div class="collapse" id="category-input">
+        <ul class="list-group">
+        @foreach ($categories as $category)
+            @include('partials.search.category', ['category' => $category])
+        @endforeach
+        </ul>
+    </div>
     <div class="row justify-content-between align-items-center" role="button" data-bs-toggle="collapse"
         href="#price-input" aria-expanded="false" aria-controls="price-input" aria-controls="price-input">
 
