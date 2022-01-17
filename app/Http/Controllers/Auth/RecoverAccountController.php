@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\ApiError;
 use App\Http\Controllers\Controller;
+use App\Mail\RecoverAccount;
 use App\Models\RecoverUser;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -55,6 +57,13 @@ class RecoverAccountController extends Controller {
         ]);
     }
 
+    public function testFunction() {
+        $user = User::find(6);
+        Mail::to("andre.julio.moreira@hotmail.com")->send(new RecoverAccount($user, "asdasdasdas"));
+
+        return new RecoverAccount($user, "asdipjasipodjaspiodj");
+    }
+
     public function getFinishRecoverPage(Request $request) {
         if ($this->validateFinishRecoverRequest($request)->fails()) {
             return view('auth.invalidtoken');
@@ -62,7 +71,7 @@ class RecoverAccountController extends Controller {
 
         $token = $request->token;
 
-        $model = RecoverUser::where("token", "=", $token)->get()[0];
+        $model = RecoverUser::where("token", "=", $token)->first();
 
         if (!$this->validTimestamp($model)) {
             return view('auth.invalidtoken');
@@ -109,7 +118,9 @@ class RecoverAccountController extends Controller {
             $model->token = $token;
             $model->save();
 
-            return response($model);
+            $user = User::where("email", "=", $email)->first();
+
+            Mail::to($request->email)->send(new RecoverAccount($user, $token));
         }
 
         return response("");

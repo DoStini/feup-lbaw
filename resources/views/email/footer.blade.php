@@ -1,7 +1,5 @@
-<p>
-    Hello everyoine nice email :p
-</p>
 
-
-<img src="/img/refurniture.svg" alt="" width="200" height=65" />
-
+<br></br>
+<h4>Best regards,</h4>
+<h5>The reFurniture Team</h5>
+<img src="https://i.imgur.com/TO6Z6Fq.jpeg" alt="" width="200" style="height:100px;width:300px;object-fit:cover" />

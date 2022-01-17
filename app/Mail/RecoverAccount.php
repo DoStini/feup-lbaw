@@ -10,15 +10,17 @@ use Illuminate\Queue\SerializesModels;
 class RecoverAccount extends Mailable {
     use Queueable, SerializesModels;
 
-    public $token;
+    private $user;
+    private $token;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($token) {
-        $this->token = $token;
+    public function __construct($user, $token) {
+        $this->link = route('newPasswordPage', ['token' => $token]);
+        $this->user = $user;
     }
 
     /**
@@ -27,6 +29,6 @@ class RecoverAccount extends Mailable {
      * @return $this
      */
     public function build() {
-        return $this->view('email.footer', ['token' => $token]);
+        return $this->view('email.recover', ['link' => $this->link, 'user' => $this->user]);
     }
 }
