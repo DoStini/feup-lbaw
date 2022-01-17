@@ -85,15 +85,17 @@ class ProductController extends Controller {
                 ->whereRaw('stock > 0');
 
             $category_array = $request->input('categories');
-
+            
             if($category_array != []) {
-                foreach($category_array as $category_id) {
-                    $category = Category::find($category_id);
+                $current_idx = 0;
+                while(count($category_array) > $current_idx) {
+                    $category = Category::find($category_array[$current_idx]);
     
                     $child_categories = $category->child_categories;
                     foreach($child_categories as $child) {
-                        array_push($category_array, $child->id);
+                        array_push($category_array, strval($child->id));
                     }
+                    $current_idx++;
                 }
                 $query = $query->join('product_category', 'product_category.product_id', '=', 'product.id')
                 ->join('category', 'product_category.category_id', '=', 'category.id')
