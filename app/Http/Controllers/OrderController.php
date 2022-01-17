@@ -72,7 +72,7 @@ class OrderController extends Controller {
      * @return Status Next status
      */
     public static function getNextStatus($status) {
-        $next = [
+        static $next = [
             "created" => "paid",
             "paid" => "processing",
             "processing" => "shipped",
