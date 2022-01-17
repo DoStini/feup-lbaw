@@ -14,6 +14,10 @@ return [
             'code' => 403,
             'message' => 'The user is not a shopper'
         ],
+        'blocked' => [
+            'code' => 403,
+            'message' => 'The user has been blocked'
+        ]
     ],
     'fields' => [
         'code' => 422,
@@ -51,6 +55,16 @@ return [
         'not_in_user' => [
             'code' => 422,
             'message' => 'Address does not belong to the user'
+        ],
+    ],
+    'block' => [
+        'already_blocked' => [
+            'code' => 422,
+            'message' => 'User is already blocked',
+        ],
+        'not_blocked' => [
+            'code' => 422,
+            'message' => 'User is not blocked',
         ]
     ],
     'coupon' => [

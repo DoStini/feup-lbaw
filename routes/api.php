@@ -41,6 +41,10 @@ Route::group(
     }
 );
 
+Route::post('/users/{id}/block', 'ShopperController@blockShopper');
+Route::post('/users/{id}/unblock', 'ShopperController@unblockShopper');
+
+
 Route::group(
     [
         'prefix' => 'users/{id}/private/address',
