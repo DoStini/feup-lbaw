@@ -18,6 +18,11 @@ class ApiError {
         ]);
     }
 
+    public static function orderAtTerminalState() {
+        $err = Config::get('constants.order.terminal_state');
+        return ApiError::generateErrorMessage($err);
+    }
+
     /**
      * Returns a json response with an error
      *
