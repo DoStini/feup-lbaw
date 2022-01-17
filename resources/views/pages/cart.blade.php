@@ -40,7 +40,7 @@
 <script>
     const outOfStock = {};
 
-    window.onload = (() => {
+    window.addEventListener('load', () => {
         document.querySelectorAll("#amount div").forEach((elem) => {
             const selector = createNumberSelector({
                 id: `number-selector-${elem.dataset.id}`,

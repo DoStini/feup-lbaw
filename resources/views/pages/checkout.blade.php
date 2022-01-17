@@ -68,6 +68,14 @@
 
 
 <div class="container">
+    @if($shopper->cart->isEmpty())
+    <div class="d-flex justify-content-center align-items-center flex-column">
+        <h3>You have no items in your cart. Go get some...</h3>
+        <form action="/products">
+            <button type="submit" class="btn btn-primary">Go to Product List</button>
+        </form>
+    </div>
+    @else
     <form class="row" method="POST" action="{{route('checkout')}}">
         @csrf
         <div class="col-md-8">
@@ -168,6 +176,7 @@
             </div>
         </div>
     </form>
+    @endif
 </div>
 
 <script defer>
