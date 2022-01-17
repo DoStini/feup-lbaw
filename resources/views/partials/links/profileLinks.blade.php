@@ -67,10 +67,10 @@
 @else
 <ul class="nav nav-tabs v-nav-tabs flex-column mb-5">
     <li class="nav-item">
-        <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> About {{$shopper->user->name}} </a>
+        <a class="nav-link {{($page == 'aboutShopper' ? ' active' : '')}}" href={{route('getUser', ['id' => $shopper->user->id])}}> About {{$shopper->user->name}} </a>
     </li>
     <li class="nav-item">
-      <a class="my-2 btn btn-primary w-100" href={{route('getUser', ['id' => $shopper->user->id])}}> {{$shopper->user->name}}'s Wishlist </a>
+        <a class="nav-link{{($page == 'wishlist' ? ' active' : '')}}" href={{route('getWishlist', ['id' => $shopper->id])}}> {{$shopper->user->name}}'s' Wishlist </a>
     </li>
 </ul>
 
