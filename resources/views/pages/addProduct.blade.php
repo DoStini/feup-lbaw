@@ -4,8 +4,6 @@
 
 @section('content')
 
-@include('partials.errormodal')
-
 <div class="container">
 @include('partials.links.dashboardLinks', ['page' => 'addProduct'])
 

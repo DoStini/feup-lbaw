@@ -67,7 +67,7 @@ class OrderPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function updateAny(User $user)
+    public function updateNext(User $user)
     {
         return $user->is_admin;
     }

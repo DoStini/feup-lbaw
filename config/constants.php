@@ -85,5 +85,11 @@ return [
         'auth' => [
             'recover_link_expire' => 5,
         ]
-    ]
+    ],
+    'order' => [
+        'terminal_state' => [
+            'code' => 422,
+            'message' => 'Order state cannot be updated any further'
+        ]
+    ],
 ];

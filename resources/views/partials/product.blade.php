@@ -93,10 +93,10 @@
             @if(get_object_vars(json_decode($product->attributes)))
                 <div class="container">
                     <div class="row align-items-center">
-                        <div class="col-md-8">
+                        <div class="col-8">
                             <h5> Color: {{json_decode($product->attributes)->color}} </h5>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-4 d-flex justify-content-end">
                             <div class="btn-group dropstart">
                                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 Variations
@@ -221,7 +221,3 @@ function setRating(index) {
 }
 </script>
 @endcan
-
-@include('partials.errormodal')
-@include('partials.alert')
-

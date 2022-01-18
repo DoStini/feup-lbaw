@@ -45,7 +45,7 @@ class CartController extends Controller {
         $shopper = Shopper::find($user->id);
         $cartTotal = $this->cartPrice($shopper->cart);
 
-        return view('pages.cart', ['cartTotal' => $cartTotal, 'shopper' => $shopper]);
+        return view('pages.cart', ['cartTotal' => $cartTotal, 'shopper' => $shopper, "stocked" => $this->allStocked($shopper->cart)]);
     }
 
     /**
@@ -183,6 +183,7 @@ class CartController extends Controller {
         return response()->json([
             'total' => $cartPrice,
             'items' => $cartJson,
+            'stocked' => $this->allStocked($cart),
         ]);
     }
 
@@ -229,6 +230,7 @@ class CartController extends Controller {
         return response()->json([
             'total' => $cartPrice,
             'items' => $cartJson,
+            'stocked' => $this->allStocked($cart),
         ]);
     }
 
@@ -265,6 +267,7 @@ class CartController extends Controller {
         return response()->json([
             'total' => $cartPrice,
             'items' => $cartJson,
+            'stocked' => $this->allStocked($cart),
         ]);
     }
 
@@ -290,6 +293,7 @@ class CartController extends Controller {
             return response()->json([
                 'total' => $cartPrice,
                 'items' => $cartJson,
+                'stocked' => $this->allStocked($cart),
             ]);
         } catch (Exception $err) {
             UnexpectedErrorLogger::log($err);
@@ -346,6 +350,16 @@ class CartController extends Controller {
         }
     }
 
+    public function allStocked($cart) {
+        foreach ($cart as $product) {
+            if ($product->details->amount > $product->stock) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function validateStock($cart) {
         $products = [];
 
@@ -362,7 +376,8 @@ class CartController extends Controller {
             $entry->attributes = json_decode($entry->attributes);
             return $entry;
         }, $products);
-        if (!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
+
+        return $products;
     }
 
     private function validateCheckoutData(Request $request) {
@@ -392,9 +407,7 @@ class CartController extends Controller {
         }
 
         $result = $this->validateStock($cart);
-        if (!is_null($result)) {
-            return $result;
-        }
+        if (!empty($result)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $result])->withInput();
     }
 
     private function addPayment(Request $request, $order_id) {
