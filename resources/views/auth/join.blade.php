@@ -48,6 +48,8 @@
                     @endif
                 </div>
 
+                <a href="{{route('recoverPage')}}">Forgot your password?</a>
+
                 <div class="d-flex flex-lg-row flex-column justify-content-end mt-3">
                     {{-- <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -55,7 +57,6 @@
                             Remember Me
                         </label>
                     </div> --}}
-                    {{--<a href="/">Forgot your password?</a>--}}
                 </div>
 
                 <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>

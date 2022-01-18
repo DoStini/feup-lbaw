@@ -45,6 +45,8 @@ Route::post('/users/{id}/block', 'ShopperController@blockShopper');
 Route::post('/users/{id}/unblock', 'ShopperController@unblockShopper');
 
 
+Route::post('/account/recover', 'Auth\RecoverAccountController@submitRecoverRequest');
+
 Route::group(
     [
         'prefix' => 'users/{id}/private/address',

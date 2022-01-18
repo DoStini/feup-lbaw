@@ -140,6 +140,16 @@ class ApiError {
     }
 
     /**
+     * Returns a json response with an error regarding user not authenticated
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function recoverFailed() {
+        $err = Config::get('constants.authentication.recover_failed');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
      * Returns a json response with an unexpected error
      *
      * @return \Illuminate\Http\JsonResponse

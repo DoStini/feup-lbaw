@@ -144,6 +144,11 @@
                 @elseif((!Auth::check() || !Auth::user()->is_admin) && $product->stock > 0)
                 <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
                 @endif
+                @if(Auth::check() && Auth::user()->is_admin)
+                <form class="w-100" action="{{route('editProductPage', ['id' => $product->id])}}">
+                    <button type="submit" class="btn btn-primary w-100 my-2">Edit this product</button>
+                </form>
+                @endif
                 @if ($product->stock > 0)
                 <button class="btn btn-success w-100 my-2" disabled>In Stock</button>
                 @else
