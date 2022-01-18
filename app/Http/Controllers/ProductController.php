@@ -101,29 +101,7 @@ class ProductController extends Controller {
                 ->join('category', 'product_category.category_id', '=', 'category.id')
                 ->whereIn('category.id', $category_array);
             }
-            
-            $query = $query->when($request->text, function ($q) use ($request) {
-                    $words = explode(' ', $request->text);
-                    foreach ($words as &$word)
-                        $word = $word . ':*';
-                    $val = implode(' & ', $words);
-                    return $q->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
-                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
-                })
-                ->when($request->input('price-min'), function ($q) use ($request) {
-                    return $q->where('price', '>', [$request->input('price-min')]);
-                })
-                ->when($request->input('price-max'), function ($q) use ($request) {
-                    return $q->where('price', '<', [$request->input('price-max')]);
-                })
-                ->when($request->input('rate-min'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '>', [$request->input('rate-min')]);
-                })
-                ->when($request->input('rate-max'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '<', [$request->input('rate-max')]);
-                });
+
             switch ($request->order) {
                 case 'price-asc':
                     $query = $query->orderBy('price');
@@ -138,6 +116,31 @@ class ProductController extends Controller {
                     $query = $query->orderByDesc('avg_stars');
                     break;
             }
+            
+            $query = $query->when($request->text, function ($q) use ($request) {
+                    $words = explode(' ', $request->text);
+                    foreach ($words as &$word)
+                        $word = $word . ':*';
+                    $val = implode(' & ', $words);
+                    return $q->where(function($query) use ($val, $request) {
+                        $query->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
+                    });
+                })
+                ->when($request->input('price-min'), function ($q) use ($request) {
+                    return $q->where('price', '>', [$request->input('price-min')]);
+                })
+                ->when($request->input('price-max'), function ($q) use ($request) {
+                    return $q->where('price', '<', [$request->input('price-max')]);
+                })
+                ->when($request->input('rate-min'), function ($q) use ($request) {
+                    return $q->where('avg_stars', '>', [$request->input('rate-min')]);
+                })
+                ->when($request->input('rate-max'), function ($q) use ($request) {
+                    return $q->where('avg_stars', '<', [$request->input('rate-max')]);
+                });
 
             $pageSize = $request->input('page-size');
             $page = $request->page;
