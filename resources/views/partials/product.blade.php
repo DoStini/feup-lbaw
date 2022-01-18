@@ -24,14 +24,18 @@
         <div class="product-images mt-4 col-md-7 d-flex justify-content-center">
             <div id="productCarousel" class="carousel slide product-slide product-carousel" data-bs-ride="carousel">
                 <div class="carousel-inner product-carousel">
-                    {{$insertedPhotos = 0;}}
+                    @php
+                        $insertedPhotos = 0;
+                    @endphp
                     @if ($product->photos)
                     @foreach ($product->photos as $photo)
                     @if (File::exists(public_path($photo->url)) || filter_var($photo->url, FILTER_VALIDATE_URL))
                     <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
                         <img class="d-block w-100" src={{$photo->url}}>
                     </div>
-                    {{$insertedPhotos++;}}
+                    @php
+                        $insertedPhotos++;
+                    @endphp
                     @endif
                     @endforeach
                     @endif
