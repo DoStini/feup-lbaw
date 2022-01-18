@@ -28,6 +28,13 @@ class Product extends Model {
         return $this->belongsToMany(Photo::class, 'product_photo', 'product_id', 'photo_id');
     }
 
+    /**
+     * The categories this product belongs to.
+     */
+    public function categories() {
+        return $this->belongsToMany(Category::class, 'product_category', 'product_id', 'category_id');
+    }
+
     public function reviews() {
         return $this->hasMany(Review::class, 'product_id');
     }
