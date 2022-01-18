@@ -68,6 +68,14 @@
 
 
 <div class="container">
+    @if($shopper->cart->isEmpty())
+    <div class="d-flex justify-content-center align-items-center flex-column">
+        <h3>You have no items in your cart. Go get some...</h3>
+        <form action="/products">
+            <button type="submit" class="btn btn-primary">Go to Product List</button>
+        </form>
+    </div>
+    @else
     <form class="row" method="POST" action="{{route('checkout')}}">
         @csrf
         <div class="col-md-8">
@@ -162,12 +170,13 @@
         </div>
         <div class="col-md-4 d-flex align-items-center justify-content-start flex-column">
             @include('partials.applyCoupon', ["cartTotal" => $cartTotal])
-            @include('partials.cartTotal', ["cartTotal" => $cartTotal])
+            @include('partials.cartTotal', ["cartTotal" => $cartTotal, "showTotal" => true])
             <div class="my-4 w-50 d-flex align-items-center justify-content-center">
                 <button type="submit" class="w-100 btn btn-primary" @if(count($shopper->addresses) === 0) disabled  @endif >Checkout</button>
             </div>
         </div>
     </form>
+    @endif
 </div>
 
 <script defer>

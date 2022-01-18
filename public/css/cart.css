@@ -4,6 +4,26 @@
     overflow-x: hidden;
 }
 
+#header-icons > div{
+    margin-right: 1em;
+}
+
+#header-icons > div:last-child{
+    margin-right: 0;
+}
+
+.dropdown-cart-amount > div {
+    width: 8.5em;
+}
+
+#amount .number-selector {
+    width: 8.5em;
+}
+
+/* #cart-dropdown::after {
+    display: none;
+} */
+
 #cart-dropdown-menu-content {
     max-height: 20vh;
     overflow-y: auto;
