@@ -117,8 +117,8 @@ function insertProduct(product, idx) {
                             ${formatProductSubtotal(product)}
                         </div>
                     </div>
-                    <div class="row dropdown-cart-amount justify-content-center">
-                        <div id="cart-number-selector-${idx}" class="col-6"></div>
+                    <div class="row dropdown-cart-amount justify-content-start">
+                        <div class="px-0" id="cart-number-selector-${idx}"></div>
                     </div>
                 </div>
             </div>
