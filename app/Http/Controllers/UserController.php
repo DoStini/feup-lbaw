@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Models\Photo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shopper;
 use App\Models\User;
+use App\Events\ProfileEdited;
+use App\Models\Notification;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
@@ -44,6 +47,9 @@ class UserController extends Controller {
     public function showProfile($id) {
 
         $user = User::findOrFail($id);
+        if ($user->is_deleted) {
+            abort(404);
+        }
 
         $response = Gate::inspect('viewProfile', [User::class, $user]);
 
@@ -209,6 +215,16 @@ class UserController extends Controller {
         $user = $user->fresh();
         $shopperData = $shopper ? $shopper->fresh()->toArray() : [];
 
+        if (Auth::user()->is_admin) {
+            $not = new Notification();
+            $not->shopper = $user->id;
+            $not->type = "account";
+            $not->account_mng_notif_type = "edited";
+            $not->save();
+
+            event(new ProfileEdited($user->id));
+        }
+
         return response(
             array_merge(
                 $user->fresh()->toArray(),
@@ -217,6 +233,27 @@ class UserController extends Controller {
             ),
             200
         );
+    }
+
+    public function delete(Request $request, int $id) {
+        $user = User::find($id);
+
+        $this->authorize('delete', [User::class, $user]);
+
+        if (!Hash::check($request->input("cur-password"), Auth::user()->password)) { // check own (owner or admin) password
+            $response = [];
+            $response["errors"] = [
+                "cur-password" => "Current password does not match our records"
+            ];
+
+            return redirect()->back()->withErrors($response["errors"]);
+        }
+
+        Auth::logout();
+
+        $user->delete();
+
+        return redirect("join");
     }
 
     public function getAuthProfile() {

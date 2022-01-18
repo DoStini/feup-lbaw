@@ -1,3 +1,7 @@
-.bg-greyish{
+.bg-greyish {
     border: 5px solid rgb(117, 117, 117);
+}
+
+.percentage::after {
+    content: "%";
 }

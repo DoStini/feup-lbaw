@@ -108,6 +108,8 @@ function createProduct(product, delay) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
 
+    const wishlisted = !product.shopper_id; // If the product is wihslisted, shopper will not be null
+
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
@@ -117,9 +119,9 @@ function createProduct(product, delay) {
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>
                         ${isShopper ?
-                            `<button type="button" class="col-2 me-2 btn btn-outline-secondary px-0">
-                                <i class="bi bi-cart-plus mx-auto"></i>
-                            </button>`
+                            `<i class="add-cart icon-click col-2 bi bi-cart-plus mx-auto" style="font-size: 1.5em; "></i>
+                             <i class="remove-wishlist col-2 icon-click bi bi-heart-fill mx-auto" style="font-size:1.5em;${wishlisted ? `display:none;` : ``}" ></i>
+                             <i class="add-wishlist col-2 icon-click bi bi-heart mx-auto" style="font-size:1.5em;${!wishlisted ? `display:none;` : ``}"></i>`
                             : ""}
                     </div>
                 </div>
@@ -135,7 +137,26 @@ function createProduct(product, delay) {
     element.querySelector("img").addEventListener('click', () => route(`products/${product.id}`, current));
 
     if (isShopper) {
-        const cartButton = element.querySelector("button");
+        const cartButton = element.querySelector(".add-cart");
+        const addToWishlist = element.querySelector(".add-wishlist");
+        const removeFromWishlist = element.querySelector(".remove-wishlist");
+        addToWishlist.addEventListener("click", (e) => {
+            addToWishlistRequest(product.id, () => {
+                removeFromWishlist.style.display = "";
+                addToWishlist.style.display = "none";    
+            });
+            addToWishlist.dispatchEvent(new Event("blur"));
+
+        });
+        removeFromWishlist.addEventListener("click", (e) => {
+            removeFromWishlistRequest(product.id, () => {
+                removeFromWishlist.style.display = "none";
+                addToWishlist.style.display = "";
+            });
+            removeFromWishlist.dispatchEvent(new Event("blur"));
+        });
+
+
         cartButton.addEventListener("click", (e) => {
             addToCartRequest(product.id);
             cartButton.dispatchEvent(new Event("blur"));

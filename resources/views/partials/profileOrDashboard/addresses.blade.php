@@ -1,5 +1,3 @@
-@include('partials.errormodal')
-
 <div id="address-root" class="accordion" id="addresses-accordion">
     @foreach ($shopper->addresses as $address)
     <div id="address-root-{{$address->id}}" class="accordion-item">
@@ -7,14 +5,18 @@
             <button
                 class="accordion-button collapsed"
                 type="button" data-bs-toggle="collapse"
-                data-bs-target="#address-panel-collapse{{$address->id}}" 
+                data-bs-target="#address-panel-collapse{{$address->id}}"
                 aria-expanded="false"
                 aria-controls="address-panel-collapse{{$address->id}}"
                 id="address-button{{$address->id}}">
-                {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                @if ($address->name != null)
+                    {{$address->name}}
+                @else
+                    {{$address->zip_code->zip_code}}, {{$address->street}} {{$address->door}}
+                @endif
             </button>
         </h2>
-        <div id="address-panel-collapse{{$address->id}}" 
+        <div id="address-panel-collapse{{$address->id}}"
             data-bs-parent="#addresses-accordion"
             class="accordion-collapse collapse"
             aria-labelledby="address-heading{{$address->id}}"
@@ -50,7 +52,11 @@
             <i id="close-window" class="col-2 bi bi-x-lg"></i>
         </div>
         <div class="row justify-content-center">
-            <div class="mb-3 col-12 col-lg-8">
+            <div class="mb-3 col-12 col-lg-4">
+                <label for="address-name" class="form-label">Address Name</label>
+                <input name="name" class="form-control" id="address-name" placeholder="Address Name">
+            </div>
+            <div class="mb-3 col-12 col-lg-4">
                 <label for="street-name" class="form-label">Street</label>
                 <input name="street" class="form-control" id="street-name" placeholder="Street Name">
             </div>
@@ -62,9 +68,8 @@
                 <label for="zip" class="form-label">
                     Zip Code
                 </label>
-                <div id="select-target"></div>
-                {{-- <select class="address-select form-select" id="zip"> --}}
-                </select>
+                <div id="select-target-zip"></div>
+                {{-- <select class="address-select form-select" id="zip"></select>--}}
             </div>
             <div class="mb-3 col-12 col-lg-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Choose a zip code and we will fill this out for you">
                 <label for="county" class="form-label">County</label>
@@ -86,7 +91,7 @@
 <form>
     <div id="new-address" class="d-flex justify-content-center align-items-center">
         <button class="btn btn-primary">Add a new address</button>
-    </div>        
+    </div>
     </div>
 </form>
 
@@ -103,8 +108,9 @@
             door: "{{addslashes($address->door)}}",
             county: "{{$address->zip_code->county->name}}",
             district: "{{$address->zip_code->county->district->name}}",
+            name: "{{addslashes($address->name)}}"
         }
-        
+
     @endforeach
 
 </script>

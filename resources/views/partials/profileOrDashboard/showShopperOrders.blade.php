@@ -14,7 +14,7 @@
             <h4>You haven't made any purchases yet.</h4>
         </div>
     @else
-        @foreach ($shopper->orders as $order)
+        @foreach ($shopper->orders()->orderByDesc('timestamp')->get() as $order)
             <div class="accordion" id={{ "order" . $loop->iteration}}>
                 <div class="accordion-item my-4">
                 <h2 class="accordion-header" id={{"panelsStayOpen-heading" . $loop->iteration}}>
@@ -38,7 +38,7 @@
                                         @if($order->payment)
                                         <tr>
                                             <th scope="row">Payment Method</th>
-                                            <td style="font-family: 'Alata', sans-serif;">{{$order->payment->paypal_transaction_id == null ? 'Bank Transfer' : 'PayPal'}}</td>
+                                            <td style="font-family: 'Alata', sans-serif;">{{$order->payment->entity != null ? 'Bank Transfer' : 'PayPal'}}</td>
                                         </tr>
                                         @endif
                                         <tr>
@@ -112,11 +112,17 @@
                                         <div class="table-responsive">
                                             <table class="table d-inline-flex table-borderless">
                                                 <tbody>
-                                                    @if($order->payment->paypal_transaction_id)
-                                                        <tr>
-                                                        <th scope="row">PayPal Transaction ID</th>
-                                                        <td>{{$order->payment->paypal_transaction_id}}</td>
-                                                        </tr>
+                                                    @if(!$order->payment->entity)
+                                                        @if($order->status !== 'created')
+                                                            <tr>
+                                                            <th scope="row">PayPal Transaction ID</th>
+                                                            <td>{{$order->payment->paypal_transaction_id}}</td>
+                                                            </tr>
+                                                        @else
+                                                            <form method="GET" action="{{route('createTransaction', ['id' => $order->id])}}">
+                                                            <button type="submit" class="text-end btn btn-primary" >Pay using paypal</button>
+                                                            </form>
+                                                        @endif
                                                     @else
                                                         <tr>
                                                             <th scope="row">Reference</th>
@@ -149,7 +155,7 @@
                                             <tbody>
                                                 @foreach ($order->products as $product)
                                                 <tr>
-                                                    <td><a class="badge rounded-pill bg-primary product-link" 
+                                                    <td><a class="badge rounded-pill bg-primary product-link"
                                                         href={{route('getProduct', ['id' => $product->id])}} target="_blank"
                                                         style="width: 15em; overflow: hidden;   text-overflow: ellipsis;">
                                                         {{$product->name}}</a></td>
@@ -162,7 +168,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>

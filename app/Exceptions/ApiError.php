@@ -23,8 +23,8 @@ class ApiError {
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function productNotInCart() {
-        $err = Config::get('constants.cart.not_exists');
+    public static function couponNotActive() {
+        $err = Config::get('constants.coupon.not_active');
         return ApiError::generateErrorMessage($err);
     }
 
@@ -33,8 +33,28 @@ class ApiError {
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function productAlreadyInCart() {
-        $err = Config::get('constants.cart.already_exists');
+    public static function couponActive() {
+        $err = Config::get('constants.coupon.active');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function productNotInWishlist() {
+        $err = Config::get('constants.wishlist.not_exists');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function productAlreadyInWishlist() {
+        $err = Config::get('constants.wishlist.already_exists');
         return ApiError::generateErrorMessage($err);
     }
 
@@ -75,6 +95,27 @@ class ApiError {
      */
     public static function addressNotInUser() {
         $err = Config::get('constants.address.not_in_user');
+        return ApiError::generateErrorMessage($err);
+    }
+
+
+    /**
+     * Returns a json response with 
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function userAlreadyBlocked() {
+        $err = Config::get('constants.blocked.already_blocked');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with 
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function userNotBlocked() {
+        $err = Config::get('constants.blocked.not_blocked');
         return ApiError::generateErrorMessage($err);
     }
 

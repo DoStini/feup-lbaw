@@ -28,6 +28,10 @@ class Product extends Model {
         return $this->belongsToMany(Photo::class, 'product_photo', 'product_id', 'photo_id');
     }
 
+    public function reviews() {
+        return $this->hasMany(Review::class, 'product_id');
+    }
+
     /**
      * Serialize a product to json
      */
@@ -38,7 +42,7 @@ class Product extends Model {
         return $prodJson;
     }
 
-    /** 
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @return array

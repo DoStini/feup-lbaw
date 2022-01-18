@@ -17,6 +17,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Type\Integer;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class CartController extends Controller {
 
@@ -41,10 +43,9 @@ class CartController extends Controller {
         $user = Auth::user();
 
         $shopper = Shopper::find($user->id);
-        $cart = $shopper->cart;
-        $cartTotal = $this->cartPrice($cart);
+        $cartTotal = $this->cartPrice($shopper->cart);
 
-        return view('pages.cart', ['cart' => $cart, 'cartTotal' => $cartTotal, 'user' => $user]);
+        return view('pages.cart', ['cartTotal' => $cartTotal, 'shopper' => $shopper]);
     }
 
     /**
@@ -165,7 +166,7 @@ class CartController extends Controller {
         $shopper = Shopper::find($userId);
 
         if (!$this->validStock($product, $amount)) {
-            return ApiError::notEnoughStock();
+            return response()->json(["message" => 'Product only has a stock of '. $product->stock], 422);
         }
 
 
@@ -209,13 +210,13 @@ class CartController extends Controller {
         if ($this->productInCart($shopper, $product)) {
             $newAmount = $amount + $shopper->cart()->find($productId)->details->amount;
             if (!$this->validStock($product, $newAmount)) {
-                return ApiError::notEnoughStock();
+                return response()->json(["message" => 'Product only has a stock of '. $product->stock], 422);
             }
 
             $shopper->cart()->updateExistingPivot($productId, ['amount' => $newAmount]);
         } else {
             if (!$this->validStock($product, $amount)) {
-                return ApiError::notEnoughStock();
+                return response()->json(["message" => 'Product only has a stock of '. $product->stock], 422);
             }
 
             $shopper->cart()->attach($productId, ['amount' => $amount]);
@@ -361,7 +362,6 @@ class CartController extends Controller {
             $entry->attributes = json_decode($entry->attributes);
             return $entry;
         }, $products);
-        //dd($products);
         if (!empty($products)) return redirect()->back()->withErrors(['cart' => "At least one of the cart's products doesn't have enough stock.", 'products' => $products])->withInput();
     }
 
@@ -408,14 +408,10 @@ class CartController extends Controller {
         if ($request->input("payment-type") == 'bank') {
             $payment->entity = "12345";
             $payment->reference = rand(10, 10000);
-        } else {
-            $payment->paypal_transaction_id = rand(10, 10000);
         }
 
         $payment->value = $order->total;
         $payment->save();
-
-        return $order_id;
     }
 
     public function checkout(Request $request) {
@@ -446,8 +442,11 @@ class CartController extends Controller {
             return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
         }
 
-
-        return redirect(route('orders', ['id' => $order_id]));
+        if ($request->input("payment-type") == 'bank') {
+            return redirect(route('orders', ['id' => $order_id]));
+        } else {
+            return redirect(route('createTransaction', ['id' => $order_id]));
+        }
     }
 
     /**

@@ -20,6 +20,7 @@ class Shopper extends Model {
         'about_me',
         'phone_number',
         'nif',
+        'is_blocked',
     ];
 
     /**
@@ -55,12 +56,40 @@ class Shopper extends Model {
         )->withPivot('amount')->as('details');
     }
 
+    /**
+     * The products and their amount the user has in its cart.
+     */
+    public function wishlist() {
+        return $this->belongsToMany(
+            Product::class,
+            'wishlist',
+            'shopper_id',
+            'product_id',
+        );
+    }
+
     public function orders() {
         return $this->hasMany(
             Order::class,
             'shopper_id',
             'id',
         );
+    }
+
+    public function notifications() {
+        return $this->hasMany(
+            Notification::class,
+            'shopper',
+            'id'
+        );
+    }
+    
+    public function reviews() {
+        return $this->hasMany(Review::class, 'creator_id');
+    }
+
+    public function voted_reviews() {
+        return $this->belongsToMany(Review::class, 'review_vote', 'voter_id', 'review_id')->withPivot('vote')->as('details');
     }
 
     /**
