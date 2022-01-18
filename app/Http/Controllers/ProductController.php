@@ -71,7 +71,7 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
-            
+
 
             $query = Product
                 ::with("photos")
@@ -85,21 +85,21 @@ class ProductController extends Controller {
                 ->whereRaw('stock > 0');
 
             $category_array = $request->input('categories');
-            
-            if($category_array != []) {
+
+            if ($category_array != []) {
                 $current_idx = 0;
-                while(count($category_array) > $current_idx) {
+                while (count($category_array) > $current_idx) {
                     $category = Category::find($category_array[$current_idx]);
-    
+
                     $child_categories = $category->child_categories;
-                    foreach($child_categories as $child) {
+                    foreach ($child_categories as $child) {
                         array_push($category_array, strval($child->id));
                     }
                     $current_idx++;
                 }
                 $query = $query->join('product_category', 'product_category.product_id', '=', 'product.id')
-                ->join('category', 'product_category.category_id', '=', 'category.id')
-                ->whereIn('category.id', $category_array);
+                    ->join('category', 'product_category.category_id', '=', 'category.id')
+                    ->whereIn('category.id', $category_array);
             }
 
             switch ($request->order) {
@@ -116,19 +116,19 @@ class ProductController extends Controller {
                     $query = $query->orderByDesc('avg_stars');
                     break;
             }
-            
+
             $query = $query->when($request->text, function ($q) use ($request) {
-                    $words = explode(' ', $request->text);
-                    foreach ($words as &$word)
-                        $word = $word . ':*';
-                    $val = implode(' & ', $words);
-                    return $q->where(function($query) use ($val, $request) {
-                        $query->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                $words = explode(' ', $request->text);
+                foreach ($words as &$word)
+                    $word = $word . ':*';
+                $val = implode(' & ', $words);
+                return $q->where(function ($query) use ($val, $request) {
+                    $query->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
                         ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
                         ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
                         ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
-                    });
-                })
+                });
+            })
                 ->when($request->input('price-min'), function ($q) use ($request) {
                     return $q->where('price', '>', [$request->input('price-min')]);
                 })
@@ -144,7 +144,7 @@ class ProductController extends Controller {
 
             $pageSize = $request->input('page-size');
             $page = $request->page;
-            
+
             $count = $query->count();
 
             $lastPage = floor($count / $pageSize);

@@ -118,7 +118,12 @@ class RecoverAccountController extends Controller {
             $model->token = $token;
             $model->save();
 
-            $user = User::where("email", "=", $email)->first();
+            $query = User::where("email", "=", $email);
+            if ($query->count() == 0) {
+                return response("");
+            }
+
+            $user = $query->first();
 
             Mail::to($request->email)->send(new RecoverAccount($user, $token));
         }
