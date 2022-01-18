@@ -28,7 +28,6 @@
                     <i class="bi bi-bookmark-heart-fill" style="color: #000000; font-size:1.5em;"></i>
                   </a>
                 </div>
-                @endif
                 <!-- Notification -->
                 <div class="dropdown">
                     <a class="text-reset me-1 hidden-arrow" href="#" id="notification-dropdown"
@@ -42,6 +41,7 @@
                 <div class="notification-number">
                     <div class="new-notif"></div>
                 </div>
+                @endif
                 <!-- User -->
                 <div class="dropdown">
                 <a class="text-reset d-flex align-items-center hidden-arrow" href="#"
