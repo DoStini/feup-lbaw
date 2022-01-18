@@ -143,7 +143,7 @@ class ProductController extends Controller {
         }
     }
 
-    public function datatableList(Request $request)  {
+    public function datatableList(Request $request) {
         $this->authorize('viewAny', Product::class);
 
         $dc =  new DatatableController();
@@ -163,6 +163,16 @@ class ProductController extends Controller {
         ]);
     }
 
+    private function getValidatorEditProduct(Request $request) {
+        return Validator::make($request->all(), [
+            "name" => "nullable|string|max:100",
+            "attributes" => "nullable|json",
+            "stock" => "nullable|integer|min:0",
+            "description" => "nullable|string|max:255",
+            "price" => "nullable|numeric|min:0",
+        ]);
+    }
+
     private function getValidatorPhotos($photos) {
         $messages = [];
 
@@ -173,6 +183,61 @@ class ProductController extends Controller {
         return Validator::make($photos, [
             "*" => "file|image"
         ], $messages);
+    }
+
+    public function editProduct(Request $request) {
+
+        $this->authorize('update', Product::class);
+
+        $product = Product::findOrFail($request->route('id'));
+
+        $validator = $this->getValidatorEditProduct($request);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $photos = $request->file('photos') ?? [];
+        $validator = $this->getValidatorPhotos($photos);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $savedPhotos = [];
+
+        try {
+            DB::beginTransaction();
+            $product->update(array_filter([
+                "name" => $request->input('name'),
+                "attributes" => $request->input('attributes'),
+                "stock" => $request->input('stock'),
+                "description" => $request->input('description'),
+                "price" => $request->input('price'),
+            ]));
+
+            foreach ($photos as $productPhoto) {
+                $path = $productPhoto->storePubliclyAs(
+                    "images/product",
+                    "product" . $product->id . "-" . uniqid() . "." . $productPhoto->extension(),
+                    "public"
+                );
+
+                array_push($savedPhotos, $path);
+
+                $public_path = "/storage/" . $path;
+                $photo = Photo::create(["url" => $public_path]);
+
+                $product->photos()->attach($photo->id);
+            }
+
+            DB::commit();
+        } catch (QueryException $ex) {
+            DB::rollBack();
+
+            Storage::disk('public')->delete($savedPhotos);
+            return redirect()->back()->withErrors(["product" => "Unexpected Error"])->withInput();
+        }
+
+        return redirect(route("getProduct", ["id" => $product->id]));
     }
 
     public function addProduct(Request $request) {
@@ -203,10 +268,10 @@ class ProductController extends Controller {
 
         $colorInfo = $request->input('variantColor');
 
-        if($request->input('originVariantID')) {
+        if ($request->input('originVariantID')) {
             $origin = Product::find($request->input('originVariantID'));
 
-            if(!$origin || $origin->attributes == '{}') {
+            if (!$origin || $origin->attributes == '{}') {
                 return redirect()->back()->withErrors(["originVariantID" => "No such product with variants"])->withInput();
             }
 
@@ -216,7 +281,7 @@ class ProductController extends Controller {
         try {
             DB::beginTransaction();
 
-            if($colorInfo){
+            if ($colorInfo) {
                 $attributes = json_decode('{}', true);
                 $id = DB::select('SELECT last_value FROM product_id_seq')[0]->last_value;
                 $variants[strval($id + 1)] = strToLower(implode("-", explode(" ", $colorInfo)));
@@ -233,8 +298,8 @@ class ProductController extends Controller {
                 "price" => $request->input('price'),
             ]);
 
-            foreach($variants as $prodID => $color) {
-                if($prodID == $id + 1) continue;
+            foreach ($variants as $prodID => $color) {
+                if ($prodID == $id + 1) continue;
                 $productToUpdate = Product::find($prodID);
                 $productAttributes = json_decode($productToUpdate->attributes, true);
                 $productAttributes['variants'] = $variants;
@@ -268,9 +333,17 @@ class ProductController extends Controller {
         return redirect(route("getProduct", ["id" => $product->id]));
     }
 
-    public function getAddProductPage(){
+    public function getAddProductPage() {
         $this->authorize('create', Product::class);
         return view('pages.addProduct');
+    }
+
+    public function getEditProductPage(Request $request) {
+        $product = Product::findOrFail($request->route('id'));
+
+        $this->authorize('update', Product::class);
+
+        return view('pages.editproduct', ['product' => $product]);
     }
 
     private function validateVariants(Request $request) {
@@ -279,7 +352,7 @@ class ProductController extends Controller {
         ]);
     }
 
-        /**
+    /**
      * Retrieves possible variants for a given input
      */
     public function variants(Request $request) {
@@ -289,7 +362,7 @@ class ProductController extends Controller {
 
         $colors = DB::select('select distinct (attributes ->> \'color\') as text from product where LOWER(attributes ->> \'color\') LIKE LOWER(\'%' . $request->code . '%\');');
 
-        foreach($colors as $color) {
+        foreach ($colors as $color) {
             $color->colorCode = strToLower(implode("-", explode(" ", $color->text)));
         }
 

@@ -31,6 +31,8 @@ Route::middleware(['auth', 'is.blocked'])->post('users/{id}/delete', 'UserContro
 //Administration
 Route::get('admin/products/create', 'ProductController@getAddProductPage')->name('addProductPage');
 Route::post('admin/products/create', 'ProductController@addProduct')->name('addProduct');
+Route::get('admin/products/{id}/edit', 'ProductController@getEditProductPage')->name('editProductPage');
+Route::post('admin/products/{id}/edit', 'ProductController@editProduct')->name('editProduct');
 Route::get('admin', 'AdminController@getDashboard')->name('getDashboard');
 Route::get('admin/orders', 'AdminController@getOrderDashboard')->name('getOrderDashboard');
 Route::get('admin/products', 'AdminController@getProductDashboard')->name('getProductDashboard');
@@ -57,4 +59,3 @@ Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest'
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('register', 'Auth\RegisterController@register')->name('register');
-
