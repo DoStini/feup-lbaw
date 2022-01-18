@@ -22,13 +22,15 @@
 <div class="product container vw-100" data-id={{ $product->id }}>
     <div class="row w-100">
         <div class="product-images mt-4 col-md-7 d-flex justify-content-center">
-            <div id="productCarousel" class="carousel slide product-slide product-carousel" data-bs-ride="carousel">
-                <div class="carousel-inner product-carousel">
-                    {{$insertedPhotos = 0;}}
+            <div id="productCarousel" class="carousel slide product-slide product-carousel w-100" data-bs-ride="carousel">
+                <div class="carousel-inner w-100 product-carousel">
+                    @php
+                        $insertedPhotos = 0;
+                    @endphp
                     @if ($product->photos)
                     @foreach ($product->photos as $photo)
                     @if (File::exists(public_path($photo->url)) || filter_var($photo->url, FILTER_VALIDATE_URL))
-                    <div class="carousel-item {{$loop->iteration == 1 ? 'active' : '' }}">
+                    <div class="carousel-item w-100 {{$loop->iteration == 1 ? 'active' : '' }}">
                         <img class="d-block w-100" src={{$photo->url}}>
                     </div>
                     {{$insertedPhotos++;}}
