@@ -27,6 +27,10 @@ return [
         'code' => 422,
         'message' => 'Product does not exist'
     ],
+    'not_enough_products' => [
+        'code' => 422,
+        'message' => 'A product needs at least one photo'
+    ],
     'cart' => [
         'already_exists' => [
             'code' => 409,

@@ -102,7 +102,12 @@
             <label for="photos">Photos</label>
             <div id="photos" class="form-control col-12">
                 @foreach ($product->photos as $photo)
-                    <img class="col-4 col-md-2" src="{{$photo->url}}"></img>
+                    <div id="photo-{{$photo->id}}" class="col-4 col-md-2">
+                        <img class="edit-product-photo col-12" src="{{$photo->url}}">
+                        <i class="bi bi-x-lg remove-photo-icon" 
+                            onclick="deleteProductPhoto({{$photo->id}})"></i>
+                        </img>
+                    </div>
                 @endforeach
             </div>
         </div>
@@ -112,5 +117,17 @@
 </form>
 </div>
 </div>
+
+<script>
+    const deleteProductPhoto = (id) => {
+        deleteRequest(`/api/products/{{$product->id}}/photo/${id}`)
+            .then(() => {
+                document.getElementById(`photo-${id}`).remove();
+            }).catch((e) => {
+                console.log()
+                reportData("Error removing photo", e.response.data)
+            });
+    }
+</script>
 
 @endsection

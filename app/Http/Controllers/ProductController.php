@@ -157,7 +157,7 @@ class ProductController extends Controller {
             "originVariantID" => "nullable|integer",
             "colorVariant" => "nullable|string",
             "stock" => "required|integer|min:0",
-            "description" => "nullable|string|max:255",
+            "description" => "nullable|string|max:2048",
             "photos" => "required",
             "price" => "required|numeric|min:0",
         ]);
@@ -168,7 +168,7 @@ class ProductController extends Controller {
             "name" => "nullable|string|max:100",
             "attributes" => "nullable|json",
             "stock" => "nullable|integer|min:0",
-            "description" => "nullable|string|max:255",
+            "description" => "nullable|string|max:2048",
             "price" => "nullable|numeric|min:0",
         ]);
     }
@@ -238,6 +238,39 @@ class ProductController extends Controller {
         }
 
         return redirect(route("getProduct", ["id" => $product->id]));
+    }
+
+
+    private function validateRemoveProductPhoto(Request $request) {
+        return Validator::make(
+            [
+                'id' => $request->route('id'),
+                'photo_id' => $request->route('photo_id'),
+            ],
+            [
+                "id" => "required|integer|min:1|exists:product,id",
+                "photo_id" => "required|integer|min:1|exists:product_photo,photo_id",
+            ]
+        );
+    }
+
+    public function removeProductPhoto(Request $request) {
+
+        $this->authorize('update', Product::class);
+
+        if (($v = $this->validateRemoveProductPhoto($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $product = Product::findOrFail($request->route("id"));
+
+        if ($product->photos()->count() == 1) {
+            return ApiError::notEnoughPhotos();
+        }
+
+        $product->photos()->detach($request->route("photo_id"));
+
+        return response("");
     }
 
     public function addProduct(Request $request) {

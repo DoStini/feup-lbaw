@@ -17,6 +17,7 @@ Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['aut
 Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.api', 'admin'])->name("edit_order");
 
 Route::get('/products/variants', 'ProductController@variants');
+Route::delete('/products/{id}/photo/{photo_id}', 'ProductController@removeProductPhoto')->name('removeProductPhoto');
 Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
@@ -93,5 +94,3 @@ Route::group(
         Route::delete('/{product_id}/remove', 'WishlistController@delete');
     }
 );
-
-
