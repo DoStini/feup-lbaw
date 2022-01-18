@@ -76,5 +76,11 @@ return [
             'code' => 422,
             'message' => 'Coupon is already active'
         ]
-    ]
+    ],
+    'order' => [
+        'terminal_state' => [
+            'code' => 422,
+            'message' => 'Order state cannot be updated any further'
+        ]
+    ],
 ];
