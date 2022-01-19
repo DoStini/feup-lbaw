@@ -163,6 +163,12 @@ class ProductController extends Controller {
         ]);
     }
 
+    private function getValidatorAddProductPhoto(Request $request) {
+        return Validator::make($request->all(), [
+            "photos" => "required",
+        ]);
+    }
+
     private function getValidatorEditProduct(Request $request) {
         return Validator::make($request->all(), [
             "name" => "nullable|string|max:100",
@@ -364,6 +370,37 @@ class ProductController extends Controller {
         }
 
         return redirect(route("getProduct", ["id" => $product->id]));
+    }
+
+    public function addProductImage(Request $request) {
+
+        $product = Product::findOrFail($request->route('id'));
+
+        $photos = $request->file('photos') ?? [];
+
+        $validator = $this->getValidatorPhotos($photos);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $savedPhotos = [];
+
+        foreach ($photos as $productPhoto) {
+            $path = $productPhoto->storePubliclyAs(
+                "images/product",
+                "product" . $product->id . "-" . uniqid() . "." . $productPhoto->extension(),
+                "public"
+            );
+
+            array_push($savedPhotos, $path);
+
+            $public_path = "/storage/" . $path;
+            $photo = Photo::create(["url" => $public_path]);
+
+            $product->photos()->attach($photo->id);
+        }
+
+        return redirect()->back();
     }
 
     public function getAddProductPage() {

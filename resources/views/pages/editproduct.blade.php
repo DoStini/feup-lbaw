@@ -110,12 +110,10 @@
                     </div>
                 @endforeach
 
-                <form method="POST" action="" id="hello">
+                <form id="image-form" method="POST" action="{{route("addProductPhoto", ["id" => $product->id])}}">
                     <label for="add-photos">
-                        <i class="bi bi-x-lg remove-photo-icon bi bi-plus-circle add-product-photo"></i>
+                        <i class="bi bi-plus-circle add-product-photo"></i>
                     </label>
-                    <input multiple="true" type="file" name="photos" name="photos[]" id="add-photos" value="{{old('photos')}}"
-                        onchange="form.submit()"/>
                 </form>
 
             </div>
@@ -126,6 +124,12 @@
 </form>
 </div>
 </div>
+
+<form id="image-form" method="POST" action="{{route("addProductPhoto", ["id" => $product->id])}}" enctype="multipart/form-data">
+    @csrf
+    <input multiple="true" type="file" name="photos[]" id="add-photos" value="{{old('photos')}}"
+        onchange="applyProductPhoto()"/>
+</form>
 
 <script defer>
 
@@ -140,7 +144,9 @@
     }
 
     const applyProductPhoto = () => {
-        console.log("cool");
+        const form = document.getElementById('image-form');
+        console.log(form)
+        form.dispatchEvent(new Event("submit"));
     }
 
 </script>
