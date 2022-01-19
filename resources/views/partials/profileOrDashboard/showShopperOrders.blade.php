@@ -43,7 +43,7 @@
                                         @endif
                                         <tr>
                                             <th>Current Status</th>
-                                            <td style="font-family: 'Alata', sans-serif;"><h6><a class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></h6></td>
+                                            <td style="font-family: 'Alata', sans-serif;"><h6><a id="badge-{{$order->id}}" class="badge rounded-pill badge-decoration-none badge-{{$order->status}} ">{{strToUpper($order->status)}}</a></h6></td>
                                         </tr>
                                     <tbody>
                                 </table>
@@ -53,6 +53,11 @@
                                 <button class="btn btn-outline-secondary w-100 collapsed" type="button" data-bs-toggle="collapse" data-bs-target={{"#panelsStayOpen-collapse" . $loop->iteration}} aria-expanded="true" aria-controls={{"panelsStayOpen-collapse" . $loop->iteration}}>
                                     View More Details
                                 </button>
+                                @if ($order->status == "created")
+                                    <button class="btn btn-outline-danger w-100 collapsed m-1" onclick="cancelOrder({{$order->id}})">
+                                        Cancel order
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -178,3 +183,40 @@
     @endif
 </div>
 
+<div class="modal fade" id="confirm-cancel" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="confirmContent">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmTitle">Confirm delete account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body" id="confirmBody">
+                This is an irreversible action, are you sure you want to continue?
+                <button id="confirm-cancel" class="my-2 btn btn-danger w-100 cancel-order-btn">
+                    Cancel Order
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script defer>
+        function cancelOrder(orderId) {
+            const confirmElem =  document.getElementById("confirm-cancel");
+            let confirmCancel = new bootstrap.Modal(confirmElem);
+            console.log(confirmElem)
+            confirmElem.querySelector('.cancel-order-btn').addEventListener("click", () => {
+        //     deleteRequest(`/api/orders/${orderId}`)
+        //     .then(() => {
+                    const elem = document.getElementById(`badge-${orderId}`);
+                    elem.classList.add("badge-canceled");
+                    elem.innerText = "CANCELED";
+                    confirmCancel.hide();
+                // })
+                // .catch();
+        });
+        confirmCancel.show();
+    }
+
+</script>
