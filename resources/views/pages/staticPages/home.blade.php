@@ -29,9 +29,8 @@
                 <div class="navigation">
                     <h1>Navigation</h1>
                     <a href={{route('home')}}><h4>Home</h4></a>
-                    <a href={{route('home')}}><h4>Sell to Us</h4></a>
-                    <a href={{route('home')}}><h4>About Us</h4></a>
-                    <a href={{route('home')}}><h4>Contact Us</h4></a>
+                    <a href={{route('about-us')}}><h4>About Us</h4></a>
+                    <a href={{route('contact-us')}}><h4>Contact Us</h4></a>
                 </div>
                 <div class="contacts">
                     <h1>Contacts</h1>

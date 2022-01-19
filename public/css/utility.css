@@ -83,3 +83,11 @@
   }
 
   
+  .card-img-top {
+      height: 40vh;
+      object-fit: cover;
+  }
+
+  .icon-link {
+    font-size: 2em;
+  }
