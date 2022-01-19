@@ -112,3 +112,12 @@
     right: 0;
     cursor: pointer;
 }
+
+.add-product-photo {
+    font-size: 10em;
+    cursor: pointer;
+}
+
+#add-photos {
+    opacity: 0;
+}

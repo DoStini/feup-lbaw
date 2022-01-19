@@ -70,7 +70,7 @@
             @enderror
         </div>
     </div>
-
+{{-- 
     <div class="row">
         <div class="form-group col-12">
             <label for="photos">Add More Photos</label>
@@ -83,7 +83,7 @@
             </span>
             @enderror
         </div>
-    </div>
+    </div> --}}
 
     <div class="row">
         <div class="form-group col-12">
@@ -109,6 +109,15 @@
                         </img>
                     </div>
                 @endforeach
+
+                <form method="POST" action="" id="hello">
+                    <label for="add-photos">
+                        <i class="bi bi-x-lg remove-photo-icon bi bi-plus-circle add-product-photo"></i>
+                    </label>
+                    <input multiple="true" type="file" name="photos" name="photos[]" id="add-photos" value="{{old('photos')}}"
+                        onchange="form.submit()"/>
+                </form>
+
             </div>
         </div>
     @endif
@@ -118,7 +127,8 @@
 </div>
 </div>
 
-<script>
+<script defer>
+
     const deleteProductPhoto = (id) => {
         deleteRequest(`/api/products/{{$product->id}}/photo/${id}`)
             .then(() => {
@@ -128,6 +138,11 @@
                 reportData("Error removing photo", e.response.data)
             });
     }
+
+    const applyProductPhoto = () => {
+        console.log("cool");
+    }
+
 </script>
 
 @endsection
