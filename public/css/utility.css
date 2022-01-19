@@ -110,18 +110,18 @@
 }
 
 .card-nunoa:hover {
-    background-image: url('/img/notfound.jpg');
+    background-image: url('/img/halloweennuno.jpg');
 }
 
 .card-joao {
-    background-image: url('/img/balta.jpg');
+    background-image: url('/img/baltaeyes.jpg');
     background-size: cover;
     transition: 2s;
 
 }
 
 .card-joao:hover {
-    background-image: url('/img/notfound.jpg');
+    background-image: url('/img/balta.jpg');
 
 }
 
