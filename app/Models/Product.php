@@ -19,6 +19,7 @@ class Product extends Model {
         'stock',
         'description',
         'price',
+        'is_active',
     ];
 
     /**

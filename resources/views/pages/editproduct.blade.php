@@ -70,20 +70,6 @@
             @enderror
         </div>
     </div>
-{{-- 
-    <div class="row">
-        <div class="form-group col-12">
-            <label for="photos">Add More Photos</label>
-            <input multiple="true" id="photos" class="form-control" type="file" name="photos[]" value="{{old('photos')}}">
-            @if($errors->has('photos'))
-            <span class="error form-text text-danger">
-                @foreach ($errors->get('photos') as $message)
-                    {{$message}}<br/>
-                @endforeach
-            </span>
-            @enderror
-        </div>
-    </div> --}}
 
     <div class="row">
         <div class="form-group col-12">

@@ -17,8 +17,11 @@ Route::post('/users/{id}/private/edit', 'UserController@edit')->middleware(['aut
 Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.api', 'admin'])->name("edit_order");
 
 Route::get('/products/variants', 'ProductController@variants');
-Route::delete('/products/{id}/photo/{photo_id}', 'ProductController@removeProductPhoto')->name('removeProductPhoto');
-Route::post('/products/{id}/photo/add', 'ProductController@addProductImage')->name('addProductPhoto');
+Route::prefix('/products/{id}')->middleware(['auth.api'])->group(function () {
+    Route::delete('/', 'ProductController@removeProduct')->name('removeProduct');
+    Route::delete('/photo/{photo_id}', 'ProductController@removeProductPhoto')->name('removeProductPhoto');
+    Route::post('/photo/add', 'ProductController@addProductImage')->name('addProductPhoto');
+});
 Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
@@ -45,7 +48,6 @@ Route::group(
 
 Route::post('/users/{id}/block', 'ShopperController@blockShopper');
 Route::post('/users/{id}/unblock', 'ShopperController@unblockShopper');
-
 
 Route::group(
     [

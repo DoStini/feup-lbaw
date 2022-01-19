@@ -29,6 +29,10 @@ class ProductController extends Controller {
      */
     public function show($id) {
         $product = Product::findOrFail($id);
+
+        if (!$product->is_active) {
+            return abort(404);
+        }
         $user = Auth::user();
         $wishlisted = false;
         if ($user && !$user->is_admin) {
@@ -78,13 +82,13 @@ class ProductController extends Controller {
                     $join->on('product.id', '=', 'wishlist.product_id')
                         ->where('wishlist.shopper_id', '=', $user->id))
                 )
-                ->whereRaw('stock > 0')
+                ->where('is_active', '=', 'true')
                 ->when($request->text, function ($q) use ($request) {
                     $words = explode(' ', $request->text);
                     foreach ($words as &$word)
                         $word = $word . ':*';
                     $val = implode(' & ', $words);
-                    return $q->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                    return $q->orWhereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
                         ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
                         ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
                         ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
@@ -136,6 +140,7 @@ class ProductController extends Controller {
                 "query" => $this->serializeQuery($query->get())
             ]);
         } catch (Exception $e) {
+            dd($e);
             return response()->json(
                 ['message' => 'Unexpected error'],
                 401
@@ -147,7 +152,7 @@ class ProductController extends Controller {
         $this->authorize('viewAny', Product::class);
 
         $dc =  new DatatableController();
-        return $dc->get($request, DB::table('product'));
+        return $dc->get($request, DB::table('product')->where('is_active', '=', 'true'));
     }
 
     private function getValidatorAddProduct(Request $request) {
@@ -160,12 +165,6 @@ class ProductController extends Controller {
             "description" => "nullable|string|max:2048",
             "photos" => "required",
             "price" => "required|numeric|min:0",
-        ]);
-    }
-
-    private function getValidatorAddProductPhoto(Request $request) {
-        return Validator::make($request->all(), [
-            "photos" => "required",
         ]);
     }
 
@@ -422,6 +421,16 @@ class ProductController extends Controller {
         return Validator::make($request->all(), [
             'code' => 'required|string|min:1',
         ]);
+    }
+
+    public function removeProduct(Request $request) {
+        $product = Product::findOrFail($request->route('id'));
+
+        $product->update([
+            "is_active" => false,
+        ]);
+
+        return response("");
     }
 
     /**
