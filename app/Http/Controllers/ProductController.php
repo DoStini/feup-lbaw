@@ -376,6 +376,8 @@ class ProductController extends Controller {
 
         $product = Product::findOrFail($request->route('id'));
 
+        $this->authorize('update', Product::class);
+
         $photos = $request->file('photos') ?? [];
 
         $validator = $this->getValidatorPhotos($photos);

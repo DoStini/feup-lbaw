@@ -18,6 +18,7 @@ Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.
 
 Route::get('/products/variants', 'ProductController@variants');
 Route::delete('/products/{id}/photo/{photo_id}', 'ProductController@removeProductPhoto')->name('removeProductPhoto');
+Route::post('/products/{id}/photo/add', 'ProductController@addProductImage')->name('addProductPhoto');
 Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
