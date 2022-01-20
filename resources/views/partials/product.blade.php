@@ -169,7 +169,7 @@
 </div>
 <div class="container d-flex flex-column justify-content-around mt-4 mb-4">
     @can('reviewProduct', [App\Models\Review::class, $product])
-    <form id="add-review-form" enctype="multipart/form-data" class="container" action={{route('addReview',
+    <form id="add-review-form" enctype="multipart/form-data" class="container mb-5" action={{route('addReview',
         ["product_id"=> $product->id])}} method="POST">
         @csrf
         <div class="row d-flex justify-content-between align-items-baseline">
@@ -245,7 +245,7 @@
                 const page = elem.href.split("page=")[1];
 
                 getQuery(
-                    "/api/product/{{$product->id}}/reviews", {'page' : page}
+                    "/product/{{$product->id}}/reviews", {'page' : page}
                 ).then((event) => {
                     document.getElementById("reviews").innerHTML = event.data;
                     addEventToPagination();

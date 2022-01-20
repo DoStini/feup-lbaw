@@ -36,8 +36,12 @@ class ReviewController extends Controller {
         ], $messages);
     }
 
-    public function getProductReviews(Request $req, $product_id) {
-        return view('partials.review', ["reviews" => Review::where("product_id", "=", $product_id)->paginate($req->review_size ?? 5)])->render();
+    public static function getProductReviews($product_id) {
+        return Review::where("product_id", "=", $product_id)->orderByDesc('score')->orderByDesc('timestamp');
+    }
+
+    public function getProductReviewsView(Request $req, $product_id) {
+        return view('partials.review', ["reviews" => ReviewController::getProductReviews($product_id)->paginate($req->review_size ?? 5)])->render();
     }
 
 

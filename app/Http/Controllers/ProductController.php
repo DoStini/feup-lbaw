@@ -40,7 +40,7 @@ class ProductController extends Controller {
             }
         }
 
-        $reviews = Review::where("product_id", "=", $id)->paginate($req->review_size ?? 5);
+        $reviews = ReviewController::getProductReviews($id)->paginate($req->review_size ?? 5);
 
         return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted, 'reviews' => $reviews]);
     }

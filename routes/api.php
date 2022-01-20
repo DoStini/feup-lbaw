@@ -95,5 +95,3 @@ Route::group(
         Route::delete('/{product_id}/remove', 'WishlistController@delete');
     }
 );
-
-Route::get('product/{product_id}/reviews', 'ReviewController@getProductReviews');
