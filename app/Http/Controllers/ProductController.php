@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\ApiError;
 use App\Models\Category;
+use App\Models\Notification;
 use Craft\StringHelper;
 
 
@@ -233,13 +234,44 @@ class ProductController extends Controller {
 
         try {
             DB::beginTransaction();
-            $product->update(array_filter([
-                "name" => $request->input('name'),
-                "attributes" => $request->input('attributes'),
-                "stock" => $request->input('stock'),
-                "description" => $request->input('description'),
-                "price" => $request->input('price'),
-            ]));
+
+            $oldStock = $product->stock;
+            $oldPrice = $product->price;
+
+            $product->update(array_filter(
+                [
+                    "name" => $request->input('name'),
+                    "attributes" => $request->input('attributes'),
+                    "stock" => $request->input('stock'),
+                    "description" => $request->input('description'),
+                    "price" => $request->input('price'),
+                ],
+                fn ($elem) => $elem != null && $elem !== "",
+            ));
+
+            if ($oldPrice != $product->price) {
+
+                foreach ($product->usersCart as $userCart) {
+                    $user = Shopper::find($userCart->id);
+                    $not = new Notification();
+                    $not->shopper = $user->id;
+                    $not->type = "cart";
+                    $not->product_id = $product->id;
+                    $not->save();
+                }
+            }
+
+            if ($oldStock == 0 && $product->stock > 0) {
+                foreach ($product->usersWishlisted as $userWishlist) {
+                    $user = Shopper::find($userWishlist->id);
+                    $not = new Notification();
+                    $not->shopper = $user->id;
+                    $not->type = "wishlist";
+                    $not->product_id = $product->id;
+                    $not->save();
+                }
+            }
+
 
             foreach ($photos as $productPhoto) {
                 $path = $productPhoto->storePubliclyAs(
