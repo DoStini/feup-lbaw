@@ -54,7 +54,7 @@
                                     View More Details
                                 </button>
                                 @if ($order->status == "created")
-                                    <button class="btn btn-outline-danger w-100 collapsed m-1" onclick="cancelOrder({{$order->id}})">
+                                    <button id="cancel-order-btn" class="btn btn-outline-danger w-100 collapsed m-1" onclick="cancelOrder({{$order->id}})">
                                         Cancel order
                                     </button>
                                 @endif
@@ -207,14 +207,16 @@
             let confirmCancel = new bootstrap.Modal(confirmElem);
             console.log(confirmElem)
             confirmElem.querySelector('.cancel-order-btn').addEventListener("click", () => {
-        //     deleteRequest(`/api/orders/${orderId}`)
-        //     .then(() => {
+            jsonBodyPost(`/api/orders/${orderId}/cancel`)
+            .then(() => {
                     const elem = document.getElementById(`badge-${orderId}`);
                     elem.classList.add("badge-canceled");
                     elem.innerText = "CANCELED";
+                    document.getElementById("cancel-order-btn").remove();
                     confirmCancel.hide();
-                // })
-                // .catch();
+
+                })
+                .catch();
         });
         confirmCancel.show();
     }

@@ -154,7 +154,7 @@
                 </form>
                 @endif
                 @if ($product->stock > 0)
-                <button class="btn btn-success w-100 my-2" disabled>In Stock</button>
+                <button class="btn btn-success w-100 my-2" disabled>In Stock ({{$product->stock}})</button>
                 @else
                 <button class="btn btn-danger w-100 my-2" disabled>Out of Stock</button>
                 @endif
