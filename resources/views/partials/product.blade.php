@@ -425,7 +425,7 @@
 
         const cancelButton = document.createElement("button");
         cancelButton.innerHTML = "Cancel";
-        cancelButton.className = "form-control btn btn-secondary ms-3";
+        cancelButton.className = "form-control btn btn-secondary";
         let origStars = showUpdateReview.savedReview.stars;
         cancelButton.onclick = () => updateReview(reviewID, inner, origStars);
 
