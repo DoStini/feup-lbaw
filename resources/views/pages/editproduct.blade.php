@@ -86,27 +86,34 @@
     @if ($product->photos->count() > 0)
         <div class="row mt-3 px-3">
             <label for="photos">Photos</label>
-            <div id="photos" class="form-control col-12">
-                @foreach ($product->photos as $photo)
-                    <div id="photo-{{$photo->id}}" class="col-4 col-md-2">
-                        <img class="edit-product-photo col-12" src="{{$photo->url}}">
+            <div id="photos" class="form-control container">
+                <div class="row">
+                    @foreach ($product->photos as $photo)
+                    <div id="photo-{{$photo->id}}" class="col-md-2 col-sm-4 col-6 my-2" style="position: relative;">
+                        <img class="edit-product-photo col-12" src="{{$photo->url}}" style="height: 10em;">
                         <i class="bi bi-x-lg remove-photo-icon" 
-                            onclick="deleteProductPhoto({{$photo->id}})"></i>
-                        </img>
+                            onclick="deleteProductPhoto({{$photo->id}})">
+                        </i>
                     </div>
-                @endforeach
+                    @endforeach
+                    <div class="col-md-2 col-sm-4 col-6 d-flex justify-content-center align-items-center">
+                        <form id="image-form" method="POST" action="{{route("addProductPhoto", ["id" => $product->id])}}">
+                            <label for="add-photos">
+                                <i class="bi bi-plus-circle add-product-photo d-block icon-click" style="width: 100%;"></i>
+                            </label>
+                        </form>
+                    </div>
 
-                <form id="image-form" method="POST" action="{{route("addProductPhoto", ["id" => $product->id])}}">
-                    <label for="add-photos">
-                        <i class="bi bi-plus-circle add-product-photo"></i>
-                    </label>
-                </form>
+                </div>
+                
 
             </div>
         </div>
     @endif
+    <div class="row justify-content-center">
+        <button type="submit" class="btn btn-primary my-2">Submit</button>
 
-    <button type="submit" class="btn btn-primary my-2">Submit</button>
+    </div>
 </form>
 </div>
 </div>

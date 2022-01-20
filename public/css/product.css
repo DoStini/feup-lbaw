@@ -106,15 +106,19 @@
     color: rgb(194, 92, 92);
 }
 
+.edit-product-photo {
+    object-fit: cover;
+}
+
 .remove-photo-icon {
-    position: relative;
+    position: absolute;
     top: 0;
-    right: 0;
+    right: 1em;
     cursor: pointer;
 }
 
 .add-product-photo {
-    font-size: 10em;
+    font-size: 6em;
     cursor: pointer;
 }
 
