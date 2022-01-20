@@ -45,6 +45,20 @@ class ReviewController extends Controller {
         return view('partials.review', ["reviews" => ReviewController::getProductReviews($product_id)->paginate($req->review_size ?? 5)])->render();
     }
 
+    public function deleteReview($id) {
+        $review = Review::findOrFail($id);
+
+        $this->authorize('delete', [Review::class, $review]);
+
+        try {
+            $review->delete();
+        } catch (\Exception $ex) {
+            return ApiError::unexpected();
+        }
+
+        return response()->json();
+    }
+
     private function editReviewValidator($data) {
         return Validator::make($data, [
             "stars" => "required|min:0|max:5|integer",
@@ -144,6 +158,6 @@ class ReviewController extends Controller {
             return redirect()->back()->withErrors(["review" => "Unexpected Error"])->withInput();
         }
 
-        return redirect(route("getProduct", ["id" => $product_id]));
+        return redirect(route("getProduct", ["id" => $product_id]))->withSuccess("Review Added Successfully!");
     }
 }

@@ -97,3 +97,5 @@ Route::group(
 );
 
 Route::middleware('auth.api')->post('/reviews/{id}/update', 'ReviewController@updateReview');
+Route::middleware('auth.api')->delete('/reviews/{id}/delete', 'ReviewController@deleteReview');
+

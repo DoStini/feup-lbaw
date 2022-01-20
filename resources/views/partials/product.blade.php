@@ -1,12 +1,13 @@
-@if($errors->any())
+@if($errors->any() || session()->has('success'))
 <script async>
     (async() => {
         while(!window.hasOwnProperty('reportData'))
             await new Promise(resolve => setTimeout(resolve, 100));
 
+        @if($errors->any())
         let errors = JSON.parse(`<?php echo($errors->toJson()) ?>`.replace(/\s+/g," "));
 
-        reportData("Couldn't create the product", errors, {
+        reportData("Couldn't create review", errors, {
             'product_id': 'Product ID',
             'text': 'Review Body',
             'stars': 'Rating',
@@ -14,6 +15,9 @@
         });
 
         setRating({{old("stars")}})
+        @else
+        reportData("Review Added Successfully!")
+        @endif
     })();
 </script>
 @endif
@@ -237,19 +241,25 @@
         }
     }
 
+    let curPage = {{request()->get('page') ?? 1}}
+
+    function paginateReviews(page) {
+        getQuery(
+            "/product/{{$product->id}}/reviews", {'page' : page}
+        ).then((event) => {
+            curPage = page;
+            document.getElementById("reviews").innerHTML = event.data;
+            addEventToPagination();
+        });
+    }
+
     function addEventToPagination() {
         document.querySelectorAll("#review-links a").forEach(function(elem) {
             elem.addEventListener('click', function(e) {
                 e.preventDefault();
 
                 const page = elem.href.split("page=")[1];
-
-                getQuery(
-                    "/product/{{$product->id}}/reviews", {'page' : page}
-                ).then((event) => {
-                    document.getElementById("reviews").innerHTML = event.data;
-                    addEventToPagination();
-                });
+                paginateReviews(page);
             })
         })
     }
@@ -289,6 +299,21 @@
         showUpdateReview.savedReview = null;
     }
 
+    function deleteReview(reviewID) {
+        deleteRequest(`/api/reviews/${reviewID}/delete`).then((response) => {
+            launchSuccessAlert('Review removed successfully!');
+            paginateReviews(curPage);
+        }
+        ).catch((error) => {
+            let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+
+            launchErrorAlert("Couldn't remove review: " + error.response.data.message + "<br>" + errors);
+        });
+    }
+
     function showUpdateReview(element, reviewID) {
         if(showUpdateReview.savedReview != null) {
             updateReview(showUpdateReview.savedReview.id, showUpdateReview.savedReview.text,
@@ -307,7 +332,7 @@
         }
 
         const textElement = document.getElementById(`review-text-${reviewID}`);
-        const inner = textElement.innerText;
+        const inner = textElement.innerHTML;
 
         showUpdateReview.savedReview.text = inner;
         textElement.innerHTML = `<textarea class="form-control" id="edit-text-${reviewID}" name='text'>${inner}</textarea>`
