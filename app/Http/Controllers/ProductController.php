@@ -71,7 +71,7 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
-
+            $cat_selected = false;
             $query = Product
                 ::with("photos")
                 ->when(
@@ -81,11 +81,14 @@ class ProductController extends Controller {
                     $join->on('product.id', '=', 'wishlist.product_id')
                         ->where('wishlist.shopper_id', '=', $user->id))
                 )
-                ->whereRaw('stock > 0');
-
+                ->whereRaw('stock > 0')
+                ->join('product_category', 'product_category.product_id', '=', 'product.id')
+                ->join('category', 'product_category.category_id', '=', 'category.id');
+    
             $category_array = $request->input('categories');
             
             if ($category_array != []) {
+                $cat_selected = true;
                 $current_idx = 0;
                 while (count($category_array) > $current_idx) {
                     $category = Category::find($category_array[$current_idx]);
@@ -96,9 +99,7 @@ class ProductController extends Controller {
                     }
                     $current_idx++;
                 }
-                $query = $query->join('product_category', 'product_category.product_id', '=', 'product.id')
-                    ->join('category', 'product_category.category_id', '=', 'category.id')
-                    ->whereIn('category.id', $category_array);
+                $query = $query->whereIn('category.id', $category_array);
             }
 
             switch ($request->order) {
@@ -169,11 +170,13 @@ class ProductController extends Controller {
 
             if($request->text) $searchParams->text = $request->text;
 
+            $query_obj = $query->get(['product.*', 'category.name AS cat_name']);
+
             return response()->json([
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $this->serializeQuery($query->get(['product.*'])),
+                "query" => $this->serializeQuery($query_obj),
                 "searchParams" => $searchParams
             ]);
         } catch (Exception $e) {

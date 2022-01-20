@@ -144,12 +144,13 @@ function createProduct(product, delay) {
     const fallBack = "/img/default.jpg";
 
     const wishlisted = !product.shopper_id; // If the product is wihslisted, shopper will not be null
-
+    console.log(product)
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
             <div class="card-body">
                 <h4 class="card-title" style="height: 2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical; overflow: hidden;">${capitalize(product.name)}</h4>
+                <h6>${product.cat_name}</h6>
                 <div class="container ps-0 pe-0">
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>

@@ -32,7 +32,7 @@ class Product extends Model {
      * The categories this product belongs to.
      */
     public function categories() {
-        return $this->belongsToMany(Category::class, 'product_category', 'product_id', 'category_id');
+        return $this->hasOne(Category::class, 'product_category', 'product_id', 'category_id');
     }
 
     public function reviews() {
