@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CartUpdate;
+use App\Events\WishlistUpdate;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -258,6 +260,8 @@ class ProductController extends Controller {
                     $not->type = "cart";
                     $not->product_id = $product->id;
                     $not->save();
+
+                    event(new CartUpdate($user->id, $product->id));
                 }
             }
 
@@ -269,6 +273,8 @@ class ProductController extends Controller {
                     $not->type = "wishlist";
                     $not->product_id = $product->id;
                     $not->save();
+
+                    event(new WishlistUpdate($user->id, $product->id));
                 }
             }
 

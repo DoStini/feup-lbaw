@@ -196,6 +196,22 @@
             notificationContent.prepend(notif);
         });
 
+        const cartItemUpdated = pusher.subscribe("cart-item");
+        cartItemUpdated.bind("cart-item-{{Auth::user()->id}}", function(data) {
+            handlePusherNotification();
+            const notif = buildCartNotification(data);
+            notificationContent.prepend(getDivider());
+            notificationContent.prepend(notif);
+        });
+
+        const wishlistItemUpdated = pusher.subscribe("wishlist-item");
+        wishlistItemUpdated.bind("wishlist-item-{{Auth::user()->id}}", function(data) {
+            handlePusherNotification();
+            const notif = buildWishlistNotification(data);
+            notificationContent.prepend(getDivider());
+            notificationContent.prepend(notif);
+        });
+
         notification.addEventListener("click", () => {
             formDataPost(`/api/users/{{Auth::user()->id}}/notifications/`)
                 .then(data => {
