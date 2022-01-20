@@ -64,12 +64,15 @@
     <div class="product-info col-md-5">
         <div class="my-3">
             <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-            <p>
+            @if ($reviewCount > 0)
+            <p class="mb-0">
                 @for ($i = 1; $i <= 5; $i++) <i
                     class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
                     </i>
                     @endfor
             </p>
+            <p class="text-muted">Average from {{$reviewCount}} reviews.</p>
+            @endif
         </div>
 
         <div class="my-2 d-flex justify-content-between align-items-center">
@@ -203,11 +206,14 @@
             </div>
 
             <span class="w-auto">
-                <button type="submit" class="btn btn-secondary">Cancel</button>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </span>
         </div>
     </form>
+    @else
+    @if(!Auth::check() || (Auth::check() && !Auth::user()->is_admin))
+    <h3 class="mt-3 mb-5 text-center">Try it out first and then tell us about your experience!</h3>
+    @endif
     @endcan
 
     <div class="container" id="reviews">
@@ -279,7 +285,7 @@
         const upvoteButton = document.getElementById(`upvote-review-${reviewID}`);
         const downvoteButton = document.getElementById(`downvote-review-${reviewID}`);
         const score = document.getElementById(`score-review-${reviewID}`);
-        score.innerHTML = `${data.score} ${data.score !== 1 ? 'people' : 'person'} found this helpful.`;
+        score.innerHTML = `Shoppers gave this review ${data.score} points`;
 
         if(data.vote === 'upvote') {
             upvoteButton.classList.add("bi-hand-thumbs-up-fill")
@@ -346,10 +352,10 @@
 
         iconBar.innerHTML = "";
 
-        editBtn.className = "bi bi-pencil-square icon-click ms-md-3";
+        editBtn.className = "bi bi-pencil-square icon-click ms-3";
         editBtn.onclick = () => showUpdateReview(editBtn, reviewID);
 
-        removeBtn.className = "bi bi-trash icon-click ms-md-3";
+        removeBtn.className = "bi bi-trash icon-click ms-3";
         removeBtn.onclick = () => deleteReview(reviewID);
 
         iconBar.appendChild(editBtn);

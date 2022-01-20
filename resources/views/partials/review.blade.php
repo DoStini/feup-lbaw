@@ -19,14 +19,14 @@
     </div>
     <div class="col">
         <div class="row mb-2">
-            <div class="col d-flex justify-content-between">
+            <div class="col d-flex flex-md-row flex-column justify-content-between">
                 <div>
                     <input type="hidden" id="review-stars-{{$review->id}}" value="{{$review->stars}}">
                     @for ($i = 1; $i <= 5; $i++)
                     <i id="review-stars-{{$review->id}}-{{$i}}" class="bi bi-star{{$review->stars >= $i ? '-fill' : ''}}"></i>
                     @endfor
                 </div>
-                <span id="score-review-{{$review->id}}" class="text-muted">{{$review->score}} @if($review->score !== 1) people @else person @endif found this helpful.</span>
+                <span id="score-review-{{$review->id}}" class="text-muted">Shoppers gave this review {{$review->score}} points.</span>
             </div>
         </div>
         <div class="row mb-2">
@@ -53,17 +53,16 @@
                     <i id="downvote-review-{{$review->id}}" onclick="vote({{$review->id}}, 'downvote')" data-vote='{{$downvote}}' class="bi bi-hand-thumbs-down{{$downvote ? '-fill' : ''}}  icon-click ms-3"></i>
                 </div>
                 @elseif(Auth::check() && (Auth::user()->is_admin || Auth::user()->id === $review->creator_id))
-                <div id="icon-bar-{{$review->id}}" class="d-flex fs-5 flex-row">
+                <div id="icon-bar-{{$review->id}}" class="d-flex justify-content-end flex-grow-1 flex-md-grow-0 fs-5 flex-row">
                     @if (!Auth::user()->is_admin)
-                    <i class="bi bi-pencil-square icon-click ms-md-3" onclick="showUpdateReview(this, {{$review->id}})"></i>
+                    <i class="bi bi-pencil-square icon-click ms-3" onclick="showUpdateReview(this, {{$review->id}})"></i>
                     @endif
-                    <i class="bi bi-trash icon-click ms-md-3" onclick="deleteReview({{$review->id}})"></i>
+                    <i class="bi bi-trash icon-click ms-3" onclick="deleteReview({{$review->id}})"></i>
                 </div>
                 @endif
             </div>
         </div>
         @if($review->photos && !$review->photos->isEmpty())
-        <h4>Review Photos</h4>
         <div class="row">
             <div class="d-none d-md-block">
                 @include('partials.reviewPhotos', ['max_photos' => 4, "name" => "big"])

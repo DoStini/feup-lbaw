@@ -41,8 +41,9 @@ class ProductController extends Controller {
         }
 
         $reviews = ReviewController::getProductReviews($id)->paginate($req->review_size ?? 5);
+        $reviewCount = ReviewController::getProductReviews($id)->count();
 
-        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted, 'reviews' => $reviews]);
+        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted, 'reviews' => $reviews, 'reviewCount' => $reviewCount]);
     }
 
     /**
