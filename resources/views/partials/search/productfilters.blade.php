@@ -10,7 +10,7 @@
             <div class="dropdown-menu p-2" aria-labelledby="dropdownCategories">
                 <ul class="list-group">
                 @foreach ($categories as $category)
-                    @include('partials.search.category', ['category' => $category])
+                    @include('partials.search.category', ['category' => $category, 'level' => 0])
                 @endforeach
                 </ul>
             </div>
