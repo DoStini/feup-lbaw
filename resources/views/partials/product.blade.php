@@ -204,29 +204,6 @@
             </span>
         </div>
     </form>
-    <script type="application/javascript">
-        function setRating(index) {
-            const start = document.getElementById("review-form-star")
-
-            if(parseInt(start.value) === index) {
-                index = 0;
-            }
-
-            start.value = index;
-
-            for(let i = 1; i <= 5; i++) {
-                const starElement = document.getElementById("review-form-star-" + i);
-
-                if(i <= index) {
-                    starElement.classList.remove("bi-star");
-                    starElement.classList.add("bi-star-fill");
-                } else {
-                    starElement.classList.remove("bi-star-fill");
-                    starElement.classList.add("bi-star");
-                }
-            }
-        }
-    </script>
     @endcan
 
     <div class="container" id="reviews">
@@ -237,6 +214,29 @@
 </div>
 
 <script>
+    function setRating(index, name) {
+        name = name ?? "review-form-star";
+        const start = document.getElementById(name)
+
+        if(parseInt(start.value) === index) {
+            index = 0;
+        }
+
+        start.value = index;
+
+        for(let i = 1; i <= 5; i++) {
+            const starElement = document.getElementById(`${name}-${i}`);
+
+            if(i <= index) {
+                starElement.classList.remove("bi-star");
+                starElement.classList.add("bi-star-fill");
+            } else {
+                starElement.classList.remove("bi-star-fill");
+                starElement.classList.add("bi-star");
+            }
+        }
+    }
+
     function addEventToPagination() {
         document.querySelectorAll("#review-links a").forEach(function(elem) {
             elem.addEventListener('click', function(e) {
@@ -257,5 +257,78 @@
     window.addEventListener('load', function() {
         addEventToPagination();
     })
+
+    function resetIcons(reviewID, stars) {
+        const iconBar = document.getElementById(`icon-bar-${reviewID}`);
+        if(iconBar == null) return;
+        const editBtn = document.createElement("i");
+
+        iconBar.innerHTML = "";
+
+        editBtn.className = "bi bi-pencil-square icon-click ms-md-3";
+        editBtn.onclick = () => showUpdateReview(editBtn, reviewID);
+
+        iconBar.appendChild(editBtn);
+
+        for(let i = 1; i <= 5; i++) {
+            const starElement = document.getElementById(`review-stars-${reviewID}-${i}`);
+            starElement.classList.remove('icon-click');
+            starElement.onclick = null;
+        }
+
+        setRating(stars, `review-stars-${reviewID}`);
+    }
+
+    function cancelReview(reviewID, origText, stars) {
+        const textElement = document.getElementById(`review-text-${reviewID}`);
+        if(textElement == null) return;
+        textElement.innerHTML = origText;
+
+        resetIcons(reviewID, stars);
+
+        showUpdateReview.savedReview = null;
+    }
+
+    function showUpdateReview(element, reviewID) {
+        if(showUpdateReview.savedReview != null) {
+            cancelReview(showUpdateReview.savedReview.id, showUpdateReview.savedReview.text,
+            showUpdateReview.savedReview.stars);
+        }
+
+        showUpdateReview.savedReview = {
+            id: reviewID,
+            stars: document.getElementById(`review-stars-${reviewID}`).value
+        }
+
+        for(let i = 1; i <= 5; i++) {
+            const starElement = document.getElementById(`review-stars-${reviewID}-${i}`);
+            starElement.classList.add('icon-click');
+            starElement.onclick = () => setRating(i, `review-stars-${reviewID}`);
+        }
+
+        const textElement = document.getElementById(`review-text-${reviewID}`);
+        const inner = textElement.innerText;
+
+        showUpdateReview.savedReview.text = inner;
+        textElement.innerHTML = `<textarea class="form-control" id="edit-text-${reviewID}" name='text'>${inner}</textarea>`
+
+        const iconBar = document.getElementById(`icon-bar-${reviewID}`);
+
+        element.remove();
+
+        const cancelButton = document.createElement("button");
+        cancelButton.innerHTML = "Cancel";
+        cancelButton.className = "form-control btn btn-secondary ms-3";
+        cancelButton.onclick = () => cancelReview(reviewID, inner, showUpdateReview.savedReview.stars);
+
+        iconBar.appendChild(cancelButton);
+
+        const confirmButton = document.createElement("button");
+
+        confirmButton.innerHTML = "Confirm";
+        confirmButton.className = "form-control btn btn-primary ms-3";
+
+        iconBar.appendChild(confirmButton);
+    }
 
 </script>

@@ -18,15 +18,16 @@
         </div>
     </div>
     <div class="col">
-        <div class="row">
+        <div class="row mb-2">
             <div class="col">
-                @for ($i = 1; $i <= 5; $i++) <i class="bi bi-star{{$review->stars >= $i ? '-fill' : ''}}">
-                    </i>
-                    @endfor
+                <input type="hidden" id="review-stars-{{$review->id}}" value="{{$review->stars}}">
+                @for ($i = 1; $i <= 5; $i++)
+                <i id="review-stars-{{$review->id}}-{{$i}}" class="bi bi-star{{$review->stars >= $i ? '-fill' : ''}}"></i>
+                @endfor
             </div>
         </div>
-        <div class="row">
-            <div class="col">
+        <div class="row mb-2">
+            <div class="col" id="review-text-{{$review->id}}">
                 {{$review->text}}
             </div>
         </div>
@@ -37,6 +38,10 @@
                 <div class="d-flex fs-5 flex-row">
                     <i class="bi bi-hand-thumbs-up icon-click ms-md-3"></i>
                     <i class="bi bi-hand-thumbs-down icon-click ms-3"></i>
+                </div>
+                @elseif(Auth::check() && Auth::user()->id === $review->creator_id)
+                <div id="icon-bar-{{$review->id}}" class="d-flex fs-5 flex-row">
+                    <i class="bi bi-pencil-square icon-click ms-md-3" onclick="showUpdateReview(this, {{$review->id}})"></i>
                 </div>
                 @endif
             </div>
