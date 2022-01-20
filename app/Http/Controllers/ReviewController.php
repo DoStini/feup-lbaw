@@ -15,7 +15,7 @@ class ReviewController extends Controller {
         return Validator::make($data, [
             "product_id" => "required|min:1|integer|exists:product,id",
             "stars" => "required|min:0|max:5|integer",
-            "text" => "required|between:1,512",
+            "text" => "required|between:1,1024",
             "photos" => "nullable",
         ], [], [
             "product_id" => "product ID",
@@ -34,6 +34,10 @@ class ReviewController extends Controller {
         return Validator::make($photos, [
             "*" => "nullable|file|image"
         ], $messages);
+    }
+
+    public function getProductReviews(Request $req, $product_id) {
+        return view('partials.review', ["reviews" => Review::where("product_id", "=", $product_id)->paginate($req->review_size ?? 5)])->render();
     }
 
 

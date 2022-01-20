@@ -11,6 +11,7 @@ use Craft\StringHelper;
 
 
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Shopper;
 use App\Models\User;
 use Exception;
@@ -28,7 +29,7 @@ class ProductController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function show($id) {
+    public function show(Request $req, $id) {
         $product = Product::findOrFail($id);
         $user = Auth::user();
         $wishlisted = false;
@@ -39,7 +40,9 @@ class ProductController extends Controller {
             }
         }
 
-        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted]);
+        $reviews = Review::where("product_id", "=", $id)->paginate($req->review_size ?? 5);
+
+        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted, 'reviews' => $reviews]);
     }
 
     /**

@@ -96,4 +96,4 @@ Route::group(
     }
 );
 
-
+Route::get('product/{product_id}/reviews', 'ReviewController@getProductReviews');
