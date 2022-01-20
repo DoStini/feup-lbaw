@@ -6,6 +6,7 @@ use App\Exceptions\ApiError;
 use App\Models\Photo;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\Shopper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +43,12 @@ class ReviewController extends Controller {
     }
 
     public function getProductReviewsView(Request $req, $product_id) {
-        return view('partials.review', ["reviews" => ReviewController::getProductReviews($product_id)->paginate($req->review_size ?? 5)])->render();
+        $shopper = null;
+        if(Auth::check() && !Auth::user()->is_admin) {
+            $shopper = Shopper::find(Auth::user()->id);
+        }
+
+        return view('partials.review', ["reviews" => ReviewController::getProductReviews($product_id)->paginate($req->review_size ?? 5), "shopper" => $shopper])->render();
     }
 
     public function deleteReview($id) {

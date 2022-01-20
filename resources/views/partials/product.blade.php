@@ -211,7 +211,14 @@
     @endcan
 
     <div class="container" id="reviews">
-        @include('partials.review', ["reviews" => $reviews])
+        @php
+            if(Auth::check() && !Auth::user()->is_admin) {
+                $shopper = App\Models\Shopper::find(Auth::user()->id);
+            } else {
+                $shopper = null;
+            }
+        @endphp
+        @include('partials.review', ["reviews" => $reviews, "shopper" => $shopper])
     </div>
 
     {{-- <button class="row btn btn-primary">VIEW REVIEWS</button> --}}
@@ -272,13 +279,18 @@
         const iconBar = document.getElementById(`icon-bar-${reviewID}`);
         if(iconBar == null) return;
         const editBtn = document.createElement("i");
+        const removeBtn = document.createElement("i");
 
         iconBar.innerHTML = "";
 
         editBtn.className = "bi bi-pencil-square icon-click ms-md-3";
         editBtn.onclick = () => showUpdateReview(editBtn, reviewID);
 
+        removeBtn.className = "bi bi-trash icon-click ms-md-3";
+        removeBtn.onclick = () => deleteReview(reviewID);
+
         iconBar.appendChild(editBtn);
+        iconBar.appendChild(removeBtn);
 
         for(let i = 1; i <= 5; i++) {
             const starElement = document.getElementById(`review-stars-${reviewID}-${i}`);
@@ -340,6 +352,7 @@
         const iconBar = document.getElementById(`icon-bar-${reviewID}`);
 
         element.remove();
+        iconBar.innerHTML = "";
 
         const cancelButton = document.createElement("button");
         cancelButton.innerHTML = "Cancel";
