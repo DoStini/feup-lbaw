@@ -76,6 +76,21 @@ class ReviewPolicy
     }
 
     /**
+     * Determine wheter the user can vote on a review
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Review  $review
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function voteOnReview(User $user, Review $review) {
+        if($user->is_admin) {
+            return false;
+        }
+
+        return $review->creator_id !== $user->id;
+    }
+
+    /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user

@@ -38,6 +38,42 @@ class ReviewController extends Controller {
         ], $messages);
     }
 
+    private function reviewVoteValidator($data) {
+        return Validator::make($data, [
+            "vote" => 'required|string|in:upvote,downvote',
+        ]);
+    }
+
+    public function voteOnReview(Request $req, $id) {
+        $review = Review::findOrFail($id);
+
+        $this->authorize("voteOnReview", [Review::class, $review]);
+        $this->reviewVoteValidator($req->all())->validate();
+
+        $updatedReview;
+
+        try {
+            DB::table('review_vote')->upsert(
+                ["review_id" => $id, "voter_id" => Auth::user()->id, "vote" => $req->vote],
+                ["review_id", "voter_id"]
+            );
+
+            $updatedReview = DB::table('review_vote')
+                            ->where("review_id", "=", $id)
+                            ->where("voter_id", "=", Auth::user()->id)
+                            ->first();
+        } catch(\Exception $ex) {
+            return ApiError::unexpected();
+        }
+
+        return response()->json(
+            [
+                "vote" => $updatedReview->vote,
+                "score" => $review->fresh()->score
+            ]
+        );
+    }
+
     public static function getProductReviews($product_id) {
         return Review::where("product_id", "=", $product_id)->orderByDesc('score')->orderByDesc('timestamp');
     }

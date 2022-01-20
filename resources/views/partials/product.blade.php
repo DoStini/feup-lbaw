@@ -275,6 +275,81 @@
         addEventToPagination();
     })
 
+    function vote(reviewID, vote) {
+        console.log(reviewID);
+        console.log(vote);
+        const button = document.getElementById(`${vote}-review-${reviewID}`);
+
+        if(button.dataset.vote === '1') {
+            console.log("try to delete");
+        } else {
+            jsonBodyPost(`/api/reviews/${reviewID}/vote`, {
+                "vote": vote
+            }).then((response) => {
+                const upvoteButton = document.getElementById(`upvote-review-${reviewID}`);
+                const downvoteButton = document.getElementById(`downvote-review-${reviewID}`);
+
+                const score = document.getElementById(`score-review-${reviewID}`);
+                score.innerHTML = `${response.data.score} ${response.data.score !== 1 ? 'people' : 'person'} found this helpful.`;
+
+                if(response.data.vote === 'upvote') {
+                    upvoteButton.classList.add("bi-hand-thumbs-up-fill")
+                    upvoteButton.classList.remove("bi-hand-thumbs-up")
+                    upvoteButton.dataset.vote = '1';
+
+                    downvoteButton.classList.remove("bi-hand-thumbs-down-fill");
+                    downvoteButton.classList.add("bi-hand-thumbs-down");
+                    downvoteButton.dataset.vote = '0';
+                } else {
+                    upvoteButton.classList.remove("bi-hand-thumbs-up-fill")
+                    upvoteButton.classList.add("bi-hand-thumbs-up")
+                    upvoteButton.dataset.vote = '0';
+
+                    downvoteButton.classList.add("bi-hand-thumbs-down-fill");
+                    downvoteButton.classList.remove("bi-hand-thumbs-down");
+                    downvoteButton.dataset.vote = '1';
+                }
+            }).catch((error) => {
+                console.log(error);
+            })
+        }
+
+        // if(button.dataset.vote === '1') {
+        //     button.classList.remove("bi-hand-thumbs-up-fill");
+        //     button.classList.add("bi-hand-thumbs-up");
+        //     button.dataset.vote = '0';
+        // } else {
+        //     button.classList.remove("bi-hand-thumbs-up");
+        //     button.classList.add("bi-hand-thumbs-up-fill");
+
+        //     const otherButton = document.getElementById(`downvote-review-${reviewID}`);
+
+        //     otherButton.classList.add("bi-hand-thumbs-down");
+        //     otherButton.classList.remove("bi-hand-thumbs-down-fill");
+
+        //     button.dataset.vote = '1';
+        //     otherButton.dataset.vote =
+        // }
+    }
+
+    function downvote(button, reviewID) {
+        // if(button.dataset.vote === '1') {
+        //     button.classList.remove("bi-hand-thumbs-down-fill");
+        //     button.classList.add("bi-hand-thumbs-down");
+        //     button.dataset.vote = '0';
+        // } else {
+        //     button.classList.remove("bi-hand-thumbs-down");
+        //     button.classList.add("bi-hand-thumbs-down-fill");
+
+        //     const otherButton = document.getElementById(`upvote-review-${reviewID}`);
+
+        //     otherButton.classList.add("bi-hand-thumbs-up");
+        //     otherButton.classList.remove("bi-hand-thumbs-up-fill");
+
+        //     button.dataset.vote = '1';
+        // }
+    }
+
     function resetIcons(reviewID, stars) {
         const iconBar = document.getElementById(`icon-bar-${reviewID}`);
         if(iconBar == null) return;

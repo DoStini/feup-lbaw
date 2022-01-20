@@ -26,7 +26,7 @@
                     <i id="review-stars-{{$review->id}}-{{$i}}" class="bi bi-star{{$review->stars >= $i ? '-fill' : ''}}"></i>
                     @endfor
                 </div>
-                <span class="text-muted">{{$review->score}} @if($review->score !== 1) people @else person @endif found this helpful.</span>
+                <span id="score-review-{{$review->id}}" class="text-muted">{{$review->score}} @if($review->score !== 1) people @else person @endif found this helpful.</span>
             </div>
         </div>
         <div class="row mb-2">
@@ -39,15 +39,18 @@
                     $vote = null;
 
                     if($shopper != null) {
-                        $query = $shopper->voted_reviews()->where("review_id", '=', $review->id);
-                        if($query->count() > 0) {
-                            $vote = $query->get()->first()->details->vote;
+                        $query = $shopper->voted_reviews()->where("review_id", '=', $review->id)->first();
+                        if($query) {
+                            $vote = $query->details->vote;
                         }
                     }
+
+                    $downvote = $vote === "downvote";
+                    $upvote = $vote === "upvote";
                 @endphp
                 <div class="d-flex fs-5 flex-row">
-                    <i class="bi bi-hand-thumbs-up{{$vote === "upvote" ? '-fill' : ''}} icon-click ms-md-3"></i>
-                    <i class="bi bi-hand-thumbs-down{{$vote === "downvote" ? '-fill' : ''}}  icon-click ms-3"></i>
+                    <i id="upvote-review-{{$review->id}}" onclick="vote({{$review->id}}, 'upvote')" data-vote='{{$upvote}}'  class="bi bi-hand-thumbs-up{{$upvote ? '-fill' : ''}} icon-click ms-md-3"></i>
+                    <i id="downvote-review-{{$review->id}}" onclick="vote({{$review->id}}, 'downvote')" data-vote='{{$downvote}}' class="bi bi-hand-thumbs-down{{$downvote ? '-fill' : ''}}  icon-click ms-3"></i>
                 </div>
                 @elseif(Auth::check() && (Auth::user()->is_admin || Auth::user()->id === $review->creator_id))
                 <div id="icon-bar-{{$review->id}}" class="d-flex fs-5 flex-row">
