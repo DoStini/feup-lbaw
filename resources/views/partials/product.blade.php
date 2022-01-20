@@ -176,11 +176,11 @@
             <h2 class="w-auto">Add a Review</h2>
             <div class="w-auto fs-4">
                 <span class="fs-5 mr-5">Rate the product: </span>
-                <i id="review-form-star-1" class="bi bi-star" onclick="setRating(1)"></i>
-                <i id="review-form-star-2" class="bi bi-star" onclick="setRating(2)"></i>
-                <i id="review-form-star-3" class="bi bi-star" onclick="setRating(3)"></i>
-                <i id="review-form-star-4" class="bi bi-star" onclick="setRating(4)"></i>
-                <i id="review-form-star-5" class="bi bi-star" onclick="setRating(5)"></i>
+                <i id="review-form-star-1" class="bi icon-click bi-star" onclick="setRating(1)"></i>
+                <i id="review-form-star-2" class="bi icon-click bi-star" onclick="setRating(2)"></i>
+                <i id="review-form-star-3" class="bi icon-click bi-star" onclick="setRating(3)"></i>
+                <i id="review-form-star-4" class="bi icon-click bi-star" onclick="setRating(4)"></i>
+                <i id="review-form-star-5" class="bi icon-click bi-star" onclick="setRating(5)"></i>
             </div>
             <input id="review-form-star" type="hidden" name="stars" value="0" required>
         </div>
