@@ -130,7 +130,7 @@ function createProduct(product, delay) {
 
     const element = document.createElement("div");
     element.id = `root-product-${product.id}`;
-    element.className = "col-lg-4 col-md-6 col-xs-12";
+    element.className = "col-lg-3 col-md-4 col-sm-6 col-xs-12";
     element.style = "visibility: visible";
     element.innerHTML = html;
 
@@ -247,16 +247,26 @@ function restoreCache() {
 }
 
 function getInputs() {
-    const data = Object.fromEntries((new FormData(document.getElementById("search-form"))).entries());
+
+    const formData = new FormData(document.getElementById("search-form"));
+    const data = Object.fromEntries(formData.entries());
 
     const keys = Object.keys(data);
+    
+    categories = [];
 
     Object.values(data).forEach((val, idx) => {
         if (val === "on") {
             data.order = keys[idx];
             delete data[keys[idx]];
+        } else if (val === "category-active") {
+            categories.push(keys[idx]);
+            delete data[keys[idx]];
         }
     });
+    if(categories) {
+        data.categories = categories;
+    }
 
     return {
         text: document.getElementById("search-products-input").value,

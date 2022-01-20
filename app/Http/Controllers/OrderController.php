@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderUpdate;
 use App\Models\Order;
+use App\Exceptions\ApiError;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -58,37 +59,50 @@ class OrderController extends Controller {
     private function validateData($data) {
         return Validator::make($data, [
             "id" => 'required|integer|min:1|exists:order,id',
-            "status" => [
-                'required',
-                'string',
-                Rule::in(OrderController::getPossibleStatus())
-            ],
         ], [], [
-            "id" => 'ID',
-            "status" => 'status'
+            "id" => 'ID'
         ])->validate();
+    }
+
+    /**
+     * Returns next order status given current one.
+     * 
+     * @param Status $status Previous status
+     * 
+     * @return Status Next status
+     */
+    public static function getNextStatus($status) {
+        static $next = [
+            "created" => "paid",
+            "paid" => "processing",
+            "processing" => "shipped",
+        ];
+        return $next[$status];
     }
 
     /**
      * Updates an order
      *
-     * @param Request $request
      * @param int $id ID of the order being edited
      *
      * @return Response
      */
-    public function update(Request $request, int $id) {
-
-        $this->authorize('updateAny', Order::class);
+    public function update(int $id) {
+        $this->authorize('updateNext', Order::class);
 
         $data = [
-            "id" => $id,
-            "status" => $request->input("status")
+            "id" => $id
         ];
 
         $this->validateData($data);
 
         $order = Order::find($id);
+        $old_status = $order->status;
+
+        if($old_status == "shipped")
+            return ApiError::orderAtTerminalState();
+        
+        $data["status"] = $this->getNextStatus($old_status);
         $order->update($data);
 
         event(new OrderUpdate($order->shopper->id, $order->id, $data['status']));

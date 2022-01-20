@@ -14,6 +14,7 @@
 Route::get('/', 'StaticPagesController@home')->name('home');
 Route::get('blocked', 'StaticPagesController@blocked')->name('blocked');
 Route::get('contact-us', 'StaticPagesController@contactUs')->name('contact-us');
+Route::get('about-us', 'StaticPagesController@aboutUs')->name('about-us');
 
 // Users
 Route::middleware(['auth', 'is.shopper', 'is.blocked'])->post('users/checkout', 'CartController@checkout')->name('checkout');
@@ -59,3 +60,7 @@ Route::get('join', 'Auth\JoinController@show')->name('join')->middleware('guest'
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('register', 'Auth\RegisterController@register')->name('register');
+Route::get('recover/', 'Auth\RecoverAccountController@showEmailForm')->name('recoverPage');
+Route::get('recover/new', 'Auth\RecoverAccountController@getFinishRecoverPage')->name('newPasswordPage');
+Route::post('recover/new', 'Auth\RecoverAccountController@finishRecoverRequest')->name('newPassword');
+Route::get('test', 'Auth\RecoverAccountController@testFunction')->name('asd');

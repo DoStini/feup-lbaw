@@ -1,4 +1,4 @@
-.notification-number {
+#header-icons > div.notification-number {
     visibility: hidden;
     position: relative;
     top: -1em;
@@ -6,6 +6,7 @@
     width: 1.2em;
     height: 1.2em;
     padding-bottom: 1em;
+    margin-right: -1em;
 }
 
 #notification-content {

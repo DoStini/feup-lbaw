@@ -14,6 +14,10 @@ return [
             'code' => 403,
             'message' => 'The user is not a shopper'
         ],
+        'recover_failed' => [
+            'code' => 404,
+            'message' => 'Recover account link expired or invalid'
+        ],
         'blocked' => [
             'code' => 403,
             'message' => 'The user has been blocked'
@@ -80,5 +84,16 @@ return [
             'code' => 422,
             'message' => 'Coupon is already active'
         ]
-    ]
+    ],
+    'constants' => [
+        'auth' => [
+            'recover_link_expire' => 5,
+        ]
+    ],
+    'order' => [
+        'terminal_state' => [
+            'code' => 422,
+            'message' => 'Order state cannot be updated any further'
+        ]
+    ],
 ];

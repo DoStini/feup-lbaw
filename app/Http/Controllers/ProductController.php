@@ -6,6 +6,7 @@ use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\ApiError;
+use App\Models\Category;
 use Craft\StringHelper;
 
 
@@ -51,7 +52,8 @@ class ProductController extends Controller {
      * @return Response
      */
     public function search() {
-        return view('pages.search.products');
+        $categories = Category::where('parent_category', NULL)->get();
+        return view('pages.search.products', ['categories' => $categories]);
     }
 
     /**
@@ -73,6 +75,8 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
+
+
             $query = Product
                 ::with("photos")
                 ->when(
@@ -81,30 +85,28 @@ class ProductController extends Controller {
                     $q->leftJoin('wishlist', fn ($join) =>
                     $join->on('product.id', '=', 'wishlist.product_id')
                         ->where('wishlist.shopper_id', '=', $user->id))
-                )
-                ->where('is_active', '=', 'true')
-                ->when($request->text, function ($q) use ($request) {
-                    $words = explode(' ', $request->text);
-                    foreach ($words as &$word)
-                        $word = $word . ':*';
-                    $val = implode(' & ', $words);
-                    return $q->orWhereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
-                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
-                })
-                ->when($request->input('price-min'), function ($q) use ($request) {
-                    return $q->where('price', '>', [$request->input('price-min')]);
-                })
-                ->when($request->input('price-max'), function ($q) use ($request) {
-                    return $q->where('price', '<', [$request->input('price-max')]);
-                })
-                ->when($request->input('rate-min'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '>', [$request->input('rate-min')]);
-                })
-                ->when($request->input('rate-max'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '<', [$request->input('rate-max')]);
-                });
+                )->where('is_active', '=', 'true')
+                ->whereRaw('stock > 0');
+
+
+            $category_array = $request->input('categories');
+
+            if ($category_array != []) {
+                $current_idx = 0;
+                while (count($category_array) > $current_idx) {
+                    $category = Category::find($category_array[$current_idx]);
+
+                    $child_categories = $category->child_categories;
+                    foreach ($child_categories as $child) {
+                        array_push($category_array, strval($child->id));
+                    }
+                    $current_idx++;
+                }
+                $query = $query->join('product_category', 'product_category.product_id', '=', 'product.id')
+                    ->join('category', 'product_category.category_id', '=', 'category.id')
+                    ->whereIn('category.id', $category_array);
+            }
+
             switch ($request->order) {
                 case 'price-asc':
                     $query = $query->orderBy('price');
@@ -119,6 +121,31 @@ class ProductController extends Controller {
                     $query = $query->orderByDesc('avg_stars');
                     break;
             }
+
+            $query = $query->when($request->text, function ($q) use ($request) {
+                $words = explode(' ', $request->text);
+                foreach ($words as &$word)
+                    $word = $word . ':*';
+                $val = implode(' & ', $words);
+                return $q->where(function ($query) use ($val, $request) {
+                    $query->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
+                });
+            })
+                ->when($request->input('price-min'), function ($q) use ($request) {
+                    return $q->where('price', '>', [$request->input('price-min')]);
+                })
+                ->when($request->input('price-max'), function ($q) use ($request) {
+                    return $q->where('price', '<', [$request->input('price-max')]);
+                })
+                ->when($request->input('rate-min'), function ($q) use ($request) {
+                    return $q->where('avg_stars', '>', [$request->input('rate-min')]);
+                })
+                ->when($request->input('rate-max'), function ($q) use ($request) {
+                    return $q->where('avg_stars', '<', [$request->input('rate-max')]);
+                });
 
             $pageSize = $request->input('page-size');
             $page = $request->page;
@@ -137,7 +164,7 @@ class ProductController extends Controller {
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $this->serializeQuery($query->get())
+                "query" => $this->serializeQuery($query->get(['product.*']))
             ]);
         } catch (Exception $e) {
             dd($e);

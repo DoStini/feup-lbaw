@@ -14,7 +14,7 @@ class StaticPagesController extends Controller {
      * @return Response
      */
     public function home() {
-        return view('pages.home');
+        return view('pages.staticPages.home');
     }
 
     public function blocked() {
@@ -26,12 +26,16 @@ class StaticPagesController extends Controller {
         if(!$shopper || !$shopper->is_blocked) abort(404);
     
         Auth::logout();
-        return view('pages.blocked');
+        return view('pages.staticPages.blocked');
 
     }
 
     public function contactUs() {
-        return view('pages.home');
+        return view('pages.staticPages.contactUs');
+    }
+
+    public function aboutUs() {
+        return view('pages.staticPages.aboutUs');
     }
 
 }

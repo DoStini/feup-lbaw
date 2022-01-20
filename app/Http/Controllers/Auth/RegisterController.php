@@ -50,8 +50,7 @@ class RegisterController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function register(Request $request)
-    {
+    public function register(Request $request) {
         $this->validator($request->all())->validateWithBag('register_form');
 
         event(new Registered($user = $this->create($request->all())));
@@ -69,8 +68,8 @@ class RegisterController extends Controller {
         $shopper->save();
 
         return $request->wantsJson()
-                    ? new JsonResponse([], 201)
-                    : redirect($this->redirectPath());
+            ? new JsonResponse([], 201)
+            : redirect($this->redirectPath());
     }
 
     /**

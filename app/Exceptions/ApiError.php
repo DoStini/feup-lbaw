@@ -23,6 +23,16 @@ class ApiError {
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    public static function orderAtTerminalState() {
+        $err = Config::get('constants.order.terminal_state');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public static function couponNotActive() {
         $err = Config::get('constants.coupon.not_active');
         return ApiError::generateErrorMessage($err);
@@ -137,6 +147,16 @@ class ApiError {
      */
     public static function auth() {
         $err = Config::get('constants.authentication.auth');
+        return ApiError::generateErrorMessage($err);
+    }
+
+    /**
+     * Returns a json response with an error regarding user not authenticated
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function recoverFailed() {
+        $err = Config::get('constants.authentication.recover_failed');
         return ApiError::generateErrorMessage($err);
     }
 

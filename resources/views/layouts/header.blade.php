@@ -19,32 +19,32 @@
         </div>
 
         <div class="col-md-4 d-flex justify-content-center justify-content-md-end align-items-center">
-          <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center justify-content-between" id="header-icons">
             @if(Auth::check())
                 @if(!Auth::user()->is_admin)
                 @include("partials.dropdowncart")
                 <div>
-                  <a class="me-3" href={{route('getWishlistPage')}}>
+                  <a href={{route('getWishlistPage')}}>
                     <i class="bi bi-bookmark-heart-fill" style="color: #000000; font-size:1.5em;"></i>
                   </a>
                 </div>
-                @endif
                 <!-- Notification -->
                 <div class="dropdown">
-                    <a class="text-reset me-1 dropdown-toggle hidden-arrow" href="#" id="notification-dropdown"
+                    <a class="text-reset me-1 hidden-arrow" href="#" id="notification-dropdown"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-bell" style="color: #000000; font-size:1.5em;"></i>
+                        <i class="bi bi-bell-fill" style="color: #000000; font-size:1.5em;"></i>
                     </a>
                     <ul id="notification-content" class="dropdown-menu dropdown-menu-end" aria-labelledby="notification-dropdown">
                     </ul>
                 </div>
-                
+
                 <div class="notification-number">
                     <div class="new-notif"></div>
                 </div>
+                @endif
                 <!-- User -->
                 <div class="dropdown">
-                <a class="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
+                <a class="text-reset d-flex align-items-center hidden-arrow" href="#"
                     id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
                       <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" width="25" alt="" loading="lazy" />
@@ -154,13 +154,13 @@
         get(`/api/users/{{Auth::user()->id}}/notifications`)
             .then(data => {
                 handleNewRequest(data.data)
-                
+
                 if (data.data.new_nots > 0) {
                   notificationNumber.style.visibility = "visible";
                 }
             });
 
-        
+
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 

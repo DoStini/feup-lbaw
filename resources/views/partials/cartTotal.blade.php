@@ -11,12 +11,15 @@
             </tr>
             <tr>
                 <th>Subtotal:</th>
-                <td>{{$cartTotal}} €</td>
+                <td id="order-subtotal">{{$cartTotal}} €</td>
             </tr>
+            @if ($showTotal)
             <tr style="font-size: 1.2em;" id="order-total" >
                 <th>Total:</th>
                 <td>{{$cartTotal}} €</td>
             </tr>
+
+            @endif
         </table>
     </div>
 </div>
