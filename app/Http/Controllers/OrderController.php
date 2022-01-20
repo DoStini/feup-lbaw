@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class OrderController extends Controller {
 
@@ -77,6 +76,7 @@ class OrderController extends Controller {
             "created" => "paid",
             "paid" => "processing",
             "processing" => "shipped",
+            "canceled" => "canceled"
         ];
         return $next[$status];
     }
@@ -104,6 +104,11 @@ class OrderController extends Controller {
             return ApiError::orderAtTerminalState();
 
         $data["status"] = $this->getNextStatus($old_status);
+
+        if ($data["status"] == "canceled") {
+            return ApiError::orderCanceled();
+        }
+
         $order->update($data);
 
         event(new OrderUpdate($order->shopper->id, $order->id, $data['status']));
