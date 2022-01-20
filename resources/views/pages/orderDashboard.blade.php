@@ -98,13 +98,13 @@
         jsonBodyPost(`/api/orders/${id}/status`)
         .then((response) => {
             launchSuccessAlert("Order Updated Successfully!");
+            console.log("asd")
+            table.ajax.reload();
         })
         .catch((error) => {
             launchErrorAlert("Couldn't edit the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
         });
-        
-        table.ajax.reload();
     }
 </script>
 
-  @endsection
+@endsection
