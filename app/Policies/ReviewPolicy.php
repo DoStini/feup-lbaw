@@ -72,7 +72,7 @@ class ReviewPolicy
      */
     public function update(User $user, Review $review)
     {
-        return $user->is_admin && $review->creator_id === $user->id;
+        return $user->is_admin || $review->creator_id === $user->id;
     }
 
     /**
@@ -84,7 +84,7 @@ class ReviewPolicy
      */
     public function delete(User $user, Review $review)
     {
-        return $user->is_admin && $review->creator_id === $user->id;
+        return $user->is_admin || $review->creator_id === $user->id;
     }
 
     /**

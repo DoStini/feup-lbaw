@@ -279,7 +279,7 @@
         setRating(stars, `review-stars-${reviewID}`);
     }
 
-    function cancelReview(reviewID, origText, stars) {
+    function updateReview(reviewID, origText, stars) {
         const textElement = document.getElementById(`review-text-${reviewID}`);
         if(textElement == null) return;
         textElement.innerHTML = origText;
@@ -291,7 +291,7 @@
 
     function showUpdateReview(element, reviewID) {
         if(showUpdateReview.savedReview != null) {
-            cancelReview(showUpdateReview.savedReview.id, showUpdateReview.savedReview.text,
+            updateReview(showUpdateReview.savedReview.id, showUpdateReview.savedReview.text,
             showUpdateReview.savedReview.stars);
         }
 
@@ -319,7 +319,8 @@
         const cancelButton = document.createElement("button");
         cancelButton.innerHTML = "Cancel";
         cancelButton.className = "form-control btn btn-secondary ms-3";
-        cancelButton.onclick = () => cancelReview(reviewID, inner, showUpdateReview.savedReview.stars);
+        let origStars = showUpdateReview.savedReview.stars;
+        cancelButton.onclick = () => updateReview(reviewID, inner, origStars);
 
         iconBar.appendChild(cancelButton);
 
@@ -327,6 +328,23 @@
 
         confirmButton.innerHTML = "Confirm";
         confirmButton.className = "form-control btn btn-primary ms-3";
+        confirmButton.onclick = () => {
+            jsonBodyPost(`/api/reviews/${reviewID}/update`, {
+                text: document.getElementById(`edit-text-${reviewID}`).value,
+                stars: document.getElementById(`review-stars-${reviewID}`).value
+            }).then((response) => {
+                launchSuccessAlert('Review edited successfully!');
+                updateReview(reviewID, response.data.text, response.data.stars);
+            }).catch((error) => {
+                updateReview(reviewID, inner, origStars);
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+
+                launchErrorAlert("Couldn't edit review: " + error.response.data.message + "<br>" + errors);
+            })
+        }
 
         iconBar.appendChild(confirmButton);
     }

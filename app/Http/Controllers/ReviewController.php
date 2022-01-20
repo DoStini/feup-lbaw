@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiError;
 use App\Models\Photo;
 use App\Models\Product;
 use App\Models\Review;
@@ -44,6 +45,39 @@ class ReviewController extends Controller {
         return view('partials.review', ["reviews" => ReviewController::getProductReviews($product_id)->paginate($req->review_size ?? 5)])->render();
     }
 
+    private function editReviewValidator($data) {
+        return Validator::make($data, [
+            "stars" => "required|min:0|max:5|integer",
+            "text" => "required|between:1,1024",
+        ], [], [
+            "stars" => "rating",
+            "text" => "review body",
+        ]);
+    }
+
+    public function updateReview(Request $req, $id) {
+        $review = Review::findOrFail($id);
+
+        $this->authorize('update', [Review::class, $review]);
+
+        $this->editReviewValidator($req->all())->validate();
+
+        try {
+            $review->text = $req->text;
+            $review->stars = $req->stars;
+
+            $review->save();
+        } catch (\Exception $ex) {
+            return ApiError::unexpected();
+        }
+
+        return response()->json(
+            [
+                "text" => $review->text,
+                "stars" => $review->stars,
+            ]
+        );
+    }
 
     public function addReview(Request $req, $product_id) {
         $product = Product::findOrFail($product_id);

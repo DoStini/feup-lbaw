@@ -95,3 +95,5 @@ Route::group(
         Route::delete('/{product_id}/remove', 'WishlistController@delete');
     }
 );
+
+Route::middleware('auth.api')->post('/reviews/{id}/update', 'ReviewController@updateReview');
