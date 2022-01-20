@@ -275,79 +275,67 @@
         addEventToPagination();
     })
 
+    function handleVoteUpdate(data, reviewID) {
+        const upvoteButton = document.getElementById(`upvote-review-${reviewID}`);
+        const downvoteButton = document.getElementById(`downvote-review-${reviewID}`);
+        const score = document.getElementById(`score-review-${reviewID}`);
+        score.innerHTML = `${data.score} ${data.score !== 1 ? 'people' : 'person'} found this helpful.`;
+
+        if(data.vote === 'upvote') {
+            upvoteButton.classList.add("bi-hand-thumbs-up-fill")
+            upvoteButton.classList.remove("bi-hand-thumbs-up")
+            upvoteButton.dataset.vote = '1';
+
+            downvoteButton.classList.remove("bi-hand-thumbs-down-fill");
+            downvoteButton.classList.add("bi-hand-thumbs-down");
+            downvoteButton.dataset.vote = '0';
+        } else if(data.vote === 'downvote') {
+            upvoteButton.classList.remove("bi-hand-thumbs-up-fill")
+            upvoteButton.classList.add("bi-hand-thumbs-up")
+            upvoteButton.dataset.vote = '0';
+
+            downvoteButton.classList.add("bi-hand-thumbs-down-fill");
+            downvoteButton.classList.remove("bi-hand-thumbs-down");
+            downvoteButton.dataset.vote = '1';
+        } else {
+            upvoteButton.classList.remove("bi-hand-thumbs-up-fill")
+            upvoteButton.classList.add("bi-hand-thumbs-up")
+            upvoteButton.dataset.vote = '0';
+
+            downvoteButton.classList.remove("bi-hand-thumbs-down-fill");
+            downvoteButton.classList.add("bi-hand-thumbs-down");
+            downvoteButton.dataset.vote = '0';
+        }
+    }
+
     function vote(reviewID, vote) {
-        console.log(reviewID);
-        console.log(vote);
         const button = document.getElementById(`${vote}-review-${reviewID}`);
 
         if(button.dataset.vote === '1') {
-            console.log("try to delete");
+            deleteRequest(`/api/reviews/${reviewID}/vote`).then((response) => {
+                handleVoteUpdate(response.data, reviewID);
+            }).catch((error) => {
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+
+                launchErrorAlert("Couldn't remove vote: " + error.response.data.message + "<br>" + errors);
+            })
         } else {
             jsonBodyPost(`/api/reviews/${reviewID}/vote`, {
                 "vote": vote
             }).then((response) => {
-                const upvoteButton = document.getElementById(`upvote-review-${reviewID}`);
-                const downvoteButton = document.getElementById(`downvote-review-${reviewID}`);
-
-                const score = document.getElementById(`score-review-${reviewID}`);
-                score.innerHTML = `${response.data.score} ${response.data.score !== 1 ? 'people' : 'person'} found this helpful.`;
-
-                if(response.data.vote === 'upvote') {
-                    upvoteButton.classList.add("bi-hand-thumbs-up-fill")
-                    upvoteButton.classList.remove("bi-hand-thumbs-up")
-                    upvoteButton.dataset.vote = '1';
-
-                    downvoteButton.classList.remove("bi-hand-thumbs-down-fill");
-                    downvoteButton.classList.add("bi-hand-thumbs-down");
-                    downvoteButton.dataset.vote = '0';
-                } else {
-                    upvoteButton.classList.remove("bi-hand-thumbs-up-fill")
-                    upvoteButton.classList.add("bi-hand-thumbs-up")
-                    upvoteButton.dataset.vote = '0';
-
-                    downvoteButton.classList.add("bi-hand-thumbs-down-fill");
-                    downvoteButton.classList.remove("bi-hand-thumbs-down");
-                    downvoteButton.dataset.vote = '1';
-                }
+                handleVoteUpdate(response.data, reviewID);
             }).catch((error) => {
-                console.log(error);
+                let errors = "";
+                for(var key in error.response.data.errors) {
+                    errors = errors.concat(error.response.data.errors[key]);
+                }
+
+                launchErrorAlert("Couldn't update vote: " + error.response.data.message + "<br>" + errors);
             })
         }
-
-        // if(button.dataset.vote === '1') {
-        //     button.classList.remove("bi-hand-thumbs-up-fill");
-        //     button.classList.add("bi-hand-thumbs-up");
-        //     button.dataset.vote = '0';
-        // } else {
-        //     button.classList.remove("bi-hand-thumbs-up");
-        //     button.classList.add("bi-hand-thumbs-up-fill");
-
-        //     const otherButton = document.getElementById(`downvote-review-${reviewID}`);
-
-        //     otherButton.classList.add("bi-hand-thumbs-down");
-        //     otherButton.classList.remove("bi-hand-thumbs-down-fill");
-
-        //     button.dataset.vote = '1';
-        //     otherButton.dataset.vote =
-        // }
-    }
-
-    function downvote(button, reviewID) {
-        // if(button.dataset.vote === '1') {
-        //     button.classList.remove("bi-hand-thumbs-down-fill");
-        //     button.classList.add("bi-hand-thumbs-down");
-        //     button.dataset.vote = '0';
-        // } else {
-        //     button.classList.remove("bi-hand-thumbs-down");
-        //     button.classList.add("bi-hand-thumbs-down-fill");
-
-        //     const otherButton = document.getElementById(`upvote-review-${reviewID}`);
-
-        //     otherButton.classList.add("bi-hand-thumbs-up");
-        //     otherButton.classList.remove("bi-hand-thumbs-up-fill");
-
-        //     button.dataset.vote = '1';
-        // }
     }
 
     function resetIcons(reviewID, stars) {
@@ -393,9 +381,9 @@
         }
         ).catch((error) => {
             let errors = "";
-                for(var key in error.response.data.errors) {
-                    errors = errors.concat(error.response.data.errors[key]);
-                }
+            for(var key in error.response.data.errors) {
+                errors = errors.concat(error.response.data.errors[key]);
+            }
 
             launchErrorAlert("Couldn't remove review: " + error.response.data.message + "<br>" + errors);
         });

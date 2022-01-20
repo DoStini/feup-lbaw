@@ -38,6 +38,26 @@ class ReviewController extends Controller {
         ], $messages);
     }
 
+    public function removeVoteOnReview(Request $req, $id) {
+        $review = Review::findOrFail($id);
+
+        $this->authorize("voteOnReview", [Review::class, $review]);
+
+        $reviewVote = DB::table('review_vote')
+                ->where("review_id", "=", $id)
+                ->where("voter_id", "=", Auth::user()->id);
+
+        if(!$reviewVote->first()) {
+            return ApiError::validatorError(["vote" => "Review isn't voted by the user."]);
+        }
+
+        $reviewVote->delete();
+
+        return response()->json([
+            "score" => $review->fresh()->score,
+        ]);
+    }
+
     private function reviewVoteValidator($data) {
         return Validator::make($data, [
             "vote" => 'required|string|in:upvote,downvote',
