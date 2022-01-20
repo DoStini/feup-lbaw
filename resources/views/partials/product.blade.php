@@ -58,12 +58,18 @@
         <div class="product-info col-md-5">
             <div class="my-3">
                 <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-                <p>
-                    @for ($i = 1; $i <= 5; $i++) <i
-                        class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                        </i>
-                        @endfor
+                <div class="d-flex justify-content-between">
+                    <p>
+                        @for ($i = 1; $i <= 5; $i++) <i
+                            class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
+                            </i>
+                            @endfor
                     </p>
+                    @if($product->categories)
+                        <h5>Category: {{$product->categories[0]->name}}</h5>
+                    @endif
+                </div>
+
             </div>
 
             <div class="my-2 d-flex justify-content-between align-items-center">
