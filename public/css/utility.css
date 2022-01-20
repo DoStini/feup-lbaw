@@ -70,6 +70,10 @@
     color: rgb(63, 63, 63);
 }
 
+.cat-item:hover {
+    cursor: pointer;
+}
+
 @media (min-width: 768px) {
     .collapse.dont-collapse-sm {
       display: block;
