@@ -104,6 +104,41 @@ function setupAnimation(element, delay) {
     }, delay);
 }
 
+function changeFilterText(data) {
+    const categories = document.getElementById('filter-categories-text');
+    const prices = document.getElementById('filter-price-text');
+    const ratings = document.getElementById('filter-rating-text');
+    const order = document.getElementById('filter-sort-text');
+
+    console.log(data);
+    categories.innerHTML = data.catNames ? data.catNames.join(", ") : "None"
+    
+    if(!data.minPrice && !data.maxPrice) prices.innerHTML = "None"
+    else prices.innerHTML = `${data.minPrice ? data.minPrice : "No Minimum"} - ${data.maxPrice ? data.maxPrice : "No Maximum"}`
+    if(!data.minRating && !data.maxRating) ratings.innerHTML = "None"
+    else ratings.innerHTML = `${data.minRating ? data.minRating : "No Minimum"} - ${data.maxRating ? data.maxRating : "No Maximum"}`
+
+    switch (data.order) {
+        case 'price-asc':
+            order.innerHTML = "Ascending Price";
+            break;
+        case 'price-desc':
+            order.innerHTML = "Descending Price";
+            break;
+        case 'rate-asc':
+            order.innerHTML = "Ascending Rating";
+            break;
+        case 'rate-desc':
+            order.innerHTML = "Descending Rating";
+            break;
+        default:
+            order.innerHTML = "None";
+            break;
+    }
+
+
+}
+
 function createProduct(product, delay) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
@@ -233,6 +268,8 @@ function handleSearchProducts(response) {
     if (response.status !== 200) return;
 
     current = response.data;
+
+    changeFilterText(current.searchParams);
 
     setNewProducts(response.data);
 }

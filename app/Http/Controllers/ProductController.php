@@ -72,7 +72,6 @@ class ProductController extends Controller {
         $user = Auth::user();
         try {
 
-
             $query = Product
                 ::with("photos")
                 ->when(
@@ -85,7 +84,7 @@ class ProductController extends Controller {
                 ->whereRaw('stock > 0');
 
             $category_array = $request->input('categories');
-
+            
             if ($category_array != []) {
                 $current_idx = 0;
                 while (count($category_array) > $current_idx) {
@@ -155,11 +154,27 @@ class ProductController extends Controller {
 
             $query = $query->skip($page * $pageSize)->take($pageSize);
 
+            $searchParams = json_decode('{}');
+
+            if($request->input('categories')) {
+                $searchParams->catNames = array_map(function($id) { return Category::find($id)->name; }, $request->input('categories'));
+            }
+
+            if($request->input('price-min')) $searchParams->minPrice = $request->input('price-min');
+            if($request->input('price-max')) $searchParams->maxPrice = $request->input('price-max');
+            if($request->input('rate-min')) $searchParams->minRating = $request->input('rate-min');
+            if($request->input('rate-max')) $searchParams->maxRating = $request->input('rate-max') == 5 ? "" : $request->input('rate-max');
+
+            if($request->input('order')) $searchParams->order = $request->input('order');
+
+            if($request->text) $searchParams->text = $request->text;
+
             return response()->json([
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $this->serializeQuery($query->get(['product.*']))
+                "query" => $this->serializeQuery($query->get(['product.*'])),
+                "searchParams" => $searchParams
             ]);
         } catch (Exception $e) {
             dd($e);
