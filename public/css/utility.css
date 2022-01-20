@@ -83,3 +83,56 @@
   }
 
   
+  .card-img-top {
+      height: 40vh;
+      object-fit: cover;
+  }
+
+  .icon-link {
+    font-size: 2em;
+  }
+
+  .card-nunoc {
+      background-image: url('/img/empreendedor.png');
+      background-size: cover;
+      transition: 2s;
+  }
+
+  .card-nunoc:hover {
+    background-image: url('/img/pendurado.jpeg');
+}
+
+  .card-nunoa {
+    background-image: url('/img/nunoa.png');
+    background-size: cover;
+    transition: 2s;
+
+}
+
+.card-nunoa:hover {
+    background-image: url('/img/halloweennuno.jpg');
+}
+
+.card-joao {
+    background-image: url('/img/baltaeyes.jpg');
+    background-size: cover;
+    transition: 2s;
+
+}
+
+.card-joao:hover {
+    background-image: url('/img/balta.jpg');
+
+}
+
+.card-andre {
+    background-image: url('/img/andre.png');
+    background-size: cover;
+    -webkit-transition: background-image 2s ease-in-out;
+    transition: background-image 2s ease-in-out;
+}
+
+.card-andre:hover {
+    background-image: url('/img/dusto.jpeg');
+
+}

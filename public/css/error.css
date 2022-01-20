@@ -1,0 +1,49 @@
+.page-404 {
+    background-image: url("/img/500.jpg");
+    background-size: cover;
+}
+
+.page-403 {
+    background-image: url("/img/403.jpg");
+    background-size: cover;
+}
+
+.information-text {
+    position: absolute;
+    width:400px;
+    background-color: rgba(255, 255, 255, 0.479);
+    box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0.479);
+    backdrop-filter: blur(6px);
+    height: fit-content;
+}
+
+.information-text-404{
+    left: 20vw;
+    top: 15vh;
+}
+
+.information-text-403 {
+    left: 38vw;
+    top: 15vh
+}
+
+.message-title {
+    font-size: 3em;
+}
+
+.message-error {
+    font-size: 1.6em;
+    
+}
+
+@media (max-width: 800px) {
+    .information-text {
+        position: initial;
+        margin-top: 20vh;
+    }
+
+    .page {
+        display: flex;
+        justify-content: center;
+    }
+}
