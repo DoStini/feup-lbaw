@@ -36,7 +36,7 @@
         <div class="input-group">
             <input class="form-control" id="password-register" name="password" type="password" required>
             <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                <button type="button" class="btn btn-outline-secondary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt="Toggle Password"></button>
             </div>
         </div>
         @error('password', 'admin_register_form')
@@ -52,7 +52,7 @@
         <div class="input-group">
         <input class="form-control" id="password-confirm" type="password" name="password_confirmation" required>
             <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                <button type="button" class="btn btn-outline-secondary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt="Toggle Password"></button>
             </div>
         </div>
     </div>

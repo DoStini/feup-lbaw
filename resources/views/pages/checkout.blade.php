@@ -37,7 +37,7 @@
 
                 const html = `
                 <div id="product-${product.id}" class="card mb-5 search-products-item">
-                    <img class="card-img-top search-card-top" src="${productImg.url}" onerror="this.src='${fallBack}'">
+                    <img class="card-img-top search-card-top" alt="Product Image for ${product.name}" src="${productImg.url}" onerror="this.src='${fallBack}'">
                     <div class="card-body">
                         <h4 class="card-title" style="height: 2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical; overflow: hidden;">${capitalize(product.name)}</h4>
                         <div class="container ps-0 pe-0">

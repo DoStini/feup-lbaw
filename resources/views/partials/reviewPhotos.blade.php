@@ -32,7 +32,7 @@
 
         @if ($insertedReviewPhotos < 1)
         <div class="carousel-item active">
-            <img class="d-block w-100" src="/img/default.jpg">
+            <img class="d-block w-100" src="/img/default.jpg" alt="Default Review Image">
         </div>
         @endif
 

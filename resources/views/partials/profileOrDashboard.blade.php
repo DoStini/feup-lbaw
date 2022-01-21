@@ -9,9 +9,9 @@
                         else $photo_url = $shopper->user->photo->url;
                     @endphp
                     @if (File::exists(public_path($photo_url)))
-                        <img id="user-img" src={{asset($photo_url)}} class="img-fluid" alt="" loading="lazy" />
+                        <img id="user-img" src={{asset($photo_url)}} class="img-fluid" alt="Profile Picture" loading="lazy" />
                     @else
-                        <img id="user-img" src="/img/user.png" class="img-fluid" alt="" loading="lazy" />
+                        <img id="user-img" src="/img/user.png" class="img-fluid" alt="Default Profile Picture" loading="lazy" />
                     @endif
                 </div>
                 <div class="w-100 mt-3">

@@ -95,7 +95,7 @@
                 <div class="row">
                     @foreach ($product->photos as $photo)
                     <div id="photo-{{$photo->id}}" class="col-md-2 col-sm-4 col-6 my-2" style="position: relative;">
-                        <img class="edit-product-photo col-12" src="{{$photo->url}}" style="height: 10em;">
+                        <img class="edit-product-photo col-12" src="{{$photo->url}}" alt="Product Photo number {{$loop->iteration}} of {{$product->name}}" style="height: 10em;">
                         <i class="bi bi-x-lg remove-photo-icon"
                             onclick="deleteProductPhoto({{$photo->id}})">
                         </i>

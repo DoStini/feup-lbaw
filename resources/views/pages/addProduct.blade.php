@@ -129,7 +129,7 @@
                     {{-- <select class="address-select form-select" id="variantColor"></select>
                     {{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png", $color)}}
                     --}}
-                    <img id="variant-img" class="variant-color mx-4" src={{asset('img/notfound.jpg')}} onerror="this.src='{{asset('img/notfound.jpg')}}'">
+                    <img id="variant-img" class="variant-color mx-4" alt="Variant Color Image" src={{asset('img/notfound.jpg')}} onerror="this.src='{{asset('img/notfound.jpg')}}'">
                 </div>
             </div>
         </div>

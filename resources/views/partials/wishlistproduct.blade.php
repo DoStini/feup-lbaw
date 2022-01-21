@@ -3,7 +3,7 @@
         <div class="col-md-3 col-12">
             <a class="icon-click" href={{route('getProduct', ['id'=> $wishlistItem->id])}}>
                 <img src="{{asset($wishlistItem->photos[0]->url)}}"
-                    class="img-fluid rounded-start w-100 h-100 cart-product-image">
+                    class="img-fluid rounded-start w-100 h-100 cart-product-image" alt="Wishlist Product Photo of {{$wishlistItem->name}}">
             </a>
         </div>
         <div class="col-md-9 col-12 h-100">

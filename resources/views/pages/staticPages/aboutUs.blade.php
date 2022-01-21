@@ -68,7 +68,7 @@
             <img class="card-img-top card-joao" src="" alt=" ">
             <div class="card-body text-center">
               <h4 class="card-title">João Baltazar</h4>
-              <h6 class="card-subtitle mb-2 text-muted">Project Slave</h6>
+              <h6 class="card-subtitle mb-2 text-muted">Chief of Operations</h6>
               <p class="card-text"></p>
             </div>
             <div class="d-flex justify-content-evenly align-items-center flex-column">
@@ -81,7 +81,7 @@
             <img class="card-img-top card-nunoa" src="" alt=" ">
             <div class="card-body text-center">
               <h4 class="card-title">Nuno Alves</h4>
-              <h6 class="card-subtitle mb-2 text-muted">Project Slave</h6>
+              <h6 class="card-subtitle mb-2 text-muted">Systems Architect</h6>
               <p class="card-text"></p>
             </div>
             <div class="d-flex justify-content-evenly align-items-center flex-column">

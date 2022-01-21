@@ -7,7 +7,7 @@
       <div class="row d-flex align-items-center justify-content-between">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
           <a href={{route('home')}} class="ms-md-2">
-            <img src="/img/refurniture.svg" alt="" width="200" height="65" />
+            <img src="/img/refurniture.svg" alt="reFurniture Logo" width="200" height="65" />
           </a>
         </div>
 
@@ -46,9 +46,9 @@
                 <a class="text-reset d-flex align-items-center hidden-arrow" href="#"
                     id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
-                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="profile-pic rounded-circle" height="25" width="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="profile-pic rounded-circle" height="25" width="25" alt="Profile Picture" loading="lazy" />
                     @else
-                      <img id="header-user-img" src="/img/user.png" class="profile-pic rounded-circle" height="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src="/img/user.png" class="profile-pic rounded-circle" height="25" alt="Default Profile Picture" loading="lazy" />
                     @endif
                     <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000;">
                       {{strlen(explode(" ", Auth::user()->name)[0]) > 13 ?

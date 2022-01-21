@@ -7,9 +7,9 @@
       <video autoplay class="video-parallax video-mobile" loop muted>
         <source src="img/homepage.mp4" type="video/mp4">
       </video>
-      <img class="video-parallax image-desktop" src="/img/homepage.jpg" alt=""/>
+      <img class="video-parallax image-desktop" src="/img/homepage.jpg" alt="Homepage Background Image"/>
       <div id="logo-container" class="logo-container">
-        <img class="logo" src="/img/refurniture.svg" alt="" width="300" />
+        <img class="logo" src="/img/refurniture.svg" alt="reFurniture Logo" width="300" />
         <h1 class="title">We make new<br>beginnings <span id="keyword" class="keyword">easier.</span><span id="cursor"></span></h1>
         <div class="link-container">
             

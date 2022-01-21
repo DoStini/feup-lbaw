@@ -21,7 +21,7 @@
                     <div class="input-group">
                         <input class="form-control" id="password-register" name="password" type="password" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-primary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt="Toggle Password"></button>
                         </div>
                     </div>
                     @error('password', 'new_password_form')
@@ -37,12 +37,12 @@
                     <div class="input-group">
                     <input class="form-control" id="password-confirm" type="password" name="password_confirmation" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-primary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt="Toggle Password"></button>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Recover<span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
+                <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Recover<span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt="Register Arrow"></span></button>
             </form>
         </div>
     </div>

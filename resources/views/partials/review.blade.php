@@ -5,10 +5,10 @@
             <div class="row">
                 <div class="col d-md-flex justify-content-center">
                         @if(File::exists(public_path($review->creator->photo->url)))
-                        <img src={{asset($review->creator->photo->url)}} class="profile-pic rounded-circle" height="50" width="50" alt=""
+                        <img src={{asset($review->creator->photo->url)}} class="profile-pic rounded-circle" height="50" width="50" alt="Reviewer Profile Picture"
                         loading="lazy" />
                         @else
-                        <img src="/img/user.png" class="profile-pic rounded-circle" height="50" alt="" loading="lazy" />
+                        <img src="/img/user.png" class="profile-pic rounded-circle" height="50" alt="" loading="lazy" alt="Default Reviewer Profile Picture"/>
                         @endif
                 </div>
             </div>

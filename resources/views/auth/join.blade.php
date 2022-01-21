@@ -9,16 +9,6 @@
             <header>
                 <h2>Already have an account?<br>Sign in here</h2>
             </header>
-            {{--<form id="oauth-login" class="align-self-stretch">
-                @csrf
-
-                <button class="btn btn-primary w-100" value="oauth-login" type="submit">Sign in with Google <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
-            </form>
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="separator"></div>
-                <div>or</div>
-                <div class="separator"></div>
-            </div>--}}
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
 
@@ -38,7 +28,7 @@
                     <div class="input-group">
                         <input id="password-login" class="form-control" name="password" type="password" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-primary" value="password-login" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-login" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt="Toggle Password"></button>
                         </div>
                     </div>
                     @if ($errors->login_form->has('password'))
@@ -59,7 +49,7 @@
                     </div> --}}
                 </div>
 
-                <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
+                <button value="login" class="btn btn-primary w-100 mt-3" type="submit">Sign In <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt="Toggle Password"></span></button>
             </form>
         </section>
 
@@ -69,15 +59,6 @@
             <header>
                 <h2>Create an account</h2>
             </header>
-            {{--<form id="oauth-register" class="align-self-stretch">
-                @csrf
-                <button type="submit" value="oauth-register" class="btn btn-primary w-100" type="submit">Create account with Google <span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
-            </form>
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="separator"></div>
-                <div>or</div>
-                <div class="separator"></div>
-            </div>--}}
             <form id="register-form"  method="POST" action="{{ route('register') }}">
                 @csrf
 
@@ -110,7 +91,7 @@
                     <div class="input-group">
                         <input class="form-control" id="password-register" name="password" type="password" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-primary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-register" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt="Toggle Password"></button>
                         </div>
                     </div>
                     @error('password', 'register_form')
@@ -126,12 +107,12 @@
                     <div class="input-group">
                     <input class="form-control" id="password-confirm" type="password" name="password_confirmation" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-primary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt=""></button>
+                            <button type="button" class="btn btn-outline-primary" value="password-confirm" onclick="togglePassword(this);"><img src="{{asset('img/eye.svg')}}" alt="Toggle Password"></button>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Register<span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt=""></span></button>
+                <button type="submit" value="register" class="w-100 mt-3 btn btn-primary">Register<span class="m-2" ><img src="{{asset('img/arrow_right.svg')}}" alt="Register Arrow"></span></button>
             </form>
         </section>
     </div>
