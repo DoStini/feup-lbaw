@@ -1,8 +1,8 @@
 let dropdownElements;
 let dropdowns;
 
-function updateAny(event, id) {
-    const formData = new FormData(document.getElementById(`edit-order-status-form-${id}`));
+function updateAny(event, form, id) {
+    const formData = new FormData(form);
 
     const dropdownOrderStatus = dropdowns[`dropdown-menu-order-status-btn-${id}`];
     dropdownOrderStatus.hide();
