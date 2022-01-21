@@ -55,7 +55,6 @@
                         .then(response => {
                             if (response.status === 200) {
                                 selector.validInput();
-                                console.log(response.data);
 
                                 delete outOfStock[elem.dataset.id];
 
@@ -90,8 +89,6 @@
                 }
             });
             document.getElementById(`cart-number-selector-${elem.dataset.id}`).appendChild(selector);
-
-            console.log(elem.dataset.amount, elem.dataset.stock);
 
             if(parseInt(elem.dataset.amount) > parseInt(elem.dataset.stock)) {
                 selector.invalidInput(`Product's stock is ${elem.dataset.stock}`);

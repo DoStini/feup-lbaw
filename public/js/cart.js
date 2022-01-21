@@ -47,7 +47,6 @@ function removeFromWishlistRequest(id, callback) {
         callback && callback(response);
     })
     .catch((error) => {
-        console.log(error.response)
         if(error.response) {
             if(error.response.data) {
                 let errors = "";

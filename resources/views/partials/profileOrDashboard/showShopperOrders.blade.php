@@ -205,7 +205,6 @@
         function cancelOrder(orderId) {
             const confirmElem =  document.getElementById("confirm-cancel");
             let confirmCancel = new bootstrap.Modal(confirmElem);
-            console.log(confirmElem)
             confirmElem.querySelector('.cancel-order-btn').addEventListener("click", () => {
             jsonBodyPost(`/api/orders/${orderId}/cancel`)
             .then(() => {
