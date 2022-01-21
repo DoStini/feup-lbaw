@@ -33,12 +33,17 @@
         'ajax': {
             'url': '/api/orders/',
         },
+        "initComplete": function(settings, json) {
+            document.querySelectorAll("#order-dashboard-table th").forEach((elem) => {
+                elem.classList.remove("font-monospace");
+            })
+        },
         serverSide: true,
         'order': [[5, 'asc'],[3, 'desc']],
         'columnDefs':[
-            { 'name': 'id', 'targets': 0, 'className': 'text-center'},
+            { 'name': 'id', 'targets': 0, 'className': 'font-monospace'},
             {
-                'name': 'name', 'targets': 1, 'className': 'text-center',
+                'name': 'name', 'targets': 1,
                 'render': function(data, type, row) {
                     if(type === "display") {
                         data = data + ` (${row[7]})`;
@@ -47,8 +52,8 @@
                     return data;
                 }
             },
-            { 'name': 'timestamp', 'targets': 2, 'className': 'text-center'},
-            { 'name': 'last_update', 'targets': 3, 'className': 'text-center'},
+            { 'name': 'timestamp', 'targets': 2, 'className': 'font-monospace'},
+            { 'name': 'last_update', 'targets': 3, 'className': 'font-monospace'},
             {
                 'name': 'total', 'targets': 4,
                 'render': function(data, type, row) {
@@ -57,7 +62,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'font-monospace'
             },
             {
                 'name': 'status', 'targets': 5,
@@ -68,7 +73,7 @@
                         data = text;
                     }
                     return data;
-                }, 'className': 'text-center'
+                }, 'className': 'td-text-center'
             },
             {
                 'targets':6, 'orderable': false, 'searchable': false,
@@ -86,7 +91,7 @@
                     }
 
                     return data;
-                }, 'className': 'text-center'
+                }, 'className': 'td-text-center'
             },
             {
                 'targets':7, 'orderable': false, 'visible':false, 'name':'shopper_id'
@@ -102,7 +107,7 @@
         .catch((error) => {
             launchErrorAlert("Couldn't edit the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
         });
-        
+
         table.ajax.reload();
     }
 </script>

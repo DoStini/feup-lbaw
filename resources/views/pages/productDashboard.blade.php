@@ -31,11 +31,16 @@
             'url': '/api/products/list',
         },
         serverSide: true,
+        "initComplete": function(settings, json) {
+            document.querySelectorAll("#product-dashboard-table th").forEach((elem) => {
+                elem.classList.remove("font-monospace");
+            })
+        },
         'order': [[0, 'desc']],
         'columnDefs':[
-            { 'name': 'id', 'targets': 0, 'className': 'text-center', 'width':'6em'},
-            { 'name': 'name', 'targets': 1, 'className': 'text-center'},
-            { 'name': 'stock', 'targets': 2, 'className': 'text-center', 'width':'6em'},
+            { 'name': 'id', 'targets': 0, 'width':'6em', 'className': 'font-monospace'},
+            { 'name': 'name', 'targets': 1},
+            { 'name': 'stock', 'targets': 2, 'className': 'font-monospace', 'width':'6em'},
             {
                 'name': 'price', 'targets': 3, 'searchable':false, 'width':'6em',
                 'render': function(data, type, row) {
@@ -44,7 +49,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'font-monospace'
             },
             {
                 'name': 'avg_stars', 'targets': 4, 'searchable':false, 'width': '6em',
@@ -54,7 +59,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'font-monospace'
             },
             {
                 'targets':5, 'orderable': false, 'searchable': false, 'width':'7em',
@@ -71,7 +76,7 @@
                     }
 
                     return data;
-                }, 'className': 'text-center'
+                }, 'className': 'td-text-center'
             },
         ]
     });
