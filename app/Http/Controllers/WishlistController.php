@@ -43,8 +43,11 @@ class WishlistController extends Controller {
     public function show(Request $request) {
         $userId = $request->route("id");
 
-        $user = User::findOrFail($userId);
         $shopper = Shopper::findOrFail($userId);
+
+        if ($shopper->user->is_deleted) {
+            abort(404);
+        }
 
         return view('pages.profile', ['shopper' => $shopper, 'page' => 'wishlist']);
     }

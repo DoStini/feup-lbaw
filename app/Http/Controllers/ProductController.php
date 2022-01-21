@@ -435,6 +435,8 @@ class ProductController extends Controller {
                 "price" => $request->input('price'),
             ]);
 
+            $product->categories()->attach($request->input('category-id'));
+
             foreach ($variants as $prodID => $color) {
                 if ($prodID == $id + 1) continue;
                 $productToUpdate = Product::find($prodID);
