@@ -184,7 +184,16 @@ class ProductController extends Controller {
 
             if ($request->text) $searchParams->text = $request->text;
 
-            $query_obj = $query->get(['product.*', 'category.name AS cat_name', 'wishlist.shopper_id AS wishlisted']);
+            $query_params = ['product.*', 'category.name AS cat_name'];
+
+            if ($user) {
+                $query_params = array_merge(
+                    $query_params,
+                    ['wishlist.shopper_id AS wishlisted'],
+                );
+            }
+
+            $query_obj = $query->get($query_params);
 
             return response()->json([
                 "lastPage" => $lastPage,
@@ -194,6 +203,7 @@ class ProductController extends Controller {
                 "searchParams" => $searchParams
             ]);
         } catch (Exception $e) {
+            dd($e);
             return response()->json(
                 ['message' => 'Unexpected error'],
                 401
