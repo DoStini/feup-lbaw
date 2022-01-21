@@ -110,22 +110,28 @@ class CouponController extends Controller {
         ]);
     }
 
+    private function validateVerify(Request $request) {
+        return Validator::make($request->all(), [
+            'code' => 'required|string|min:1|max:20|exists:coupon,code',
+            'total' => 'required|numeric',
+        ]);
+    }
+
     /**
-     * Retrieves possible coupons for a given input
+     * Validates a coupon
      */
-    public function search(Request $request) {
-        if (($v = $this->validateList($request))->fails()) {
+    public function verifyCoupon(Request $request) {
+        if (($v = $this->validateVerify($request))->fails()) {
             return ApiError::validatorError($v->errors());
         }
 
-        $query = Coupon
-            ::where("code", "ILIKE", $request->code . "%")
-            ->where("is_active", "=", "TRUE")
-            ->where("minimum_cart_value", "<=", (@$request->min ?: 0))
-            ->take(15)
-            ->get();
+        $coupon = Coupon::where("code", "=", $request->code)->first();
 
-        return $query;
+        if ($coupon->minimum_cart_value > $request->total) {
+            return ApiError::couponInvalid();
+        }
+
+        return $coupon;
     }
 
     /**
