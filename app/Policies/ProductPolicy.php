@@ -60,7 +60,7 @@ class ProductPolicy {
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Product $product) {
-        //
+        return $user->is_admin;
     }
 
     /**

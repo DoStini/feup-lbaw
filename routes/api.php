@@ -18,6 +18,11 @@ Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.
 Route::post('/orders/{id}/cancel', 'OrderController@cancel')->middleware(['auth.api'])->name("cancel_order");
 
 Route::get('/products/variants', 'ProductController@variants');
+Route::prefix('/products/{id}')->middleware(['auth.api'])->group(function () {
+    Route::delete('/', 'ProductController@removeProduct')->name('removeProduct');
+    Route::delete('/photo/{photo_id}', 'ProductController@removeProductPhoto')->name('removeProductPhoto');
+    Route::post('/photo/add', 'ProductController@addProductImage')->name('addProductPhoto');
+});
 Route::get('/products', [
     'middleware' => 'searchProducts',
     'uses' => 'ProductController@list'
@@ -44,8 +49,6 @@ Route::group(
 
 Route::post('/users/{id}/block', 'ShopperController@blockShopper');
 Route::post('/users/{id}/unblock', 'ShopperController@unblockShopper');
-
-
 Route::post('/account/recover', 'Auth\RecoverAccountController@submitRecoverRequest');
 
 Route::group(
@@ -96,8 +99,9 @@ Route::group(
         Route::delete('/{product_id}/remove', 'WishlistController@delete');
     }
 );
-
 Route::middleware('auth.api')->post('/reviews/{id}/update', 'ReviewController@updateReview');
 Route::middleware('auth.api')->delete('/reviews/{id}/delete', 'ReviewController@deleteReview');
 Route::middleware('auth.api')->post('/reviews/{id}/vote', 'ReviewController@voteOnReview');
 Route::middleware('auth.api')->delete('/reviews/{id}/vote/', 'ReviewController@removeVoteOnReview');
+
+Route::get('/category', 'CategoryController@search');

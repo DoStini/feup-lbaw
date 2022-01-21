@@ -26,11 +26,16 @@
         "style-loader": "^3.3.1"
     },
     "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^31.1.0",
+        "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
+        "@ckeditor/ckeditor5-markdown-gfm": "^31.1.0",
         "@popperjs/core": "^2.11.0",
         "bootstrap-icons": "^1.7.2",
         "datatables.net": "^1.11.3",
         "datatables.net-bs5": "^1.11.3",
         "datatables.net-responsive": "^2.2.9",
-        "datatables.net-responsive-bs5": "^2.2.9"
+        "datatables.net-responsive-bs5": "^2.2.9",
+        "remarkable": "^2.0.1",
+        "stackedit-js": "^1.0.7"
     }
 }
