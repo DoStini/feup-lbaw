@@ -350,7 +350,6 @@ function sendSearchProductsRequest(callback, page) {
         ...getInputs(),
     }
 
-    console.log(query);
     getQuery(`/api/products`, query).then(callback);
 }
 

@@ -1,5 +1,3 @@
-<script type="text/javascript" src={{ asset('js/login.js') }}></script>
-
 @extends('layouts.app')
 
 @section('title', 'Coupons Dashboard')
@@ -23,7 +21,7 @@
                 </span>
             @enderror
             </div>
-        
+
             <div class="form-group col-md-3">
                 <label for="percentage">Discount</label>
                 <input class="form-control" id="percentage" type="number" min="0" max="100" name="percentage" value="{{ old('percentage') }}" step="0.05" required>
@@ -33,7 +31,7 @@
                     </span>
                 @enderror
             </div>
-        
+
             <div class="form-group col-md-3">
                 <label for="minimum_cart_value">Minimum Cart Value</label>
                 <input class="form-control" id="minimum_cart_value" type="number" min="0" name="minimum_cart_value" value="{{ old('minimum_cart_value') }}" required>
@@ -49,7 +47,7 @@
             <input type="hidden" name="is_active" value="off">
             <input name="is_active" id="is_active" class="form-check-input" type="checkbox"
             aria-label="Active?" checked="{{ old('is_active') || true }}">
-    
+
             <label class="form-check-label mt-1" for="is_active">Active?</label>
         </div>
         <button type="submit" class="w-100 mt-3 btn btn-primary">Create Coupon</button>
