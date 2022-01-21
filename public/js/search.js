@@ -145,7 +145,7 @@ function createProduct(product, delay) {
     const wishlisted = !product.wishlisted; // If the product is wihslisted, shopper will not be null
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
-            <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'" alt="Product Image for ${product.name}>
+            <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'" alt="Product Image for ${product.name}">
             <div class="card-body">
                 <h4 class="card-title" style="height: 2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical; overflow: hidden;">${capitalize(product.name)}</h4>
                 <h6>${product.cat_name}</h6>
