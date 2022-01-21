@@ -204,14 +204,11 @@ function createProduct(product, delay) {
 }
 
 function insertNextPageButton(delay) {
-    console.log(current.currentPage, current.lastPage)
     const nextButton = document.getElementById("next-page-btn-products");
     if (nextButton)
         nextButton.remove();
-        console.log("delay:",delay);
 
     if (current.currentPage >= current.lastPage) return;
-    console.log("adasda441")
 
     const button = document.createElement("div");
     button.id = "next-page-btn-products";
@@ -223,8 +220,6 @@ function insertNextPageButton(delay) {
     });
 
     document.getElementById("search-area").appendChild(button);
-    console.log(button.querySelector('i'))
-    console.log(document.getElementById("search-area"))
     if (delay !== 0)
         setupAnimation(button.querySelector("i"), delay);
 }

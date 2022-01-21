@@ -91,9 +91,9 @@
                     let text = "";
                     if(type === 'display') {
                         text = `
-                        <div class="d-flex justify-content-around" id="dropdown-menu-order-status-${row[0]}" style="font-size: 1.2em;">
+                        <div class="d-flex justify-content-around align-items-end" id="dropdown-menu-order-status-${row[0]}" style="font-size: 1.2em;">
                             <div class="dropdown dropstart">
-                                <button class="p-1 dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
+                                <button class="p-0 pe-1 dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-pencil-square icon-click" data-bs-toggle="tooltip"
                                     title="Advance Status"></i>
@@ -113,11 +113,11 @@
                                         <button type="submit" class="btn btn-primary">Edit Order</button>
                                     </form>
                                 </div>
-                                <a class="btn p-1 bi bi-arrow-up-circle-fill icon-click" onclick="update(${row[0]})"'
-                                data-bs-toggle="tooltip" title="Update Order Status"></a>
-                                <a class="btn p-1 bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
-                                    data-bs-toggle="tooltip" title="Go to Order Page"></a>
                             </div>
+                            <a class="pe-1 bi bi-arrow-up-circle-fill icon-click" onclick="update(${row[0]})"'
+                                data-bs-toggle="tooltip" title="Update Order Status"></a>
+                            <a class="bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
+                                data-bs-toggle="tooltip" title="Go to Order Page"></a>
                         </div>`;
                         data = text;
                     }

@@ -58,11 +58,11 @@
                     if(type === 'display') {
                         text = `
                         <div class="d-flex justify-content-around" style="font-size: 1.2em;">
-                            <a class="bi bi-pencil-square icon-click px-1" href="/users/${row[0]}/private/" data-bs-toggle="tooltip" title="Edit User Info"></a>
+                            <a class="bi bi-pencil-square icon-click pe-1" href="/users/${row[0]}/private/" data-bs-toggle="tooltip" title="Edit User Info"></a>
                             ${
                                 row[6] == 'YES'
-                                    ? `<a class="bi bi-check-circle icon-click" onclick="unblock(${row[0]})" data-bs-toggle="tooltip" title="Unblock User"></a>`
-                                    : `<a class="bi bi-slash-circle-fill icon-click" onclick="block(${row[0]})" data-bs-toggle="tooltip" title="Block User"></a>`
+                                    ? `<a class="bi bi-check-circle icon-click pe-1" onclick="unblock(${row[0]})" data-bs-toggle="tooltip" title="Unblock User"></a>`
+                                    : `<a class="bi bi-slash-circle-fill icon-click pe-1" onclick="block(${row[0]})" data-bs-toggle="tooltip" title="Block User"></a>`
                             }
                             <a class="bi bi-info-circle-fill icon-click" href="/users/${row[0]}" data-bs-toggle="tooltip" title="Go to User Page"></a>
                         </div>`;
