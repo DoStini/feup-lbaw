@@ -65,7 +65,7 @@
     </div>
     <div class="product-info col-md-5">
         <div class="my-3">
-            <h2 class="m-0" style="text-align: justify;">{{strtoupper($product->name)}}</h2>
+            <h2 class="m-0">{{strtoupper($product->name)}}</h2>
             @if($product->categories->count() > 0)
             <h5>Category: {{$product->categories->first()->name}}</h5>
             @endif
@@ -462,7 +462,7 @@
         iconBar.appendChild(confirmButton);
     }
 
-    let val = '@php echo ($product->description) @endphp';
+    let val = `@php echo ($product->description) @endphp`;
     const patt = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi
     val =  val.replace(patt, '')
 
