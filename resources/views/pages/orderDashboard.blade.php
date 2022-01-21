@@ -100,7 +100,7 @@
                                 </button>
 
                                 <div class="dropdown-menu"  aria-labelledby="dropdown-menu-order-status-btn-${row[0]}">
-                                    <form class="px-4 py-3" id="edit-order-status-form-${row[0]}" onsubmit="updateAny(event, ${row[0]});">
+                                    <form class="px-4 py-3" id="edit-order-status-form-${row[0]}" onsubmit="updateAny(event, this, ${row[0]});">
                                         <div class="mb-3">
                                             <label for="order-status-${row[0]}" class="form-label">Edit Order Status</label>
                                             <select id="order-status-${row[0]}" name="status" class="form-select">
@@ -130,19 +130,6 @@
             }
         ]
     });
-
-    function update(id) {
-        jsonBodyPost(`/api/orders/${id}/status`)
-        .then((response) => {
-            launchSuccessAlert("Order Updated Successfully!");
-            table.ajax.reload();
-        })
-        .catch((error) => {
-            launchErrorAlert("Couldn't edit the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
-        });
-
-        table.ajax.reload();
-    }
 </script>
 
 @endsection
