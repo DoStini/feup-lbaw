@@ -142,7 +142,7 @@ function createProduct(product, delay) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
 
-    const wishlisted = !product.shopper_id; // If the product is wihslisted, shopper will not be null
+    const wishlisted = !product.wishlisted; // If the product is wihslisted, shopper will not be null
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
@@ -204,14 +204,14 @@ function createProduct(product, delay) {
 }
 
 function insertNextPageButton(delay) {
-    const nextButton = document.getElementById("next-page-btn");
+    const nextButton = document.getElementById("next-page-btn-products");
     if (nextButton)
         nextButton.remove();
 
     if (current.currentPage >= current.lastPage) return;
 
     const button = document.createElement("div");
-    button.id = "next-page-btn";
+    button.id = "next-page-btn-products";
     button.className = "d-flex justify-content-center align-items-center";
     button.innerHTML = `<i class="bi bi-arrow-down-circle-fill btn next-page-search"></i>`;
 
@@ -220,7 +220,6 @@ function insertNextPageButton(delay) {
     });
 
     document.getElementById("search-area").appendChild(button);
-
     if (delay !== 0)
         setupAnimation(button.querySelector("i"), delay);
 }
@@ -346,7 +345,6 @@ function sendSearchProductsRequest(callback, page) {
         ...getInputs(),
     }
 
-    console.log(query);
     getQuery(`/api/products`, query).then(callback);
 }
 

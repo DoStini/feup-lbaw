@@ -57,13 +57,6 @@ class RecoverAccountController extends Controller {
         ]);
     }
 
-    public function testFunction() {
-        $user = User::find(6);
-        Mail::to("andre.julio.moreira@hotmail.com")->send(new RecoverAccount($user, "asdasdasdas"));
-
-        return new RecoverAccount($user, "asdipjasipodjaspiodj");
-    }
-
     public function getFinishRecoverPage(Request $request) {
         if ($this->validateFinishRecoverRequest($request)->fails()) {
             return view('errors.invalidtoken');

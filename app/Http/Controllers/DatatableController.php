@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -47,17 +46,31 @@ class DatatableController extends Controller {
         }
 
         $searchTerm = $req->input("search")["value"];
+        $searched = 0;
         foreach ($req->input("columns") as $col) {
             $colName = $col["name"];
             if ($col["searchable"] && $colName !== null) {
                 $colName = $this->escapeColumnName($colName);
+                error_log($colName);
 
                 if($searchTerm !== null) {
-                    $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
+                    if($searched === 0) {
+                        $query->whereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
+                    } else {
+                        $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $searchTerm . "%"]);
+                    }
+
+                    $searched++;
                 }
 
                 if($col["search"] !== null && $col["search"]["value"] != null) {
-                    $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $col["search"]["value"] . "%"]);
+                    if($searched === 0) {
+                        $query->whereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $col["search"]["value"]  . "%"]);
+                    } else {
+                        $query->orWhereRaw('"' . $colName . '"::text ILIKE ?', ["%" . $col["search"]["value"]  . "%"]);
+                    }
+
+                    $searched++;
                 }
             }
         }

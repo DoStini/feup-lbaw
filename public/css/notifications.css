@@ -20,9 +20,9 @@
 .new-notif {
     background: rgb(255, 255, 255);
     border-radius: 50%;
-    border: 10px solid rgb(255, 255, 255);
-    width: 20px;
-    height: 20px;
+    border: 8px solid rgb(255, 255, 255);
+    width: 15px;
+    height: 15px;
     animation: load 1s ease-out infinite;
 }
 
@@ -31,7 +31,7 @@
         background: #e6b580;
     }
     80% {
-        background: #f3f1ee;
+        background: #e4c393;
     }
     100% {
         border: 0px solid rgb(255, 255, 255);

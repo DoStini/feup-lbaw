@@ -6,7 +6,7 @@
     <div class="container">
       <div class="row d-flex align-items-center justify-content-between">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
-          <a href={{route('getProductSearch')}} class="ms-md-2">
+          <a href={{route('home')}} class="ms-md-2">
             <img src="/img/refurniture.svg" alt="" width="200" height="65" />
           </a>
         </div>
@@ -46,9 +46,9 @@
                 <a class="text-reset d-flex align-items-center hidden-arrow" href="#"
                     id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
-                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" width="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="profile-pic rounded-circle" height="25" width="25" alt="" loading="lazy" />
                     @else
-                      <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src="/img/user.png" class="profile-pic rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
                     <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000;">
                       {{strlen(explode(" ", Auth::user()->name)[0]) > 13 ?
@@ -128,7 +128,6 @@
 
             if (data.new_nots > 0) {
                 notificationNumber.style.visibility = "visible";
-                console.log('new notif');
             }
 
             skip += notifications.length;
@@ -169,7 +168,7 @@
 
 
         // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
+        // Pusher.logToConsole = true;
 
         const pusher = new Pusher('4c7db76f6f7fd6381f0e', {
             cluster: 'eu'
@@ -218,7 +217,6 @@
         notification.addEventListener("click", () => {
             formDataPost(`/api/users/{{Auth::user()->id}}/notifications/`)
                 .then(data => {
-                    console.log(data);
                     notificationNumber.style.visibility = "hidden";
                 });
         });

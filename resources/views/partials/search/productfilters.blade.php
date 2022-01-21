@@ -83,7 +83,7 @@
         </div>
     </div>
     <div class="row align-items-center">
-        <div class="col-md-4 col-sm-12 d-flex justify-content-center">
+        <div class="col-md-4 col-sm-12 d-flex justify-content-center my-md-0 my-4">
             <button type="reset" class="btn btn-primary col-lg-8 col-md-12 w-50">
                 Reset Filters
             </button>

@@ -10,20 +10,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class WishlistUpdate {
+class WishlistUpdate implements ShouldBroadcast {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     private $id;
-    public $productId;
+    public $product_id;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($id, $productId) {
+    public function __construct($id, $product_id) {
         $this->id = $id;
-        $this->productId = $productId;
+        $this->product_id = $product_id;
     }
 
     public function broadcastOn() {

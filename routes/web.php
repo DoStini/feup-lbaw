@@ -14,6 +14,7 @@
 Route::get('/', 'StaticPagesController@home')->name('home');
 Route::get('blocked', 'StaticPagesController@blocked')->name('blocked');
 Route::get('contact-us', 'StaticPagesController@contactUs')->name('contact-us');
+Route::post('contact-us', 'StaticPagesController@submitContact')->name('contact-us-submit');
 Route::get('about-us', 'StaticPagesController@aboutUs')->name('about-us');
 
 // Users
@@ -64,4 +65,3 @@ Route::post('register', 'Auth\RegisterController@register')->name('register');
 Route::get('recover/', 'Auth\RecoverAccountController@showEmailForm')->name('recoverPage');
 Route::get('recover/new', 'Auth\RecoverAccountController@getFinishRecoverPage')->name('newPasswordPage');
 Route::post('recover/new', 'Auth\RecoverAccountController@finishRecoverRequest')->name('newPassword');
-Route::get('test', 'Auth\RecoverAccountController@testFunction')->name('asd');

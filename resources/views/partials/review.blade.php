@@ -1,21 +1,23 @@
 @foreach ($reviews as $review)
 <div class="row mb-4" id="full-review-{{$review->id}}">
     <div class="col-md-2">
-        <div class="row">
-            <div class="col d-md-flex justify-content-center">
-                @if(File::exists(public_path($review->creator->photo->url)))
-                <img src={{asset($review->creator->photo->url)}} class="rounded-circle" height="50" width="50" alt=""
-                loading="lazy" />
-                @else
-                <img src="/img/user.png" class="rounded-circle" height="50" alt="" loading="lazy" />
-                @endif
+        <a href={{route("getUser", ["id" => $review->creator_id])}} class="text-dark text-decoration-none">
+            <div class="row">
+                <div class="col d-md-flex justify-content-center">
+                        @if(File::exists(public_path($review->creator->photo->url)))
+                        <img src={{asset($review->creator->photo->url)}} class="profile-pic rounded-circle" height="50" width="50" alt=""
+                        loading="lazy" />
+                        @else
+                        <img src="/img/user.png" class="profile-pic rounded-circle" height="50" alt="" loading="lazy" />
+                        @endif
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col text-md-center">
-                <span>{{$review->creator->name}}</span>
+            <div class="row mt-2">
+                <div class="col text-md-center fw-bold">
+                    <span>{{$review->creator->name}}</span>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col">
         <div class="row mb-2">

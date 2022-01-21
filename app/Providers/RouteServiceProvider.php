@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
-class RouteServiceProvider extends ServiceProvider
-{
+class RouteServiceProvider extends ServiceProvider {
     /**
      * The path to the "home" route for your application.
      *
@@ -17,7 +16,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/products'; 
+    public const HOME = '/products';
 
     /**
      * The controller namespace for the application.
@@ -33,18 +32,10 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            if(app()->environment('local')) {
-                Route::prefix('dev')
-                    ->middleware('web')
-                    ->namespace($this->namespace)
-                    ->group(base_path('routes/dev.php'));
-            }
-
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)
@@ -61,8 +52,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function configureRateLimiting()
-    {
+    protected function configureRateLimiting() {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });

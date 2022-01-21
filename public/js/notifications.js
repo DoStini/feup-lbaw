@@ -19,7 +19,7 @@ function buildOrderNotification(notification) {
     html.innerHTML = `<div class="dropdown-item">
                         <p class="text-center">${message}</p>
                         <div>
-                            <h6 class="text-center">Product ${notification.order_id} is now <a class="badge rounded-pill badge-decoration-none badge-${notification.order_notif_type} ">
+                            <h6 class="text-center">Order ${notification.order_id} is now <a class="badge rounded-pill badge-decoration-none badge-${notification.order_notif_type} ">
                             ${notification.order_notif_type.toUpperCase()}
                         </a></h6>
                         </div>
@@ -32,7 +32,7 @@ function buildOrderNotification(notification) {
 }
 
 function buildCartNotification(notification) {
-    const message = "A product's price in <br> your cart has changed";
+    const message = `Product ${notification.product_id} price in <br> your cart has changed`;
     const html = document.createElement('li');
     html.style.cursor = "pointer";
     html.innerHTML = `<div class="dropdown-item">
@@ -46,7 +46,7 @@ function buildCartNotification(notification) {
 }
 
 function buildWishlistNotification(notification) {
-    const message = "A product in your <br> wishlist is now available";
+    const message = `Product ${notification.product_id} in your <br> wishlist is now available`;
     const html = document.createElement('li');
     html.style.cursor = "pointer";
     html.innerHTML = `<div class="dropdown-item">

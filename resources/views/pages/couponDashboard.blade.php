@@ -32,15 +32,20 @@
         'ajax': {
             'url': '/api/coupon/',
         },
+        "initComplete": function(settings, json) {
+            document.querySelectorAll("#coupon-dashboard-table th").forEach((elem) => {
+                elem.classList.remove("font-monospace");
+            })
+        },
         serverSide: true,
         'order': [[1, 'desc']],
         'columnDefs':[
-            { 'name': 'id', 'targets': 0, 'className': 'text-center', 'width':'6em'},
-            { 'name': 'code', 'targets': 1, 'className': 'text-center'},
-            { 'name': 'percentage', 'targets': 2, 'className': 'percentage', 'width':'6em'},
+            { 'name': 'id', 'targets': 0, 'className': 'font-monospace', 'width':'6em'},
+            { 'name': 'code', 'targets': 1},
+            { 'name': 'percentage', 'targets': 2, 'className': 'percentage font-monospace', 'width':'6em'},
             {
-                'name': 'minimum_cart_value', 
-                'targets': 3, 
+                'name': 'minimum_cart_value',
+                'targets': 3,
                 'width':'8em',
                 'render': function(data, type, row) {
                     if(type === "display") {
@@ -48,9 +53,9 @@
                     }
 
                     return data;
-                }
+                },'className': 'font-monospace'
             },
-            { 'name': 'is_active', 'targets': 4, 'className': 'text-center', 'width':'6em'},
+            { 'name': 'is_active', 'targets': 4, 'className': 'td-text-center', 'width':'6em'},
             {
                 'targets': 5, 'orderable': false, 'searchable': false,
                 'render': function(data, type, row) {
@@ -59,18 +64,18 @@
                         text = `
                         <div class="d-flex justify-content-around" style="font-size: 1.2em;">
                             ${
-                                row[4] === "YES" 
+                                row[4] === "YES"
                                     ? `<a class="bi bi-slash-circle-fill icon-click" onclick="disableCoupon(${row[0]})" data-bs-toggle="tooltip" title="Disable Coupon"></a>`
                                     : `<a class="bi bi-check-circle icon-click" onclick="enableCoupon(${row[0]})" data-bs-toggle="tooltip" title="Enable Coupon"></a>`
                             }
-                            
-                            
+
+
                         </div>`;
                         data = text;
                     }
 
                     return data;
-                }, 'className': 'text-center'
+                }, 'className': 'td-text-center'
             }
         ]
     });

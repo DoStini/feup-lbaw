@@ -23,7 +23,7 @@
         if(user.id === userID) document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
 
         document.getElementById("name-profile").innerText = user.name;
-        updatePhoto(user.photo, user);
+        updatePhoto((user.photo.charAt(0) !== '/' ? '/' + user.photo : user.photo), user);
     }
 
     function send(event) {
@@ -85,7 +85,7 @@
 
 </script>
 
-<form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return send(event);">
+<form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return submitForm(event);">
     <div class="row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
@@ -146,45 +146,78 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
-@if (Auth::check() &&
-    ($shopper ?
-        (Auth::user()->id == $shopper->user->id)
-         :
-        (Auth::user()->id == $admin->id)))
-<div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" id="confirmContent">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmTitle">Confirm delete account</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body" id="confirmBody">
-                This is an irreversible action, please take caution
-                <form  method="POST" action="{{route('deleteAccount', ['id' => Auth::user()->id])}}">
-                    @csrf
-                    <div class="form-group my-4">
-                        <label for="cur-password"><b>Confirm your password before applying changes:</b></label>
-                        <input autocomplete="on" required id="cur-password-delete" class="form-control" type="password" name="cur-password">
-                        <span class="error form-text text-danger" id="cur-password-error"></span>
-                    </div>
-                    <button type="submit" class="my-2 btn btn-danger w-100">
-                        Delete Account
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
+//  @if (Auth::check() &&
+//     ($shopper ?
+//         (Auth::user()->id == $shopper->user->id)
+//          :
+//         (Auth::user()->id == $admin->id)))
+// <div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
+//     <div class="modal-dialog modal-dialog-centered">
+//         <div class="modal-content" id="confirmContent">
+//             <div class="modal-header">
+//                 <h5 class="modal-title" id="confirmTitle">Confirm delete account</h5>
+//                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+//                 </button>
+//             </div>
+//             <div class="modal-body" id="confirmBody">
+//                 This is an irreversible action, please take caution
+//                 <form  method="POST" action="{{route('deleteAccount', ['id' => Auth::user()->id])}}">
+//                     @csrf
+//                     <div class="form-group my-4">
+//                         <label for="cur-password"><b>Confirm your password before applying changes:</b></label>
+//                         <input autocomplete="on" required id="cur-password-delete" class="form-control" type="password" name="cur-password">
+//                         <span class="error form-text text-danger" id="cur-password-error"></span>
+//                     </div>
+//                     <button type="submit" class="my-2 btn btn-danger w-100">
+//                         Delete Account
+//                     </button>
+//                 </form>
+//             </div>
+//         </div>
+//     </div>
+// </div>
+// @endif
 
-<script>
+// <script>
+//     window.addEventListener('load', () => {
+//         let deleteModal = new bootstrap.Modal(document.getElementById('confirm'));
+
+//         document.getElementById("show-delete-confirm").addEventListener("click", () => {
+//             deleteModal.show();
+//         });
+//     })
+<script defer>
+    let editor;
+
     window.addEventListener('load', () => {
-        let deleteModal = new bootstrap.Modal(document.getElementById('confirm'));
+        ckeditor
+        .create( document.querySelector( '#about-me' ), {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList'],
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h4', title: 'Heading 1', class: 'ck-heading_heading4' },
+                    { model: 'heading2', view: 'h6', title: 'Heading 2', class: 'ck-heading_heading6' }
+                ]
+            }
+        } )
+        .then( newEditor => {
+            editor = newEditor;
+        } )
+        .catch( error => {
+            console.log( error );
+        } );
 
-        document.getElementById("show-delete-confirm").addEventListener("click", () => {
-            deleteModal.show();
-        });
-    })
+    });
+
+    function submitForm(e) {
+        e.preventDefault();
+        let aboutMe = document.getElementById('about-me');
+        let form{{$shopper ? $shopper->id : $admin->id}} = document.getElementById('edit-form');
+
+        const editorData = editor.getData();
+        aboutMe.value = editorData;
+        send(event);
+    }
 
 </script>
