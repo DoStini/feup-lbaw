@@ -92,6 +92,7 @@ class OrderController extends Controller {
     /**
      * Updates an order
      *
+     * @param Request $request includes optional parameter "status" to update to
      * @param int $id ID of the order being edited
      *
      * @return Response
@@ -129,6 +130,13 @@ class OrderController extends Controller {
         );
     }
 
+    /**
+     * Cancels an order
+     * 
+     * @param Request $request includes order id of the order to be canceled
+     * 
+     * @return Response
+     */
     public function cancel(Request $request) {
         $order = Order::findOrFail($request->route('id'));
         $this->authorize('cancel', [Order::class, $order]);
