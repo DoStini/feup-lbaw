@@ -194,7 +194,6 @@ class ProductController extends Controller {
                 "searchParams" => $searchParams
             ]);
         } catch (Exception $e) {
-            dd($e);
             return response()->json(
                 ['message' => 'Unexpected error'],
                 401
@@ -299,7 +298,6 @@ class ProductController extends Controller {
                     $not->type = "cart";
                     $not->product_id = $product->id;
                     $not->save();
-
                     event(new CartUpdate($user->id, $product->id));
                 }
             }
