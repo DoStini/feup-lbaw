@@ -23,6 +23,7 @@
 @endif
 
 
+
 <div class="product container vw-100" data-id={{ $product->id }}>
     <div class="row">
         <div class="product-images mt-4 col-md-7 d-flex justify-content-center">
@@ -64,7 +65,7 @@
     </div>
     <div class="product-info col-md-5">
         <div class="my-3">
-            <h2 class="m-0" style="text-align: justify;">{{strtoupper($product->name)}}</h2>
+            <h2 class="m-0">{{strtoupper($product->name)}}</h2>
             @if($product->categories->count() > 0)
             <h5>Category: {{$product->categories->first()->name}}</h5>
             @endif
@@ -97,90 +98,13 @@
                 <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
             </div>
         </div>
-        {{-- <div class="product-info col-md-5">
-            <div class="my-3">
-                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-                <div class="d-flex justify-content-between">
-                    <p>
-                        @for ($i = 1; $i <= 5; $i++) <i
-                            class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                            </i>
-                            @endfor
-                    </p>
-                    @if($product->categories)
-                        <h5>Category: {{$product->categories[0]->name}}</h5>
-                    @endif
-                </div>
-                @if ($insertedPhotos > 1)
-                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
-                        aria-hidden="true"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
-                        aria-hidden="true"></span>
-                </button>
-                @endif
+
+        <div id="description-box-full" class="description-box-full">
+            <p style=text-align: center; id="description-text-full">{{$product->description}}</p>
+            <div class="show-less">
+                <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
             </div>
         </div>
-        <div class="product-info col-md-5">
-            <div class="my-3">
-                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-                @if($product->categories)
-                <h5>Category: {{$product->categories[0]->name}}</h5>
-                @endif
-                @if ($reviewCount > 0)
-                <p class="mb-0">
-                    @for ($i = 1; $i <= 5; $i++) <i
-                        class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                        </i>
-                    @endfor
-                </p>
-                <p class="text-muted">Average from {{$reviewCount}} reviews.</p>
-                @endif
-            </div>
-
-            <div class="my-2 d-flex justify-content-between align-items-center">
-                <h3> {{$product->price}} €</h3>
-                @if(Auth::check() && !Auth::user()->is_admin)
-                <i class="add-wishlist icon-click bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
-                    style="font-size:2em;@if($wishlisted)display:none @endif">
-                </i>
-                <i class="remove-wishlist icon-click bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
-                    style="font-size:2em;@if(!$wishlisted)display:none @endif">
-                </i>
-                @endif
-            </div>
-
-            <div id="description-box-teaser" class="description-box-teaser">
-                <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
-                <div class="show-more" id="show-more-btn">
-                    <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
-                </div>
-            </div>
-            {{-- <div class="product-info col-md-5">
-                <div class="my-3">
-                    <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-                    <div class="d-flex justify-content-between">
-                        <p>
-                            @for ($i = 1; $i <= 5; $i++) <i
-                                class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                                </i>
-                                @endfor
-                        </p>
-                        @if($product->categories)
-                            <h5>Category: {{$product->categories[0]->name}}</h5>
-                        @endif
-                    </div>
-
-                </div> --}}
-
-            <div id="description-box-full" class="description-box-full">
-                <p style=text-align: center;">{{$product->description}}</p>
-                <div class="show-less">
-                    <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
-                </div>
-            </div>
 
             @if(get_object_vars(json_decode($product->attributes)))
             <div class="container">
@@ -537,5 +461,12 @@
 
         iconBar.appendChild(confirmButton);
     }
+
+    let val = `@php echo ($product->description) @endphp`;
+    const patt = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi
+    val =  val.replace(patt, '')
+
+    document.getElementById('description-text-teaser').innerHTML = val;
+    document.getElementById('description-text-full').innerHTML = val;
 
 </script>
