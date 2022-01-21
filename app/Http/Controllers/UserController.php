@@ -126,7 +126,6 @@ class UserController extends Controller {
     public function edit(Request $request, int $id) {
 
         $user = User::find($id);
-        dd($user);
         if ($user->is_deleted) {
             abort(404);
         }
@@ -219,7 +218,7 @@ class UserController extends Controller {
         $user = $user->fresh();
         $shopperData = $shopper ? $shopper->fresh()->toArray() : [];
 
-        if (Auth::user()->is_admin) {
+        if (Auth::user()->is_admin && !$user->is_admin) {
             $not = new Notification();
             $not->shopper = $user->id;
             $not->type = "account";
