@@ -174,9 +174,12 @@
         e.preventDefault();
         let aboutMe = document.getElementById('about-me');
         let form{{$shopper ? $shopper->id : $admin->id}} = document.getElementById('edit-form');
+        
+        if(editor) {
+            const editorData = editor.getData();
+            aboutMe.value = editorData;
+        }
 
-        const editorData = editor.getData();
-        aboutMe.value = editorData;
         send(event);
     }
 </script>
