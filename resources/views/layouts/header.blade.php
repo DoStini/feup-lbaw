@@ -7,14 +7,13 @@
       <div class="row d-flex align-items-center justify-content-between">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
           <a href={{route('home')}} class="ms-md-2">
-            <img src="/img/refurniture.svg" alt="" width="200" height=65" />
+            <img src="/img/refurniture.svg" alt="" width="200" height="65" />
           </a>
         </div>
 
         <div class="col-md-4">
           <form id="search-products-form" class="d-flex input-group w-auto my-auto mb-3 mb-md-0">
             <input id="search-products-input" autocomplete="off" type="search" class="form-control rounded" placeholder="Search" />
-            <span class="input-group-text border-0 d-none d-lg-flex"><i class="fas fa-search"></i></span>
           </form>
         </div>
 
@@ -57,7 +56,7 @@
                         explode(" ", Auth::user()->name)[0]}}
                     </h5>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul class="dropdown-menu" aria-labelledby="user-drodown">
                     @if(Auth::user()->is_admin)
                       <li><a class="dropdown-item" href={{route('getDashboard')}}>Dashboard</a></li>
                     @else
@@ -110,12 +109,21 @@
             notificationContent.appendChild(button);
         }
 
+        function addParsed(parsed, content) {
+            parsed.appendChild(getDivider());
+            content.appendChild(parsed);
+        }
+
+        function prependParsed(parsed, content) {
+            parsed.appendChild(getDivider());
+            content.prepend(parsed);
+        }
+
         const handleNextRequest = (data) => {
             const notifications = data.notifications;
             notifications.forEach(noti => {
                 const notif = parseNotification(noti);
-                notificationContent.appendChild(notif);
-                notificationContent.appendChild(getDivider());
+                addParsed(notif, notificationContent);
             });
 
             if (data.new_nots > 0) {
@@ -136,8 +144,7 @@
             notifications.forEach((noti, idx) => {
                 const item = parseNotification(noti);
                 if (item) {
-                    notificationContent.appendChild(item);
-                    notificationContent.appendChild(getDivider());
+                    addParsed(item, notificationContent);
                 }
             });
 
@@ -183,32 +190,28 @@
         channelProfileEdited.bind("profile-edited-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildEditedNotifcation(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         const channelOrderStatus = pusher.subscribe("order-status");
         channelOrderStatus.bind("order-status-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildOrderNotification(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         const cartItemUpdated = pusher.subscribe("cart-item");
         cartItemUpdated.bind("cart-item-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildCartNotification(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         const wishlistItemUpdated = pusher.subscribe("wishlist-item");
         wishlistItemUpdated.bind("wishlist-item-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildWishlistNotification(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         notification.addEventListener("click", () => {

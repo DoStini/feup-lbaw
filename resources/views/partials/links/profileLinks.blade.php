@@ -1,6 +1,6 @@
 
 @if($errors->any())
-<script async>
+<script>
     (async() => {
         while(!window.hasOwnProperty('reportData'))
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -75,7 +75,6 @@
 </ul>
 
 @endif
-
 
 @if (Auth::check() &&
     ($shopper ?

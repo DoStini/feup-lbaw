@@ -162,6 +162,11 @@
     transition: background-image 2s ease-in-out;
 }
 
+
+.button {
+    cursor: pointer;
+}
+
 .card-andre:hover, .card-andre:active {
     background-image: url("/img/dusto.jpeg");
 }

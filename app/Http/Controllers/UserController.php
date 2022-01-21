@@ -51,6 +51,7 @@ class UserController extends Controller {
             abort(404);
         }
 
+
         $response = Gate::inspect('viewProfile', [User::class, $user]);
 
         if ($response->denied()) abort(404, $response->message());

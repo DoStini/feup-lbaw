@@ -13,7 +13,7 @@
         @endif
 
                 <div class="col-{{floor(12/$max_photos)}}">
-                    <img class="d-block w-100" src={{$photo->url}}>
+                    <img class="d-block w-100" src={{$photo->url}} alt="Review {{$review->id}} number {{$loop->index}}">
                 </div>
                 @php
                 $insertedReviewPhotos++;

@@ -1,13 +1,3 @@
-<style>
-    .product-link{
-        text-decoration: none !important;
-    }
-
-    .product-link:hover {
-        color: white;
-    }
-</style>
-
 <div>
     @if($shopper->orders->isEmpty())
         <div class="d-flex justify-content-center align-items-center">
@@ -193,7 +183,7 @@
             </div>
             <div class="modal-body" id="confirmBody">
                 This is an irreversible action, are you sure you want to continue?
-                <button id="confirm-cancel" class="my-2 btn btn-danger w-100 cancel-order-btn">
+                <button class="my-2 btn btn-danger w-100 cancel-order-btn">
                     Cancel Order
                 </button>
             </div>

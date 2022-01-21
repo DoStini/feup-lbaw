@@ -5,7 +5,7 @@
 @section('content')
 
 @if($errors->any())
-<script async>
+<script>
     (async() => {
         while(!window.hasOwnProperty('reportData'))
             await new Promise(resolve => setTimeout(resolve, 100));

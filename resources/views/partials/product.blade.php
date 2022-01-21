@@ -1,5 +1,5 @@
 @if($errors->any() || session()->has('success'))
-<script async>
+<script>
     (async() => {
         while(!window.hasOwnProperty('reportData'))
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -37,7 +37,7 @@
                     @foreach ($product->photos as $photo)
                     @if (File::exists(public_path($photo->url)) || filter_var($photo->url, FILTER_VALIDATE_URL))
                     <div class="carousel-item w-100 {{$loop->iteration == 1 ? 'active' : '' }}">
-                        <img class="d-block w-100" src={{$photo->url}}>
+                        <img class="d-block w-100" src={{$photo->url}} alt="{{$product->name}} photo number {{$loop->index}}">
                     </div>
                     @php
                     $insertedPhotos++;
@@ -48,63 +48,63 @@
                     @if ($insertedPhotos < 1)
                     <div class="carousel-item active">
                         <img class="d-block w-100" src="/img/default.jpg">
+                    </div>
+                     @endif
                 </div>
+                @if ($insertedPhotos > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
+                        aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
+                        aria-hidden="true"></span>
+                </button>
                 @endif
             </div>
-            @if ($insertedPhotos > 1)
-            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
-                    aria-hidden="true"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
-                    aria-hidden="true"></span>
-            </button>
-            @endif
         </div>
-    </div>
-    <div class="product-info col-md-5">
-        <div class="my-3">
-            <h2 class="m-0">{{strtoupper($product->name)}}</h2>
-            @if($product->categories->count() > 0)
-            <h5>Category: {{$product->categories->first()->name}}</h5>
-            @endif
-            @if ($reviewCount > 0)
-            <p class="mb-0">
-                @for ($i = 1; $i <= 5; $i++) <i
-                    class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                    </i>
-                @endfor
-            </p>
-            <p class="text-muted">Average from {{$reviewCount}} reviews.</p>
-            @endif
-        </div>
-
-        <div class="my-2 d-flex justify-content-between align-items-center">
-            <h3> {{$product->price}} €</h3>
-            @if(Auth::check() && !Auth::user()->is_admin)
-            <i class="add-wishlist icon-click bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
-                style="font-size:2em;@if($wishlisted)display:none @endif">
-            </i>
-            <i class="remove-wishlist icon-click bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
-                style="font-size:2em;@if(!$wishlisted)display:none @endif">
-            </i>
-            @endif
-        </div>
-
-        <div id="description-box-teaser" class="description-box-teaser">
-            <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
-            <div class="show-more" id="show-more-btn">
-                <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
+        <div class="product-info col-md-5">
+            <div class="my-3">
+                <h2 class="m-0">{{strtoupper($product->name)}}</h2>
+                @if($product->categories->count() > 0)
+                <h5>Category: {{$product->categories->first()->name}}</h5>
+                @endif
+                @if ($reviewCount > 0)
+                <p class="mb-0">
+                    @for ($i = 1; $i <= 5; $i++) <i
+                        class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
+                        </i>
+                    @endfor
+                </p>
+                <p class="text-muted">Average from {{$reviewCount}} reviews.</p>
+                @endif
             </div>
-        </div>
 
-        <div id="description-box-full" class="description-box-full">
-            <p style=text-align: center; id="description-text-full">{{$product->description}}</p>
-            <div class="show-less">
-                <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
+            <div class="my-2 d-flex justify-content-between align-items-center">
+                <h3> {{$product->price}} €</h3>
+                @if(Auth::check() && !Auth::user()->is_admin)
+                <i class="add-wishlist icon-click bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
+                    style="font-size:2em;@if($wishlisted)display:none @endif">
+                </i>
+                <i class="remove-wishlist icon-click bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
+                    style="font-size:2em;@if(!$wishlisted)display:none @endif">
+                </i>
+                @endif
             </div>
-        </div>
+
+            <div id="description-box-teaser" class="description-box-teaser">
+                <p style="text-align: center;" id="description-text-teaser">{{$product->description}}</p>
+                <div class="show-more" id="show-more-btn">
+                    <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
+                </div>
+            </div>
+
+            <div id="description-box-full" class="description-box-full">
+                <p style="text-align: center;" id="description-text-full">{{$product->description}}</p>
+                <div class="show-less">
+                    <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
+                </div>
+            </div>
 
             @if(get_object_vars(json_decode($product->attributes)))
             <div class="container">
@@ -135,7 +135,7 @@
                                     <a class="col-4" href={{route('getProduct', ['id'=> $id])}} data-toggle="tooltip"
                                         data-placement="top" title={{$color}} ><img class="variant-color"
                                             src={{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png",
-                                            $color)}} onerror="this.src='{{asset('img/notfound.jpg')}}'"></a>
+                                            $color)}} onerror="this.src='{{asset('img/notfound.jpg')}}'" alt="Variant color {{$color}}"></a>
                                     @endforeach
                                 </div>
                             </div>
@@ -153,10 +153,6 @@
                     <h6 id="current-price">Subtotal: {{$product->price}} €</h6>
                 </div>
                 @endif
-
-                <!--
-                        <i class="bi bi-heart-fill add-to-wishlist"></i>
-                        -->
             </div>
 
                 <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
@@ -195,7 +191,7 @@
                 <i id="review-form-star-4" class="bi icon-click bi-star" onclick="setRating(4)"></i>
                 <i id="review-form-star-5" class="bi icon-click bi-star" onclick="setRating(5)"></i>
             </div>
-            <input id="review-form-star" type="hidden" name="stars" value="0" required>
+            <input id="review-form-star" type="hidden" name="stars" value="0">
         </div>
         <div class="row">
             <div class="form-group">

@@ -1,4 +1,4 @@
-<div id="address-root" class="accordion" id="addresses-accordion">
+<div id="address-root" class="accordion">
     @foreach ($shopper->addresses as $address)
     <div id="address-root-{{$address->id}}" class="accordion-item">
         <h2 class="accordion-header" id="address-heading{{$address->id}}">
@@ -17,7 +17,7 @@
             </button>
         </h2>
         <div id="address-panel-collapse{{$address->id}}"
-            data-bs-parent="#addresses-accordion"
+            data-bs-parent="#address-root"
             class="accordion-collapse collapse"
             aria-labelledby="address-heading{{$address->id}}"
         >
@@ -79,7 +79,7 @@
                 <input name="district" class="form-control" id="district" placeholder="Distict" disabled readonly>
             </div>
                 <button class="btn btn-primary mt-3 col-12 col-md-2" type="submit">Submit</button>
-            <input id="zip_code_id" name="zip_code_id" style="visibility:collapse"></input>
+            <input id="zip_code_id" name="zip_code_id" style="visibility:collapse">
         </div>
     </div>
     </form>
@@ -90,7 +90,6 @@
 <form>
     <div id="new-address" class="d-flex justify-content-center align-items-center">
         <button class="btn btn-primary">Add a new address</button>
-    </div>
     </div>
 </form>
 

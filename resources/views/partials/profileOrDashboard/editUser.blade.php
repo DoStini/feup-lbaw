@@ -1,5 +1,5 @@
-<script type="text/javascript">const userID = <?= Auth::user()->id ?>;</script>
-<script type="text/javascript" defer>
+<script>const userID = <?= Auth::user()->id ?>;</script>
+<script defer>
     function updatePhoto(photo, user) {
         const fallBack = "/img/user.png";
 
@@ -179,6 +179,4 @@
         aboutMe.value = editorData;
         send(event);
     }
-
-
 </script>
