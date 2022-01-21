@@ -30,6 +30,16 @@
 <script type="application/javascript" defer>
     let table = $('#order-dashboard-table').DataTable({
         'responsive': true,
+        'drawCallback': function() {
+            /** @type {Array<Element>} dropdownElements */
+            dropdownElements = [].slice.call(document.querySelectorAll(".dropdown-toggle"));
+            /** @type {Array<bootstrap.Dropdown>} dropdowns */
+            dropdowns = [];
+
+            dropdownElements.forEach(function (element) {
+                dropdowns[element.id] = new bootstrap.Dropdown(element);
+            });
+        },
         'ajax': {
             'url': '/api/orders/',
         },
@@ -76,11 +86,33 @@
                     let text = "";
                     if(type === 'display') {
                         text = `
-                        <div class="d-flex justify-content-evenly" style="font-size: 1.2em;">
-                            <a class="btn p-1 bi bi-arrow-up-circle-fill icon-click" onclick="update(${row[0]})"'
+                        <div class="d-flex justify-content-around" id="dropdown-menu-order-status-${row[0]}" style="font-size: 1.2em;">
+                            <div class="dropdown dropstart">
+                                <button class="p-1 dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-pencil-square icon-click" data-bs-toggle="tooltip"
+                                    title="Advance Status"></i>
+                                </button>
+
+                                <div class="dropdown-menu"  aria-labelledby="dropdown-menu-order-status-btn-${row[0]}">
+                                    <form class="px-4 py-3" id="edit-order-status-form-${row[0]}" onsubmit="updateAny(event, ${row[0]});">
+                                        <div class="mb-3">
+                                            <label for="order-status-${row[0]}" class="form-label">Edit Order Status</label>
+                                            <select id="order-status-${row[0]}" name="status" class="form-select">
+                                                @foreach ($statuses as $status)
+                                                <option ${ '{{$status}}' === row[5] ? "selected" : ""}
+                                                    value="{{$status}}">{{strtoupper($status)}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Edit Order</button>
+                                    </form>
+                                </div>
+                                <a class="btn p-1 bi bi-arrow-up-circle-fill icon-click" onclick="update(${row[0]})"'
                                 data-bs-toggle="tooltip" title="Update Order Status"></a>
-                            <a class="btn p-1 bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
-                                data-bs-toggle="tooltip" title="Go to Order Page"></a>
+                                <a class="btn p-1 bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
+                                    data-bs-toggle="tooltip" title="Go to Order Page"></a>
+                            </div>
                         </div>`;
                         data = text;
                     }
@@ -93,18 +125,6 @@
             }
         ]
     });
-
-    function update(id) {
-        jsonBodyPost(`/api/orders/${id}/status`)
-        .then((response) => {
-            launchSuccessAlert("Order Updated Successfully!");
-        })
-        .catch((error) => {
-            launchErrorAlert("Couldn't edit the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
-        });
-        
-        table.ajax.reload();
-    }
 </script>
 
   @endsection
