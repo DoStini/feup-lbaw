@@ -20,6 +20,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/error.css') }}" rel="stylesheet">
     <link href="{{ asset('css/utility.css') }}" rel="stylesheet">
     <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
     <link href="{{ asset('css/tabs.css') }}" rel="stylesheet">
