@@ -72,7 +72,22 @@ class ReviewPolicy
      */
     public function update(User $user, Review $review)
     {
-        return $user->is_admin && $review->creator_id === $user->id;
+        return $review->creator_id === $user->id;
+    }
+
+    /**
+     * Determine wheter the user can vote on a review
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Review  $review
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function voteOnReview(User $user, Review $review) {
+        if($user->is_admin) {
+            return false;
+        }
+
+        return $review->creator_id !== $user->id;
     }
 
     /**
@@ -84,7 +99,7 @@ class ReviewPolicy
      */
     public function delete(User $user, Review $review)
     {
-        return $user->is_admin && $review->creator_id === $user->id;
+        return $user->is_admin || $review->creator_id === $user->id;
     }
 
     /**

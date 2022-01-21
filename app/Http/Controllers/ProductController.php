@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CartUpdate;
+use App\Events\WishlistUpdate;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\ApiError;
 use App\Models\Category;
+use App\Models\Notification;
 use Craft\StringHelper;
 
 
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Shopper;
 use App\Models\User;
 use Exception;
@@ -28,7 +32,7 @@ class ProductController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function show($id) {
+    public function show(Request $req, $id) {
         $product = Product::findOrFail($id);
         $user = Auth::user();
         $wishlisted = false;
@@ -39,7 +43,10 @@ class ProductController extends Controller {
             }
         }
 
-        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted]);
+        $reviews = ReviewController::getProductReviews($id)->paginate($req->review_size ?? 5);
+        $reviewCount = ReviewController::getProductReviews($id)->count();
+
+        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted, 'reviews' => $reviews, 'reviewCount' => $reviewCount]);
     }
 
     /**
@@ -251,13 +258,48 @@ class ProductController extends Controller {
 
         try {
             DB::beginTransaction();
-            $product->update(array_filter([
-                "name" => $request->input('name'),
-                "attributes" => $request->input('attributes'),
-                "stock" => $request->input('stock'),
-                "description" => $request->input('description'),
-                "price" => $request->input('price'),
-            ]));
+
+            $oldStock = $product->stock;
+            $oldPrice = $product->price;
+
+            $product->update(array_filter(
+                [
+                    "name" => $request->input('name'),
+                    "attributes" => $request->input('attributes'),
+                    "stock" => $request->input('stock'),
+                    "description" => $request->input('description'),
+                    "price" => $request->input('price'),
+                ],
+                fn ($elem) => $elem != null && $elem !== "",
+            ));
+
+            if ($oldPrice != $product->price) {
+
+                foreach ($product->usersCart as $userCart) {
+                    $user = Shopper::find($userCart->id);
+                    $not = new Notification();
+                    $not->shopper = $user->id;
+                    $not->type = "cart";
+                    $not->product_id = $product->id;
+                    $not->save();
+
+                    event(new CartUpdate($user->id, $product->id));
+                }
+            }
+
+            if ($oldStock == 0 && $product->stock > 0) {
+                foreach ($product->usersWishlisted as $userWishlist) {
+                    $user = Shopper::find($userWishlist->id);
+                    $not = new Notification();
+                    $not->shopper = $user->id;
+                    $not->type = "wishlist";
+                    $not->product_id = $product->id;
+                    $not->save();
+
+                    event(new WishlistUpdate($user->id, $product->id));
+                }
+            }
+
 
             foreach ($photos as $productPhoto) {
                 $path = $productPhoto->storePubliclyAs(

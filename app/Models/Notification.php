@@ -18,6 +18,7 @@ class Notification extends Model {
         'shopper',
         'review_id',
         'order_id',
+        'product_id',
         'review_vote_notif_type',
         'review_mng_notif_type',
         'account_mng_notif_type',

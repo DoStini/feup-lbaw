@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\OrderUpdate;
 use App\Models\Order;
 use App\Exceptions\ApiError;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class OrderController extends Controller {
 
@@ -26,7 +26,7 @@ class OrderController extends Controller {
         return view('pages.order', ['order' => $order]);
     }
 
-    public function list(Request $request)  {
+    public function list(Request $request) {
         $this->authorize('viewAny', Order::class);
 
         $dc =  new DatatableController();
@@ -76,6 +76,7 @@ class OrderController extends Controller {
             "created" => "paid",
             "paid" => "processing",
             "processing" => "shipped",
+            "canceled" => "canceled"
         ];
         return $next[$status];
     }
@@ -99,13 +100,52 @@ class OrderController extends Controller {
         $order = Order::find($id);
         $old_status = $order->status;
 
-        if($old_status == "shipped")
+        if ($old_status == "shipped")
             return ApiError::orderAtTerminalState();
-        
+
         $data["status"] = $this->getNextStatus($old_status);
+
+        if ($data["status"] == "canceled") {
+            return ApiError::orderCanceled();
+        }
+
         $order->update($data);
 
         event(new OrderUpdate($order->shopper->id, $order->id, $data['status']));
+        return response()->json(
+            ["updated-order" => $order],
+            200
+        );
+    }
+
+    public function cancel(Request $request) {
+        $order = Order::findOrFail($request->route('id'));
+        $this->authorize('cancel', [Order::class, $order]);
+
+        try {
+            DB::beginTransaction();
+            DB::unprepared("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
+
+            $items = $order->products;
+
+            foreach ($items as $item) {
+                $product = Product::find($item->id);
+                $product->update([
+                    "stock" => $product->stock + $item->details->amount
+                ]);
+            }
+
+            $order->update([
+                "status" => "canceled"
+            ]);
+            DB::commit();
+        } catch (QueryException $ex) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
+        }
+
+        event(new OrderUpdate($order->shopper->id, $order->id, "canceled"));
         return response()->json(
             ["updated-order" => $order],
             200

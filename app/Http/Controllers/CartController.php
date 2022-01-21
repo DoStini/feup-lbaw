@@ -438,6 +438,7 @@ class CartController extends Controller {
 
         $addressID = $request->input("address-id");
         $couponID = $request->input("coupon-id");
+        $order_id = 0;
 
         try {
             DB::beginTransaction();
@@ -456,7 +457,8 @@ class CartController extends Controller {
         }
 
         if ($request->input("payment-type") == 'bank') {
-            return redirect(route('orders', ['id' => $order_id]));
+            $order = Order::find($order_id);
+            return view('pages.purchaseSuccessful', ['order' => $order]);
         } else {
             return redirect(route('createTransaction', ['id' => $order_id]));
         }
