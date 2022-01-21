@@ -2,7 +2,7 @@
 
 return [
     'unexpected' => [
-        'code' => 401,
+        'code' => 500,
         'message' => 'Unexpected Error'
     ],
     'authentication' => [
@@ -95,5 +95,9 @@ return [
             'code' => 422,
             'message' => 'Order state cannot be updated any further'
         ]
+    ],
+    'ordered_canceled' => [
+        'code' => 422,
+        'message' => 'Order was canceled',
     ],
 ];

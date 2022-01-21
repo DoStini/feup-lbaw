@@ -8,8 +8,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
 
-class OrderPolicy
-{
+class OrderPolicy {
     use HandlesAuthorization;
 
     /**
@@ -18,8 +17,7 @@ class OrderPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
-    {
+    public function viewAny(User $user) {
         return $user->is_admin;
     }
 
@@ -30,8 +28,7 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Order $order)
-    {
+    public function view(User $user, Order $order) {
         return $user->is_admin || $user->id == $order->shopper_id;
     }
 
@@ -42,8 +39,7 @@ class OrderPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
-    {
+    public function create(User $user) {
         return $user->is_admin
             ? Response::deny('No such action for admin.')
             : Response::allow();
@@ -56,20 +52,28 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Order $order)
-    {
+    public function update(User $user, Order $order) {
         //
     }
 
-        /**
+    /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function updateNext(User $user)
-    {
+    public function updateNext(User $user) {
         return $user->is_admin;
+    }
+
+    /**
+     * Determine whether the user can cancel an order.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function cancel(User $user, Order $order) {
+        return $user->id == $order->shopper->id && $order->status == "created";
     }
 
     /**
@@ -79,8 +83,7 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Order $order)
-    {
+    public function delete(User $user, Order $order) {
         //
     }
 
@@ -91,8 +94,7 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Order $order)
-    {
+    public function restore(User $user, Order $order) {
         //
     }
 
@@ -103,8 +105,7 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Order $order)
-    {
+    public function forceDelete(User $user, Order $order) {
         //
     }
 }

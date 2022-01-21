@@ -41,6 +41,30 @@ class Product extends Model {
     }
 
     /**
+     * The products and their amount the user has in its cart.
+     */
+    public function usersWishlisted() {
+        return $this->belongsToMany(
+            Shopper::class,
+            'wishlist',
+            'product_id',
+            'shopper_id',
+        );
+    }
+
+    /**
+     * The products and their amount the user has in its cart.
+     */
+    public function usersCart() {
+        return $this->belongsToMany(
+            Shopper::class,
+            'product_cart',
+            'product_id',
+            'shopper_id',
+        )->withPivot('amount')->as('details');
+    }
+
+    /**
      * Serialize a product to json
      */
     public function serialize() {
