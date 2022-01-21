@@ -24,7 +24,7 @@
 
 
 <div class="product container vw-100" data-id={{ $product->id }}>
-    <div class="row w-100">
+    <div class="row">
         <div class="product-images mt-4 col-md-7 d-flex justify-content-center">
             <div id="productCarousel" class="carousel slide product-slide product-carousel w-100"
                 data-bs-ride="carousel">
@@ -44,155 +44,156 @@
                     @endif
                     @endforeach
                     @endif
-                    @if ($insertedPhotos < 1) <div class="carousel-item active">
+                    @if ($insertedPhotos < 1)
+                    <div class="carousel-item active">
                         <img class="d-block w-100" src="/img/default.jpg">
-                </div>
-                @endif
-            </div>
-            @if ($insertedPhotos > 1)
-            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
-                    aria-hidden="true"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
-                    aria-hidden="true"></span>
-            </button>
-            @endif
-        </div>
-    </div>
-    <div class="product-info col-md-5">
-        <div class="my-3">
-            <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-            @if($product->categories)
-            <h5>Category: {{$product->categories[0]->name}}</h5>
-            @endif
-            @if ($reviewCount > 0)
-            <p class="mb-0">
-                @for ($i = 1; $i <= 5; $i++) <i
-                    class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                    </i>
-                @endfor
-            </p>
-            <p class="text-muted">Average from {{$reviewCount}} reviews.</p>
-            @endif
-        </div>
-
-        <div class="my-2 d-flex justify-content-between align-items-center">
-            <h3> {{$product->price}} €</h3>
-            @if(Auth::check() && !Auth::user()->is_admin)
-            <i class="add-wishlist icon-click bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
-                style="font-size:2em;@if($wishlisted)display:none @endif">
-            </i>
-            <i class="remove-wishlist icon-click bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
-                style="font-size:2em;@if(!$wishlisted)display:none @endif">
-            </i>
-            @endif
-        </div>
-
-        <div id="description-box-teaser" class="description-box-teaser">
-            <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
-            <div class="show-more" id="show-more-btn">
-                <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
-            </div>
-        </div>
-        {{-- <div class="product-info col-md-5">
-            <div class="my-3">
-                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-                <div class="d-flex justify-content-between">
-                    <p>
-                        @for ($i = 1; $i <= 5; $i++) <i
-                            class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                            </i>
-                            @endfor
-                    </p>
-                    @if($product->categories)
-                        <h5>Category: {{$product->categories[0]->name}}</h5>
+                    </div>
                     @endif
                 </div>
-
-            </div> --}}
-
-        <div id="description-box-full" class="description-box-full">
-            <p style=text-align: center;">{{$product->description}}</p>
-            <div class="show-less">
-                <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
+                @if ($insertedPhotos > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
+                        aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" style="background-color: rgb(99, 99, 99); border-radius: 25%;"
+                        aria-hidden="true"></span>
+                </button>
+                @endif
             </div>
         </div>
+        <div class="product-info col-md-5">
+            <div class="my-3">
+                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
+                @if($product->categories)
+                <h5>Category: {{$product->categories[0]->name}}</h5>
+                @endif
+                @if ($reviewCount > 0)
+                <p class="mb-0">
+                    @for ($i = 1; $i <= 5; $i++) <i
+                        class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
+                        </i>
+                    @endfor
+                </p>
+                <p class="text-muted">Average from {{$reviewCount}} reviews.</p>
+                @endif
+            </div>
 
-        @if(get_object_vars(json_decode($product->attributes)))
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-8">
-                    <h5> Color: {{json_decode($product->attributes)->color}} </h5>
+            <div class="my-2 d-flex justify-content-between align-items-center">
+                <h3> {{$product->price}} €</h3>
+                @if(Auth::check() && !Auth::user()->is_admin)
+                <i class="add-wishlist icon-click bi bi-heart col-2 pe-2 text-end" id="add-wishlist"
+                    style="font-size:2em;@if($wishlisted)display:none @endif">
+                </i>
+                <i class="remove-wishlist icon-click bi bi-heart-fill col-2 pe-2 text-end" id="remove-wishlist"
+                    style="font-size:2em;@if(!$wishlisted)display:none @endif">
+                </i>
+                @endif
+            </div>
+
+            <div id="description-box-teaser" class="description-box-teaser">
+                <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
+                <div class="show-more" id="show-more-btn">
+                    <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
                 </div>
-                <div class="col-4 d-flex justify-content-end">
-                    <div class="btn-group dropstart">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Variations
-                        </button>
-                        <div class="dropdown-menu" style="width: 220px; height: 200px;">
-                            @php
-                            $color_id_pair = json_decode($product->attributes)->variants
-                            @endphp
-                            <div class="container w-100 h-100 overflow-auto">
-                                @foreach ($color_id_pair as $id => $color)
-                                @if($loop->first)
-                                <div class="row my-1">
-                                    @elseif(($loop->iteration - 1) % 3 == 0)
+            </div>
+            {{-- <div class="product-info col-md-5">
+                <div class="my-3">
+                    <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
+                    <div class="d-flex justify-content-between">
+                        <p>
+                            @for ($i = 1; $i <= 5; $i++) <i
+                                class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
+                                </i>
+                                @endfor
+                        </p>
+                        @if($product->categories)
+                            <h5>Category: {{$product->categories[0]->name}}</h5>
+                        @endif
+                    </div>
+
+                </div> --}}
+
+            <div id="description-box-full" class="description-box-full">
+                <p style=text-align: center;">{{$product->description}}</p>
+                <div class="show-less">
+                    <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
+                </div>
+            </div>
+
+            @if(get_object_vars(json_decode($product->attributes)))
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <h5> Color: {{json_decode($product->attributes)->color}} </h5>
+                    </div>
+                    <div class="col-4 d-flex justify-content-end">
+                        <div class="btn-group dropstart">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Variations
+                            </button>
+                            <div class="dropdown-menu" style="width: 220px; height: 200px;">
+                                @php
+                                $color_id_pair = json_decode($product->attributes)->variants
+                                @endphp
+                                <div class="container w-100 h-100 overflow-auto">
+                                    @foreach ($color_id_pair as $id => $color)
+                                    @if($loop->first)
+                                    <div class="row my-1">
+                                        @elseif(($loop->iteration - 1) % 3 == 0)
+                                    </div>
+                                    <div class="row my-1">
+                                        @elseif($loop->last)
+                                    </div>
+                                    @endif
+                                    <a class="col-4" href={{route('getProduct', ['id'=> $id])}} data-toggle="tooltip"
+                                        data-placement="top" title={{$color}} ><img class="variant-color"
+                                            src={{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png",
+                                            $color)}} onerror="this.src='{{asset('img/notfound.jpg')}}'"></a>
+                                    @endforeach
                                 </div>
-                                <div class="row my-1">
-                                    @elseif($loop->last)
-                                </div>
-                                @endif
-                                <a class="col-4" href={{route('getProduct', ['id'=> $id])}} data-toggle="tooltip"
-                                    data-placement="top" title={{$color}} ><img class="variant-color"
-                                        src={{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png",
-                                        $color)}} onerror="this.src='{{asset('img/notfound.jpg')}}'"></a>
-                                @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        @endif
-
-        <div class="quantity-wishlist my-4 justify-content-between align-items-center d-flex">
-            @if ($product->stock > 0)
-            <div id="quantity-container" class="w-25">
-            </div>
-            <div class="calculated-price">
-                <h6 id="current-price">Subtotal: {{$product->price}} €</h6>
-            </div>
             @endif
 
-            <!--
-                    <i class="bi bi-heart-fill add-to-wishlist"></i>
-                    -->
-        </div>
-
-            <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
-                @if(Auth::check() && !Auth::user()->is_admin && $product->stock > 0)
-                <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
-                @elseif((!Auth::check() || !Auth::user()->is_admin) && $product->stock > 0)
-                <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
-                @endif
-                @if(Auth::check() && Auth::user()->is_admin)
-                <form class="w-100" action="{{route('editProductPage', ['id' => $product->id])}}">
-                    <button type="submit" class="btn btn-primary w-100 my-2">Edit this product</button>
-                </form>
-                @endif
+            <div class="quantity-wishlist my-4 justify-content-between align-items-center d-flex">
                 @if ($product->stock > 0)
-                <button class="btn btn-success w-100 my-2" disabled>In Stock ({{$product->stock}})</button>
-                @else
-                <button class="btn btn-danger w-100 my-2" disabled>Out of Stock</button>
+                <div id="quantity-container" class="w-25">
+                </div>
+                <div class="calculated-price">
+                    <h6 id="current-price">Subtotal: {{$product->price}} €</h6>
+                </div>
                 @endif
+
+                <!--
+                        <i class="bi bi-heart-fill add-to-wishlist"></i>
+                        -->
+            </div>
+
+                <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
+                    @if(Auth::check() && !Auth::user()->is_admin && $product->stock > 0)
+                    <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
+                    @elseif((!Auth::check() || !Auth::user()->is_admin) && $product->stock > 0)
+                    <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
+                    @endif
+                    @if(Auth::check() && Auth::user()->is_admin)
+                    <form class="w-100" action="{{route('editProductPage', ['id' => $product->id])}}">
+                        <button type="submit" class="btn btn-primary w-100 my-2">Edit this product</button>
+                    </form>
+                    @endif
+                    @if ($product->stock > 0)
+                    <button class="btn btn-success w-100 my-2" disabled>In Stock ({{$product->stock}})</button>
+                    @else
+                    <button class="btn btn-danger w-100 my-2" disabled>Out of Stock</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <div class="container d-flex flex-column justify-content-around mt-4 mb-4">
     @can('reviewProduct', [App\Models\Review::class, $product])
