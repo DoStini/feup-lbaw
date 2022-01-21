@@ -127,6 +127,8 @@ class ProductController extends Controller {
                 case 'rate-desc':
                     $query = $query->orderByDesc('avg_stars');
                     break;
+                default:
+                    $query = $query->orderBy('product.name');
             }
 
             $query = $query->when($request->text, function ($q) use ($request) {
@@ -153,6 +155,13 @@ class ProductController extends Controller {
                 ->when($request->input('rate-max'), function ($q) use ($request) {
                     return $q->where('avg_stars', '<=', [$request->input('rate-max')]);
                 });
+
+            $subquery = Product::selectRaw('name as unique_name, max(id) as max_id')->groupBy('name');
+
+            $query = $query->joinSub($subquery, 'prod', function($join) {
+                $join->on('product.name', '=', 'prod.unique_name');
+                $join->on('product.id', '=', 'prod.max_id');
+            });
 
             $pageSize = $request->input('page-size');
             $page = $request->page;

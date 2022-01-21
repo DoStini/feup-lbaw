@@ -93,14 +93,14 @@
             </div>
 
             <div id="description-box-teaser" class="description-box-teaser">
-                <p style="text-align: center;" id="description-text-teaser">{{$product->description}}</p>
+                <p id="description-text-teaser">{{$product->description}}</p>
                 <div class="show-more" id="show-more-btn">
                     <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
                 </div>
             </div>
 
             <div id="description-box-full" class="description-box-full">
-                <p style="text-align: center;" id="description-text-full">{{$product->description}}</p>
+                <p id="description-text-full">{{$product->description}}</p>
                 <div class="show-less">
                     <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
                 </div>
