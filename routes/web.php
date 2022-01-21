@@ -65,4 +65,3 @@ Route::post('register', 'Auth\RegisterController@register')->name('register');
 Route::get('recover/', 'Auth\RecoverAccountController@showEmailForm')->name('recoverPage');
 Route::get('recover/new', 'Auth\RecoverAccountController@getFinishRecoverPage')->name('newPasswordPage');
 Route::post('recover/new', 'Auth\RecoverAccountController@finishRecoverRequest')->name('newPassword');
-Route::get('test', 'Auth\RecoverAccountController@testFunction')->name('asd');
