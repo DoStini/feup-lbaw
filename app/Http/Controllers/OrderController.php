@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller {
 
@@ -59,8 +60,14 @@ class OrderController extends Controller {
     private function validateData($data) {
         return Validator::make($data, [
             "id" => 'required|integer|min:1|exists:order,id',
+            "status" => [
+                'nullable',
+                'string',
+                Rule::in(OrderController::getPossibleStatus())
+            ],
         ], [], [
-            "id" => 'ID'
+            "id" => 'ID',
+            "status" => 'status'
         ])->validate();
     }
 
@@ -76,6 +83,7 @@ class OrderController extends Controller {
             "created" => "paid",
             "paid" => "processing",
             "processing" => "shipped",
+            "shipped" => "shipped",
             "canceled" => "canceled"
         ];
         return $next[$status];
@@ -88,30 +96,33 @@ class OrderController extends Controller {
      *
      * @return Response
      */
-    public function update(int $id) {
-        $this->authorize('updateNext', Order::class);
+    public function update(Request $request, int $id) {
+        $this->authorize('updateAny', Order::class);
 
         $data = [
-            "id" => $id
+            "id" => $id,
+            "status" => $request->input("status")
         ];
 
         $this->validateData($data);
 
         $order = Order::find($id);
-        $old_status = $order->status;
 
-        if ($old_status == "shipped")
-            return ApiError::orderAtTerminalState();
+        if ($data["status"] == null) {
+            $old_status = $order->status;
 
-        $data["status"] = $this->getNextStatus($old_status);
+            if ($old_status == "shipped")
+                return ApiError::orderAtTerminalState();
+        
+            if ($old_status == "canceled")
+                return ApiError::orderCanceled();
 
-        if ($data["status"] == "canceled") {
-            return ApiError::orderCanceled();
+            $data["status"] = $this->getNextStatus($old_status);
         }
 
         $order->update($data);
 
-        event(new OrderUpdate($order->shopper->id, $order->id, $data['status']));
+        event(new OrderUpdate($order->shopper->id, $order->id, $data["status"]));
         return response()->json(
             ["updated-order" => $order],
             200
