@@ -85,7 +85,7 @@
 
 </script>
 
-<form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return submitForm();">
+<form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return submitForm(event);">
     <div class="row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
@@ -147,10 +147,9 @@
 </form>
 
 <script defer>
+    let editor;
 
-    window.addEventListener('load', () => { 
-        let editor;
-
+    window.addEventListener('load', () => {
         ckeditor
         .create( document.querySelector( '#about-me' ), {
             toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList'],
@@ -169,15 +168,18 @@
             console.log( error );
         } );
 
-        function submitForm() {
-            let aboutMe = document.getElementById('about-me');
-            let form{{$shopper ? $shopper->id : $admin->id}} = document.getElementById('edit-form');
-        
-            const editorData = editor.getData();
-            console.log(editorData);
-            aboutMe.value = editorData;
-            send(event);
-        }
     });
+
+    function submitForm(e) {
+        e.preventDefault();
+        let aboutMe = document.getElementById('about-me');
+        let form{{$shopper ? $shopper->id : $admin->id}} = document.getElementById('edit-form');
+
+        const editorData = editor.getData();
+        console.log(editorData);
+        aboutMe.value = editorData;
+        send(event);
+    }
+
 
 </script>
