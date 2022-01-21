@@ -8,6 +8,10 @@
     color: white;
 }
 
+.white-space-pre {
+    white-space: pre-line
+}
+
 #order-dashboard-table .dropdown-menu {
     width: 15rem;
 }
@@ -86,6 +90,26 @@
     .menu-collapse-btn {
         display: none;
     }
+  }
+
+
+  .card-img-top {
+      height: 40vh;
+      object-fit: cover;
+  }
+
+  .icon-link {
+    font-size: 2em;
+  }
+
+  .card-nunoc {
+      background-image: url('/img/empreendedor.png');
+      background-size: cover;
+      transition: 2s;
+  }
+
+  .card-nunoc:hover {
+    background-image: url('/img/pendurado.jpeg');
 }
 
 .card-img-top {
@@ -135,5 +159,10 @@
 }
 
 .card-andre:hover {
+<<<<<<< HEAD
     background-image: url("/img/dusto.jpeg");
+=======
+    background-image: url('/img/dusto.jpeg');
+
+>>>>>>> main
 }

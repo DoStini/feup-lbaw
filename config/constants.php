@@ -2,7 +2,7 @@
 
 return [
     'unexpected' => [
-        'code' => 401,
+        'code' => 500,
         'message' => 'Unexpected Error'
     ],
     'authentication' => [
