@@ -23,7 +23,6 @@
 @endif
 
 
-
 <div class="product container vw-100" data-id={{ $product->id }}>
     <div class="row">
         <div class="product-images mt-4 pe-md-5 col-md-7 d-flex justify-content-center">

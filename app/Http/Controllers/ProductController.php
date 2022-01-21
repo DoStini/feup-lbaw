@@ -131,19 +131,7 @@ class ProductController extends Controller {
                     $query = $query->orderBy('product.name');
             }
 
-            $query = $query->when($request->text, function ($q) use ($request) {
-                $words = explode(' ', $request->text);
-                foreach ($words as &$word)
-                    $word = $word . ':*';
-                $val = implode(' & ', $words);
-                return $q->where(function ($query) use ($val, $request) {
-                    $query->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
-                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
-                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
-                });
-            })
-                ->when($request->input('price-min'), function ($q) use ($request) {
+            $query = $query->when($request->input('price-min'), function ($q) use ($request) {
                     return $q->where('price', '>=', [$request->input('price-min')]);
                 })
                 ->when($request->input('price-max'), function ($q) use ($request) {
@@ -156,11 +144,23 @@ class ProductController extends Controller {
                     return $q->where('avg_stars', '<=', [$request->input('rate-max')]);
                 });
 
-            $subquery = Product::selectRaw('name as unique_name, max(id) as max_id')->groupBy('name');
+            $subquery = Product::selectRaw('name as unique_name, min(id) as min_id')->
+            when($request->text, function ($q) use ($request) {
+                $words = explode(' ', $request->text);
+                foreach ($words as &$word)
+                    $word = $word . ':*';
+                $val = implode(' & ', $words);
+                return $q->where(function ($query) use ($val, $request) {
+                    $query->whereRaw('tsvectors @@ to_tsquery(\'simple\', ?)', [$val])
+                        ->orWhereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$request->text])
+                        ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'simple\', ?)) DESC', [$val]);
+                });
+            })->groupBy('name');
 
             $query = $query->joinSub($subquery, 'prod', function($join) {
                 $join->on('product.name', '=', 'prod.unique_name');
-                $join->on('product.id', '=', 'prod.max_id');
+                $join->on('product.id', '=', 'prod.min_id');
             });
 
             $pageSize = $request->input('page-size');
