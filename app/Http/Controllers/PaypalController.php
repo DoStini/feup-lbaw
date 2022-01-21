@@ -90,6 +90,6 @@ class PaypalController extends Controller {
             $order->save();
         }
 
-        return redirect(route('orders', ['id' => $orderId]));
+        return view('pages.purchaseSuccessful', ['order' => $order]);
     }
 }
