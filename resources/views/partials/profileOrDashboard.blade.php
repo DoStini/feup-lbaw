@@ -2,16 +2,16 @@
     <div class="row">
         <div class="col-md-3 col-sm-12 container">
             <div class="d-flex justify-content-center align-items-center flex-column">
-                <div class="w-75">
+                <div class="w-75 d-flex justify-content-center align-items-center">
                     @php
                         $photo_url = null;
                         if($admin) $photo_url = $admin->photo->url;
                         else $photo_url = $shopper->user->photo->url;
                     @endphp
                     @if (File::exists(public_path($photo_url)))
-                        <img id="user-img" src={{asset($photo_url)}} class="img-fluid" alt="Profile Picture" loading="lazy" />
+                        <img id="user-img" style="border-radius: 50%;width: 10em;height: 10em;object-fit: cover;" src={{asset($photo_url)}} class="img-fluid" alt="Profile Picture" loading="lazy" />
                     @else
-                        <img id="user-img" src="/img/user.png" class="img-fluid" alt="Default Profile Picture" loading="lazy" />
+                        <img id="user-img" style="border-radius: 50%;width: 10em;height: 10em;object-fit: cover;" src="/img/user.png" class="img-fluid" alt="Default Profile Picture" loading="lazy" />
                     @endif
                 </div>
                 <div class="w-100 mt-3">
