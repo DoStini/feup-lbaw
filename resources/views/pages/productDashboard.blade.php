@@ -24,7 +24,29 @@
 
 </div>
 
+<div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="confirmContent">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmTitle">Confirm delete account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body" id="confirmBody">
+                This is an irreversible action, please take caution
+                <button class="my-2 btn btn-danger w-100 delete-product-btn">
+                    Delete Product
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="application/javascript" defer>
+    const confirmElem =  document.getElementById("confirm");
+
+    let confirmDelete = new bootstrap.Modal(confirmElem);
+
     let table = $('#product-dashboard-table').DataTable({
         'responsive': true,
         'ajax': {
@@ -64,7 +86,7 @@
                         text = `
                         <div class="d-flex justify-content-evenly" style="font-size: 1.2em;">
                             <a class="bi bi-pencil-square icon-click px-1" href="/admin/products/${row[0]}/edit/" data-bs-toggle="tooltip" title="Edit Product"></a>
-                            <a class="bi bi-trash-fill icon-click px-1" href="/admin/products/${row[0]}/remove/" data-bs-toggle="tooltip" title="Remove Product"></a>
+                            <a class="bi bi-trash-fill icon-click px-1" onclick="deleteProduct(${row[0]})" data-bs-toggle="tooltip" title="Delete Product"></a>
                             <a class="bi bi-info-circle-fill icon-click" href='/products/${row[0]}' data-bs-toggle="tooltip" title="Go to Product Page"></a>
                         </div>`;
                         data = text;
@@ -75,6 +97,20 @@
             },
         ]
     });
+
+
+    function deleteProduct(prodId) {
+        confirmElem.querySelector('.delete-product-btn').addEventListener("click", () => {
+            deleteRequest(`/api/products/${prodId}`)
+            .then(() => {
+                    confirmDelete.hide();
+                    table.ajax.reload();
+                })
+                .catch();
+        });
+        confirmDelete.show();
+    }
+
 </script>
 
   @endsection

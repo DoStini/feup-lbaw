@@ -98,6 +98,17 @@ class ApiError {
         return ApiError::generateErrorMessage($err);
     }
 
+
+    /**
+     * Returns a json response with 
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function notEnoughPhotos() {
+        $err = Config::get('constants.not_enough_products');
+        return ApiError::generateErrorMessage($err);
+    }
+
     /**
      * Returns a json response with 
      *

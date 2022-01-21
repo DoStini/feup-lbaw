@@ -40,10 +40,9 @@
     width: 60%;
 }
 
-
 .product-carousel {
     width: 45vw;
-    height: 30vw;
+    height: auto;
 }
 
 .carousel-item img {
@@ -54,24 +53,24 @@
     display: block;
 }
 
-.description-box-teaser p{
+.description-box-teaser p {
     height: 7.5vh;
     overflow: hidden;
 }
 
 .description-box-full {
-    display:none;
+    display: none;
 }
 
 .show-more,
-.show-less{
+.show-less {
     display: flex;
     justify-content: center;
     font-size: larger;
 }
 
 .show-more i:hover,
-.show-less i:hover{
+.show-less i:hover {
     cursor: pointer;
     color: rgb(150, 116, 73);
 }
@@ -99,10 +98,30 @@
     padding-top: 0.1em;
 }
 
-.remove-wishlist{
+.remove-wishlist {
     color: rgb(201, 69, 69);
 }
 
-.remove-wishlist:hover{
+.remove-wishlist:hover {
     color: rgb(194, 92, 92);
+}
+
+.edit-product-photo {
+    object-fit: cover;
+}
+
+.remove-photo-icon {
+    position: absolute;
+    top: 0;
+    right: 1em;
+    cursor: pointer;
+}
+
+.add-product-photo {
+    font-size: 6em;
+    cursor: pointer;
+}
+
+#add-photos {
+    opacity: 0;
 }

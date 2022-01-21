@@ -7,11 +7,6 @@
 <div class="container pb-4">
     <div class="row d-flex align-items-center">
         @include('partials.links.dashboardLinks', ['page' => 'userDashboard'])
-        <div class="col-md-12 d-flex justify-content-end">
-            <a class="btn btn-primary mx-1" href={{route('getNewAdminPage')}}>
-                Create New Admin
-            </a>
-        </div>
     </div>
     <div class="row">
         <table class="table w-100 table-responsive my-4" style="font-size: 0.9em;" id="user-dashboard-table">
