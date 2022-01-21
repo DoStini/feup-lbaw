@@ -166,7 +166,7 @@ class CartController extends Controller {
         $shopper = Shopper::find($userId);
 
         if (!$this->validStock($product, $amount)) {
-            return response()->json(["message" => 'Product only has a stock of '. $product->stock], 422);
+            return response()->json(["message" => 'Product only has a stock of '. $product->stock, 'stock' => $product->stock], 422);
         }
 
 
