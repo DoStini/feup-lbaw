@@ -32,7 +32,6 @@
     <link href="{{ asset('css/address.css') }}" rel="stylesheet">
     <link href="{{ asset('css/product.css') }}" rel="stylesheet">
     <link href="{{ asset('css/auxiliar.css') }}" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/1c937c97ed.js" crossorigin="anonymous"></script>
     <script>
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951

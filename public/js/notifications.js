@@ -18,7 +18,7 @@ function buildOrderNotification(notification) {
     html.style.cursor = "pointer";
     html.innerHTML = `<div class="dropdown-item">
                         <p class="text-center">${message}</p>
-                        <div d-flex>
+                        <div>
                             <h6 class="text-center">Product ${notification.order_id} is now <a class="badge rounded-pill badge-decoration-none badge-${notification.order_notif_type} ">
                             ${notification.order_notif_type.toUpperCase()}
                         </a></h6>

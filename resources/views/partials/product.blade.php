@@ -1,5 +1,5 @@
 @if($errors->any() || session()->has('success'))
-<script async>
+<script>
     (async() => {
         while(!window.hasOwnProperty('reportData'))
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -36,7 +36,7 @@
                     @foreach ($product->photos as $photo)
                     @if (File::exists(public_path($photo->url)) || filter_var($photo->url, FILTER_VALIDATE_URL))
                     <div class="carousel-item w-100 {{$loop->iteration == 1 ? 'active' : '' }}">
-                        <img class="d-block w-100" src={{$photo->url}}>
+                        <img class="d-block w-100" src={{$photo->url}} alt="{{$product->name}} photo number {{$loop->index}}">
                     </div>
                     @php
                     $insertedPhotos++;
@@ -63,7 +63,7 @@
     </div>
     <div class="product-info col-md-5">
         <div class="my-3">
-            <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
+            <h2 class="m-0" style="text-align: justify;">{{strtoupper($product->name)}}</h2>
             @if($product->categories)
             <h5>Category: {{$product->categories[0]->name}}</h5>
             @endif
@@ -91,30 +91,14 @@
         </div>
 
         <div id="description-box-teaser" class="description-box-teaser">
-            <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
+            <p style="text-align: center;" id="description-text-teaser">{{$product->description}}</p>
             <div class="show-more" id="show-more-btn">
                 <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
             </div>
         </div>
-        {{-- <div class="product-info col-md-5">
-            <div class="my-3">
-                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-                <div class="d-flex justify-content-between">
-                    <p>
-                        @for ($i = 1; $i <= 5; $i++) <i
-                            class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
-                            </i>
-                            @endfor
-                    </p>
-                    @if($product->categories)
-                        <h5>Category: {{$product->categories[0]->name}}</h5>
-                    @endif
-                </div>
-
-            </div> --}}
 
         <div id="description-box-full" class="description-box-full">
-            <p style=text-align: center;">{{$product->description}}</p>
+            <p style="text-align: center;">{{$product->description}}</p>
             <div class="show-less">
                 <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
             </div>
@@ -149,7 +133,7 @@
                                 <a class="col-4" href={{route('getProduct', ['id'=> $id])}} data-toggle="tooltip"
                                     data-placement="top" title={{$color}} ><img class="variant-color"
                                         src={{sprintf("https://cdn.shopify.com/s/files/1/0014/1865/7881/files/%s_50x50_crop_center.png",
-                                        $color)}} onerror="this.src='{{asset('img/notfound.jpg')}}'"></a>
+                                        $color)}} onerror="this.src='{{asset('img/notfound.jpg')}}'" alt="Variant color {{$color}}"></a>
                                 @endforeach
                             </div>
                         </div>
@@ -167,10 +151,6 @@
                 <h6 id="current-price">Subtotal: {{$product->price}} €</h6>
             </div>
             @endif
-
-            <!--
-                    <i class="bi bi-heart-fill add-to-wishlist"></i>
-                    -->
         </div>
 
             <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
@@ -209,7 +189,7 @@
                 <i id="review-form-star-4" class="bi icon-click bi-star" onclick="setRating(4)"></i>
                 <i id="review-form-star-5" class="bi icon-click bi-star" onclick="setRating(5)"></i>
             </div>
-            <input id="review-form-star" type="hidden" name="stars" value="0" required>
+            <input id="review-form-star" type="hidden" name="stars" value="0">
         </div>
         <div class="row">
             <div class="form-group">

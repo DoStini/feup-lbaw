@@ -110,12 +110,21 @@
             notificationContent.appendChild(button);
         }
 
+        function addParsed(parsed, content) {
+            parsed.appendChild(getDivider());
+            content.appendChild(parsed);
+        }
+
+        function prependParsed(parsed, content) {
+            parsed.appendChild(getDivider());
+            content.prepend(parsed);
+        }
+
         const handleNextRequest = (data) => {
             const notifications = data.notifications;
             notifications.forEach(noti => {
                 const notif = parseNotification(noti);
-                notificationContent.appendChild(notif);
-                notificationContent.appendChild(getDivider());
+                addParsed(notif, notificationContent);
             });
 
             if (data.new_nots > 0) {
@@ -137,8 +146,7 @@
             notifications.forEach((noti, idx) => {
                 const item = parseNotification(noti);
                 if (item) {
-                    notificationContent.appendChild(item);
-                    notificationContent.appendChild(getDivider());
+                    addParsed(item, notificationContent);
                 }
             });
 
@@ -184,32 +192,28 @@
         channelProfileEdited.bind("profile-edited-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildEditedNotifcation(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         const channelOrderStatus = pusher.subscribe("order-status");
         channelOrderStatus.bind("order-status-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildOrderNotification(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         const cartItemUpdated = pusher.subscribe("cart-item");
         cartItemUpdated.bind("cart-item-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildCartNotification(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         const wishlistItemUpdated = pusher.subscribe("wishlist-item");
         wishlistItemUpdated.bind("wishlist-item-{{Auth::user()->id}}", function(data) {
             handlePusherNotification();
             const notif = buildWishlistNotification(data);
-            notificationContent.prepend(getDivider());
-            notificationContent.prepend(notif);
+            prependParsed(notif, notificationContent);
         });
 
         notification.addEventListener("click", () => {

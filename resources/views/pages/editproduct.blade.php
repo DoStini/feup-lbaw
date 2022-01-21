@@ -3,14 +3,11 @@
 @section('title', 'Orders Dashboard')
 
 @section('content')
-
-@include('partials.errormodal')
-
 <div class="container">
 @include('partials.links.dashboardLinks', ['page' => 'productDashboard'])
 
 @if($errors->any())
-<script async>
+<script>
     (async() => {
         while(!window.hasOwnProperty('reportData'))
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -35,7 +32,7 @@
 
 
 <form class="container d-flex flex-column" id="add-product-form" autocomplete="off"
-        class="container form"  enctype="multipart/form-data" 
+        class="container form"  enctype="multipart/form-data"
         method="POST" action="{{route('editProduct', ['id' => $product->id])}}">
     @csrf
     <div class="row">

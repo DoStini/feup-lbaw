@@ -101,9 +101,9 @@ function insertProduct(product, idx) {
     const elem = document.createElement("div");
     elem.id = `cart-product-${idx}`;
     elem.innerHTML =
-        `<div class="container" href="#">
+        `<div class="container">
             <div class="row align-items-center mb-3">
-                <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'">
+                <img class="col-3" src="${productImg}" onerror="this.src='${fallBack}'" alt="Cart Dropdown Image for ${product.name}">
                 <div class="col-9">
                     <div class="row align-items-center justify-content-between">
                         <div class="col-10 dropdown-cart-name">${product.name}</div>
@@ -195,12 +195,15 @@ function fillMenu(products, total) {
 
     products.forEach(insertProduct);
 
+    let divider = document.createElement("li");
+    divider.innerHTML = '<hr class="dropdown-divider">';
 
-    const fixed = document.createElement("div");
-    fixed.innerHTML = `
-    <li><hr class="dropdown-divider"></li>
-    <li id="cart-resume">
-        <div class="container" href="#">
+    menu.appendChild(divider);
+
+    let resume = document.createElement("li");
+    resume.id = "cart-resume";
+    resume.innerHTML = `
+        <div class="container">
             <div class="row align-items-center">
                 <div class="col mx-3 my-2">
                     <div class="row align-items-center justify-content-between mb-3">
@@ -213,10 +216,9 @@ function fillMenu(products, total) {
                 </div>
             </div>
         </div>
-    </li>
     `;
 
-    menu.appendChild(fixed);
+    menu.appendChild(resume);
 }
 
 function renderCart() {
