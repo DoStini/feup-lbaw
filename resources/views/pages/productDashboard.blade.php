@@ -28,7 +28,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="confirmContent">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmTitle">Confirm delete account</h5>
+                <h5 class="modal-title" id="confirmTitle">Confirm delete product</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -103,15 +103,18 @@
         ]
     });
 
-
     function deleteProduct(prodId) {
-        confirmElem.querySelector('.delete-product-btn').addEventListener("click", () => {
+        const button = confirmElem.querySelector('.delete-product-btn');
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+
+        newButton.addEventListener("click", () => {
             deleteRequest(`/api/products/${prodId}`)
             .then(() => {
                     confirmDelete.hide();
                     table.ajax.reload();
                 })
-                .catch();
+            .catch();
         });
         confirmDelete.show();
     }

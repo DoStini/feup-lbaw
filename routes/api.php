@@ -18,7 +18,7 @@ Route::post('/orders/{id}/status', 'OrderController@update')->middleware(['auth.
 Route::post('/orders/{id}/cancel', 'OrderController@cancel')->middleware(['auth.api'])->name("cancel_order");
 
 Route::get('/products/variants', 'ProductController@variants');
-Route::prefix('/products/{id}')->middleware(['auth.api'])->group(function () {
+Route::prefix('/products/{id}')->middleware(['auth.api', 'admin'])->group(function () {
     Route::delete('/', 'ProductController@removeProduct')->name('removeProduct');
     Route::delete('/photo/{photo_id}', 'ProductController@removeProductPhoto')->name('removeProductPhoto');
     Route::post('/photo/add', 'ProductController@addProductImage')->name('addProductPhoto');

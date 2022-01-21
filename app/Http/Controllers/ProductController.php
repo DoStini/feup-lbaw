@@ -205,7 +205,7 @@ class ProductController extends Controller {
         $this->authorize('viewAny', Product::class);
 
         $dc =  new DatatableController();
-        return $dc->get($request, DB::table('product')->where('is_active', '=', 'true'));
+        return $dc->get($request, DB::table('product_filtered'));
     }
 
     private function getValidatorAddProduct(Request $request) {
@@ -525,9 +525,22 @@ class ProductController extends Controller {
     public function removeProduct(Request $request) {
         $product = Product::findOrFail($request->route('id'));
 
-        $product->update([
-            "is_active" => false,
-        ]);
+        try {
+            DB::beginTransaction();
+            $product->update([
+                "is_active" => false,
+            ]);
+
+            $product->usersCart()->detach();
+            $product->usersWishlisted()->detach();
+
+            DB::commit();
+        } catch (Exception $e) {
+            dd($e);
+            DB::rollBack();
+            throw $e;
+        }
+
 
         return response("");
     }
