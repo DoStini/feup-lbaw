@@ -1,7 +1,7 @@
 #alert-placeholder {
     position: fixed;
     width: 50vw;
-    bottom: 5vh;
+    top: 5vh;
     right: 0;
     left: 0;
     margin-right: auto;

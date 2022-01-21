@@ -17,7 +17,7 @@
                     <th class="text-center">Percentage</th>
                     <th class="text-center">Minimum Value</th>
                     <th class="text-center">Active</th>
-                    <th class="text-center">Actions</th>
+                    <th class="text-center">Enable/Disable</th>
                 </tr>
             </thead>
             <tbody id="coupon-area">
