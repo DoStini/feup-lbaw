@@ -79,7 +79,6 @@
     function block(id) {
         jsonBodyPost(`/api/users/${id}/block`)
             .then((message) => {
-                console.log(message);
                 table.ajax.reload();
             })
             .catch();
@@ -88,7 +87,6 @@
     function unblock(id) {
         jsonBodyPost(`/api/users/${id}/unblock`)
             .then((message) => {
-                console.log(message);
                 table.ajax.reload();
             })
             .catch();

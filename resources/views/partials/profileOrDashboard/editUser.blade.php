@@ -20,7 +20,6 @@
     }
 
     function renderElements(user) {
-        console.log(user);
         if(user.id === userID) document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
 
         document.getElementById("name-profile").innerText = user.name;
@@ -177,7 +176,6 @@
         let form{{$shopper ? $shopper->id : $admin->id}} = document.getElementById('edit-form');
 
         const editorData = editor.getData();
-        console.log(editorData);
         aboutMe.value = editorData;
         send(event);
     }

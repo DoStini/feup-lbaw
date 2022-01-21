@@ -6,7 +6,7 @@
     <div class="container">
       <div class="row d-flex align-items-center justify-content-between">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
-          <a href={{route('getProductSearch')}} class="ms-md-2">
+          <a href={{route('home')}} class="ms-md-2">
             <img src="/img/refurniture.svg" alt="" width="200" height=65" />
           </a>
         </div>
@@ -120,7 +120,6 @@
 
             if (data.new_nots > 0) {
                 notificationNumber.style.visibility = "visible";
-                console.log('new notif');
             }
 
             skip += notifications.length;
@@ -215,7 +214,6 @@
         notification.addEventListener("click", () => {
             formDataPost(`/api/users/{{Auth::user()->id}}/notifications/`)
                 .then(data => {
-                    console.log(data);
                     notificationNumber.style.visibility = "hidden";
                 });
         });

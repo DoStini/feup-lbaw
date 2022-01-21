@@ -33,7 +33,7 @@
 
 
 <form class="container d-flex flex-column" id="add-product-form" autocomplete="off"
-        class="container form"  enctype="multipart/form-data" 
+        class="container form"  enctype="multipart/form-data"
         method="POST" action="{{route('editProduct', ['id' => $product->id])}}">
     @csrf
     <div class="row">
@@ -96,7 +96,7 @@
                     @foreach ($product->photos as $photo)
                     <div id="photo-{{$photo->id}}" class="col-md-2 col-sm-4 col-6 my-2" style="position: relative;">
                         <img class="edit-product-photo col-12" src="{{$photo->url}}" style="height: 10em;">
-                        <i class="bi bi-x-lg remove-photo-icon" 
+                        <i class="bi bi-x-lg remove-photo-icon"
                             onclick="deleteProductPhoto({{$photo->id}})">
                         </i>
                     </div>
@@ -141,7 +141,6 @@
                     return query;
                 },
                 processResults: (data) => {
-                    console.log(data)
                     data.forEach((el) => el.text = el.name)
                     return {
                         results: data
@@ -168,14 +167,12 @@
                 .then(() => {
                     document.getElementById(`photo-${id}`).remove();
                 }).catch((e) => {
-                    console.log()
                     reportData("Error removing photo", e.response.data)
                 });
         }
 
         const applyProductPhoto = () => {
             const form = document.getElementById('image-form');
-            console.log(form)
             form.dispatchEvent(new Event("submit"));
         }
         let editor;
@@ -200,7 +197,6 @@
         } );
 
         document.getElementById('add-product-form').addEventListener('submit', (e) => {
-            console.log("daknsda");
             let description = document.getElementById('description');
             description.value = editor.getData();
         });

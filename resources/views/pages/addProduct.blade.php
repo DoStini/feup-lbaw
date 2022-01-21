@@ -161,9 +161,8 @@
         .catch( error => {
             console.log( error );
         } );
-    
+
         document.getElementById('add-product-form').addEventListener('submit', (e) => {
-            console.log("daknsda");
             let description = document.getElementById('description');
             description.value = editor.getData();
         });
@@ -183,7 +182,6 @@
                     return query;
                 },
                 processResults: (data) => {
-                    console.log(data)
                     data.forEach((el) => el.text = el.name)
                     return {
                         results: data
