@@ -3,7 +3,7 @@
         <div class="row m-5">
             <div class="col-md-6 d-flex justify-content-center justify-content-md-start my-3">
                 <a href={{route('getProductSearch')}} class="ms-md-2">
-                  <img src="/img/refurniture.svg" alt="" width="200" height=65" />
+                  <img src="/img/refurniture.svg" alt="" width="200" height="65" />
                 </a>
               </div>
             <div class="col-md-6">

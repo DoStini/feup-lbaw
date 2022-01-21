@@ -163,10 +163,10 @@
 }
 
 .card-andre:hover {
-<<<<<<< HEAD
     background-image: url("/img/dusto.jpeg");
-=======
-    background-image: url('/img/dusto.jpeg');
+}
 
->>>>>>> main
+
+.button {
+    cursor: pointer;
 }

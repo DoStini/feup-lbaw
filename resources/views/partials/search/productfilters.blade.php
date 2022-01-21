@@ -2,7 +2,7 @@
     <div class="row">
         <h2 id="results-text" class="col-md-4 col-sm-12 text-center">No results</h2>
         <div class="col-md-2 col-sm-6 dropdown">
-            <div class="h-100" type="button" id="dropdownCategories" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="h-100 button" id="dropdownCategories" data-bs-toggle="dropdown" aria-expanded="false" role="button">
                 <div class="row justify-content-between align-items-center h-100">
                     <h4 class="text-center">Categories<i class="bi bi-caret-down-fill" style="font-size: 0.7em;"></i></h4>
                 </div>
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-md-2 col-sm-6 dropdown">
-            <div class="h-100" type="button" id="dropdownPrice" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="h-100 button" id="dropdownPrice" data-bs-toggle="dropdown" aria-expanded="false" role="button">
                 <div class="row justify-content-between align-items-center h-100">
                     <h4 class="text-center">Price<i class="bi bi-caret-down-fill" style="font-size: 0.7em;"></i></h4>
                 </div>
@@ -34,7 +34,7 @@
 
 
         <div class="col-md-2 col-sm-6 dropdown">
-            <div class="h-100" type="button" id="dropdownRating" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="h-100 button" id="dropdownRating" data-bs-toggle="dropdown" aria-expanded="false" role="button">
                 <div class="row justify-content-between align-items-center h-100">
                     <h4 class="text-center">Rating<i class="bi bi-caret-down-fill" style="font-size: 0.7em;"></i></h4>
                 </div>
@@ -50,7 +50,7 @@
         </div>
 
         <div class="col-md-2 col-sm-6 dropdown">
-            <div class="h-100" type="button" id="dropdownSort" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="h-100 button" id="dropdownSort" data-bs-toggle="dropdown" aria-expanded="false" role="button">
                 <div class="row justify-content-between align-items-center h-100">
                     <h4 class="text-center">Sort Results<i class="bi bi-caret-down-fill" style="font-size: 0.7em;"></i></h4>
                 </div>

@@ -7,7 +7,7 @@
       <div class="row d-flex align-items-center justify-content-between">
         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
           <a href={{route('getProductSearch')}} class="ms-md-2">
-            <img src="/img/refurniture.svg" alt="" width="200" height=65" />
+            <img src="/img/refurniture.svg" alt="" width="200" height="65" />
           </a>
         </div>
 
@@ -57,7 +57,7 @@
                         explode(" ", Auth::user()->name)[0]}}
                     </h5>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul class="dropdown-menu" aria-labelledby="user-drodown">
                     @if(Auth::user()->is_admin)
                       <li><a class="dropdown-item" href={{route('getDashboard')}}>Dashboard</a></li>
                     @else
