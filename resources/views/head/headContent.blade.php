@@ -57,4 +57,5 @@
     <script type="text/javascript" src={{ asset('js/userSearch.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/address.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/addProduct.js') }} defer></script>
+    
 </head>

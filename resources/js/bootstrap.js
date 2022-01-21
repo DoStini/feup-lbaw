@@ -5,6 +5,7 @@ try {
     require("popper.js");
 
     window.bootstrap = require('bootstrap');
+    window.ckeditor = require( '@ckeditor/ckeditor5-build-classic' );
     window.dt = require('datatables.net-responsive-bs5')();
 } catch (e) {}
 

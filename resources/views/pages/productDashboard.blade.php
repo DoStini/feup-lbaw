@@ -53,11 +53,16 @@
             'url': '/api/products/list',
         },
         serverSide: true,
+        "initComplete": function(settings, json) {
+            document.querySelectorAll("#product-dashboard-table th").forEach((elem) => {
+                elem.classList.remove("font-monospace");
+            })
+        },
         'order': [[0, 'desc']],
         'columnDefs':[
-            { 'name': 'id', 'targets': 0, 'className': 'text-center', 'width':'6em'},
-            { 'name': 'name', 'targets': 1, 'className': 'text-center'},
-            { 'name': 'stock', 'targets': 2, 'className': 'text-center', 'width':'6em'},
+            { 'name': 'id', 'targets': 0, 'width':'6em', 'className': 'font-monospace'},
+            { 'name': 'name', 'targets': 1},
+            { 'name': 'stock', 'targets': 2, 'className': 'font-monospace', 'width':'6em'},
             {
                 'name': 'price', 'targets': 3, 'searchable':false, 'width':'6em',
                 'render': function(data, type, row) {
@@ -66,7 +71,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'font-monospace'
             },
             {
                 'name': 'avg_stars', 'targets': 4, 'searchable':false, 'width': '6em',
@@ -76,7 +81,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'font-monospace'
             },
             {
                 'targets':5, 'orderable': false, 'searchable': false, 'width':'7em',
@@ -85,15 +90,15 @@
                     if(type === 'display') {
                         text = `
                         <div class="d-flex justify-content-evenly" style="font-size: 1.2em;">
-                            <a class="bi bi-pencil-square icon-click px-1" href="/admin/products/${row[0]}/edit/" data-bs-toggle="tooltip" title="Edit Product"></a>
-                            <a class="bi bi-trash-fill icon-click px-1" onclick="deleteProduct(${row[0]})" data-bs-toggle="tooltip" title="Delete Product"></a>
+                            <a class="bi bi-pencil-square icon-click pe-1" href="/admin/products/${row[0]}/edit/" data-bs-toggle="tooltip" title="Edit Product"></a>
+                            <a class="bi bi-trash-fill icon-click pe-1" onclick="deleteProduct(${row[0]})" data-bs-toggle="tooltip" title="Delete Product"></a>
                             <a class="bi bi-info-circle-fill icon-click" href='/products/${row[0]}' data-bs-toggle="tooltip" title="Go to Product Page"></a>
                         </div>`;
                         data = text;
                     }
 
                     return data;
-                }, 'className': 'text-center'
+                }, 'className': 'td-text-center'
             },
         ]
     });

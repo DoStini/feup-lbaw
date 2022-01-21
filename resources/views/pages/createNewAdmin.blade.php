@@ -1,5 +1,3 @@
-<script type="text/javascript" src={{ asset('js/login.js') }}></script>
-
 @extends('layouts.app')
 
 @section('title', 'Users Dashboard')

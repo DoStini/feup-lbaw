@@ -43,12 +43,17 @@
         'ajax': {
             'url': '/api/orders/',
         },
+        "initComplete": function(settings, json) {
+            document.querySelectorAll("#order-dashboard-table th").forEach((elem) => {
+                elem.classList.remove("font-monospace");
+            })
+        },
         serverSide: true,
         'order': [[5, 'asc'],[3, 'desc']],
         'columnDefs':[
-            { 'name': 'id', 'targets': 0, 'className': 'text-center'},
+            { 'name': 'id', 'targets': 0, 'className': 'font-monospace'},
             {
-                'name': 'name', 'targets': 1, 'className': 'text-center',
+                'name': 'name', 'targets': 1,
                 'render': function(data, type, row) {
                     if(type === "display") {
                         data = data + ` (${row[7]})`;
@@ -57,8 +62,8 @@
                     return data;
                 }
             },
-            { 'name': 'timestamp', 'targets': 2, 'className': 'text-center'},
-            { 'name': 'last_update', 'targets': 3, 'className': 'text-center'},
+            { 'name': 'timestamp', 'targets': 2, 'className': 'font-monospace'},
+            { 'name': 'last_update', 'targets': 3, 'className': 'font-monospace'},
             {
                 'name': 'total', 'targets': 4,
                 'render': function(data, type, row) {
@@ -67,7 +72,7 @@
                     }
 
                     return data;
-                }
+                }, 'className': 'font-monospace'
             },
             {
                 'name': 'status', 'targets': 5,
@@ -78,7 +83,7 @@
                         data = text;
                     }
                     return data;
-                }, 'className': 'text-center'
+                }, 'className': 'td-text-center'
             },
             {
                 'targets':6, 'orderable': false, 'searchable': false,
@@ -86,9 +91,9 @@
                     let text = "";
                     if(type === 'display') {
                         text = `
-                        <div class="d-flex justify-content-around" id="dropdown-menu-order-status-${row[0]}" style="font-size: 1.2em;">
+                        <div class="d-flex justify-content-around align-items-end" id="dropdown-menu-order-status-${row[0]}" style="font-size: 1.2em;">
                             <div class="dropdown dropstart">
-                                <button class="p-1 dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
+                                <button class="p-0 pe-1 dropdown-toggle btn" type="button" id="dropdown-menu-order-status-btn-${row[0]}""
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-pencil-square icon-click" data-bs-toggle="tooltip"
                                     title="Advance Status"></i>
@@ -108,17 +113,17 @@
                                         <button type="submit" class="btn btn-primary">Edit Order</button>
                                     </form>
                                 </div>
-                                <a class="btn p-1 bi bi-arrow-up-circle-fill icon-click" onclick="update(${row[0]})"'
-                                data-bs-toggle="tooltip" title="Update Order Status"></a>
-                                <a class="btn p-1 bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
-                                    data-bs-toggle="tooltip" title="Go to Order Page"></a>
                             </div>
+                            <a class="pe-1 bi bi-arrow-up-circle-fill icon-click" onclick="update(${row[0]})"'
+                                data-bs-toggle="tooltip" title="Update Order Status"></a>
+                            <a class="bi bi-info-circle-fill icon-click" href='/orders/${row[0]}'
+                                data-bs-toggle="tooltip" title="Go to Order Page"></a>
                         </div>`;
                         data = text;
                     }
 
                     return data;
-                }, 'className': 'text-center'
+                }, 'className': 'td-text-center'
             },
             {
                 'targets':7, 'orderable': false, 'visible':false, 'name':'shopper_id'
