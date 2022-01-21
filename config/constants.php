@@ -92,4 +92,8 @@ return [
             'message' => 'Order state cannot be updated any further'
         ]
     ],
+    'ordered_canceled' => [
+        'code' => 422,
+        'message' => 'Order was canceled',
+    ],
 ];
