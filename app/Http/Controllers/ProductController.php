@@ -84,9 +84,9 @@ class ProductController extends Controller {
                 ->whereRaw('stock > 0')
                 ->join('product_category', 'product_category.product_id', '=', 'product.id')
                 ->join('category', 'product_category.category_id', '=', 'category.id');
-    
+
             $category_array = $request->input('categories');
-            
+
             if ($category_array != []) {
                 $cat_selected = true;
                 $current_idx = 0;
@@ -130,16 +130,16 @@ class ProductController extends Controller {
                 });
             })
                 ->when($request->input('price-min'), function ($q) use ($request) {
-                    return $q->where('price', '>', [$request->input('price-min')]);
+                    return $q->where('price', '>=', [$request->input('price-min')]);
                 })
                 ->when($request->input('price-max'), function ($q) use ($request) {
-                    return $q->where('price', '<', [$request->input('price-max')]);
+                    return $q->where('price', '<=', [$request->input('price-max')]);
                 })
                 ->when($request->input('rate-min'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '>', [$request->input('rate-min')]);
+                    return $q->where('avg_stars', '>=', [$request->input('rate-min')]);
                 })
                 ->when($request->input('rate-max'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '<', [$request->input('rate-max')]);
+                    return $q->where('avg_stars', '<=', [$request->input('rate-max')]);
                 });
 
             $pageSize = $request->input('page-size');
@@ -161,10 +161,10 @@ class ProductController extends Controller {
                 $searchParams->catNames = array_map(function($id) { return Category::find($id)->name; }, $request->input('categories'));
             }
 
-            if($request->input('price-min')) $searchParams->minPrice = $request->input('price-min');
-            if($request->input('price-max')) $searchParams->maxPrice = $request->input('price-max');
-            if($request->input('rate-min')) $searchParams->minRating = $request->input('rate-min');
-            if($request->input('rate-max')) $searchParams->maxRating = $request->input('rate-max') == 5 ? "" : $request->input('rate-max');
+            if($request->input('price-min') != null) $searchParams->minPrice = $request->input('price-min');
+            if($request->input('price-max') != null) $searchParams->maxPrice = $request->input('price-max');
+            if($request->input('rate-min') != null) $searchParams->minRating = $request->input('rate-min');
+            if($request->input('rate-max') != null) $searchParams->maxRating = $request->input('rate-max');
 
             if($request->input('order')) $searchParams->order = $request->input('order');
 

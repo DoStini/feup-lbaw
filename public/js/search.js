@@ -110,13 +110,12 @@ function changeFilterText(data) {
     const ratings = document.getElementById('filter-rating-text');
     const order = document.getElementById('filter-sort-text');
 
-    console.log(data);
     categories.innerHTML = data.catNames ? data.catNames.join(", ") : "None"
-    
-    if(!data.minPrice && !data.maxPrice) prices.innerHTML = "None"
-    else prices.innerHTML = `${data.minPrice ? data.minPrice : "No Minimum"} - ${data.maxPrice ? data.maxPrice : "No Maximum"}`
-    if(!data.minRating && !data.maxRating) ratings.innerHTML = "None"
-    else ratings.innerHTML = `${data.minRating ? data.minRating : "No Minimum"} - ${data.maxRating ? data.maxRating : "No Maximum"}`
+
+    if(data.minPrice == null && data.maxPrice == null) prices.innerHTML = "None"
+    else prices.innerHTML = `${data.minPrice ?? "No Minimum"} - ${data.maxPrice ?? "No Maximum"}`
+    if(data.minRating == null && data.maxRating == null) ratings.innerHTML = "None"
+    else ratings.innerHTML = `${data.minRating ?? "No Minimum"} - ${data.maxRating ?? "No Maximum"}`
 
     switch (data.order) {
         case 'price-asc':
@@ -144,7 +143,6 @@ function createProduct(product, delay) {
     const fallBack = "/img/default.jpg";
 
     const wishlisted = !product.shopper_id; // If the product is wihslisted, shopper will not be null
-    console.log(product)
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
@@ -179,7 +177,7 @@ function createProduct(product, delay) {
         addToWishlist.addEventListener("click", (e) => {
             addToWishlistRequest(product.id, () => {
                 removeFromWishlist.style.display = "";
-                addToWishlist.style.display = "none";    
+                addToWishlist.style.display = "none";
             });
             addToWishlist.dispatchEvent(new Event("blur"));
 
@@ -290,7 +288,7 @@ function getInputs() {
     const data = Object.fromEntries(formData.entries());
 
     const keys = Object.keys(data);
-    
+
     categories = [];
 
     Object.values(data).forEach((val, idx) => {
@@ -299,6 +297,8 @@ function getInputs() {
             delete data[keys[idx]];
         } else if (val === "category-active") {
             categories.push(keys[idx]);
+            delete data[keys[idx]];
+        } else if(val === '') {
             delete data[keys[idx]];
         }
     });
@@ -346,6 +346,7 @@ function sendSearchProductsRequest(callback, page) {
         ...getInputs(),
     }
 
+    console.log(query);
     getQuery(`/api/products`, query).then(callback);
 }
 
