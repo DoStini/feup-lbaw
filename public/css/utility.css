@@ -166,6 +166,10 @@
     background-image: url("/img/dusto.jpeg");
 }
 
+.profile-pic {
+    object-fit: cover;
+}
+
 table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
 table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
     color: black;

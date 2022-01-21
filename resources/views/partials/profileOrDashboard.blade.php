@@ -2,11 +2,11 @@
     <div class="row">
         <div class="col-md-3 col-sm-12 container">
             <div class="d-flex justify-content-center align-items-center flex-column">
-                <div class="w-50">
+                <div class="w-75">
                     @php
                         $photo_url = null;
                         if($admin) $photo_url = $admin->photo->url;
-                        else $photo_url = $shopper->user->photo->url; 
+                        else $photo_url = $shopper->user->photo->url;
                     @endphp
                     @if (File::exists(public_path($photo_url)))
                         <img id="user-img" src={{asset($photo_url)}} class="img-fluid" alt="" loading="lazy" />
@@ -14,7 +14,7 @@
                         <img id="user-img" src="/img/user.png" class="img-fluid" alt="" loading="lazy" />
                     @endif
                 </div>
-                <div class="w-100">
+                <div class="w-100 mt-3">
                     @if($admin)
                         <h3 id="name-profile" class="text-center" style="overflow-wrap: break-word;">{{$admin->name}}</h3>
                     @else
@@ -22,7 +22,7 @@
                     @endif
                 </div>
             </div>
-            
+
             <div class="my-3 mx-2">
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                     <div class="accordion-item">
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="col-md-9 col-sm-12 container">
-            @include('partials.profileOrDashboard.' . $page, 
+            @include('partials.profileOrDashboard.' . $page,
             ['shopper' => $shopper ?? null,
              'admin' => $admin ?? null])
         </div>

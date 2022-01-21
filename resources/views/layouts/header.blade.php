@@ -47,9 +47,9 @@
                 <a class="text-reset d-flex align-items-center hidden-arrow" href="#"
                     id="user-drodown" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(File::exists(public_path(Auth::user()->photo->url)))
-                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="rounded-circle" height="25" width="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src={{asset(Auth::user()->photo->url)}} class="profile-pic rounded-circle" height="25" width="25" alt="" loading="lazy" />
                     @else
-                      <img id="header-user-img" src="/img/user.png" class="rounded-circle" height="25" alt="" loading="lazy" />
+                      <img id="header-user-img" src="/img/user.png" class="profile-pic rounded-circle" height="25" alt="" loading="lazy" />
                     @endif
                     <h5 id="header-user-name" class="px-3 mt-1" style="color: #000000;">
                       {{strlen(explode(" ", Auth::user()->name)[0]) > 13 ?

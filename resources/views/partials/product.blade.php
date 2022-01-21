@@ -218,7 +218,7 @@
     </form>
     @else
     @if(!Auth::check() || (Auth::check() && !Auth::user()->is_admin))
-    <h3 class="mt-3 mb-5 text-center">Try it out first and then tell us about your experience!</h3>
+    <h3 class="mt-5 mb-5 text-center">Try it out first and then tell us about your experience!</h3>
     @endif
     @endcan
 
