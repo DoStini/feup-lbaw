@@ -106,3 +106,10 @@
 .remove-wishlist:hover{
     color: rgb(194, 92, 92);
 }
+.product-link{
+    text-decoration: none !important;
+}
+
+.product-link:hover {
+    color: white;
+}
