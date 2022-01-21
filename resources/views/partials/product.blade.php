@@ -26,7 +26,7 @@
 
 <div class="product container vw-100" data-id={{ $product->id }}>
     <div class="row">
-        <div class="product-images mt-4 col-md-7 d-flex justify-content-center">
+        <div class="product-images mt-4 pe-md-5 col-md-7 d-flex justify-content-center">
             <div id="productCarousel" class="carousel slide product-slide product-carousel w-100"
                 data-bs-ride="carousel">
                 <div class="carousel-inner w-100 product-carousel">
