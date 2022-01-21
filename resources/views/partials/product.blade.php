@@ -91,7 +91,7 @@
         </div>
 
         <div id="description-box-teaser" class="description-box-teaser">
-            <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
+            <p style=text-align: center;" id="description-text-teaser"></p>
             <div class="show-more" id="show-more-btn">
                 <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
             </div>
@@ -114,7 +114,7 @@
             </div> --}}
 
         <div id="description-box-full" class="description-box-full">
-            <p style=text-align: center;">{{$product->description}}</p>
+            <p style=text-align: center;" id="description-text-full"></p>
             <div class="show-less">
                 <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
             </div>
@@ -476,4 +476,11 @@
         iconBar.appendChild(confirmButton);
     }
 
+    let val = '@php echo ($product->description) @endphp';
+    const patt = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi
+    val =  val.replace(patt, '')
+
+    document.getElementById('description-text-teaser').innerHTML = val;
+    document.getElementById('description-text-full').innerHTML = val;
 </script>
+

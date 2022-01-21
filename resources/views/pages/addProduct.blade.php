@@ -125,9 +125,41 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary my-2">Submit</button>
+    <button type="submit" class="btn btn-primary my-2" onclick="this.form.submit()">Submit</button>
 </form>
 </div>
 </div>
+
+<script defer>
+    let editor;
+
+    window.addEventListener('load', () => {
+        ckeditor
+        .create( document.querySelector( '#description' ), {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList'],
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h4', title: 'Heading 1', class: 'ck-heading_heading4' },
+                    { model: 'heading2', view: 'h6', title: 'Heading 2', class: 'ck-heading_heading6' }
+                ]
+            }
+        } )
+        .then( newEditor => {
+            editor = newEditor;
+        } )
+        .catch( error => {
+            console.log( error );
+        } );
+    
+        document.getElementById('add-product-form').addEventListener('submit', (e) => {
+            console.log("daknsda");
+            let description = document.getElementById('description');
+            aboutMe.value = editor.getData();
+        });
+    })
+
+</script>
+
 
 @endsection

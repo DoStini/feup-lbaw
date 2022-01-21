@@ -85,7 +85,7 @@
 
 </script>
 
-<form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return send(event);">
+<form class="container d-flex flex-column" id="edit-form" autocomplete="off" onsubmit="return submitForm();">
     <div class="row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
@@ -145,3 +145,39 @@
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<script defer>
+
+    window.addEventListener('load', () => { 
+        let editor;
+
+        ckeditor
+        .create( document.querySelector( '#about-me' ), {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList'],
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h4', title: 'Heading 1', class: 'ck-heading_heading4' },
+                    { model: 'heading2', view: 'h6', title: 'Heading 2', class: 'ck-heading_heading6' }
+                ]
+            }
+        } )
+        .then( newEditor => {
+            editor = newEditor;
+        } )
+        .catch( error => {
+            console.log( error );
+        } );
+
+        function submitForm() {
+            let aboutMe = document.getElementById('about-me');
+            let form{{$shopper ? $shopper->id : $admin->id}} = document.getElementById('edit-form');
+        
+            const editorData = editor.getData();
+            console.log(editorData);
+            aboutMe.value = editorData;
+            send(event);
+        }
+    });
+
+</script>
