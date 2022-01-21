@@ -83,6 +83,7 @@
                                         errors = errors.concat(error.response.data.errors[key]);
                                     }
                                     launchSuccessAlert("Couldn't add to the cart: " + error.response.data.message + "<br>" + errors);
+                                    jsonBodyPost("/api/users/cart/update", { product_id: elem.dataset.id, amount: error.response.data.stock});
                                 }
                             }
                         });
