@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <h2 id="results-text" class="col-md-2 col-sm-12 text-center">No results</h2>
+        <h2 id="results-text" class="col-md-4 col-sm-12 text-center">No results</h2>
         <div class="col-md-2 col-sm-6 dropdown">
             <div class="h-100" type="button" id="dropdownCategories" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="row justify-content-between align-items-center h-100">
@@ -10,7 +10,7 @@
             <div class="dropdown-menu p-2" aria-labelledby="dropdownCategories">
                 <ul class="list-group">
                 @foreach ($categories as $category)
-                    @include('partials.search.category', ['category' => $category])
+                    @include('partials.search.category', ['category' => $category, 'level' => 0])
                 @endforeach
                 </ul>
             </div>
@@ -81,11 +81,28 @@
                 </div>
             </div>
         </div>
-    
-        <div class="col-md-2 col-sm-12" justify-content-center">
-            <button type="reset" class="btn btn-primary col-lg-8 col-md-12 w-100">
+    </div>
+    <div class="row align-items-center">
+        <div class="col-md-4 col-sm-12 d-flex justify-content-center">
+            <button type="reset" class="btn btn-primary col-lg-8 col-md-12 w-50">
                 Reset Filters
             </button>
+        </div>
+        <div class="col-md-2 col-sm-6 text-center d-flex align-items-center justify-content-center flex-column">
+            <h5 class="m-0">Selected Categories: </h5>
+            <p class="m-0 px-2" id="filter-categories-text">None</p>
+        </div>
+        <div class="col-md-2 col-sm-6 text-center d-flex align-items-center justify-content-center flex-column">
+            <h5 class="m-0">Price Range: </h5>
+            <p class="m-0 px-2" id="filter-price-text">None</p>
+        </div>
+        <div class="col-md-2 col-sm-6 text-center d-flex align-items-center justify-content-center flex-column">
+            <h5 class="m-0">Rating Range: </h5>
+            <p class="m-0 px-2" id="filter-rating-text">None</p>
+        </div>
+        <div class="col-md-2 col-sm-6 text-center d-flex align-items-center justify-content-center flex-column">
+            <h5 class="m-0">Sorted By: </h5>
+            <p class="m-0 px-2" id="filter-sort-text">None</p>
         </div>
     </div>
 </div>

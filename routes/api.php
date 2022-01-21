@@ -103,3 +103,5 @@ Route::middleware('auth.api')->post('/reviews/{id}/update', 'ReviewController@up
 Route::middleware('auth.api')->delete('/reviews/{id}/delete', 'ReviewController@deleteReview');
 Route::middleware('auth.api')->post('/reviews/{id}/vote', 'ReviewController@voteOnReview');
 Route::middleware('auth.api')->delete('/reviews/{id}/vote/', 'ReviewController@removeVoteOnReview');
+
+Route::get('/category', 'CategoryController@search');
