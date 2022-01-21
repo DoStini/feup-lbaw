@@ -131,7 +131,7 @@
     transition: 2s;
 }
 
-.card-nunoc:hover {
+.card-nunoc:hover, .card-nunoc:active {
     background-image: url("/img/pendurado.jpeg");
 }
 
@@ -141,7 +141,7 @@
     transition: 2s;
 }
 
-.card-nunoa:hover {
+.card-nunoa:hover, .card-nunoa:active {
     background-image: url("/img/halloweennuno.jpg");
 }
 
@@ -151,7 +151,7 @@
     transition: 2s;
 }
 
-.card-joao:hover {
+.card-joao:hover, .card-joao:active {
     background-image: url("/img/balta.jpg");
 }
 
@@ -162,7 +162,7 @@
     transition: background-image 2s ease-in-out;
 }
 
-.card-andre:hover {
+.card-andre:hover, .card-andre:active {
     background-image: url("/img/dusto.jpeg");
 }
 
