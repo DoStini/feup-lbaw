@@ -78,8 +78,7 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
-
-
+            $cat_selected = false;
             $query = Product
                 ::with("photos")
                 ->when(
@@ -89,11 +88,14 @@ class ProductController extends Controller {
                     $join->on('product.id', '=', 'wishlist.product_id')
                         ->where('wishlist.shopper_id', '=', $user->id))
                 )
-                ->whereRaw('stock > 0');
+                ->whereRaw('stock > 0')
+                ->join('product_category', 'product_category.product_id', '=', 'product.id')
+                ->join('category', 'product_category.category_id', '=', 'category.id');
 
             $category_array = $request->input('categories');
 
             if ($category_array != []) {
+                $cat_selected = true;
                 $current_idx = 0;
                 while (count($category_array) > $current_idx) {
                     $category = Category::find($category_array[$current_idx]);
@@ -104,9 +106,7 @@ class ProductController extends Controller {
                     }
                     $current_idx++;
                 }
-                $query = $query->join('product_category', 'product_category.product_id', '=', 'product.id')
-                    ->join('category', 'product_category.category_id', '=', 'category.id')
-                    ->whereIn('category.id', $category_array);
+                $query = $query->whereIn('category.id', $category_array);
             }
 
             switch ($request->order) {
@@ -137,16 +137,16 @@ class ProductController extends Controller {
                 });
             })
                 ->when($request->input('price-min'), function ($q) use ($request) {
-                    return $q->where('price', '>', [$request->input('price-min')]);
+                    return $q->where('price', '>=', [$request->input('price-min')]);
                 })
                 ->when($request->input('price-max'), function ($q) use ($request) {
-                    return $q->where('price', '<', [$request->input('price-max')]);
+                    return $q->where('price', '<=', [$request->input('price-max')]);
                 })
                 ->when($request->input('rate-min'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '>', [$request->input('rate-min')]);
+                    return $q->where('avg_stars', '>=', [$request->input('rate-min')]);
                 })
                 ->when($request->input('rate-max'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '<', [$request->input('rate-max')]);
+                    return $q->where('avg_stars', '<=', [$request->input('rate-max')]);
                 });
 
             $pageSize = $request->input('page-size');
@@ -162,11 +162,29 @@ class ProductController extends Controller {
 
             $query = $query->skip($page * $pageSize)->take($pageSize);
 
+            $searchParams = json_decode('{}');
+
+            if($request->input('categories')) {
+                $searchParams->catNames = array_map(function($id) { return Category::find($id)->name; }, $request->input('categories'));
+            }
+
+            if($request->input('price-min') != null) $searchParams->minPrice = $request->input('price-min');
+            if($request->input('price-max') != null) $searchParams->maxPrice = $request->input('price-max');
+            if($request->input('rate-min') != null) $searchParams->minRating = $request->input('rate-min');
+            if($request->input('rate-max') != null) $searchParams->maxRating = $request->input('rate-max');
+
+            if($request->input('order')) $searchParams->order = $request->input('order');
+
+            if($request->text) $searchParams->text = $request->text;
+
+            $query_obj = $query->get(['product.*', 'category.name AS cat_name']);
+
             return response()->json([
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $this->serializeQuery($query->get(['product.*']))
+                "query" => $this->serializeQuery($query_obj),
+                "searchParams" => $searchParams
             ]);
         } catch (Exception $e) {
             dd($e);

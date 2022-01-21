@@ -64,12 +64,15 @@
     <div class="product-info col-md-5">
         <div class="my-3">
             <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
+            @if($product->categories)
+            <h5>Category: {{$product->categories[0]->name}}</h5>
+            @endif
             @if ($reviewCount > 0)
             <p class="mb-0">
                 @for ($i = 1; $i <= 5; $i++) <i
                     class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
                     </i>
-                    @endfor
+                @endfor
             </p>
             <p class="text-muted">Average from {{$reviewCount}} reviews.</p>
             @endif
@@ -93,6 +96,22 @@
                 <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
             </div>
         </div>
+        {{-- <div class="product-info col-md-5">
+            <div class="my-3">
+                <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
+                <div class="d-flex justify-content-between">
+                    <p>
+                        @for ($i = 1; $i <= 5; $i++) <i
+                            class="bi bi-star{{floor($product->avg_stars) >= $i ? '-fill' : (ceil($product->avg_stars) == $i ? '-half' : '')}}">
+                            </i>
+                            @endfor
+                    </p>
+                    @if($product->categories)
+                        <h5>Category: {{$product->categories[0]->name}}</h5>
+                    @endif
+                </div>
+
+            </div> --}}
 
         <div id="description-box-full" class="description-box-full">
             <p style=text-align: center;">{{$product->description}}</p>

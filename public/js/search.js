@@ -104,17 +104,51 @@ function setupAnimation(element, delay) {
     }, delay);
 }
 
+function changeFilterText(data) {
+    const categories = document.getElementById('filter-categories-text');
+    const prices = document.getElementById('filter-price-text');
+    const ratings = document.getElementById('filter-rating-text');
+    const order = document.getElementById('filter-sort-text');
+
+    categories.innerHTML = data.catNames ? data.catNames.join(", ") : "None"
+
+    if(data.minPrice == null && data.maxPrice == null) prices.innerHTML = "None"
+    else prices.innerHTML = `${data.minPrice ?? "No Minimum"} - ${data.maxPrice ?? "No Maximum"}`
+    if(data.minRating == null && data.maxRating == null) ratings.innerHTML = "None"
+    else ratings.innerHTML = `${data.minRating ?? "No Minimum"} - ${data.maxRating ?? "No Maximum"}`
+
+    switch (data.order) {
+        case 'price-asc':
+            order.innerHTML = "Ascending Price";
+            break;
+        case 'price-desc':
+            order.innerHTML = "Descending Price";
+            break;
+        case 'rate-asc':
+            order.innerHTML = "Ascending Rating";
+            break;
+        case 'rate-desc':
+            order.innerHTML = "Descending Rating";
+            break;
+        default:
+            order.innerHTML = "None";
+            break;
+    }
+
+
+}
+
 function createProduct(product, delay) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
 
     const wishlisted = !product.shopper_id; // If the product is wihslisted, shopper will not be null
-
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">
             <div class="card-body">
                 <h4 class="card-title" style="height: 2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical; overflow: hidden;">${capitalize(product.name)}</h4>
+                <h6>${product.cat_name}</h6>
                 <div class="container ps-0 pe-0">
                     <div class="row justify-content-between align-items-center">
                         <h4 class="col mb-0">${product.price} &euro;</h4>
@@ -143,7 +177,7 @@ function createProduct(product, delay) {
         addToWishlist.addEventListener("click", (e) => {
             addToWishlistRequest(product.id, () => {
                 removeFromWishlist.style.display = "";
-                addToWishlist.style.display = "none";    
+                addToWishlist.style.display = "none";
             });
             addToWishlist.dispatchEvent(new Event("blur"));
 
@@ -234,6 +268,8 @@ function handleSearchProducts(response) {
 
     current = response.data;
 
+    changeFilterText(current.searchParams);
+
     setNewProducts(response.data);
 }
 
@@ -252,7 +288,7 @@ function getInputs() {
     const data = Object.fromEntries(formData.entries());
 
     const keys = Object.keys(data);
-    
+
     categories = [];
 
     Object.values(data).forEach((val, idx) => {
@@ -261,6 +297,8 @@ function getInputs() {
             delete data[keys[idx]];
         } else if (val === "category-active") {
             categories.push(keys[idx]);
+            delete data[keys[idx]];
+        } else if(val === '') {
             delete data[keys[idx]];
         }
     });
@@ -308,6 +346,7 @@ function sendSearchProductsRequest(callback, page) {
         ...getInputs(),
     }
 
+    console.log(query);
     getQuery(`/api/products`, query).then(callback);
 }
 
