@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\OrderUpdate;
 use App\Models\Order;
 use App\Exceptions\ApiError;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,7 @@ class OrderController extends Controller {
         return view('pages.order', ['order' => $order]);
     }
 
-    public function list(Request $request)  {
+    public function list(Request $request) {
         $this->authorize('viewAny', Order::class);
 
         $dc =  new DatatableController();
@@ -59,8 +60,14 @@ class OrderController extends Controller {
     private function validateData($data) {
         return Validator::make($data, [
             "id" => 'required|integer|min:1|exists:order,id',
+            "status" => [
+                'nullable',
+                'string',
+                Rule::in(OrderController::getPossibleStatus())
+            ],
         ], [], [
-            "id" => 'ID'
+            "id" => 'ID',
+            "status" => 'status'
         ])->validate();
     }
 
@@ -76,6 +83,8 @@ class OrderController extends Controller {
             "created" => "paid",
             "paid" => "processing",
             "processing" => "shipped",
+            "shipped" => "shipped",
+            "canceled" => "canceled"
         ];
         return $next[$status];
     }
@@ -83,29 +92,79 @@ class OrderController extends Controller {
     /**
      * Updates an order
      *
+     * @param Request $request includes optional parameter "status" to update to
      * @param int $id ID of the order being edited
      *
      * @return Response
      */
-    public function update(int $id) {
-        $this->authorize('updateNext', Order::class);
+    public function update(Request $request, int $id) {
+        $this->authorize('updateAny', Order::class);
 
         $data = [
-            "id" => $id
+            "id" => $id,
+            "status" => $request->input("status")
         ];
 
         $this->validateData($data);
 
         $order = Order::find($id);
-        $old_status = $order->status;
 
-        if($old_status == "shipped")
-            return ApiError::orderAtTerminalState();
+        if ($data["status"] == null) {
+            $old_status = $order->status;
+
+            if ($old_status == "shipped")
+                return ApiError::orderAtTerminalState();
         
-        $data["status"] = $this->getNextStatus($old_status);
+            if ($old_status == "canceled")
+                return ApiError::orderCanceled();
+
+            $data["status"] = $this->getNextStatus($old_status);
+        }
+
         $order->update($data);
 
-        event(new OrderUpdate($order->shopper->id, $order->id, $data['status']));
+        event(new OrderUpdate($order->shopper->id, $order->id, $data["status"]));
+        return response()->json(
+            ["updated-order" => $order],
+            200
+        );
+    }
+
+    /**
+     * Cancels an order
+     * 
+     * @param Request $request includes order id of the order to be canceled
+     * 
+     * @return Response
+     */
+    public function cancel(Request $request) {
+        $order = Order::findOrFail($request->route('id'));
+        $this->authorize('cancel', [Order::class, $order]);
+
+        try {
+            DB::beginTransaction();
+            DB::unprepared("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
+
+            $items = $order->products;
+
+            foreach ($items as $item) {
+                $product = Product::find($item->id);
+                $product->update([
+                    "stock" => $product->stock + $item->details->amount
+                ]);
+            }
+
+            $order->update([
+                "status" => "canceled"
+            ]);
+            DB::commit();
+        } catch (QueryException $ex) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors(["order" => "Unexpected Error"])->withInput();
+        }
+
+        event(new OrderUpdate($order->shopper->id, $order->id, "canceled"));
         return response()->json(
             ["updated-order" => $order],
             200

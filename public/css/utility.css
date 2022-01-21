@@ -8,15 +8,17 @@
     color: white;
 }
 
+.white-space-pre {
+    white-space: pre-line
+}
+
 #order-dashboard-table .dropdown-menu {
     width: 15rem;
 }
 
-
 #order-dashboard-table .dropstart .dropdown-toggle::before {
     vertical-align: 0.15em;
 }
-
 
 .badge-clickable:hover {
     color: white;
@@ -27,7 +29,6 @@
     background-color: rgb(25, 140, 218);
     color: rgb(5, 68, 110);
 }
-
 
 .badge-created:hover {
     color: rgb(5, 68, 110);
@@ -60,21 +61,34 @@
     color: rgb(2, 31, 9);
 }
 
+.badge-canceled {
+    background-color: rgb(255, 0, 0);
+    color: rgb(46, 0, 0);
+}
+
+.badge-canceled:hover {
+    color: rgb(2, 31, 9);
+}
+
 .icon-click {
     color: black;
     cursor: pointer;
     text-decoration: none;
 }
 
-.icon-click:hover{
+.icon-click:hover {
     color: rgb(63, 63, 63);
+}
+
+.cat-item:hover {
+    cursor: pointer;
 }
 
 @media (min-width: 768px) {
     .collapse.dont-collapse-sm {
-      display: block;
-      height: auto !important;
-      visibility: visible;
+        display: block;
+        height: auto !important;
+        visibility: visible;
     }
 
     .menu-collapse-btn {
@@ -82,7 +96,7 @@
     }
   }
 
-  
+
   .card-img-top {
       height: 40vh;
       object-fit: cover;
@@ -102,37 +116,52 @@
     background-image: url('/img/pendurado.jpeg');
 }
 
-  .card-nunoa {
-    background-image: url('/img/nunoa.png');
+.card-img-top {
+    height: 40vh;
+    object-fit: cover;
+}
+
+.icon-link {
+    font-size: 2em;
+}
+
+.card-nunoc {
+    background-image: url("/img/empreendedor.png");
     background-size: cover;
     transition: 2s;
+}
 
+.card-nunoc:hover {
+    background-image: url("/img/pendurado.jpeg");
+}
+
+.card-nunoa {
+    background-image: url("/img/nunoa.png");
+    background-size: cover;
+    transition: 2s;
 }
 
 .card-nunoa:hover {
-    background-image: url('/img/halloweennuno.jpg');
+    background-image: url("/img/halloweennuno.jpg");
 }
 
 .card-joao {
-    background-image: url('/img/baltaeyes.jpg');
+    background-image: url("/img/baltaeyes.jpg");
     background-size: cover;
     transition: 2s;
-
 }
 
 .card-joao:hover {
-    background-image: url('/img/balta.jpg');
-
+    background-image: url("/img/balta.jpg");
 }
 
 .card-andre {
-    background-image: url('/img/andre.png');
+    background-image: url("/img/andre.png");
     background-size: cover;
     -webkit-transition: background-image 2s ease-in-out;
     transition: background-image 2s ease-in-out;
 }
 
 .card-andre:hover {
-    background-image: url('/img/dusto.jpeg');
-
+    background-image: url("/img/dusto.jpeg");
 }

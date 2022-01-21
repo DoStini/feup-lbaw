@@ -2,7 +2,7 @@
 
 return [
     'unexpected' => [
-        'code' => 401,
+        'code' => 500,
         'message' => 'Unexpected Error'
     ],
     'authentication' => [
@@ -30,6 +30,10 @@ return [
     'not_exist_product' => [
         'code' => 422,
         'message' => 'Product does not exist'
+    ],
+    'not_enough_products' => [
+        'code' => 422,
+        'message' => 'A product needs at least one photo'
     ],
     'cart' => [
         'already_exists' => [
@@ -91,5 +95,9 @@ return [
             'code' => 422,
             'message' => 'Order state cannot be updated any further'
         ]
+    ],
+    'ordered_canceled' => [
+        'code' => 422,
+        'message' => 'Order was canceled',
     ],
 ];

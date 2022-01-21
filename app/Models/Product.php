@@ -19,6 +19,7 @@ class Product extends Model {
         'stock',
         'description',
         'price',
+        'is_active',
     ];
 
     /**
@@ -37,6 +38,30 @@ class Product extends Model {
 
     public function reviews() {
         return $this->hasMany(Review::class, 'product_id');
+    }
+
+    /**
+     * The products and their amount the user has in its cart.
+     */
+    public function usersWishlisted() {
+        return $this->belongsToMany(
+            Shopper::class,
+            'wishlist',
+            'product_id',
+            'shopper_id',
+        );
+    }
+
+    /**
+     * The products and their amount the user has in its cart.
+     */
+    public function usersCart() {
+        return $this->belongsToMany(
+            Shopper::class,
+            'product_cart',
+            'product_id',
+            'shopper_id',
+        )->withPivot('amount')->as('details');
     }
 
     /**

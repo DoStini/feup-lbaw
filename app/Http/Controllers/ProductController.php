@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CartUpdate;
+use App\Events\WishlistUpdate;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\ApiError;
 use App\Models\Category;
+use App\Models\Notification;
 use Craft\StringHelper;
 
 
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Shopper;
 use App\Models\User;
 use Exception;
@@ -28,8 +32,12 @@ class ProductController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function show($id) {
+    public function show(Request $req, $id) {
         $product = Product::findOrFail($id);
+
+        if (!$product->is_active) {
+            return abort(404);
+        }
         $user = Auth::user();
         $wishlisted = false;
         if ($user && !$user->is_admin) {
@@ -39,7 +47,10 @@ class ProductController extends Controller {
             }
         }
 
-        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted]);
+        $reviews = ReviewController::getProductReviews($id)->paginate($req->review_size ?? 5);
+        $reviewCount = ReviewController::getProductReviews($id)->count();
+
+        return view('pages.product', ['product' => $product, 'wishlisted' => $wishlisted, 'reviews' => $reviews, 'reviewCount' => $reviewCount]);
     }
 
     /**
@@ -71,8 +82,7 @@ class ProductController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         try {
-
-
+            $cat_selected = false;
             $query = Product
                 ::with("photos")
                 ->when(
@@ -82,11 +92,15 @@ class ProductController extends Controller {
                     $join->on('product.id', '=', 'wishlist.product_id')
                         ->where('wishlist.shopper_id', '=', $user->id))
                 )
-                ->whereRaw('stock > 0');
+                ->where('is_active', '=', 'true')
+                ->join('product_category', 'product_category.product_id', '=', 'product.id')
+                ->join('category', 'product_category.category_id', '=', 'category.id');
+
 
             $category_array = $request->input('categories');
 
             if ($category_array != []) {
+                $cat_selected = true;
                 $current_idx = 0;
                 while (count($category_array) > $current_idx) {
                     $category = Category::find($category_array[$current_idx]);
@@ -97,9 +111,7 @@ class ProductController extends Controller {
                     }
                     $current_idx++;
                 }
-                $query = $query->join('product_category', 'product_category.product_id', '=', 'product.id')
-                    ->join('category', 'product_category.category_id', '=', 'category.id')
-                    ->whereIn('category.id', $category_array);
+                $query = $query->whereIn('category.id', $category_array);
             }
 
             switch ($request->order) {
@@ -130,16 +142,16 @@ class ProductController extends Controller {
                 });
             })
                 ->when($request->input('price-min'), function ($q) use ($request) {
-                    return $q->where('price', '>', [$request->input('price-min')]);
+                    return $q->where('price', '>=', [$request->input('price-min')]);
                 })
                 ->when($request->input('price-max'), function ($q) use ($request) {
-                    return $q->where('price', '<', [$request->input('price-max')]);
+                    return $q->where('price', '<=', [$request->input('price-max')]);
                 })
                 ->when($request->input('rate-min'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '>', [$request->input('rate-min')]);
+                    return $q->where('avg_stars', '>=', [$request->input('rate-min')]);
                 })
                 ->when($request->input('rate-max'), function ($q) use ($request) {
-                    return $q->where('avg_stars', '<', [$request->input('rate-max')]);
+                    return $q->where('avg_stars', '<=', [$request->input('rate-max')]);
                 });
 
             $pageSize = $request->input('page-size');
@@ -155,11 +167,31 @@ class ProductController extends Controller {
 
             $query = $query->skip($page * $pageSize)->take($pageSize);
 
+            $searchParams = json_decode('{}');
+
+            if ($request->input('categories')) {
+                $searchParams->catNames = array_map(function ($id) {
+                    return Category::find($id)->name;
+                }, $request->input('categories'));
+            }
+
+            if ($request->input('price-min') != null) $searchParams->minPrice = $request->input('price-min');
+            if ($request->input('price-max') != null) $searchParams->maxPrice = $request->input('price-max');
+            if ($request->input('rate-min') != null) $searchParams->minRating = $request->input('rate-min');
+            if ($request->input('rate-max') != null) $searchParams->maxRating = $request->input('rate-max');
+
+            if ($request->input('order')) $searchParams->order = $request->input('order');
+
+            if ($request->text) $searchParams->text = $request->text;
+
+            $query_obj = $query->get(['product.*', 'category.name AS cat_name']);
+
             return response()->json([
                 "lastPage" => $lastPage,
                 "currentPage" => intval($page),
                 "docCount" => $count,
-                "query" => $this->serializeQuery($query->get(['product.*']))
+                "query" => $this->serializeQuery($query_obj),
+                "searchParams" => $searchParams
             ]);
         } catch (Exception $e) {
             dd($e);
@@ -174,7 +206,7 @@ class ProductController extends Controller {
         $this->authorize('viewAny', Product::class);
 
         $dc =  new DatatableController();
-        return $dc->get($request, DB::table('product'));
+        return $dc->get($request, DB::table('product')->where('is_active', '=', 'true'));
     }
 
     private function getValidatorAddProduct(Request $request) {
@@ -184,7 +216,8 @@ class ProductController extends Controller {
             "originVariantID" => "nullable|integer",
             "colorVariant" => "nullable|string",
             "stock" => "required|integer|min:0",
-            "description" => "nullable|string|max:255",
+            "description" => "nullable|string|max:2048",
+            "category-id" => "required|integer|min:1|exists:category,id",
             "photos" => "required",
             "price" => "required|numeric|min:0",
         ]);
@@ -195,8 +228,9 @@ class ProductController extends Controller {
             "name" => "nullable|string|max:100",
             "attributes" => "nullable|json",
             "stock" => "nullable|integer|min:0",
-            "description" => "nullable|string|max:255",
+            "description" => "nullable|string|max:2048",
             "price" => "nullable|numeric|min:0",
+            "category-id" => "nullable|integer|min:1|exists:category,id"
         ]);
     }
 
@@ -233,13 +267,56 @@ class ProductController extends Controller {
 
         try {
             DB::beginTransaction();
-            $product->update(array_filter([
-                "name" => $request->input('name'),
-                "attributes" => $request->input('attributes'),
-                "stock" => $request->input('stock'),
-                "description" => $request->input('description'),
-                "price" => $request->input('price'),
-            ]));
+
+            $oldStock = $product->stock;
+            $oldPrice = $product->price;
+
+            $product->update(array_filter(
+                [
+                    "name" => $request->input('name'),
+                    "attributes" => $request->input('attributes'),
+                    "stock" => $request->input('stock'),
+                    "description" => $request->input('description'),
+                    "price" => $request->input('price'),
+                ],
+                fn ($elem) => $elem != null && $elem !== "",
+            ));
+
+            $categoryId = $request['category-id'];
+
+            if ($categoryId) {
+                $product->categories()->detach();
+                $category = Category::find($categoryId);
+                $product->categories()->attach($category);
+            }
+
+            if ($oldPrice != $product->price) {
+
+                foreach ($product->usersCart as $userCart) {
+                    $user = Shopper::find($userCart->id);
+                    $not = new Notification();
+                    $not->shopper = $user->id;
+                    $not->type = "cart";
+                    $not->product_id = $product->id;
+                    $not->save();
+
+                    event(new CartUpdate($user->id, $product->id));
+                }
+            }
+
+            if ($oldStock == 0 && $product->stock > 0) {
+                foreach ($product->usersWishlisted as $userWishlist) {
+                    $user = Shopper::find($userWishlist->id);
+                    $not = new Notification();
+                    $not->shopper = $user->id;
+                    $not->type = "wishlist";
+                    $not->product_id = $product->id;
+                    $not->save();
+
+                    event(new WishlistUpdate($user->id, $product->id));
+                }
+            }
+
 
             foreach ($photos as $productPhoto) {
                 $path = $productPhoto->storePubliclyAs(
@@ -265,6 +342,39 @@ class ProductController extends Controller {
         }
 
         return redirect(route("getProduct", ["id" => $product->id]));
+    }
+
+
+    private function validateRemoveProductPhoto(Request $request) {
+        return Validator::make(
+            [
+                'id' => $request->route('id'),
+                'photo_id' => $request->route('photo_id'),
+            ],
+            [
+                "id" => "required|integer|min:1|exists:product,id",
+                "photo_id" => "required|integer|min:1|exists:product_photo,photo_id",
+            ]
+        );
+    }
+
+    public function removeProductPhoto(Request $request) {
+
+        $this->authorize('update', Product::class);
+
+        if (($v = $this->validateRemoveProductPhoto($request))->fails()) {
+            return ApiError::validatorError($v->errors());
+        }
+
+        $product = Product::findOrFail($request->route("id"));
+
+        if ($product->photos()->count() == 1) {
+            return ApiError::notEnoughPhotos();
+        }
+
+        $product->photos()->detach($request->route("photo_id"));
+
+        return response("");
     }
 
     public function addProduct(Request $request) {
@@ -360,6 +470,39 @@ class ProductController extends Controller {
         return redirect(route("getProduct", ["id" => $product->id]));
     }
 
+    public function addProductImage(Request $request) {
+
+        $product = Product::findOrFail($request->route('id'));
+
+        $this->authorize('update', Product::class);
+
+        $photos = $request->file('photos') ?? [];
+
+        $validator = $this->getValidatorPhotos($photos);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $savedPhotos = [];
+
+        foreach ($photos as $productPhoto) {
+            $path = $productPhoto->storePubliclyAs(
+                "images/product",
+                "product" . $product->id . "-" . uniqid() . "." . $productPhoto->extension(),
+                "public"
+            );
+
+            array_push($savedPhotos, $path);
+
+            $public_path = "/storage/" . $path;
+            $photo = Photo::create(["url" => $public_path]);
+
+            $product->photos()->attach($photo->id);
+        }
+
+        return redirect()->back();
+    }
+
     public function getAddProductPage() {
         $this->authorize('create', Product::class);
         return view('pages.addProduct');
@@ -377,6 +520,16 @@ class ProductController extends Controller {
         return Validator::make($request->all(), [
             'code' => 'required|string|min:1',
         ]);
+    }
+
+    public function removeProduct(Request $request) {
+        $product = Product::findOrFail($request->route('id'));
+
+        $product->update([
+            "is_active" => false,
+        ]);
+
+        return response("");
     }
 
     /**

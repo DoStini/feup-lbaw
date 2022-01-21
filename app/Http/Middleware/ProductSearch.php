@@ -19,7 +19,7 @@ class ProductSearch extends Search {
     }
 
     private function sanitizeMaxRate(Request $request) {
-        $this->sanitizeNumeric($request, 'rate-max', 5);
+        $this->sanitizeNumeric($request, 'rate-max', null);
     }
 
     /**
