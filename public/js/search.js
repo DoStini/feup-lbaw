@@ -142,7 +142,7 @@ function createProduct(product, delay) {
     const productImg = product.photos[0];
     const fallBack = "/img/default.jpg";
 
-    const wishlisted = !product.shopper_id; // If the product is wihslisted, shopper will not be null
+    const wishlisted = !product.wishlisted; // If the product is wihslisted, shopper will not be null
     const html = `
         <div id="product-${product.id}" class="card mb-5 search-products-item">
             <img class="card-img-top search-card-top" src="${productImg}" onerror="this.src='${fallBack}'">

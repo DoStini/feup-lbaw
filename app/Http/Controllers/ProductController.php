@@ -93,7 +93,7 @@ class ProductController extends Controller {
                         ->where('wishlist.shopper_id', '=', $user->id))
                 )
                 ->where('is_active', '=', 'true')
-                ->join('product_category', 'product_category.product_id', '=', 'product.id')
+                ->leftJoin('product_category', 'product_category.product_id', '=', 'product.id')
                 ->join('category', 'product_category.category_id', '=', 'category.id');
 
 
@@ -184,7 +184,7 @@ class ProductController extends Controller {
 
             if ($request->text) $searchParams->text = $request->text;
 
-            $query_obj = $query->get(['product.*', 'category.name AS cat_name']);
+            $query_obj = $query->get(['product.*', 'category.name AS cat_name', 'wishlist.shopper_id AS wishlisted']);
 
             return response()->json([
                 "lastPage" => $lastPage,
