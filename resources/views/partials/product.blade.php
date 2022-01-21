@@ -64,9 +64,7 @@
     <div class="product-info col-md-5">
         <div class="my-3">
             <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-            @if($product->categories)
-            <h5>Category: {{$product->categories[0]->name}}</h5>
-            @endif
+
             @if ($reviewCount > 0)
             <p class="mb-0">
                 @for ($i = 1; $i <= 5; $i++) <i
@@ -91,7 +89,7 @@
         </div>
 
         <div id="description-box-teaser" class="description-box-teaser">
-            <p style=text-align: center;" id="description-text-teaser"></p>
+            <p style=text-align: center;" id="description-text-teaser">{{$product->description}}</p>
             <div class="show-more" id="show-more-btn">
                 <i class="bi bi-arrow-down-circle" id="show-more-button"></i>
             </div>
@@ -114,7 +112,7 @@
             </div> --}}
 
         <div id="description-box-full" class="description-box-full">
-            <p style=text-align: center;" id="description-text-full"></p>
+            <p style=text-align: center;">{{$product->description}}</p>
             <div class="show-less">
                 <i class="bi bi-arrow-up-circle" id="show-less-button"></i>
             </div>
@@ -476,11 +474,4 @@
         iconBar.appendChild(confirmButton);
     }
 
-    let val = '@php echo ($product->description) @endphp';
-    const patt = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi
-    val =  val.replace(patt, '')
-
-    document.getElementById('description-text-teaser').innerHTML = val;
-    document.getElementById('description-text-full').innerHTML = val;
 </script>
-

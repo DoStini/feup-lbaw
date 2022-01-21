@@ -155,7 +155,7 @@
         document.getElementById('add-product-form').addEventListener('submit', (e) => {
             console.log("daknsda");
             let description = document.getElementById('description');
-            aboutMe.value = editor.getData();
+            description.value = editor.getData();
         });
     })
 
