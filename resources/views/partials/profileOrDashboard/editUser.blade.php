@@ -20,10 +20,11 @@
     }
 
     function renderElements(user) {
+        console.log(user);
         if(user.id === userID) document.getElementById("header-user-name").innerText = user.name.split(' ')[0];
 
         document.getElementById("name-profile").innerText = user.name;
-        updatePhoto(user.photo, user);
+        updatePhoto((user.photo.charAt(0) !== '/' ? '/' + user.photo : user.photo), user);
     }
 
     function send(event) {
