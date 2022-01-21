@@ -146,46 +146,6 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
-//  @if (Auth::check() &&
-//     ($shopper ?
-//         (Auth::user()->id == $shopper->user->id)
-//          :
-//         (Auth::user()->id == $admin->id)))
-// <div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
-//     <div class="modal-dialog modal-dialog-centered">
-//         <div class="modal-content" id="confirmContent">
-//             <div class="modal-header">
-//                 <h5 class="modal-title" id="confirmTitle">Confirm delete account</h5>
-//                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-//                 </button>
-//             </div>
-//             <div class="modal-body" id="confirmBody">
-//                 This is an irreversible action, please take caution
-//                 <form  method="POST" action="{{route('deleteAccount', ['id' => Auth::user()->id])}}">
-//                     @csrf
-//                     <div class="form-group my-4">
-//                         <label for="cur-password"><b>Confirm your password before applying changes:</b></label>
-//                         <input autocomplete="on" required id="cur-password-delete" class="form-control" type="password" name="cur-password">
-//                         <span class="error form-text text-danger" id="cur-password-error"></span>
-//                     </div>
-//                     <button type="submit" class="my-2 btn btn-danger w-100">
-//                         Delete Account
-//                     </button>
-//                 </form>
-//             </div>
-//         </div>
-//     </div>
-// </div>
-// @endif
-
-// <script>
-//     window.addEventListener('load', () => {
-//         let deleteModal = new bootstrap.Modal(document.getElementById('confirm'));
-
-//         document.getElementById("show-delete-confirm").addEventListener("click", () => {
-//             deleteModal.show();
-//         });
-//     })
 <script defer>
     let editor;
 
@@ -219,5 +179,4 @@
         aboutMe.value = editorData;
         send(event);
     }
-
 </script>

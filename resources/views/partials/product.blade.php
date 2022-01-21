@@ -155,22 +155,23 @@
                 @endif
             </div>
 
-            <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
-                @if(Auth::check() && !Auth::user()->is_admin && $product->stock > 0)
-                <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
-                @elseif((!Auth::check() || !Auth::user()->is_admin) && $product->stock > 0)
-                <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
-                @endif
-                @if(Auth::check() && Auth::user()->is_admin)
-                <form class="w-100" action="{{route('editProductPage', ['id' => $product->id])}}">
-                    <button type="submit" class="btn btn-primary w-100 my-2">Edit this product</button>
-                </form>
-                @endif
-                @if ($product->stock > 0)
-                <button class="btn btn-success w-100 my-2" disabled>In Stock ({{$product->stock}})</button>
-                @else
-                <button class="btn btn-danger w-100 my-2" disabled>Out of Stock</button>
-                @endif
+                <div class="product-actions d-flex flex-column my-4 justify-content-center align-items-center">
+                    @if(Auth::check() && !Auth::user()->is_admin && $product->stock > 0)
+                    <button id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Add to Cart</button>
+                    @elseif((!Auth::check() || !Auth::user()->is_admin) && $product->stock > 0)
+                    <a href="{{route('join')}}" id="add-to-cart-btn" class="btn btn-primary w-100 my-2">Login to add to Cart</a>
+                    @endif
+                    @if(Auth::check() && Auth::user()->is_admin)
+                    <form class="w-100" action="{{route('editProductPage', ['id' => $product->id])}}">
+                        <button type="submit" class="btn btn-primary w-100 my-2">Edit this product</button>
+                    </form>
+                    @endif
+                    @if ($product->stock > 0)
+                    <button class="btn btn-success w-100 my-2" disabled>In Stock ({{$product->stock}})</button>
+                    @else
+                    <button class="btn btn-danger w-100 my-2" disabled>Out of Stock</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
