@@ -125,6 +125,17 @@
             }
         ]
     });
+
+    function update(id) {
+        jsonBodyPost(`/api/orders/${id}/status`)
+        .then((response) => {
+            launchSuccessAlert("Order Updated Successfully!");
+            table.ajax.reload();
+        })
+        .catch((error) => {
+            launchErrorAlert("Couldn't edit the status: " + error.response.data.message ?? "" + "<br>" + error.response.data["errors"] ?? "");
+        });
+    }
 </script>
 
-  @endsection
+@endsection

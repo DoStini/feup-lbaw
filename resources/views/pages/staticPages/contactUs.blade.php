@@ -1,6 +1,8 @@
 @extends('layouts.logoOnlyApp')
 
 @section('content')
+<form method="POST" action="{{route('contact-us-submit')}}">
+@csrf
 <div class="container">
     <div class="row">
         <h1 class="text-center">Got any question? Contact us!</h1>
@@ -17,8 +19,8 @@
             <span class="error form-text text-danger" id="email-error"></span>
         </div>
         <div class="mb-3">
-            <label for="contact-us-message"> About Me</label>
-            <textarea id="contact-us-message" class="form-control" name="contact-us-message" value=""></textarea>
+            <label for="contact-us-message"> Message</label>
+            <textarea required id="contact-us-message" class="form-control" name="message" value=""></textarea>
             <span class="error form-text text-danger" id="about_me-error"></span>
         </div>
     </div>
@@ -26,4 +28,5 @@
         <button type="submit" style="width: 10em" class="btn btn-primary">Send!</button>
     </div>
 </div>
+</form>
 @endsection
