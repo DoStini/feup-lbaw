@@ -4,7 +4,10 @@
             <h4>You haven't made any purchases yet.</h4>
         </div>
     @else
-        @foreach ($shopper->orders()->orderByDesc('timestamp')->get() as $order)
+        @php
+            $orders =  $shopper->orders()->orderByDesc('timestamp')->paginate(2);
+        @endphp
+        @foreach ($orders as $order)
             <div class="accordion" id={{ "order" . $loop->iteration}}>
                 <div class="accordion-item my-4">
                 <h2 class="accordion-header" id={{"panelsStayOpen-heading" . $loop->iteration}}>
@@ -170,6 +173,7 @@
                 </div>
             </div>
         @endforeach
+        <div class="d-flex align-items-center justify-content-end px-md-5">{{$orders->links()}}</div>
     @endif
 </div>
 
