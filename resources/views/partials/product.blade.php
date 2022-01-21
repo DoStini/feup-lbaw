@@ -63,9 +63,9 @@
     </div>
     <div class="product-info col-md-5">
         <div class="my-3">
-            <h2 class="m-0" style=text-align: justify;">{{strtoupper($product->name)}}</h2>
-            @if($product->categories)
-            <h5>Category: {{$product->categories[0]->name}}</h5>
+            <h2 class="m-0" style="text-align: justify;">{{strtoupper($product->name)}}</h2>
+            @if($product->categories->count() > 0)
+            <h5>Category: {{$product->categories->first()->name}}</h5>
             @endif
             @if ($reviewCount > 0)
             <p class="mb-0">

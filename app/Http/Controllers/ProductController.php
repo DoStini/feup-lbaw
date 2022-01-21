@@ -217,6 +217,7 @@ class ProductController extends Controller {
             "colorVariant" => "nullable|string",
             "stock" => "required|integer|min:0",
             "description" => "nullable|string|max:2048",
+            "category-id" => "required|integer|min:1|exists:category,id",
             "photos" => "required",
             "price" => "required|numeric|min:0",
         ]);
