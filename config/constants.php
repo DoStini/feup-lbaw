@@ -83,7 +83,12 @@ return [
         'active' => [
             'code' => 422,
             'message' => 'Coupon is already active'
-        ]
+        ],
+        'invalid' => [
+            'code' => 422,
+            'message' => "Coupon can't be applied to this order"
+        ],
+
     ],
     'constants' => [
         'auth' => [

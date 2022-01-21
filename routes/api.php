@@ -34,7 +34,7 @@ Route::get('/users', [
     'uses' => 'UserController@list'
 ]);
 Route::get('/address/zipcode', 'ZipCodeController@zipCode');
-Route::get('/coupon/search', 'CouponController@search');
+Route::post('/coupon/validate', 'CouponController@verifyCoupon');
 Route::get('/coupon', 'CouponController@list');
 Route::group(
     [
