@@ -43,7 +43,7 @@
 
 .product-carousel {
     width: 45vw;
-    height: 30vw;
+    height: auto;
 }
 
 .carousel-item img {
