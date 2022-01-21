@@ -37,7 +37,7 @@
         })
 
         document.getElementById("clear-coupon").addEventListener("click", () => {
-            document.getElementById("coupon").dispatchEvent(new Event("reset"));
+            document.getElementById("coupon").value = "";
             document.getElementById("coupon-id").value = "";
             document.querySelector("#order-total td").innerText = `{{$cartTotal}} €`;
             document.querySelector("#coupon-used").style.display = "none";
