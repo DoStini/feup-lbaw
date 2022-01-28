@@ -73,6 +73,12 @@ docker build -t refurniture -f Dockerfile.prod .
 docker run -it -p 8000:80 --name=lbaw2116 -e DB_DATABASE="lbaw2116" -e DB_SCHEMA="lbaw2116" -e DB_USERNAME="lbaw2116" -e DB_PASSWORD="dKRdEYFN" git.fe.up.pt:5050/lbaw/lbaw2122/lbaw2116
 ```
 
+You can also run the container stored in gitlab, however, login and register won't work due to sessions being stored under gitlab hostname:
+
+```
+docker run -it -p 8000:80 --name=lbaw2116 -e DB_DATABASE="lbaw2116" -e DB_SCHEMA="lbaw2116" -e DB_USERNAME="lbaw2116" -e DB_PASSWORD="dKRdEYFN" git.fe.up.pt:5050/lbaw/lbaw2122/lbaw2116
+```
+
 ###  2. Usage
 
 ####  2.1. Administration Credentials
