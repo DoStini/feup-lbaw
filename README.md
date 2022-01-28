@@ -7,7 +7,6 @@ URL to the product: http://lbaw2116.lbaw.fe.up.pt
 ###  1. Installation
 
 Release version of the source code: https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/tree/PA
- Full Docker command to test the group's Docker Hub image using the DBM database.
 
 Make sure the [env](https://git.fe.up.pt/lbaw/lbaw2122/lbaw2116/-/blob/main/.env) file contains the following credentials in order to be able to receive live notifications using Pusher, checkout with Paypal and emails.
 
